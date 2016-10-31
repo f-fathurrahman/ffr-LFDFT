@@ -2,7 +2,9 @@ compare_cg/
 logs/
 t_eig/
 build.sh
-
+fort.*
+*.xsf
+*.dat
 
 # Prerequisites
 *.d

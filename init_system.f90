@@ -9,7 +9,7 @@ SUBROUTINE init_system()
   CHARACTER(len=256) :: filname
   INTEGER :: is, ia
 
-  filname = 'Pd.xyz'
+  filname = 'structures/Pd.xyz'
 
   WRITE(*,'(/,1x,2A)') 'Initializing atomic positions from file: ', trim(filname)
   CALL init_atoms_xyz( ATOMS, filname ) 
