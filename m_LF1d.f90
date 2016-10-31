@@ -16,8 +16,6 @@ TYPE LF1d_t
   REAL(8) :: h
   REAL(8), ALLOCATABLE :: grid(:)
   REAL(8), ALLOCATABLE :: D1jl(:,:), D2jl(:,:)
-  ! Transformation matrix, for the moment only applicable to periodic LF
-  COMPLEX(8), ALLOCATABLE :: Tal(:,:)
 END TYPE
 !------------------------------------------------------------------------------
 
@@ -27,7 +25,7 @@ END TYPE
 
 
 ! Initialize periodic Lagrange function
-! The LFs are defined on [A,B].
+! The LFs are defined on [0,L].
 !------------------------------------------------------------------------------
 SUBROUTINE init_LF1d_p( LF, N, A, B )
 !------------------------------------------------------------------------------
@@ -42,7 +40,7 @@ SUBROUTINE init_LF1d_p( LF, N, A, B )
   ! Check if N is odd
   !
   IF( mod(N,2)==0 ) THEN
-    WRITE(*,*) 'N should be an odd number, this N=', N
+    WRITE(*,*) 'N should be odd number, this N=', N
     STOP
   ENDIF
   !
@@ -70,10 +68,47 @@ SUBROUTINE init_LF1d_p( LF, N, A, B )
   ALLOCATE( LF%D1jl(N,N), LF%D2jl(N,N) )
   CALL init_deriv_matrix_p( LF%D1jl, LF%D2jl, LF )
   !
-  ALLOCATE( LF%Tal(N,N) )
-  CALL init_transform_matrix_p( LF )
-  !
   WRITE(*,'(1x,A,F18.10)') 'Allocated: periodic 1d LBF grid, h = ', LF%h
+END SUBROUTINE
+
+
+! Initialize Langrange function with cluster boundary condition
+! The LFs are defined on [A,B] with B > A
+!------------------------------------------------------------------------------
+SUBROUTINE init_LF1d_c( LF, N, A, B )
+!------------------------------------------------------------------------------
+  IMPLICIT NONE
+  !
+  TYPE(LF1d_t) :: LF
+  INTEGER :: N
+  REAL(8) :: A, B
+  !
+  INTEGER :: ii
+  !
+  LF%N = N
+  LF%A = A
+  LF%B = B
+  !
+  ! Check if B > A
+  !
+  IF( B < A ) THEN
+    WRITE(*,*) 'Error in init_LF1d_c: B should be larger that A', A, B
+    STOP
+  ENDIF
+  LF%L = B - A
+  LF%h = (B - A)/(N + 1) ! Note that this is different from the periodic LF
+  ALLOCATE( LF%grid(N) )
+  ! Initializatio
+  DO ii=1,N
+    LF%grid(ii) = A + ii*(B-A)/(N+1)
+  ENDDO
+  !
+  ! FIXME: Currently only D2jl matrix is initialized
+  ALLOCATE( LF%D2jl(N,N) )
+  CALL init_deriv_matrix_c( LF%D2jl, LF )
+  !
+  WRITE(*,'(1x,A,F18.10)') 'Allocated: cluster 1d LBF grid, h = ', LF%h
+
 END SUBROUTINE
 
 
@@ -124,70 +159,6 @@ SUBROUTINE init_deriv_matrix_p(D1jl, D2jl, LF)
     ENDDO
   ENDDO
   
-END SUBROUTINE
-
-
-
-SUBROUTINE init_transform_matrix_p( LF )
-  IMPLICIT NONE
-  !
-  TYPE(LF1d_t) :: LF
-  !
-  INTEGER :: alpha, l
-  INTEGER :: kl
-  ! N must be an odd number
-
-  kl = -(LF%N-1)/2
-  !kl = 0
-  DO l = 1, LF%N
-    DO alpha = 1, LF%N
-      !WRITE(*,*) 'kl = ', kl
-      LF%Tal(alpha,l) = exp( 2.d0*PI*(0.d0,1.d0)*kl*LF%grid(alpha)/LF%L ) / sqrt(dble(LF%N))
-    ENDDO
-    kl = kl + 1
-  ENDDO
-END SUBROUTINE
-
-
-
-
-! Initialize Langrange function with cluster boundary condition
-! The LFs are defined on [A,B] with B > A
-!------------------------------------------------------------------------------
-SUBROUTINE init_LF1d_c( LF, N, A, B )
-!------------------------------------------------------------------------------
-  IMPLICIT NONE
-  !
-  TYPE(LF1d_t) :: LF
-  INTEGER :: N
-  REAL(8) :: A, B
-  !
-  INTEGER :: ii
-  !
-  LF%N = N
-  LF%A = A
-  LF%B = B
-  !
-  ! Check if B > A
-  !
-  IF( B < A ) THEN
-    WRITE(*,*) 'Error in init_LF1d_c: B should be larger that A', A, B
-    STOP
-  ENDIF
-  LF%L = B - A
-  LF%h = (B - A)/(N + 1) ! Note that this is different from the periodic LF
-  ALLOCATE( LF%grid(N) )
-  ! Initializatio
-  DO ii=1,N
-    LF%grid(ii) = A + ii*(B-A)/(N+1)
-  ENDDO
-  !
-  ! FIXME: Currently only D2jl matrix is initialized
-  ALLOCATE( LF%D2jl(N,N) )
-  CALL init_deriv_matrix_c( LF%D2jl, LF )
-  !
-  WRITE(*,'(1x,A,F18.10)') 'Allocated: cluster 1d LBF grid, h = ', LF%h
-
 END SUBROUTINE
 
 
@@ -310,6 +281,7 @@ SUBROUTINE init_LF1d_sinc( LF, N, h )
   !
   WRITE(*,'(1x,A,2F18.10)') 'Allocated: cluster 1d LF sinc, h, L = ', LF%h, LF%L
 END SUBROUTINE
+
 
 SUBROUTINE init_deriv_matrix_sinc( LF )
   IMPLICIT NONE
