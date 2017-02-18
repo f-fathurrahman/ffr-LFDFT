@@ -1,0 +1,11 @@
+MAKE = make
+AR = ar
+F77 = g95
+F77_OPTS = 
+F90 = g95
+F90_OPTS = -Wall -cpp -D_VERBOSE_ARNOLDI # -check bounds -check uninit
+LIB_MKL = -L$(MKLROOT)/lib/intel64 -lmkl_gf_lp64 -lmkl_sequential -lmkl_core -lpthread
+LIB_FFTW3 = /home/efefer/mysoftwares/lib/libfftw3.a
+LIBS = $(LIB_MKL) $(LIB_FFTW3)
+CUDA_LIBS = -L/home/efefer/mysoftwares/cuda/lib64 -lcudart -lcublas -lcufft
+

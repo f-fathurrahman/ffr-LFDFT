@@ -1,0 +1,143 @@
+
+Testing cg: 17
+ Allocated: periodic 1d LBF grid, h =   0.941176470588235     
+ Allocated: periodic 1d LBF grid, h =   0.941176470588235     
+ Allocated: periodic 1d LBF grid, h =   0.941176470588235     
+ deltaV =   0.833706492977814     
+  2.299440826359198E-002
+ Convergence in solve_poisson_cg: N, iter        4913         431
+ N, Unum =       4913  0.3858029757E+09
+ N, Uana =       4913  0.5514252769E-01
+ N, Error =       4913  0.3858029756E+09
+
+Testing cg: 19
+ Allocated: periodic 1d LBF grid, h =   0.842105263157895     
+ Allocated: periodic 1d LBF grid, h =   0.842105263157895     
+ Allocated: periodic 1d LBF grid, h =   0.842105263157895     
+ deltaV =   0.597171599358507     
+  5.711066874546275E-003
+ Convergence in solve_poisson_cg: N, iter        6859         386
+ N, Unum =       6859  0.9376990721E+07
+ N, Uana =       6859  0.5514252769E-01
+ N, Error =       6859  0.9376990666E+07
+
+Testing cg: 21
+ Allocated: periodic 1d LBF grid, h =   0.761904761904762     
+ Allocated: periodic 1d LBF grid, h =   0.761904761904762     
+ Allocated: periodic 1d LBF grid, h =   0.761904761904762     
+ deltaV =   0.442284850448116     
+  1.220095517342616E-003
+ Convergence in solve_poisson_cg: N, iter        9261         318
+ N, Unum =       9261  0.6350024355E+06
+ N, Uana =       9261  0.5514252769E-01
+ N, Error =       9261  0.6350023804E+06
+
+Testing cg: 23
+ Allocated: periodic 1d LBF grid, h =   0.695652173913043     
+ Allocated: periodic 1d LBF grid, h =   0.695652173913043     
+ Allocated: periodic 1d LBF grid, h =   0.695652173913043     
+ deltaV =   0.336648311005178     
+  2.236395369910590E-004
+ Convergence in solve_poisson_cg: N, iter       12167         353
+ N, Unum =      12167  0.9420857540E+04
+ N, Uana =      12167  0.5514252769E-01
+ N, Error =      12167  0.9420802397E+04
+
+Testing cg: 25
+ Allocated: periodic 1d LBF grid, h =   0.640000000000000     
+ Allocated: periodic 1d LBF grid, h =   0.640000000000000     
+ Allocated: periodic 1d LBF grid, h =   0.640000000000000     
+ deltaV =   0.262144000000000     
+  3.514296718987680E-005
+ Convergence in solve_poisson_cg: N, iter       15625         370
+ N, Unum =      15625  0.2416969625E+03
+ N, Uana =      15625  0.5514252769E-01
+ N, Error =      15625  0.2416418199E+03
+
+Testing cg: 27
+ Allocated: periodic 1d LBF grid, h =   0.592592592592593     
+ Allocated: periodic 1d LBF grid, h =   0.592592592592593     
+ Allocated: periodic 1d LBF grid, h =   0.592592592592593     
+ deltaV =   0.208098358989991     
+  4.733435463645905E-006
+ Convergence in solve_poisson_cg: N, iter       19683         906
+ N, Unum =      19683 -0.2867126071E+01
+ N, Uana =      19683  0.5514252769E-01
+ N, Error =      19683  0.2922268599E+01
+
+Testing cg: 29
+ Allocated: periodic 1d LBF grid, h =   0.551724137931034     
+ Allocated: periodic 1d LBF grid, h =   0.551724137931034     
+ Allocated: periodic 1d LBF grid, h =   0.551724137931034     
+ deltaV =   0.167944565172824     
+  5.464425595248859E-007
+ Convergence in solve_poisson_cg: N, iter       24389         447
+ N, Unum =      24389  0.1195797260E+00
+ N, Uana =      24389  0.5514252769E-01
+ N, Error =      24389  0.6443719832E-01
+
+Testing cg: 31
+ Allocated: periodic 1d LBF grid, h =   0.516129032258065     
+ Allocated: periodic 1d LBF grid, h =   0.516129032258065     
+ Allocated: periodic 1d LBF grid, h =   0.516129032258065     
+ deltaV =   0.137491188614011     
+  5.406789139695865E-008
+ Convergence in solve_poisson_cg: N, iter       29791         534
+ N, Unum =      29791  0.5753632568E-01
+ N, Uana =      29791  0.5514252769E-01
+ N, Error =      29791  0.2393797987E-02
+
+Testing cg: 33
+ Allocated: periodic 1d LBF grid, h =   0.484848484848485     
+ Allocated: periodic 1d LBF grid, h =   0.484848484848485     
+ Allocated: periodic 1d LBF grid, h =   0.484848484848485     
+ deltaV =   0.113977237944180     
+  4.585226950412160E-009
+ Convergence in solve_poisson_cg: N, iter       35937         351
+ N, Unum =      35937  0.5515880152E-01
+ N, Uana =      35937  0.5514252769E-01
+ N, Error =      35937  0.1627382979E-04
+
+Testing cg: 35
+ Allocated: periodic 1d LBF grid, h =   0.457142857142857     
+ Allocated: periodic 1d LBF grid, h =   0.457142857142857     
+ Allocated: periodic 1d LBF grid, h =   0.457142857142857     
+ deltaV =   9.553352769679301E-002
+  3.332792082764339E-010
+ No convergence in solve_poisson_cg, N       42875
+ N, Unum =      42875  0.5509995986E-01
+ N, Uana =      42875  0.5514252769E-01
+ N, Error =      42875  0.4256783261E-04
+
+Testing cg: 37
+ Allocated: periodic 1d LBF grid, h =   0.432432432432432     
+ Allocated: periodic 1d LBF grid, h =   0.432432432432432     
+ Allocated: periodic 1d LBF grid, h =   0.432432432432432     
+ deltaV =   8.086391724083469E-002
+  2.076314756537943E-011
+ Convergence in solve_poisson_cg: N, iter       50653         203
+ N, Unum =      50653  0.5514285025E-01
+ N, Uana =      50653  0.5514252769E-01
+ N, Error =      50653  0.3225516720E-06
+
+Testing cg: 39
+ Allocated: periodic 1d LBF grid, h =   0.410256410256410     
+ Allocated: periodic 1d LBF grid, h =   0.410256410256410     
+ Allocated: periodic 1d LBF grid, h =   0.410256410256410     
+ deltaV =   6.905038857701580E-002
+  1.107503254277969E-012
+ Convergence in solve_poisson_cg: N, iter       59319         214
+ N, Unum =      59319  0.5514259400E-01
+ N, Uana =      59319  0.5514252769E-01
+ N, Error =      59319  0.6630791000E-07
+
+Testing cg: 41
+ Allocated: periodic 1d LBF grid, h =   0.390243902439024     
+ Allocated: periodic 1d LBF grid, h =   0.390243902439024     
+ Allocated: periodic 1d LBF grid, h =   0.390243902439024     
+ deltaV =   5.943036229886391E-002
+  5.027748891854234E-014
+ Convergence in solve_poisson_cg: N, iter       68921         226
+ N, Unum =      68921  0.5514254038E-01
+ N, Uana =      68921  0.5514252769E-01
+ N, Error =      68921  0.1268224425E-07

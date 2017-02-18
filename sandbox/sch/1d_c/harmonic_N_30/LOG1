@@ -1,0 +1,19 @@
+ Allocated: cluster 1d LBF grid, h =       0.3225806452
+ 
+ LF1d info:
+ N =         30
+ L =         10.00000
+ h =          0.32258
+ 
+ Eigenvalues:
+     1      1.0000000000
+     2      3.0000000000
+     3      5.0000000000
+     4      7.0000000000
+ 
+ Calculation of total energy as sum of Ekin and Epot for each states
+     1      0.5000000000      0.5000000000
+     2      1.5000000000      1.5000000000
+     3      2.5000000000      2.5000000000
+     4      3.5000000000      3.5000000000
+ Etot =    16.0000000000000
