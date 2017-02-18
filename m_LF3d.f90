@@ -12,6 +12,14 @@ MODULE m_LF3d
   REAL(8), ALLOCATABLE :: LF3d_grid_y(:)
   REAL(8), ALLOCATABLE :: LF3d_grid_z(:)
 
+  REAL(8), ALLOCATABLE :: LF3d_D1jl_x(:,:)
+  REAL(8), ALLOCATABLE :: LF3d_D1jl_y(:,:)
+  REAL(8), ALLOCATABLE :: LF3d_D1jl_z(:,:)
+
+  REAL(8), ALLOCATABLE :: LF3d_D2jl_x(:,:)
+  REAL(8), ALLOCATABLE :: LF3d_D2jl_y(:,:)
+  REAL(8), ALLOCATABLE :: LF3d_D2jl_z(:,:)
+
   REAL(8), ALLOCATABLE :: LF3d_lingrid(:,:)
   INTEGER, ALLOCATABLE :: LF3d_xyz2lin(:,:,:)
   INTEGER, ALLOCATABLE :: LF3d_lin2xyz(:,:)
