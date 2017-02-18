@@ -1,3 +1,7 @@
+*.swp
+*.swo
+*~
+
 compare_cg/
 logs/
 t_eig/
