@@ -40,5 +40,15 @@ SUBROUTINE info_LF3d()
   WRITE(*,*) N-1, LF3d_grid_z(N-1)
   WRITE(*,*) N,   LF3d_grid_z(N)
 
+  ! FIXME This should be called only for periodic case
+  ! G2 ------------------------------------------
+  N = LF3d_Npoints
+  WRITE(*,'(/,1x,A)') 'Some G2 values:'
+  WRITE(*,*) 1, LF3d_G2(1)
+  WRITE(*,*) 2, LF3d_G2(2)
+  WRITE(*,*) '....'
+  WRITE(*,*) N-1, LF3d_G2(N-1)
+  WRITE(*,*) N,   LF3d_G2(N)
+
 END SUBROUTINE
 

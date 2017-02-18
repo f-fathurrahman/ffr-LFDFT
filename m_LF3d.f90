@@ -24,5 +24,7 @@ MODULE m_LF3d
   INTEGER, ALLOCATABLE :: LF3d_xyz2lin(:,:,:)
   INTEGER, ALLOCATABLE :: LF3d_lin2xyz(:,:)
 
+  REAL(8), ALLOCATABLE :: LF3d_G2(:)
+
 END MODULE
 
