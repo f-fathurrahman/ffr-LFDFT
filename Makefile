@@ -4,8 +4,9 @@ include platform/make.inc.gfortran
 
 SRC = \
 m_constants.f90 \
-fft_fftw3.f90 \
 m_LF3d.f90 \
+m_nabla2_sparse.f90 \
+fft_fftw3.f90 \
 init_grid_1d_p.f90 \
 init_deriv_matrix_p.f90 \
 init_LF3d_p.f90 \
@@ -13,7 +14,10 @@ info_LF3d.f90 \
 mm_to_nn.f90 \
 init_gvec.f90 \
 dealloc_LF3d.f90 \
-apply_Laplacian.f90 \
+op_nabla2.f90 \
+calc_nabla2_NNZ.f90 \
+init_nabla2_sparse.f90 \
+dealloc_nabla2_sparse.f90 \
 solve_poisson_cg.f90 \
 solve_poisson_fft.f90
 

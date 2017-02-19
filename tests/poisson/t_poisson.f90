@@ -45,8 +45,8 @@ PROGRAM t_poisson
   WRITE(*,*) 'Integrated rho = ', sum( rho(:) )*dVol
 
   ! Solve Poisson equation
-  !CALL solve_poisson_cg( rho, phi )
-  CALL solve_poisson_fft( rho, phi )
+  CALL solve_poisson_cg( rho, phi )
+  !CALL solve_poisson_fft( rho, phi )
 
   !
   Unum = 0.5d0*sum( rho(:)*phi(:) )*dVol

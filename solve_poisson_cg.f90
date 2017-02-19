@@ -20,7 +20,7 @@ SUBROUTINE solve_poisson_cg( rho, phi )
     phi(ip) = 0.d0
   ENDDO
 
-  CALL apply_Laplacian( phi, nabla2_phi )
+  CALL op_nabla2( phi, nabla2_phi )
   r(:) = -4.d0*PI*rho(:) - nabla2_phi(:)  ! NOTICE that we multiply rho by -4*pi
   p(:) = r(:)
 
@@ -30,7 +30,7 @@ SUBROUTINE solve_poisson_cg( rho, phi )
   
   conv = .FALSE.
   DO iter = 1,Npoints
-    CALL apply_Laplacian( p, nabla2_phi )
+    CALL op_nabla2( p, nabla2_phi )
     !
     alpha = rsold/dot_product(p,nabla2_phi)
     !
