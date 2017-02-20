@@ -1,11 +1,13 @@
 #include platform/make.inc.ifort
-include platform/make.inc.gfortran
-#include platform/make.inc.g95
+#include platform/make.inc.gfortran
+include platform/make.inc.g95
 
 SRC = \
 m_constants.f90 \
 m_LF3d.f90 \
 m_nabla2_sparse.f90 \
+m_hamiltonian.f90 \
+m_states.f90 \
 fft_fftw3.f90 \
 init_grid_1d_p.f90 \
 init_deriv_matrix_p.f90 \
@@ -19,7 +21,8 @@ calc_nabla2_NNZ.f90 \
 init_nabla2_sparse.f90 \
 dealloc_nabla2_sparse.f90 \
 solve_poisson_cg.f90 \
-solve_poisson_fft.f90
+solve_poisson_fft.f90 \
+op_H.f90
 
 OBJ = $(SRC:.f90=.o) $(SRC:.f=.o)
 
