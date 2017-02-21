@@ -22,7 +22,9 @@ init_nabla2_sparse.f90 \
 dealloc_nabla2_sparse.f90 \
 solve_poisson_cg.f90 \
 solve_poisson_fft.f90 \
-op_H.f90
+op_H.f90 \
+diag_davidson_qe.f90 \
+rdiaghg.f90
 
 OBJ = $(SRC:.f90=.o) $(SRC:.f=.o)
 

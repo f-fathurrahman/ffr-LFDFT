@@ -3,8 +3,6 @@ SUBROUTINE info_LF3d()
   IMPLICIT NONE
   INTEGER :: N, Nx, Ny, Nz
 
-  WRITE(*,*) '--------------------------------------------------------------'
-  WRITE(*,*)
   WRITE(*,*) 'Grid related variables'
   WRITE(*,*) '^^^^^^^^^^^^^^^^^^^^^^'
   WRITE(*,*)
@@ -37,9 +35,5 @@ SUBROUTINE info_LF3d()
   WRITE(*,'(1x,I10,F10.5)') N-1, LF3d_G2(N-1)
   WRITE(*,'(1x,I10,F10.5)') N,   LF3d_G2(N)
 
-  WRITE(*,*) '--------------------------------------------------------------'
-  WRITE(*,*)
-
-  STOP 'stopped'
 END SUBROUTINE
 

@@ -9,8 +9,7 @@ PROGRAM test_sch
   IMPLICIT NONE
   !
   INTEGER, ALLOCATABLE :: btype(:)
-  INTEGER :: dav_iter, gstart, notcnv
-  LOGICAL :: lrot
+  INTEGER :: dav_iter, notcnv
   REAL(8) :: ethr
   INTEGER :: ist, ip
   INTEGER :: NN(3)
@@ -34,15 +33,14 @@ PROGRAM test_sch
 
   Nstates = 4
 
-  !CALL sch_solve_Emin_cg( 3.d-5, 100, .FALSE. )
+  CALL sch_solve_Emin_cg( 3.d-5, 100, .FALSE. )
+  GOTO 111
 
 
   ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
 
-  gstart = 2
   ALLOCATE( btype(Nstates) )
   btype(:) = 1 ! all bands are occupied
-  lrot = .FALSE.
   DO ist = 1, Nstates
     DO ip = 1, Npoints
       CALL random_number( evecs(ip,ist) )
@@ -55,18 +53,18 @@ PROGRAM test_sch
   evecs(:,:) = evecs(:,:)/sqrt(dVol)
 
   ethr = 1.d-1
-  CALL regterg( Npoints, Npoints, Nstates, 4*Nstates, evecs, ethr, &
-                gstart, evals, btype, notcnv, lrot, dav_iter )
+  CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
+                         evals, btype, notcnv, dav_iter )
   WRITE(*,*) 'dav_iter = ', dav_iter
  
   ethr = 1.d-3
-  CALL regterg( Npoints, Npoints, Nstates, 4*Nstates, evecs, ethr, &
-                gstart, evals, btype, notcnv, lrot, dav_iter )
+  CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
+                         evals, btype, notcnv, dav_iter )
   WRITE(*,*) 'dav_iter = ', dav_iter
-
+  
   ethr = 1.d-6
-  CALL regterg( Npoints, Npoints, Nstates, 4*Nstates, evecs, ethr, &
-                gstart, evals, btype, notcnv, lrot, dav_iter )
+  CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
+                         evals, btype, notcnv, dav_iter )
   WRITE(*,*) 'dav_iter = ', dav_iter
   
   DO ist = 1, Nstates
@@ -84,8 +82,10 @@ PROGRAM test_sch
   WRITE(*,*) 'Epot = ', Epot
   WRITE(*,*) 'Etot = ', Etot
 
-  DEALLOCATE( V_ps_loc )
   DEALLOCATE( evecs, evals )
+  
+  111 WRITE(*,*) 'Deallocating ...'
+  DEALLOCATE( V_ps_loc )
   CALL dealloc_LF3d()
 
 END PROGRAM

@@ -1,5 +1,5 @@
 !----------------------------------------------------
-SUBROUTINE sch_solve_Emin_cg( alpha_t, Niter, restart )
+SUBROUTINE sch_solve_Emin_pcg( alpha_t, Niter, restart )
 !----------------------------------------------------
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
@@ -58,18 +58,10 @@ SUBROUTINE sch_solve_Emin_cg( alpha_t, Niter, restart )
     !
     ! Calculate norm of the gradient, not really used in the minimization
     ! procedure.
-    !norm_grad = 0.d0
-    !DO ist = 1, Nstates
-    !  norm_grad = norm_grad + sqrt( sum( grad(:,ist)**2 ) )
-    !ENDDO
-    !norm_grad = norm_grad/Nstates
     !
     ! set search direction
-    !
     IF( iter /= 1 ) THEN
       ! Fletcher-Reeves
-      !beta = trace( Nstates, matmul( transpose(grad), grad ) ) / &
-      !       trace( Nstates, matmul( transpose(grad_old), grad_old ) )
       beta = sum( grad * grad ) / sum( grad_old * grad_old )
     ENDIF
     dir(:,:) = -grad(:,:) + beta*dir_old(:,:)
@@ -114,4 +106,5 @@ SUBROUTINE sch_solve_Emin_cg( alpha_t, Niter, restart )
 
   DEALLOCATE( v, grad, grad_old, grad_t, dir, dir_old, tv )
 END SUBROUTINE
+
 
