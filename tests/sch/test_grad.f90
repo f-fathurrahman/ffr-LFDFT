@@ -6,7 +6,7 @@ PROGRAM test_grad
   USE m_hamiltonian, ONLY : V_ps_loc
   IMPLICIT NONE
   !
-  INTEGER :: ist
+  INTEGER :: ist,ip
   INTEGER :: NN(3)
   REAL(8) :: AA(3), BB(3)
   REAL(8), ALLOCATABLE :: v(:,:), g(:,:), Kg(:,:)
@@ -30,15 +30,19 @@ PROGRAM test_grad
   ALLOCATE( g(Npoints,Nstates) )
   ALLOCATE( Kg(Npoints,Nstates) )
 
-  v(:,:) = 0.d0
   DO ist = 1, Nstates
-    v(ist,ist) = 1.d0/sqrt(dVol)
+    DO ip = 1, Npoints
+      CALL random_number( v(ip,ist) )
+    ENDDO
   ENDDO 
+  CALL ortho_gram_schmidt( v, Npoints, Npoints, Nstates )
+  v(:,:) = v(:,:)/sqrt(dVol)
 
   CALL calc_grad( Nstates, v, g )
   CALL prec_G2( Nstates, g, Kg )
   WRITE(*,*) 'sum(g) = ', sum(g)
   WRITE(*,*) 'sum(Kg) = ', sum(Kg)
+  WRITE(*,*) 'sum(g-Kg) = ', sum(g-Kg)
 
   CALL calc_Energies( v, Ekin, Epot, Etot )
   WRITE(*,*) Etot, Ekin, Epot

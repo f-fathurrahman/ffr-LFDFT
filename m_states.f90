@@ -7,5 +7,7 @@ MODULE m_states
   REAL(8), ALLOCATABLE :: KS_evals(:)
   REAL(8), ALLOCATABLE :: KS_evecs(:,:)
 
+  REAL(8), ALLOCATABLE :: Focc(:)
+
 END MODULE 
 

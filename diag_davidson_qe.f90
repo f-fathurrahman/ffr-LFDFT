@@ -246,7 +246,7 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
            !
            ! ... all roots converged: return
            !
-           WRITE(*,*) 'All root converged ...'
+           !WRITE(*,*) 'All root converged ...'
            EXIT iterate
            !
         ELSE IF ( dav_iter == maxter ) THEN

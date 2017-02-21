@@ -8,11 +8,14 @@ m_LF3d.f90 \
 m_nabla2_sparse.f90 \
 m_hamiltonian.f90 \
 m_states.f90 \
+m_energies.f90 \
 fft_fftw3.f90 \
+LDA_VWN.f90 \
 init_grid_1d_p.f90 \
 init_deriv_matrix_p.f90 \
 init_LF3d_p.f90 \
 info_LF3d.f90 \
+info_energies.f90 \
 mm_to_nn.f90 \
 init_gvec.f90 \
 dealloc_LF3d.f90 \
@@ -24,7 +27,19 @@ solve_poisson_cg.f90 \
 solve_poisson_fft.f90 \
 op_H.f90 \
 diag_davidson_qe.f90 \
-rdiaghg.f90
+rdiaghg.f90 \
+alloc_hamiltonian.f90 \
+dealloc_hamiltonian.f90 \
+init_V_ps_loc.f90 \
+ortho_gram_schmidt.f90 \
+orthonormalize.f90 \
+test_orthonormal.f90 \
+solve_sch_diag.f90 \
+calc_energies.f90 \
+calc_rhoe.f90 \
+update_potentials.f90
+
+
 
 OBJ = $(SRC:.f90=.o) $(SRC:.f=.o)
 
