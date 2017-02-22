@@ -1,3 +1,6 @@
+! A simple test program to check whether my LDA_VWN is
+! giving the same answer as the Julia version (which in turn is
+! converted from the original Octave code by T.A. Arias
 PROGRAM test_LDA_VWN
 
   IMPLICIT NONE

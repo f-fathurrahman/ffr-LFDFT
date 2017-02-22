@@ -68,8 +68,6 @@ SUBROUTINE sch_solve_Emin_cg( alpha_t, Niter, restart )
     !
     IF( iter /= 1 ) THEN
       ! Fletcher-Reeves
-      !beta = trace( Nstates, matmul( transpose(grad), grad ) ) / &
-      !       trace( Nstates, matmul( transpose(grad_old), grad_old ) )
       beta = sum( grad * grad ) / sum( grad_old * grad_old )
     ENDIF
     dir(:,:) = -grad(:,:) + beta*dir_old(:,:)
@@ -84,7 +82,6 @@ SUBROUTINE sch_solve_Emin_cg( alpha_t, Niter, restart )
     !denum = trace( Nstates, matmul( transpose(grad - grad_t), dir ) )
     denum = sum( (grad-grad_t) * dir )
     IF( denum /= 0.d0 ) THEN  ! FIXME: use abs ?
-      !alpha = abs( alpha_t * trace( Nstates, matmul(transpose(grad),dir) )/denum )
       alpha = abs( alpha_t * sum( grad * dir )/denum )
     ELSE 
       alpha = 0.d0
@@ -98,7 +95,7 @@ SUBROUTINE sch_solve_Emin_cg( alpha_t, Niter, restart )
     !
     !WRITE(*,'(/,1x,A,I5,2F18.10)') 'iter, conv, ||grad||: ', iter, abs(Etot-Etot_old), norm_grad
     !WRITE(*,'(1x,A,3F18.10)') 'Ekin, Epot, Etot: ', Ekin, Epot, Etot
-    WRITE(*,*) iter, Etot, abs(Etot-Etot_old)
+    WRITE(*,'(1x,I5,F18.10,E18.10)') iter, Etot, abs(Etot-Etot_old)
     !
     IF( abs(Etot - Etot_old) < 1.d-7 ) THEN
       WRITE(*,*) 'sch_solve_Emin_cg converged in iter', iter

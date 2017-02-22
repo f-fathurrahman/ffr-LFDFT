@@ -1,8 +1,10 @@
 PROGRAM test_sch
+
   USE m_constants, ONLY: PI
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
   USE m_states, ONLY : Nstates, &
+                       Focc, &
                        evals => KS_evals, &
                        evecs => KS_evecs
   USE m_hamiltonian, ONLY : V_ps_loc
@@ -27,11 +29,14 @@ PROGRAM test_sch
   CALL info_LF3d()
 
   ! Set up potential
-  ALLOCATE( V_ps_loc(Npoints) )
+  CALL alloc_hamiltonian()
+
   CALL init_pot_harmonic( 2.d0, 0.5*(BB-AA) )
   WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
 
   Nstates = 4
+  ALLOCATE( Focc(Nstates) )
+  Focc(:) = 1.d0
 
   CALL sch_solve_Emin_cg( 3.d-5, 100, .FALSE. )
   GOTO 111
@@ -85,7 +90,8 @@ PROGRAM test_sch
   DEALLOCATE( evecs, evals )
   
   111 WRITE(*,*) 'Deallocating ...'
-  DEALLOCATE( V_ps_loc )
+  DEALLOCATE( Focc )
+  CALL dealloc_hamiltonian()
   CALL dealloc_LF3d()
 
 END PROGRAM

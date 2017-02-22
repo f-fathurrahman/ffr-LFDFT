@@ -37,8 +37,9 @@ test_orthonormal.f90 \
 solve_sch_diag.f90 \
 calc_energies.f90 \
 calc_rhoe.f90 \
-update_potentials.f90
-
+update_potentials.f90 \
+kssolve_Emin_cg.f90 \
+calc_grad.f90
 
 
 OBJ = $(SRC:.f90=.o) $(SRC:.f=.o)
@@ -66,6 +67,9 @@ OBJ = $(SRC:.f90=.o) $(SRC:.f=.o)
 # Targets
 lib: $(OBJ)
 	ar rcs libmain.a *.o
+
+test_scf:
+	$(F90) $(F90_OPTS) test_scf.f90 libmain.a $(LIBS) -o test_scf.x
 
 clean:
 	rm -rf *.o *.mod libmain.a *.x

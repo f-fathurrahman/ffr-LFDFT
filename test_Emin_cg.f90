@@ -1,8 +1,9 @@
-! Do an SCF calculation using Davidson method to diagonalize
-! the Kohn-Sham Hamiltonian
+! Do an SCF calculation using CG method to minimize
+! Kohn-Sham energy functional
 ! 
 ! This will eventually be organized into one subroutine.
-PROGRAM test_scf
+PROGRAM test_Emin_cg
+
   USE m_constants, ONLY: PI
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
@@ -51,41 +52,7 @@ PROGRAM test_scf
   CALL orthonormalize( Nstates, evecs )
   CALL test_orthonormal( Npoints, Nstates, dVol, evecs )
 
-  CALL calc_rhoe( evecs, Focc )
-  CALL update_potentials()
-
-  ALLOCATE( Rhoe_old(Npoints) )
-
-  Etot_old = 0.d0
-  Rhoe_old(:) = Rhoe(:)
-
-  DO iterSCF = 1, 100
-
-    CALL solve_sch_diag()
-    CALL calc_energies( evecs ) ! not updating potentials
-
-    dEtot = abs(Etot - Etot_old)
-
-    WRITE(*,*)
-    WRITE(*,*) 'SCF iter', iterSCF, Etot, dEtot
-
-    IF( dEtot < 1d-6) THEN 
-      WRITE(*,*)
-      WRITE(*,*) 'SCF converged!!!'
-      EXIT 
-    ENDIF 
-
-    CALL calc_rhoe( evecs, Focc )
-
-    Rhoe(:) = 0.7d0*Rhoe(:) + 0.3d0*Rhoe_old(:)
-
-    WRITE(*,'(1x,A,F18.10)') 'After mix: integRho = ', sum(Rhoe)*dVol
-
-    CALL update_potentials()
-
-    Etot_old = Etot
-    Rhoe_old(:) = Rhoe(:)
-  ENDDO 
+  CALL kssolve_Emin_cg( 3.d-5, 100, .FALSE. )
 
   CALL info_energies()
 

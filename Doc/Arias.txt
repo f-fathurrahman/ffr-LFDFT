@@ -1,0 +1,5 @@
+Run your code. You should find a converged value of the total energy for this quantum dot of 8 electrons
+(4 states, with two electrons each) near Etot=43.337 H. You should also find states with similar s and p
+characters as to what you had before, but now with eigenvalues of approximately 5.509 H, 6.949 H, 6.949 H,
+6.949 H. (The lesser upward shift of the p states reflects centrifugal repulsion from the center, a common
+feature in the shell structure of quantum dots.)
