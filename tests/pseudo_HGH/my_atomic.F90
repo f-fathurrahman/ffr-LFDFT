@@ -1,7 +1,7 @@
 ! ffr, modified from Octopus
 
 
-MODULE m_atom
+MODULE atomic_m
 
   IMPLICIT NONE
 
@@ -62,4 +62,3 @@ CONTAINS
   END SUBROUTINE
 
 END MODULE
-
