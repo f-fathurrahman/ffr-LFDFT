@@ -1,22 +1,3 @@
-!! Copyright (C) 2002-2006 M. Marques, A. Castro, A. Rubio, G. Bertsch
-!!
-!! This program is free software; you can redistribute it and/or modify
-!! it under the terms of the GNU General Public License as published by
-!! the Free Software Foundation; either version 2, or (at your option)
-!! any later version.
-!!
-!! This program is distributed in the hope that it will be useful,
-!! but WITHOUT ANY WARRANTY; without even the implied warranty of
-!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!! GNU General Public License for more details.
-!!
-!! You should have received a copy of the GNU General Public License
-!! along with this program; if not, write to the Free Software
-!! Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-!! 02110-1301, USA.
-!!
-!! $Id: ps_hgh.F90 14362 2015-06-24 17:02:22Z xavier $
-
 module ps_hgh_m
   !< For information about the Hartwinger-Goedecker-Hutter pseudopotentials, take a look at:
   !!  (1) S. Goedecker, M. Teter and J. Hutter, Phys. Rev. B 54, 1703 (1996).
@@ -34,19 +15,19 @@ module ps_hgh_m
     !< HGH parameters.
     character(len=5) :: atom_name
     integer          :: z_val
-    REAL(8)            :: rlocal
-    REAL(8)            :: rc(0:3)
-    REAL(8)            :: c(1:4)
-    REAL(8)            :: h(0:3, 1:3, 1:3)
-    REAL(8)            :: k(0:3, 1:3, 1:3)
+    REAL(8)          :: rlocal
+    REAL(8)          :: rc(0:3)
+    REAL(8)          :: c(1:4)
+    REAL(8)          :: h(0:3, 1:3, 1:3)
+    REAL(8)          :: k(0:3, 1:3, 1:3)
 
     type(valconf_t)  :: conf
     integer          :: l_max     !< Maximum l for the Kleinman-Bylander component.
 
-    REAL(8), pointer   :: vlocal(:) !< Local potential
-    REAL(8), pointer   :: kb(:,:,:) !< KB projectors
-    REAL(8), pointer   :: kbr(:)    !< KB radii
-    REAL(8), pointer   :: rphi(:,:), eigen(:)
+    REAL(8), ALLOCATABLE :: vlocal(:) !< Local potential
+    REAL(8), ALLOCATABLE :: kb(:,:,:) !< KB projectors
+    REAL(8), ALLOCATABLE :: kbr(:)    !< KB radii
+    REAL(8), ALLOCATABLE :: rphi(:,:), eigen(:)
 
     !> Logarithmic grid parameters
     type(logrid_t) :: g
@@ -71,7 +52,7 @@ contains
 
     integer :: iunit, i
 
-    write(*,*) 'Reading pseudopotential from file:', trim(filename)
+    write(*,*) 'Reading pseudopotential from file: ', trim(filename)
 
     iunit = 333
     open(iunit, file=trim(filename), action='read', form='formatted', status='old')

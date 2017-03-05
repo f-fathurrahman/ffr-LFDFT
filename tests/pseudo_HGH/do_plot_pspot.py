@@ -25,7 +25,8 @@ def plot_pseudo(atm, lmax, rc, rlocmax=5.0):
 
 
 #plot_pseudo( "C", 1, [1.7784266991, 1.3988746415] )
+plot_pseudo( "N", 1, [1.4854009530, 1.6253251935] )
 #plot_pseudo( "Ni", 2, [2.4007648869, 3.3395438289, 1.7258544251] )
 #plot_pseudo( "Ge", 2, [2.7893555880, 3.4412602616, 4.6453554168] )
-plot_pseudo( "H", -1, [] )
+#plot_pseudo( "H", -1, [] )
 

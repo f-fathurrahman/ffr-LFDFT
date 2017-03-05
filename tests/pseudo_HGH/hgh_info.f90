@@ -43,4 +43,11 @@ SUBROUTINE hgh_info( ps )
     ENDDO
     WRITE(*,*)
   ENDDO
+
+  IF( allocated(ps%Vlocal) ) WRITE(*,*) 'shape(ps%Vlocal) = ', shape(ps%Vlocal)
+  IF( allocated(ps%kb) ) WRITE(*,*) 'shape(ps%kb) = ', shape(ps%kb)
+
+  WRITE(*,*) 'shape(ps%g%rofi) = ', shape(ps%g%rofi)
+
 END SUBROUTINE
+
