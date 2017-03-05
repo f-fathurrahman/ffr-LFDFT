@@ -21,3 +21,4 @@ SUBROUTINE init_V_ps_loc_harmonic( omega, center )
   ENDDO 
 
 END SUBROUTINE 
+

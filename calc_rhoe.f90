@@ -1,5 +1,6 @@
 ! FIXME: directly use KS_evecs ?
 SUBROUTINE calc_rhoe( psi, Focc )
+
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates
   USE m_hamiltonian, ONLY : Rhoe
