@@ -10,15 +10,12 @@ PROGRAM test_Emin_cg
   USE m_states, ONLY : Nstates, Focc, &
                        evals => KS_evals, &
                        evecs => KS_evecs
-  USE m_hamiltonian, ONLY : V_ps_loc, Rhoe
-  USE m_energies, ONLY : Etot => E_total
+  USE m_hamiltonian, ONLY : V_ps_loc
   IMPLICIT NONE
   !
-  INTEGER :: ist, ip, iterSCF
+  INTEGER :: ist, ip
   INTEGER :: NN(3)
   REAL(8) :: AA(3), BB(3)
-  REAL(8) :: Etot_old, dEtot
-  REAL(8), ALLOCATABLE :: Rhoe_old(:)
   REAL(8), PARAMETER :: mixing_beta = 0.1d0
   
   NN = (/ 25, 25, 25 /)
