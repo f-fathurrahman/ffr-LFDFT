@@ -71,6 +71,9 @@ lib: $(OBJ)
 test_scf:
 	$(F90) $(F90_OPTS) test_scf.f90 libmain.a $(LIBS) -o test_scf.x
 
+test_Emin_cg:
+	$(F90) $(F90_OPTS) test_Emin_cg.f90 libmain.a $(LIBS) -o test_Emin_cg.x
+
 clean:
 	rm -rf *.o *.mod libmain.a *.x
 
