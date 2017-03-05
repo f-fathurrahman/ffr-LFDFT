@@ -28,7 +28,7 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
   !
   ! ... LOCAL variables
   !
-  INTEGER, PARAMETER :: maxter = 500
+  INTEGER, PARAMETER :: maxter = 100
     ! maximum number of iterations
   !
   INTEGER :: kter, Nred, np, n, m, nb1

@@ -1,8 +1,8 @@
-! Do an SCF calculation using CG method to minimize
-! Kohn-Sham energy functional
-
-PROGRAM test_Emin_cg_H
-
+! Do an SCF calculation using Davidson method to diagonalize
+! the Kohn-Sham Hamiltonian
+! 
+! This will eventually be organized into one subroutine.
+PROGRAM test_scf
   USE m_constants, ONLY: PI
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol, &
@@ -10,7 +10,8 @@ PROGRAM test_Emin_cg_H
   USE m_states, ONLY : Nstates, Focc, &
                        evals => KS_evals, &
                        evecs => KS_evecs
-  USE m_hamiltonian, ONLY : V_ps_loc
+  USE m_hamiltonian, ONLY : V_ps_loc, Rhoe
+  USE m_energies, ONLY : Etot => E_total
   USE ps_hgh_m, ONLY : hgh_t, &
                        hgh_init, &
                        hgh_process, &
@@ -18,10 +19,14 @@ PROGRAM test_Emin_cg_H
                        vlocalr_scalar
   IMPLICIT NONE
   !
-  INTEGER :: ist, ip
+  INTEGER :: ist, ip, iterSCF
   INTEGER :: NN(3)
+  REAL(8) :: AA(3), BB(3)
+  REAL(8) :: Etot_old, dEtot
+  REAL(8), ALLOCATABLE :: Rhoe_old(:)
+  REAL(8), PARAMETER :: mixing_beta = 0.1d0
   REAL(8), PARAMETER :: LL(3) = (/ 16.d0, 16.d0, 16.d0 /)
-  REAL(8) :: center(3), AA(3), BB(3)
+  REAL(8) :: center(3)
   REAL(8) :: dr
   TYPE(hgh_t) :: ps
   
@@ -46,7 +51,6 @@ PROGRAM test_Emin_cg_H
                (lingrid(3,ip) - center(3))**2 )
     V_ps_loc(ip) = vlocalr_scalar( dr, ps )
   ENDDO 
-
   WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
 
   ! Initialize electronic states variables
@@ -65,7 +69,41 @@ PROGRAM test_Emin_cg_H
   CALL orthonormalize( Nstates, evecs )
   CALL test_orthonormal( Npoints, Nstates, dVol, evecs )
 
-  CALL kssolve_Emin_cg( 3.d-5, 100, .FALSE. )
+  CALL calc_rhoe( evecs, Focc )
+  CALL update_potentials()
+
+  ALLOCATE( Rhoe_old(Npoints) )
+
+  Etot_old = 0.d0
+  Rhoe_old(:) = Rhoe(:)
+
+  DO iterSCF = 1, 100
+
+    CALL solve_sch_diag()
+    CALL calc_energies( evecs ) ! not updating potentials
+
+    dEtot = abs(Etot - Etot_old)
+
+    WRITE(*,*)
+    WRITE(*,*) 'SCF iter', iterSCF, Etot, dEtot
+
+    IF( dEtot < 1d-6) THEN 
+      WRITE(*,*)
+      WRITE(*,*) 'SCF converged!!!'
+      EXIT 
+    ENDIF 
+
+    CALL calc_rhoe( evecs, Focc )
+
+    Rhoe(:) = 0.7d0*Rhoe(:) + 0.3d0*Rhoe_old(:)
+
+    WRITE(*,'(1x,A,F18.10)') 'After mix: integRho = ', sum(Rhoe)*dVol
+
+    CALL update_potentials()
+
+    Etot_old = Etot
+    Rhoe_old(:) = Rhoe(:)
+  ENDDO 
 
   CALL info_energies()
 
