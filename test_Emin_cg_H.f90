@@ -45,17 +45,17 @@ PROGRAM test_Emin_cg_H
   center(:) = 0.d0
 
   CALL calc_dr_periodic( LL, center, Npoints, lingrid, dr )
-  !CALL init_V_ps_loc_H_hgh( Npoints, dr, V_ps_loc )
+  CALL init_V_ps_loc_H_hgh( Npoints, dr, V_ps_loc )
 
-  DO ip = 1, Npoints
+  !DO ip = 1, Npoints
     !dr(ip) = sqrt( (lingrid(1,ip) - center(1))**2 + &
     !           (lingrid(2,ip) - center(2))**2 + &
     !           (lingrid(3,ip) - center(3))**2 )
-    V_ps_loc(ip) = vlocalr_scalar( dr(ip), ps )
-  ENDDO 
+    !V_ps_loc(ip) = vlocalr_scalar( dr(ip), ps )
+  !ENDDO 
 
   WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
-  STOP
+  !STOP
   ! Initialize electronic states variables
   Nstates = 1
 

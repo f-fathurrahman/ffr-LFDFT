@@ -5,7 +5,7 @@ SUBROUTINE init_V_ps_loc_H_hgh( Npoints, r, V )
   REAL(8) :: r(Npoints)
   REAL(8) :: V(Npoints)
   INTEGER :: ip
-  REAL(8) :: r1, r2, r4
+  REAL(8) :: r1, r2
   !
   REAL(8) :: z_val
   REAL(8) :: rlocal

@@ -41,7 +41,11 @@ update_potentials.f90 \
 kssolve_Emin_cg.f90 \
 calc_grad.f90 \
 calc_dr_periodic.f90 \
-init_V_ps_loc_H_hgh.f90
+init_V_ps_loc_H_hgh.f90 \
+logrid.f90 \
+my_atomic.f90 \
+ps_hgh.f90 \
+hgh_info.f90
 
 
 OBJ = $(SRC:.f90=.o) $(SRC:.f=.o)
@@ -75,6 +79,9 @@ test_scf:
 
 test_Emin_cg:
 	$(F90) $(F90_OPTS) test_Emin_cg.f90 libmain.a $(LIBS) -o test_Emin_cg.x
+
+test_Emin_cg_H:
+	$(F90) $(F90_OPTS) test_Emin_cg_H.f90 libmain.a $(LIBS) -o test_Emin_cg_H.x
 
 clean:
 	rm -rf *.o *.mod libmain.a *.x
