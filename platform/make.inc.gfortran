@@ -3,8 +3,8 @@ AR = ar
 F77 = gfortran
 F77_OPTS = 
 F90 = gfortran
-F90_OPTS = -Wall -O3
-LIB_MKL = -L$(MKLROOT)/lib/intel64 -lmkl_gf_lp64 -lmkl_sequential -lmkl_core -lpthread
+F90_OPTS = -Wall -g -fbacktrace # -ffpe-trap=zero,overflow,underflow
+LIB_LINALG = -lblas -llapack
 LIB_FFTW3 = -lfftw3
-LIBS = $(LIB_MKL) $(LIB_FFTW3)
+LIBS = $(LIB_LINALG) $(LIB_FFTW3)
 

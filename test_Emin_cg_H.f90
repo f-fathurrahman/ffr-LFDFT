@@ -37,8 +37,8 @@ PROGRAM test_Emin_cg_H
   CALL alloc_hamiltonian()
 
   CALL hgh_init( ps, 'tests/pseudo_HGH/HGH/H.hgh' )
-  CALL hgh_process( ps )
-  CALL hgh_info( ps )
+  !CALL hgh_process( ps )
+  !CALL hgh_info( ps )
 
   ALLOCATE( dr(Npoints) )
   !center(:) = 0.5d0*LL(:)
@@ -55,7 +55,7 @@ PROGRAM test_Emin_cg_H
   !ENDDO 
 
   WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
-  !STOP
+  STOP
   ! Initialize electronic states variables
   Nstates = 1
 
