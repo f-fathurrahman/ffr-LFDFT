@@ -22,7 +22,7 @@ PROGRAM test_Emin_cg_H
   INTEGER :: NN(3)
   REAL(8), PARAMETER :: LL(3) = (/ 16.d0, 16.d0, 16.d0 /)
   REAL(8) :: center(3), AA(3), BB(3)
-  REAL(8) :: dr
+  REAL(8), ALLOCATABLE :: dr(:)
   TYPE(hgh_t) :: ps
   
   NN = (/ 55, 55, 55 /)
@@ -38,17 +38,24 @@ PROGRAM test_Emin_cg_H
 
   CALL hgh_init( ps, 'tests/pseudo_HGH/HGH/H.hgh' )
   CALL hgh_process( ps )
+  CALL hgh_info( ps )
 
-  center(:) = 0.5d0*LL(:)
+  ALLOCATE( dr(Npoints) )
+  !center(:) = 0.5d0*LL(:)
+  center(:) = 0.d0
+
+  CALL calc_dr_periodic( LL, center, Npoints, lingrid, dr )
+  !CALL init_V_ps_loc_H_hgh( Npoints, dr, V_ps_loc )
+
   DO ip = 1, Npoints
-    dr = sqrt( (lingrid(1,ip) - center(1))**2 + &
-               (lingrid(2,ip) - center(2))**2 + &
-               (lingrid(3,ip) - center(3))**2 )
-    V_ps_loc(ip) = vlocalr_scalar( dr, ps )
+    !dr(ip) = sqrt( (lingrid(1,ip) - center(1))**2 + &
+    !           (lingrid(2,ip) - center(2))**2 + &
+    !           (lingrid(3,ip) - center(3))**2 )
+    V_ps_loc(ip) = vlocalr_scalar( dr(ip), ps )
   ENDDO 
 
   WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
-
+  STOP
   ! Initialize electronic states variables
   Nstates = 1
 

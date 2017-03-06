@@ -39,7 +39,9 @@ calc_energies.f90 \
 calc_rhoe.f90 \
 update_potentials.f90 \
 kssolve_Emin_cg.f90 \
-calc_grad.f90
+calc_grad.f90 \
+calc_dr_periodic.f90 \
+init_V_ps_loc_H_hgh.f90
 
 
 OBJ = $(SRC:.f90=.o) $(SRC:.f=.o)

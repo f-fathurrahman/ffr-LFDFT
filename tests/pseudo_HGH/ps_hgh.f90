@@ -52,7 +52,8 @@ contains
 
     integer :: iunit, i
 
-    write(*,*) 'Reading pseudopotential from file: ', trim(filename)
+    WRITE(*,*)
+    WRITE(*,*) 'Reading pseudopotential from file: ', trim(filename)
 
     iunit = 333
     open(iunit, file=trim(filename), action='read', form='formatted', status='old')
