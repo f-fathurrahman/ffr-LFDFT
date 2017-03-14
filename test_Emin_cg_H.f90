@@ -41,11 +41,11 @@ PROGRAM test_Emin_cg_H
   !CALL hgh_info( ps )
 
   ALLOCATE( dr(Npoints) )
-  !center(:) = 0.5d0*LL(:)
-  center(:) = 0.d0
+  center(:) = 0.5d0*LL(:)
+  !center(:) = 0.d0  ! to test calc_dr_periodic
 
   CALL calc_dr_periodic( LL, center, Npoints, lingrid, dr )
-  CALL init_V_ps_loc_H_hgh( Npoints, dr, V_ps_loc )
+  CALL init_V_ps_loc_H_hgh_G( Npoints, dr, V_ps_loc )
 
   !DO ip = 1, Npoints
     !dr(ip) = sqrt( (lingrid(1,ip) - center(1))**2 + &
@@ -55,7 +55,8 @@ PROGRAM test_Emin_cg_H
   !ENDDO 
 
   WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
-  STOP
+  !STOP
+
   ! Initialize electronic states variables
   Nstates = 1
 

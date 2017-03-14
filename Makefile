@@ -1,6 +1,6 @@
 #include platform/make.inc.ifort
-include platform/make.inc.gfortran
-#include platform/make.inc.g95
+#include platform/make.inc.gfortran
+include platform/make.inc.g95
 
 SRC = \
 m_constants.f90 \
@@ -42,10 +42,12 @@ kssolve_Emin_cg.f90 \
 calc_grad.f90 \
 calc_dr_periodic.f90 \
 init_V_ps_loc_H_hgh.f90 \
+init_V_ps_loc_H_hgh_G.f90 \
 logrid.f90 \
 my_atomic.f90 \
 ps_hgh.f90 \
-hgh_info.f90
+hgh_info.f90 \
+calc_strfact.f90
 
 
 OBJ = $(SRC:.f90=.o) $(SRC:.f=.o)
@@ -76,6 +78,9 @@ lib: $(OBJ)
 
 test_scf:
 	$(F90) $(F90_OPTS) test_scf.f90 libmain.a $(LIBS) -o test_scf.x
+
+test_scf_H:
+	$(F90) $(F90_OPTS) test_scf_H.f90 libmain.a $(LIBS) -o test_scf_H.x
 
 test_Emin_cg:
 	$(F90) $(F90_OPTS) test_Emin_cg.f90 libmain.a $(LIBS) -o test_Emin_cg.x

@@ -29,6 +29,7 @@ SUBROUTINE solve_poisson_fft( rho, phi )
   ENDDO
   ! now `tmp_fft` = phi(G)
 
+  ! Inverse FFT
   CALL fft_fftw3( tmp_fft, Nx, Ny, Nz, .true. )
 
   DO ip = 1, Npoints

@@ -23,6 +23,7 @@ SUBROUTINE init_V_ps_loc_H_hgh( Npoints, r, V )
 
     IF(r(ip) < 1.0d-7) THEN
       V(ip) = - (2.d0 * z_val)/(sqrt(2.d0*PI)*rlocal) + c(1)
+      WRITE(*,*) 'Small r, using limiting value'
     ELSE
       ! using erf from intrinsic function
       V(ip) = - (z_val/r(ip))*erf(r1/sqrt(2.d0)) + exp( -0.5d0*r2 ) * ( c(1) + c(2)*r2 )
