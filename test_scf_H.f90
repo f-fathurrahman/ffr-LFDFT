@@ -30,7 +30,7 @@ PROGRAM test_scf
   REAL(8) :: dr
   TYPE(hgh_t) :: ps
   
-  NN = (/ 55, 55, 55 /)
+  NN = (/ 45, 45, 45 /)
   AA = (/ 0.d0, 0.d0, 0.d0 /)
   BB = (/ LL(1), LL(2), LL(3) /)
 
