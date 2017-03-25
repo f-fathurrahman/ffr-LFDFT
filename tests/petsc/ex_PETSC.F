@@ -11,7 +11,6 @@ PROGRAM ex_PETSC
   INTEGER :: rowGbl
   INTEGER :: ix, irow
   INTEGER, ALLOCATABLE :: colGbl(:), colGbl_orig(:)
-  INTEGER, ALLOCATABLE :: nnz(:)
   !
   PetscErrorCode :: ierr
   PetscMPIInt :: rank
@@ -36,12 +35,10 @@ PROGRAM ex_PETSC
     CALL info_LF3d()
   ENDIF 
 
-  ALLOCATE( nnz(Nx*Ny*Nz) )
-  nnz(:) = Nx
   !
   !CALL MatCreate( PETSC_COMM_WORLD, nabla2_x, ierr )
   !CALL MatSetSizes( nabla2_x, PETSC_DECIDE, PETSC_DECIDE, Npoints, Npoints, ierr )
-  CALL MatCreateSeqAIJ( PETSC_COMM_SELF, Npoints, Npoints, Nx, nnz, nabla2_x, ierr )
+  CALL MatCreateSeqAIJ( PETSC_COMM_SELF, Npoints, Npoints, Nx, PETSC_NULL_INTEGER, nabla2_x, ierr )
   CALL MatSetUp( nabla2_x, ierr )
 
 
@@ -65,7 +62,8 @@ PROGRAM ex_PETSC
         colGbl(:) = colGbl_orig(:) + irow - 1
         rowGbl = irow + (ix-1)*Ny*Nz
         !WRITE(*,*) 'rowGbl, colGbl ', rowGbl, ', ', colGbl(:)
-        CALL MatSetValues( nabla2_x, 1, rowGbl-1, Nx, colGbl-1, D2jl_x(ix,1:Nx), INSERT_VALUES, ierr )
+        CALL MatSetValues( nabla2_x, 1, rowGbl-1, Nx, colGbl-1, D2jl_x(1:Nx,ix), INSERT_VALUES, ierr )
+        ! I transposed idx for D2jl_x
       ENDDO
     ENDDO
     DEALLOCATE( colGbl )
@@ -79,7 +77,6 @@ PROGRAM ex_PETSC
   !CALL MatView( nabla2_x, PETSC_VIEWER_STDOUT_WORLD, ierr )
 
   ! Free memory
-  DEALLOCATE( nnz )
   CALL dealloc_LF3d()
   ! Shutdown PETSC
   CALL PetscFinalize( ierr )
