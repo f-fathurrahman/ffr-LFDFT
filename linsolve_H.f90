@@ -4,11 +4,12 @@
 !
 ! NOTE: x will be used as initial guess.
 ! Explicitly set x to zeros before calling this subroutine if needed.
-SUBROUTINE linsolve_H( b, x )
+SUBROUTINE linsolve_H( b, x, NiterMax )
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   IMPLICIT NONE
   !
   REAL(8) :: b(Npoints), x(Npoints)
+  INTEGER :: NiterMax
   !
   REAL(8), ALLOCATABLE :: r(:), p(:) ! residual
   REAL(8), ALLOCATABLE :: Hx(:)
@@ -17,7 +18,7 @@ SUBROUTINE linsolve_H( b, x )
 
   ALLOCATE( r(Npoints), p(Npoints), Hx(Npoints) )
 
-  CALL op_H( x, Hx )
+  CALL op_H( 1, x, Hx )
   r(:) = b(:) - Hx(:)
   p(:) = r(:)
 
@@ -25,8 +26,9 @@ SUBROUTINE linsolve_H( b, x )
   rsold = dot_product(r,r)
   !WRITE(*,*) 'rsold = ', rsold
 
-  DO iter=1,1000
-    CALL op_H( p, Hx )
+  DO iter=1,NiterMax
+
+    CALL op_H( 1, p, Hx )
     !
     alpha = rsold/dot_product(p,Hx)
     !

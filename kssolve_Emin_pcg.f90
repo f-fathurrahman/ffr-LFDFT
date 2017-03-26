@@ -1,4 +1,4 @@
-SUBROUTINE kssolve_Emin_cg( alpha_t, Niter, restart )
+SUBROUTINE kssolve_Emin_pcg( alpha_t, Niter, restart )
 
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates, &
@@ -12,11 +12,14 @@ SUBROUTINE kssolve_Emin_cg( alpha_t, Niter, restart )
   LOGICAL :: restart
   REAL(8), ALLOCATABLE :: g(:,:), g_old(:,:), g_t(:,:)
   REAL(8), ALLOCATABLE :: d(:,:), d_old(:,:)
+  REAL(8), ALLOCATABLE :: Kg(:,:), Kg_old(:,:) ! preconditioned
   REAL(8), ALLOCATABLE :: tv(:,:)
   REAL(8) :: alpha, beta, denum, Etot_old
   !
-  INTEGER :: iter
+  INTEGER :: iter, ist
   REAL(8) :: memGB
+
+  WRITE(*,*) 'Pass here 22'
 
   ALLOCATE( g(Npoints,Nstates) )
   ALLOCATE( g_old(Npoints,Nstates) )
@@ -24,9 +27,12 @@ SUBROUTINE kssolve_Emin_cg( alpha_t, Niter, restart )
   ALLOCATE( d(Npoints,Nstates) )
   ALLOCATE( d_old(Npoints,Nstates) )
 
+  ALLOCATE( Kg(Npoints,Nstates) )
+  ALLOCATE( Kg_old(Npoints,Nstates) )
+
   ALLOCATE( tv(Npoints,Nstates) )
 
-  memGB = Npoints*Nstates*5d0 * 8d0 / (1024d0*1024d0*1024.d0)
+  memGB = Npoints*Nstates*8d0 * 8d0 / (1024d0*1024d0*1024.d0)
   WRITE(*,*) 'memGB = ', memGB
 
   ! Read starting eigenvectors from file
@@ -48,18 +54,27 @@ SUBROUTINE kssolve_Emin_cg( alpha_t, Niter, restart )
   g_t(:,:)   = 0.d0
   d(:,:)     = 0.d0
   d_old(:,:) = 0.d0
+  Kg(:,:)    = 0.d0
+  Kg_old(:,:) = 0.d0
 
   DO iter = 1, Niter
+    WRITE(*,*) 'Iter = ', iter
     !
     ! Evaluate gradient at current trial vectors
     CALL calc_grad( Nstates, v, g )
+    ! Precondition
+    DO ist = 1, Nstates
+      !WRITE(*,*) 'ist = ', ist
+      CALL linsolve_H( g(:,ist), Kg(:,ist), 100 )
+    ENDDO
+    WRITE(*,*) 'Pass here 69'
     !
     ! set search direction
     IF( iter /= 1 ) THEN
       ! Fletcher-Reeves
-      beta = sum( g * g ) / sum( g_old * g_old )
+      beta = sum( g * Kg ) / sum( g_old * Kg_old )
     ENDIF
-    d(:,:) = -g(:,:) + beta*d_old(:,:)
+    d(:,:) = -Kg(:,:) + beta*d_old(:,:)
     !
     ! Evaluate gradient at trial step
     tv(:,:) = v(:,:) + alpha_t * d(:,:)
@@ -89,17 +104,18 @@ SUBROUTINE kssolve_Emin_cg( alpha_t, Niter, restart )
     WRITE(*,'(1x,I5,F18.10,E18.10)') iter, Etot, abs(Etot-Etot_old)
     !
     IF( abs(Etot - Etot_old) < 1.d-7 ) THEN
-      WRITE(*,*) 'kssolve_Emin_cg converged in iter', iter
+      WRITE(*,*) 'kssolve_Emin_pcg converged in iter', iter
       EXIT
     ENDIF
     !
     Etot_old = Etot
     g_old(:,:) = g(:,:)
     d_old(:,:) = d(:,:)
+    Kg_old(:,:) = Kg(:,:)
   ENDDO
 
   WRITE(111) v
 
-  DEALLOCATE( g, g_old, g_t, d, d_old, tv )
+  DEALLOCATE( g, g_old, g_t, d, d_old, tv, Kg, Kg_old )
 END SUBROUTINE
 
