@@ -47,7 +47,8 @@ logrid.f90 \
 my_atomic.f90 \
 ps_hgh.f90 \
 hgh_info.f90 \
-calc_strfact.f90
+calc_strfact.f90 \
+linsolve_H.f90
 
 
 OBJ = $(SRC:.f90=.o) $(SRC:.f=.o)

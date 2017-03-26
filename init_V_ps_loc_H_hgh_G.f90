@@ -1,7 +1,7 @@
 ! The same as init_V_ps_loc_H_hgh, but initialize first in G-space
 ! the transformed to real space via FFT
 !
-SUBROUTINE init_V_ps_loc_H_hgh_G( Npoints, r, V )
+SUBROUTINE init_V_ps_loc_H_hgh_G( Npoints, V )
   USE m_constants, ONLY : PI
   USE m_LF3d, ONLY : G2 => LF3d_G2, &
                      Gv => LF3d_Gv, &
@@ -9,7 +9,6 @@ SUBROUTINE init_V_ps_loc_H_hgh_G( Npoints, r, V )
                      NN => LF3d_NN
   IMPLICIT NONE
   INTEGER :: Npoints
-  REAL(8) :: r(Npoints)
   REAL(8) :: V(Npoints)
   !
   INTEGER :: ig
