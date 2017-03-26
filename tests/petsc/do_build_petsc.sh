@@ -6,7 +6,7 @@ LIB="../../libmain.a -lblas -llapack -lfftw3 \
 
 bas=`basename $1 .F`
 
-mpifort -O3 -Wall -ffree-form $INC $1 $LIB -o $bas.x
+mpifort -Wall -O3 -ffree-form $INC $1 $LIB -o $bas.x
 
 # for
 #mpifort -free $INC $1 $LIB -o $bas.x

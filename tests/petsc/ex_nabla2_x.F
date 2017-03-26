@@ -62,7 +62,7 @@ PROGRAM ex_PETSC
         colGbl(:) = colGbl_orig(:) + irow - 1
         rowGbl = irow + (ix-1)*Ny*Nz
         !WRITE(*,*) 'rowGbl, colGbl ', rowGbl, ', ', colGbl(:)
-        CALL MatSetValues( nabla2_x, 1, rowGbl-1, Nx, colGbl-1, D2jl_x(1:Nx,ix), INSERT_VALUES, ierr )
+        CALL MatSetValues( nabla2_x, 1, rowGbl-1, Nx, colGbl-1, D2jl_x(1:Nx,ix), ADD_VALUES, ierr )
         ! I transposed idx for D2jl_x
       ENDDO
     ENDDO
