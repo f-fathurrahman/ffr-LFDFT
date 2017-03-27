@@ -1,5 +1,6 @@
 #include "add_nabla2_x.F"
 #include "add_nabla2_y.F"
+#include "add_nabla2_z.F"
 
 PROGRAM ex_PETSC
   USE m_constants
@@ -14,7 +15,7 @@ PROGRAM ex_PETSC
   INTEGER :: NN(3), Nx, Ny, Nz
   REAL(8) :: AA(3), BB(3)
   INTEGER :: rowGbl
-  INTEGER :: ix, irow
+  INTEGER :: irow
   INTEGER :: nnzc
   INTEGER, ALLOCATABLE :: nnz(:)
   !
@@ -27,7 +28,8 @@ PROGRAM ex_PETSC
   CALL MPI_Comm_rank( PETSC_COMM_WORLD, rank, ierr )
 
   !NN = (/ 101, 101, 101 /)
-  NN = (/ 81, 81, 81 /)
+  NN = (/ 63, 63, 63 /)
+  !NN = (/ 3, 3, 5 /)
   AA = (/ 0.d0, 0.d0, 0.d0 /)
   BB = (/ 16.d0, 16.d0, 16.d0 /)
 
@@ -47,18 +49,20 @@ PROGRAM ex_PETSC
   ALLOCATE( nnz(Npoints) )
   nnz(:) = nnzc
 
+  WRITE(*,*) 'Number of nonzeros = ', nnzc*Npoints
+  WRITE(*,*) 'Memory required to those nonzeros is ', nnzc*Npoints*8.d0/1024.d0/1024.d0/1024.d0, ' GB'
+
   !
   CALL MatCreateSeqAIJ( PETSC_COMM_SELF, Npoints, Npoints, nnzc, PETSC_NULL_INTEGER, nabla2, ierr )
   !CALL MatCreateSeqAIJ( PETSC_COMM_SELF, Npoints, Npoints, nnzc, nnz, nabla2, ierr )
-  CALL MatSetOption( nabla2, MAT_SYMMETRIC, PETSC_TRUE, ierr )
+  !CALL MatSetOption( nabla2, MAT_SYMMETRIC, PETSC_TRUE, ierr )
   CALL MatSetUp( nabla2, ierr )
-
 
   IF ( rank == 0 ) THEN
 
-    CALL add_nabla2_x( Nx, Ny, Nz, D2jl_x, nabla2 )
-
+    CALL add_nabla2_z( Nx, Ny, Nz, D2jl_z, nabla2 )
     CALL add_nabla2_y( Nx, Ny, Nz, D2jl_y, nabla2 )
+    CALL add_nabla2_x( Nx, Ny, Nz, D2jl_x, nabla2 )
 
   ENDIF ! rank == 0
 
