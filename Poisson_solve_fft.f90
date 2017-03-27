@@ -1,4 +1,4 @@
-SUBROUTINE solve_poisson_fft( rho, phi )
+SUBROUTINE Poisson_solve_fft( rho, phi )
   USE m_constants, ONLY : PI
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      NN => LF3d_NN, &

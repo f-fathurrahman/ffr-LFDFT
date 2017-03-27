@@ -8,7 +8,7 @@ SUBROUTINE update_potentials()
   ALLOCATE( epsxc(Npoints) )
   ALLOCATE( depsxc(Npoints) )
 
-  CALL solve_poisson_fft( Rhoe, V_Hartree )
+  CALL Poisson_solve_fft( Rhoe, V_Hartree )
 
   CALL excVWN( Npoints, Rhoe, epsxc )
   CALL excpVWN( Npoints, Rhoe, depsxc )

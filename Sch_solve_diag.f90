@@ -1,4 +1,4 @@
-SUBROUTINE solve_sch_diag()
+SUBROUTINE Sch_solve_diag()
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
   USE m_states, ONLY : Nstates, &

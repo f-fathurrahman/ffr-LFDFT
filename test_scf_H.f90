@@ -67,7 +67,7 @@ PROGRAM test_scf
     ENDDO
   ENDDO
   CALL orthonormalize( Nstates, evecs )
-  CALL test_orthonormal( Npoints, Nstates, dVol, evecs )
+  CALL ortho_check( Npoints, Nstates, dVol, evecs )
 
   CALL calc_rhoe( evecs, Focc )
   CALL update_potentials()
@@ -79,7 +79,7 @@ PROGRAM test_scf
 
   DO iterSCF = 1, 100
 
-    CALL solve_sch_diag()
+    CALL Sch_solve_diag()
     CALL calc_energies( evecs ) ! not updating potentials
 
     dEtot = abs(Etot - Etot_old)

@@ -23,8 +23,8 @@ op_nabla2.f90 \
 calc_nabla2_NNZ.f90 \
 init_nabla2_sparse.f90 \
 dealloc_nabla2_sparse.f90 \
-solve_poisson_cg.f90 \
-solve_poisson_fft.f90 \
+Poisson_solve_cg.f90 \
+Poisson_solve_fft.f90 \
 op_H.f90 \
 diag_davidson_qe.f90 \
 rdiaghg.f90 \
@@ -33,12 +33,12 @@ dealloc_hamiltonian.f90 \
 init_V_ps_loc.f90 \
 ortho_gram_schmidt.f90 \
 orthonormalize.f90 \
-test_orthonormal.f90 \
-solve_sch_diag.f90 \
+ortho_check.f90 \
+Sch_solve_diag.f90 \
 calc_energies.f90 \
 calc_rhoe.f90 \
 update_potentials.f90 \
-kssolve_Emin_cg.f90 \
+KS_solve_Emin_cg.f90 \
 calc_grad.f90 \
 calc_dr_periodic.f90 \
 init_V_ps_loc_H_hgh.f90 \
@@ -48,9 +48,10 @@ my_atomic.f90 \
 ps_hgh.f90 \
 hgh_info.f90 \
 calc_strfact.f90 \
-linsolve_H.f90 \
-kssolve_Emin_pcg.f90
-
+prec_linsolve_cg_H.f90 \
+KS_solve_Emin_pcg.f90 \
+op_K.f90 \
+prec_linsolve_cg_K.f90
 
 OBJ = $(SRC:.f90=.o) $(SRC:.f=.o)
 

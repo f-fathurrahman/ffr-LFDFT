@@ -71,9 +71,10 @@ PROGRAM test_Emin_cg_H
     ENDDO
   ENDDO
   CALL orthonormalize( Nstates, evecs )
-  CALL test_orthonormal( Npoints, Nstates, dVol, evecs )
+  CALL ortho_check( Npoints, Nstates, dVol, evecs )
 
-  CALL kssolve_Emin_cg( 3.d-5, 100, .FALSE. )
+  CALL KS_solve_Emin_cg( 3.d-5, 20, .FALSE. )
+  CALL KS_solve_Emin_pcg( 3.d-5, 100, .FALSE. )
 
   CALL info_energies()
 

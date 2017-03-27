@@ -1,4 +1,4 @@
-SUBROUTINE test_orthonormal( Npoints, Ncols, dVol, v )
+SUBROUTINE ortho_check( Npoints, Ncols, dVol, v )
   IMPLICIT NONE 
   INTEGER :: Npoints
   INTEGER :: Ncols
@@ -11,8 +11,8 @@ SUBROUTINE test_orthonormal( Npoints, Ncols, dVol, v )
   REAL(8) :: ddot
 
   WRITE(*,*)
-  WRITE(*,*) 'Test orthonormalization'
-  WRITE(*,*) '^^^^^^^^^^^^^^^^^^^^^^^'
+  WRITE(*,*) 'Checking orthonormalization'
+  WRITE(*,*) '^^^^^^^^^^^^^^^^^^^^^^^^^^^'
   WRITE(*,*)
   WRITE(*,*) 'Norms:'
   DO ic = 1, Ncols

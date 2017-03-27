@@ -4,7 +4,8 @@
 !
 ! NOTE: x will be used as initial guess.
 ! Explicitly set x to zeros before calling this subroutine if needed.
-SUBROUTINE linsolve_H( b, x, NiterMax )
+SUBROUTINE prec_linsolve_cg_H( b, x, NiterMax )
+
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   IMPLICIT NONE
   !
@@ -15,6 +16,7 @@ SUBROUTINE linsolve_H( b, x, NiterMax )
   REAL(8), ALLOCATABLE :: Hx(:)
   INTEGER :: iter
   REAL(8) :: rsold, rsnew, alpha
+  REAL(8) :: ddot
 
   ALLOCATE( r(Npoints), p(Npoints), Hx(Npoints) )
 
@@ -23,32 +25,33 @@ SUBROUTINE linsolve_H( b, x, NiterMax )
   p(:) = r(:)
 
   !
-  rsold = dot_product(r,r)
-  !WRITE(*,*) 'rsold = ', rsold
+  rsold = ddot( Npoints, r,1, r,1 )
 
   DO iter=1,NiterMax
 
     CALL op_H( 1, p, Hx )
     !
-    alpha = rsold/dot_product(p,Hx)
+    alpha = rsold/ddot( Npoints, p,1, Hx,1 )
     !
     x(:) = x(:) + alpha*p(:)
     !
     r(:) = r(:) - alpha*Hx(:)
     !
-    rsnew = dot_product(r,r)
-    !WRITE(*,*) 'cg-poisson = ', sqrt(rsnew)
+    rsnew = ddot( Npoints, r,1, r,1 )
     !
+    !WRITE(*,*) 'iterCG, sqrt(rsnew) = ', iter, sqrt(rsnew)
     IF(sqrt(rsnew) < 1.d-10) THEN
-    !IF(rsnew < 1.d-10) THEN
-      WRITE(*,*) 'linsolve_H converged in iter:', iter
-      EXIT
+      WRITE(*,*) 'prec_linsolve_cg_H converged in iter:', iter
+      GOTO 100
     ENDIF
     p(:) = r(:) + (rsnew/rsold)*p(:)
     rsold = rsnew
   ENDDO
 
-  DEALLOCATE( r, p, Hx )
+  WRITE(*,*) 'prec_linsolve_cg_H is not converged after iter:', iter
+  WRITE(*,*) 'Last sqrt(rsnew) = ', sqrt(rsnew)
+
+  100 DEALLOCATE( r, p, Hx )
 END SUBROUTINE
 
 

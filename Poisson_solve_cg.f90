@@ -1,6 +1,6 @@
 ! rho will be multiplied by -4*pi in this subroutine
 
-SUBROUTINE solve_poisson_cg( rho, phi )
+SUBROUTINE Poisson_solve_cg( rho, phi )
   USE m_constants, ONLY : PI
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   IMPLICIT NONE
@@ -43,7 +43,7 @@ SUBROUTINE solve_poisson_cg( rho, phi )
     !
     IF(sqrt(rsnew) < 1.d-10) THEN
     !IF(rsnew < 1.d-10) THEN
-      WRITE(*,*) 'Convergence in solve_poisson_cg: iter', iter
+      WRITE(*,*) 'Convergence in Poisson_solve_cg: iter', iter
       conv = .TRUE.
       EXIT
     ENDIF
@@ -51,7 +51,7 @@ SUBROUTINE solve_poisson_cg( rho, phi )
     rsold = rsnew
   ENDDO
 
-  IF( .NOT. conv ) WRITE(*,*) 'No convergence in solve_poisson_cg'
+  IF( .NOT. conv ) WRITE(*,*) 'No convergence in Poisson_solve_cg'
 
   DEALLOCATE( r, p, nabla2_phi )
 END SUBROUTINE

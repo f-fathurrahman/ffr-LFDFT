@@ -131,7 +131,7 @@ contains
 
     ! get the pseudoatomic eigenfunctions (WARNING: This is not correctly done yet: "some" wavefunctions
     ! are obtained, but not the real ones!!!
-    !call solve_schroedinger(psp, ierr)
+    !call Sch_solveroedinger(psp, ierr)
     !if(ierr /= 0) then ! If the wavefunctions could not be found, we set its number to zero.
     !  write(message(1),'(a)') 'The algorithm that calculates atomic wavefunctions could not'
     !  write(message(2),'(a)') 'do its job. The program will continue, but expect poor'
