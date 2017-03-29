@@ -30,7 +30,7 @@ PROGRAM test_scf
   REAL(8) :: dr
   TYPE(hgh_t) :: ps
   
-  NN = (/ 45, 45, 45 /)
+  NN = (/ 55, 55, 55 /)
   AA = (/ 0.d0, 0.d0, 0.d0 /)
   BB = (/ LL(1), LL(2), LL(3) /)
 
@@ -41,16 +41,8 @@ PROGRAM test_scf
   ! Set up potential
   CALL alloc_hamiltonian()
 
-  CALL hgh_init( ps, 'tests/pseudo_HGH/HGH/H.hgh' )
-  CALL hgh_process( ps )
+  CALL init_V_ps_loc_H_hgh_G( Npoints, V_ps_loc )
 
-  center(:) = 0.5d0*LL(:)
-  DO ip = 1, Npoints
-    dr = sqrt( (lingrid(1,ip) - center(1))**2 + &
-               (lingrid(2,ip) - center(2))**2 + &
-               (lingrid(3,ip) - center(3))**2 )
-    V_ps_loc(ip) = vlocalr_scalar( dr, ps )
-  ENDDO 
   WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
 
   ! Initialize electronic states variables

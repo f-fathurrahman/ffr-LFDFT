@@ -9,10 +9,9 @@ SUBROUTINE add_nabla2_z( Nx, Ny, Nz, D2jl_z, nabla2 )
   REAL(8) :: D2jl_z(Nz,Nz)
   Mat :: nabla2
   !
-  INTEGER :: irow, iy, ii, ix, iz
+  INTEGER :: irow, ii
   PetscInt, ALLOCATABLE :: colGbl(:), colGbl_orig(:)
-  PetscInt :: rowGbl, rowLoc, rowGbl_start, rowGbl_stop
-  PetscInt :: Npoints
+  PetscInt :: rowGbl, rowLoc
 
   PetscErrorCode :: ierr
 

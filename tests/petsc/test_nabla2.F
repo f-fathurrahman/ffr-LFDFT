@@ -10,8 +10,6 @@ PROGRAM ex_PETSC
   !
   INTEGER :: NN(3), Nx, Ny, Nz
   REAL(8) :: AA(3), BB(3)
-  INTEGER :: rowGbl
-  INTEGER :: irow
   INTEGER :: nnzc
   INTEGER, ALLOCATABLE :: nnz(:)
   !
@@ -61,7 +59,6 @@ PROGRAM ex_PETSC
     CALL add_nabla2_x( Nx, Ny, Nz, D2jl_x, nabla2 )
 
   ENDIF ! rank == 0
-
 
   CALL MatAssemblyBegin( nabla2, MAT_FINAL_ASSEMBLY, ierr )
   CALL MatAssemblyEnd( nabla2, MAT_FINAL_ASSEMBLY, ierr )

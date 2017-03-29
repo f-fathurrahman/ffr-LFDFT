@@ -37,7 +37,7 @@ PROGRAM test_Emin_cg_H
   CALL alloc_hamiltonian()
   CALL init_K_diag()
 
-  CALL hgh_init( ps, 'tests/pseudo_HGH/HGH/H.hgh' )
+  CALL hgh_init( ps, 'pseudo_HGH/HGH/H.hgh' )
   !CALL hgh_process( ps )
   !CALL hgh_info( ps )
 
