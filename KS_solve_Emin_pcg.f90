@@ -19,8 +19,6 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, Niter, restart )
   INTEGER :: iter, ist
   REAL(8) :: memGB
 
-  WRITE(*,*) 'Pass here 22'
-
   ALLOCATE( g(Npoints,Nstates) )
   ALLOCATE( g_old(Npoints,Nstates) )
   ALLOCATE( g_t(Npoints,Nstates) )
@@ -58,14 +56,14 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, Niter, restart )
   Kg_old(:,:) = 0.d0
 
   DO iter = 1, Niter
-    WRITE(*,*) 'Iter = ', iter
     !
     ! Evaluate gradient at current trial vectors
     CALL calc_grad( Nstates, v, g )
     ! Precondition
     DO ist = 1, Nstates
       !WRITE(*,*) 'ist = ', ist
-      CALL prec_linsolve_cg_H( g(:,ist), Kg(:,ist), 100 )
+      !CALL prec_linsolve_pcg_H( g(:,ist), Kg(:,ist), 1000 )
+      CALL prec_H_diag( g(:,ist), Kg(:,ist) )
     ENDDO
     !
     ! set search direction

@@ -35,6 +35,7 @@ PROGRAM test_Emin_cg_H
 
   ! Set up potential
   CALL alloc_hamiltonian()
+  CALL init_K_diag()
 
   CALL hgh_init( ps, 'tests/pseudo_HGH/HGH/H.hgh' )
   !CALL hgh_process( ps )
@@ -73,8 +74,13 @@ PROGRAM test_Emin_cg_H
   CALL orthonormalize( Nstates, evecs )
   CALL ortho_check( Npoints, Nstates, dVol, evecs )
 
-  CALL KS_solve_Emin_cg( 3.d-5, 20, .FALSE. )
-  CALL KS_solve_Emin_pcg( 3.d-5, 100, .FALSE. )
+  !CALL KS_solve_Emin_cg( 3.d-5, 200, .FALSE. )
+  !CALL KS_solve_Emin_cg( 3.d-4, 200, .FALSE. )
+  CALL KS_solve_Emin_cg( 3.d-5, 10, .FALSE. )
+  CALL KS_solve_Emin_cg( 3.d-5, 10, .FALSE. )
+  CALL KS_solve_Emin_cg( 3.d-5, 10, .FALSE. )
+  CALL KS_solve_Emin_cg( 3.d-3, 10, .FALSE. )
+  CALL KS_solve_Emin_cg( 3.d-5, 200, .FALSE. )
 
   CALL info_energies()
 

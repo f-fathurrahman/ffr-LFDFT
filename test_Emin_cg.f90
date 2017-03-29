@@ -29,6 +29,8 @@ PROGRAM test_Emin_cg
   ! Set up potential
   CALL alloc_hamiltonian()
 
+  CALL init_K_diag()  ! FIXME: move this to alloc_hamiltonian ?
+
   CALL init_V_ps_loc_harmonic( 2.d0, 0.5*(BB-AA) )
 
   WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
