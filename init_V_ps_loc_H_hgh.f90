@@ -1,3 +1,10 @@
+
+! Initialize local pseudopotential based on HGH LDA pseudopotential of
+! hydrogen atom.
+! NOTE:
+! This should not be called when initializing local pseudopotential
+! for periodic system. Instead, use init_V_ps_loc_H_hgh_G for periodic
+! system.
 SUBROUTINE init_V_ps_loc_H_hgh( Npoints, r, V )
   USE m_constants, ONLY : PI
   IMPLICIT NONE
