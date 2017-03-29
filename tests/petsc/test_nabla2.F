@@ -1,7 +1,3 @@
-#include "add_nabla2_x.F"
-#include "add_nabla2_y.F"
-#include "add_nabla2_z.F"
-
 PROGRAM ex_PETSC
   USE m_constants
   USE m_LF3d, ONLY : D2jl_x => LF3d_D2jl_x, &

@@ -1,8 +1,10 @@
 #!/bin/bash
 
 INC="-I/home/efefer/mysoftwares/petsc-3.7.5/include/ -I../../"
-LIB="../../libmain.a -lblas -llapack -lfftw3 \
--L/home/efefer/mysoftwares/petsc-3.7.5/lib -lpetsc"
+LIB="../../libmain.a libLFDFT_petsc.a -lblas -llapack -lfftw3 \
+-L/home/efefer/mysoftwares/petsc-3.7.5/lib_opt -lpetsc_opt"
+
+make
 
 bas=`basename $1 .F`
 # remove the previous executable
