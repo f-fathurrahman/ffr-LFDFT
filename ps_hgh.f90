@@ -1,3 +1,13 @@
+!! From Octopus DFT code
+!!
+!! AUTHORS:
+!!
+!!   M. Marques, A. Castro, A. Rubio and G. Bertsch
+!! 
+!! LICENCE:
+!!
+!!   GPL v2 or later
+
 module ps_hgh_m
   !< For information about the Hartwinger-Goedecker-Hutter pseudopotentials, take a look at:
   !!  (1) S. Goedecker, M. Teter and J. Hutter, Phys. Rev. B 54, 1703 (1996).

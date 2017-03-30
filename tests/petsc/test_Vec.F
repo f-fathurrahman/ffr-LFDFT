@@ -4,6 +4,8 @@ PROGRAM test_Vec
 
 #include <petsc/finclude/petsc.h>
 
+  INTEGER :: Nstates
+  Vec, ALLOCATABLE :: vv(:)
   Vec :: x, y, w, z(5)
   PetscMPIInt :: ierr
   PetscInt :: NN(3), Nx, Ny, Nz
@@ -12,6 +14,10 @@ PROGRAM test_Vec
   CHARACTER(40) :: name_
   PetscMPIInt :: rank
   INTEGER :: ii
+
+  Nstates = 5
+
+  ALLOCATE( vv(Nstates) )
 
   NN = (/ 5, 3, 3 /)
   Nx = NN(1)
@@ -38,6 +44,10 @@ PROGRAM test_Vec
   CALL VecDuplicate( x, y, ierr )
   CALL VecDuplicate( x, w, ierr )
   CALL VecDuplicateVecs( x, 5, z, ierr )
+  CALL VecDuplicateVecs( x, Nstates, vv, ierr )
+
+  CALL VecSet( vv(1), TWO, ierr )
+  CALL VecSet( vv(2), 1.10125d0, ierr )
 
   DO ii = 1, Npoints
     CALL VecSetValue( y, ii-1, 0.5d0*ii, INSERT_VALUES, ierr )
@@ -57,7 +67,9 @@ PROGRAM test_Vec
 
   !CALL VecView( z(1), PETSC_VIEWER_STDOUT_WORLD, ierr )
   !CALL VecView( y, PETSC_VIEWER_STDOUT_WORLD, ierr )
-  CALL VecView( w, PETSC_VIEWER_STDOUT_WORLD, ierr )
+  !CALL VecView( w, PETSC_VIEWER_STDOUT_WORLD, ierr )
+  !CALL VecView( vv(1), PETSC_VIEWER_STDOUT_WORLD, ierr )
+  CALL VecView( vv(2), PETSC_VIEWER_STDOUT_WORLD, ierr )
 
   CALL PetscFinalize( ierr )
 

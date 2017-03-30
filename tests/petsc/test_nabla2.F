@@ -65,6 +65,9 @@ PROGRAM ex_PETSC
 
   !CALL MatView( nabla2, PETSC_VIEWER_STDOUT_WORLD, ierr )
 
+  ! scale by -0.5 to get kinetic matrix
+  CALL MatScale( nabla2, -0.5d0, ierr )
+
   ! Free memory
   DEALLOCATE( nnz )
   CALL dealloc_LF3d()

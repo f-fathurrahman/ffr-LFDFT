@@ -1,3 +1,18 @@
+!! PURPOSE
+!!
+!!   This subroutine solves Poisson equation using Fast Fourier
+!!   transform.
+!!
+!! AUTHOR
+!!
+!!   Fadjar Fathurrahman
+!!
+!! NOTES
+!!
+!!   The input `rho` will be multiplied by -4*pi.
+!!   The output is given in `phi`.
+!!   This subroutine should be called for periodic system only.
+
 SUBROUTINE Poisson_solve_fft( rho, phi )
   USE m_constants, ONLY : PI
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &

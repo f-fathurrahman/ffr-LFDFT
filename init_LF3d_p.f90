@@ -1,14 +1,25 @@
-! ffr
+!! PURPOSE:
+!!
+!!   This subroutine initialize periodic Lagrange basis functions
+!!   in 3D system
+!!
+!! AUTHOR:
+!!
+!!   Fadjar Fathurrahman
 
-!-----------------------------------
 SUBROUTINE init_LF3d_p( NN, AA, BB )
-!-----------------------------------
+
   USE m_LF3d
+
   IMPLICIT NONE
-  !
+
+  !! Number of sampling points in x, y, and z directions
   INTEGER :: NN(3)
+
+  !! End points of the simulation box (or unit cell in the periodic case)
   REAL(8) :: AA(3), BB(3)
-  !
+
+  !! Local
   INTEGER :: Nx, Ny, Nz
   REAL(8) :: Lx, Ly, Lz
   INTEGER :: i, j, k, ip
@@ -31,7 +42,7 @@ SUBROUTINE init_LF3d_p( NN, AA, BB )
   Lx = LF3d_LL(1)
   Ly = LF3d_LL(2)
   Lz = LF3d_LL(3)
-  
+
   ! Initialize grid points
   ALLOCATE( LF3d_grid_x( Nx ) )
   ALLOCATE( LF3d_grid_y( Ny ) )
@@ -47,7 +58,7 @@ SUBROUTINE init_LF3d_p( NN, AA, BB )
   ALLOCATE( LF3d_D1jl_x( Nx, Nx ) )
   ALLOCATE( LF3d_D1jl_y( Ny, Ny ) )
   ALLOCATE( LF3d_D1jl_z( Nz, Nz ) )
- 
+
   ALLOCATE( LF3d_D2jl_x( Nx, Nx ) )
   ALLOCATE( LF3d_D2jl_y( Ny, Ny ) )
   ALLOCATE( LF3d_D2jl_z( Nz, Nz ) )
@@ -81,4 +92,3 @@ SUBROUTINE init_LF3d_p( NN, AA, BB )
   CALL init_gvec()
 
 END SUBROUTINE
-

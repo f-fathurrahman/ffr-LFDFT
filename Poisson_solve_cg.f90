@@ -1,4 +1,16 @@
-! rho will be multiplied by -4*pi in this subroutine
+!! PURPOSE
+!!
+!!   This subroutine solves Poisson equation using conjugate gradient
+!!   algorithm.
+!!
+!! AUTHOR
+!!
+!!   Fadjar Fathurrahman
+!!
+!! NOTES
+!!
+!!   The input `rho` will be multiplied by -4*pi.
+!!   The output is given in `phi`.
 
 SUBROUTINE Poisson_solve_cg( rho, phi )
   USE m_constants, ONLY : PI

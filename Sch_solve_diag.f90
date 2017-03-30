@@ -1,9 +1,29 @@
+!! PURPOSE:
+!!
+!!   This subroutine solves Schrodinger equation using iterative
+!!   diagonalization. Currently this subroutine calls `diag_davidson_qe`.
+!!
+!! AUTHOR:
+!!
+!!   Fadjar Fathurrahman
+!!
+!! MODIFIES:
+!!
+!!   Global variables `KS_evecs` and `KS_evals`.
+!!
+!! IMPORTANT
+!!
+!!   `KS_evecs` should be initialized outside this subroutine.
+!!   In the subsequent calls, `KS_evecs` is used as initial guesses.
+
 SUBROUTINE Sch_solve_diag()
+
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
   USE m_states, ONLY : Nstates, &
                        evecs => KS_evecs, &
                        evals => KS_evals
+
   IMPLICIT NONE 
   INTEGER, ALLOCATABLE :: btype(:)
   INTEGER, PARAMETER :: Nstages = 3
@@ -59,3 +79,4 @@ SUBROUTINE Sch_solve_diag()
 
   DEALLOCATE( btype )
 END SUBROUTINE 
+

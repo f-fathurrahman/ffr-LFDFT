@@ -1,4 +1,19 @@
-! VWN parameterization of the exchange correlation energy
+!! PURPOSE:
+!!
+!!   These subroutines calculate XC energy per volume (`SUBROUTINE excVWN`)
+!!   and its derivative w.r.t density (`SUBROUTINE excpVWN`).
+!!   for VWN parameterization of the exchange correlation energy.
+!!   Based on T.A. Arias code for his DFT course.
+!!
+!! AUTHOR:
+!!
+!!   Fadjar Fathurrahman
+!!
+!! NOTES:
+!! 
+!!   This subroutine should be used for testing purpose only.
+!!   In the future, its functionality should be replaced by call to LibXC.
+
 SUBROUTINE excVWN( Npts, rho, epsxc )
   USE m_constants, ONLY : PI
   IMPLICIT NONE
@@ -28,9 +43,10 @@ SUBROUTINE excVWN( Npts, rho, epsxc )
         -(b*x0)/XX0*( log( (x-x0)*(x-x0)/XX ) + 2.0*(2.0*x0 + b)/Q*atan(Q/(2*x + b)) ))
   !
   DEALLOCATE( rs, x, XX )
-END
 
-!# d/dn deriv of VWN parameterization of the exchange correlation energy
+END SUBROUTINE 
+
+
 SUBROUTINE excpVWN( Npts, rho, depsxc )
   USE m_constants, ONLY : PI
   IMPLICIT NONE

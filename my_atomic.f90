@@ -1,5 +1,14 @@
-! ffr, modified from Octopus
-
+!! From Octopus DFT code
+!!
+!! AUTHORS:
+!!
+!!   M. Marques, A. Castro, A. Rubio and G. Bertsch
+!! 
+!! LICENCE:
+!!
+!!   GPL v2 or later
+!!
+!! Modified by Fadjar Fathurrahman
 
 MODULE atomic_m
 

@@ -1,7 +1,19 @@
-! psi are assumed to be orthonormalized
-! calculate all components of total energy
-!
-! FIXME use global KS_evecs ?
+!! PURPOSE:
+!!
+!!   This subroutine calculates total energy components.
+!!
+!! AUTHOR:
+!!
+!!   Fadjar Fathurrahman
+!!
+!! MODIFIES:
+!!   
+!!   Global variables defined in module `m_energies`
+!!
+!! IMPORTANT:
+!!
+!!   The input `psi` is assumed to be orthonormalized.
+!!
 SUBROUTINE calc_energies( psi )
 
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
@@ -46,4 +58,3 @@ SUBROUTINE calc_energies( psi )
   DEALLOCATE( epsxc )
   DEALLOCATE( nabla2_psi )
 END SUBROUTINE
-

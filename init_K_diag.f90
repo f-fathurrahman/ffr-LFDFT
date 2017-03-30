@@ -1,3 +1,8 @@
+!! Calculate diagonal elements of the kinetic operator matrix.
+!! This subroutine is meant for testing purpose only.
+!!
+!! author: Fadjar Fathurrahman
+
 SUBROUTINE init_K_diag()
 
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
@@ -6,6 +11,7 @@ SUBROUTINE init_K_diag()
                      D2jl_z => LF3d_D2jl_z, &
                      lin2xyz => LF3d_lin2xyz
   USE m_hamiltonian, ONLY : K_diag
+
   IMPLICIT NONE 
   INTEGER :: ip
   INTEGER :: i, j, k

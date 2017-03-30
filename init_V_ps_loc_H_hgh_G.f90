@@ -1,18 +1,35 @@
-! The same as init_V_ps_loc_H_hgh, but initialize first in G-space
-! the transformed to real space via FFT
-!
+!! PURPOSE:
+!!
+!!   This subroutine has the same purpose as `init_V_ps_loc_H_hgh`,
+!!   but initialize first in G-space instead of R-space.
+!!   The usual real space representation is obtained by the transforming
+!!   it to real space via FFT.
+!! 
+!! AUTHOR:
+!!
+!!   Fadjar Fathurrahman
+!!
+!! NOTE:
+!!
+!!   This should be used only in the periodic case
+!!
 SUBROUTINE init_V_ps_loc_H_hgh_G( Npoints, V )
+
   USE m_constants, ONLY : PI
   USE m_LF3d, ONLY : G2 => LF3d_G2, &
                      Gv => LF3d_Gv, &
                      LL => LF3d_LL, &
                      NN => LF3d_NN
   IMPLICIT NONE
+  !! Number of points
   INTEGER :: Npoints
+
+  !! The potential (in real space)
   REAL(8) :: V(Npoints)
-  !
+
+  
   INTEGER :: ig
-  REAL(8) :: Vol
+  REAL(8) :: Vol  ! unit cell volume
   INTEGER :: Ng, Nx, Ny, Nz
   REAL(8) :: z_val
   REAL(8) :: rlocal

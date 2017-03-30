@@ -1,16 +1,32 @@
-
-! Initialize local pseudopotential based on HGH LDA pseudopotential of
-! hydrogen atom.
-! NOTE:
-! This should not be called when initializing local pseudopotential
-! for periodic system. Instead, use init_V_ps_loc_H_hgh_G for periodic
-! system.
+!!
+!! Initialize local pseudopotential based on HGH LDA pseudopotential of
+!! hydrogen atom.
+!!
+!! author: Fadjar Fathurrahman
+!!
+!! NOTE:
+!! This should not be called when initializing local pseudopotential
+!! for periodic system. Instead, use `init_V_ps_loc_H_hgh_G` for periodic
+!! system.
+!!
+!! This subroutine is meant for testing purpose only.
+!!
 SUBROUTINE init_V_ps_loc_H_hgh( Npoints, r, V )
+
   USE m_constants, ONLY : PI
+
   IMPLICIT NONE
+
+  !! Number of points (should be equal to number of basis sets)
   INTEGER :: Npoints
+
+  !! distance array
   REAL(8) :: r(Npoints)
+
+  !! The potential
   REAL(8) :: V(Npoints)
+
+  ! Local
   INTEGER :: ip
   REAL(8) :: r1, r2
   !
@@ -18,6 +34,7 @@ SUBROUTINE init_V_ps_loc_H_hgh( Npoints, r, V )
   REAL(8) :: rlocal
   REAL(8) :: c(2)
 
+  !! Parameters defining local pseudopotential of hydrogen from LDA HGH
   z_val = 1.d0
   rlocal = 0.2d0
   c(1) = -4.180237d0
@@ -37,7 +54,6 @@ SUBROUTINE init_V_ps_loc_H_hgh( Npoints, r, V )
     ENDIF
 
   ENDDO
-
 
 END SUBROUTINE
 

@@ -1,12 +1,26 @@
-! TODO: using full storage, not yet exploiting symmetry of D1jl and D2jl
-!
-! The matrices D1jl and D2jl are assumed to have been allocated somewhere else.
-!------------------------------------------------------------------------------
+!! PURPOSE:
+!!
+!!   This subroutine calculates first derivative matrix D1jl and second derivative
+!!   matrix of Lagrange basis functions in 1D.
+!!
+!! AUTHOR:
+!!
+!!   Fadjar Fathurrahman
+!!
+!! NOTE:
+!!
+!!   This subroutine uses full storage of the matrix,
+!!   not yet exploiting the symmetry of D1jl and D2jl
+!!
+!! IMPORTANT:
+!!
+!!   The matrices D1jl and D2jl are assumed to have been allocated somewhere else.
+!!
+
 SUBROUTINE init_deriv_matrix_p( N, L, D1jl, D2jl )
-!------------------------------------------------------------------------------
   USE m_constants, ONLY : PI
   IMPLICIT NONE
-  !
+  !! Number of 
   INTEGER :: N
   REAL(8) :: L
   REAL(8) :: D1jl(N,N)

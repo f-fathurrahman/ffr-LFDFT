@@ -1,3 +1,10 @@
+!!
+!! Initialize V_ps_loc with harmonic potential.
+!! `omega` is the harmonic parameter and `center` is
+!! the center of the potential
+!!
+!! author: Fadjar Fathurrahman
+!!
 SUBROUTINE init_V_ps_loc_harmonic( omega, center )
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      lingrid => LF3d_lingrid
@@ -9,7 +16,7 @@ SUBROUTINE init_V_ps_loc_harmonic( omega, center )
   REAL(8) :: dx, dy, dz
 
   WRITE(*,*)
-  WRITE(*,*) 'Initializing harmonic potential'
+  WRITE(*,*) 'Initializing V_ps_loc with harmonic potential'
   WRITE(*,*) 'omega = ', omega
   WRITE(*,*) 'center = ', center
 

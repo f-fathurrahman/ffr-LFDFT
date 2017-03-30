@@ -1,5 +1,19 @@
-! NOTE: This will only works for orthorombic cell
+!! PURPOSE:
+!!
+!!  This subroutine calculates distance between grid points relative
+!!  to a center, taking into account periodicity.
+!!
+!! AUTHOR:
+!!
+!!   Fadjar Fathurrahman
+!!
+!! NOTE:
+!!
+!!   This will only works for orthorombic cell
+!!
+
 SUBROUTINE calc_dr_periodic( LL, r0, Npoints, lingrid, dr )
+
   IMPLICIT NONE
   !
   REAL(8) :: LL(3)
@@ -37,4 +51,4 @@ SUBROUTINE calc_dr_periodic( LL, r0, Npoints, lingrid, dr )
     dr(ip) = sqrt( xx**2 + yy**2 + zz**2 )
   ENDDO
 
-END SUBROUTINE 
+END SUBROUTINE

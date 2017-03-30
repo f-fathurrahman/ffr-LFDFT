@@ -1,15 +1,37 @@
-SUBROUTINE KS_solve_Emin_cg( alpha_t, Niter, restart )
+!! PURPOSE:
+!!
+!!   This subroutine solves Kohn-Sham equations by minimizing total energy
+!!   functional using conjugate gradient algorithm.
+!!   The algorithm is based on T.A. Arias notes.
+!!
+!! AUTHOR:
+!!
+!!   Fadjar Fathurrahman
+!!
+!! MODIFIES:
+!! 
+!!   Global variables `KS_evecs` and `E_total`
+!!
+SUBROUTINE KS_solve_Emin_cg( alpha_t, NiterMax, restart )
 
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates, &
                        Focc, &
                        v => KS_evecs
   USE m_energies, ONLY : Etot => E_total
+
   IMPLICIT NONE
-  !
-  INTEGER :: Niter
-  REAL(8) :: alpha_t  ! step size
+
+  !! Maximum number of iterations
+  INTEGER :: NiterMax
+
+  !! Step size taken when evaluating trial direction
+  REAL(8) :: alpha_t
+
+  !! If .TRUE. then starting wavefunction will be read from file
   LOGICAL :: restart
+
+  ! Local
   REAL(8), ALLOCATABLE :: g(:,:), g_old(:,:), g_t(:,:)
   REAL(8), ALLOCATABLE :: d(:,:), d_old(:,:)
   REAL(8), ALLOCATABLE :: tv(:,:)
@@ -27,7 +49,8 @@ SUBROUTINE KS_solve_Emin_cg( alpha_t, Niter, restart )
   ALLOCATE( tv(Npoints,Nstates) )
 
   memGB = Npoints*Nstates*5d0 * 8d0 / (1024d0*1024d0*1024.d0)
-  WRITE(*,*) 'memGB = ', memGB
+  WRITE(*,*)
+  WRITE(*,*) 'KS_solve_Emin_cg: memGB = ', memGB
 
   ! Read starting eigenvectors from file
   IF( restart ) THEN
@@ -49,7 +72,7 @@ SUBROUTINE KS_solve_Emin_cg( alpha_t, Niter, restart )
   d(:,:)     = 0.d0
   d_old(:,:) = 0.d0
 
-  DO iter = 1, Niter
+  DO iter = 1, NiterMax
     !
     ! Evaluate gradient at current trial vectors
     CALL calc_grad( Nstates, v, g )
@@ -83,9 +106,7 @@ SUBROUTINE KS_solve_Emin_cg( alpha_t, Niter, restart )
     CALL update_potentials()
 
     CALL calc_energies( v )
-    !
-    !WRITE(*,'(/,1x,A,I5,2F18.10)') 'iter, conv, ||grad||: ', iter, abs(Etot-Etot_old), norm_grad
-    !WRITE(*,'(1x,A,3F18.10)') 'Ekin, Epot, Etot: ', Ekin, Epot, Etot
+
     WRITE(*,'(1x,I5,F18.10,E18.10)') iter, Etot, abs(Etot-Etot_old)
     !
     IF( abs(Etot - Etot_old) < 1.d-7 ) THEN
