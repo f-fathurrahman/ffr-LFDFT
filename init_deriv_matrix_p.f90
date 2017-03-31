@@ -20,11 +20,17 @@
 SUBROUTINE init_deriv_matrix_p( N, L, D1jl, D2jl )
   USE m_constants, ONLY : PI
   IMPLICIT NONE
-  !! Number of 
+
+  !! Number of points
   INTEGER :: N
+
+  !! Length of domain
   REAL(8) :: L
+
+  !! First and second derivative matrix
   REAL(8) :: D1jl(N,N)
   REAL(8) :: D2jl(N,N)
+
   ! Local
   INTEGER :: NPRIMED, nn
   INTEGER :: jj, ll

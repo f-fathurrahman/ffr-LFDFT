@@ -1,5 +1,16 @@
-! multicolumn version
-! v are asssumed to be orthogonal
+!! PURPOSE:
+!!
+!!   This subroutine calculates total energy gradient with respect to
+!!   electronic wavefunction.
+!!
+!! AUTHOR:
+!!
+!!   Fadjar Fathurrahman
+!!
+!! NOTES:
+!!
+!!   v are asssumed to be orthonormal
+!!
 SUBROUTINE calc_grad( Ncols, v, grad )
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
@@ -28,3 +39,4 @@ SUBROUTINE calc_grad( Ncols, v, grad )
   DEALLOCATE( Hv )
 
 END SUBROUTINE
+

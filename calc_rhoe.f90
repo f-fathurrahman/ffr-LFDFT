@@ -1,4 +1,17 @@
-! FIXME: directly use KS_evecs ?
+!!
+!! PURPOSE:
+!!
+!!   This subroutine calculates electronic density, given `psi`
+!!   (which need not to be Kohn-Sham states) and occupation number `Focc`
+!! 
+!! AUTHOR:
+!!
+!!   Fadjar Fathurrahman
+!!
+!! MODIFY:
+!!
+!!   Global variable `rhoe`
+!!
 SUBROUTINE calc_rhoe( psi, Focc )
 
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
@@ -17,7 +30,6 @@ SUBROUTINE calc_rhoe( psi, Focc )
   !WRITE(*,*)
   !WRITE(*,*) 'Calculating electron density'
   !WRITE(*,'(1x,A,F18.10)') 'Integrated electron density:', sum( Rhoe(:) )*dVol
-
 
 END SUBROUTINE 
 

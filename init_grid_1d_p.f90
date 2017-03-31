@@ -1,9 +1,18 @@
-! Initialize periodic Lagrange function
-! The LFs are defined on [A,B].
-! `grid` is assumed to be already allocated properly elsewhere
-!------------------------------------------------------------------------------
+!! PURPOSE:
+!!
+!!   This subroutine initializes periodic Lagrange basis functions
+!!   in 1D, defined on [A,B] with N points.
+!!
+!! AUTHOR:
+!!
+!!   Fadjar Fathurrahman
+!!
+!! IMPORTANT:
+!!
+!!   The array `grid` is assumed to be already allocated properly elsewhere
+
 SUBROUTINE init_grid_1d_p( N, A, B, grid )
-!------------------------------------------------------------------------------
+
   IMPLICIT NONE
   ! Arguments
   INTEGER :: N
@@ -14,13 +23,13 @@ SUBROUTINE init_grid_1d_p( N, A, B, grid )
 
   ! Check if N is odd
   IF( mod(N,2)==0 ) THEN
-    WRITE(*,*) 'N should be an odd number, this N=', N
+    WRITE(*,*) 'ERROR in init_LF1d_p: N should be an odd number, this N=', N
     STOP
   ENDIF
 
   ! Check if B > A
   IF( B < A ) THEN
-    WRITE(*,*) 'Error in init_LF1d_p: B should be larger that A', A, B
+    WRITE(*,*) 'ERROR in init_LF1d_p: B should be larger that A', A, B
     STOP
   ENDIF
 

@@ -1,4 +1,3 @@
-
 !
 ! solve A*x = b, where A = H (Hamiltonian matrix)
 !

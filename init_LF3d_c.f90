@@ -1,35 +1,44 @@
 !! PURPOSE:
 !!
-!!   This subroutine initialize periodic Lagrange basis functions
+!!   This subroutine initialize cluster Lagrange basis functions
 !!   in 3D system
 !!
 !! AUTHOR:
 !!
 !!   Fadjar Fathurrahman
 
-SUBROUTINE init_LF3d_p( NN, AA, BB )
+SUBROUTINE init_LF3d_c( NN, AA, BB )
 
   USE m_LF3d
 
   IMPLICIT NONE
-
+  
   !! Number of sampling points in x, y, and z directions
   INTEGER :: NN(3)
 
   !! End points of the simulation box (or unit cell in the periodic case)
   REAL(8) :: AA(3), BB(3)
-
+  
   !! Local
   INTEGER :: Nx, Ny, Nz
   REAL(8) :: Lx, Ly, Lz
   INTEGER :: i, j, k, ip
-
+  
   LF3d_NN(:) = NN(:)
   LF3d_AA(:) = AA(:)
   LF3d_BB(:) = BB(:)
-  LF3d_LL(:) = BB(:) - AA(:)  ! TODO: Check if BB > AA
 
-  LF3d_hh(:) = LF3d_LL(:)/NN(:)
+  ! Check if BB(i) > AA(i)
+  DO i = 1,3
+    IF( BB(i) <= AA(i) ) THEN
+      WRITE(*,*) 'ERROR in init_LF3d_c:'
+      WRITE(*,'(1x,A,I5,2F18.10)') 'AA(i) <= BB(i): ', i, AA(i), BB(i)
+      STOP
+    ENDIF 
+  ENDDO
+
+  LF3d_LL(:) = BB(:) - AA(:)
+  LF3d_hh(:) = LF3d_LL(:)/( NN(:) + 1 )
 
   LF3d_dVol = LF3d_hh(1) * LF3d_hh(2) * LF3d_hh(3)
   LF3d_Npoints = LF3d_NN(1) * LF3d_NN(2) * LF3d_NN(3)
@@ -47,23 +56,22 @@ SUBROUTINE init_LF3d_p( NN, AA, BB )
   ALLOCATE( LF3d_grid_x( Nx ) )
   ALLOCATE( LF3d_grid_y( Ny ) )
   ALLOCATE( LF3d_grid_z( Nz ) )
+
   !
-  CALL init_grid_1d_p( Nx, AA(1), BB(1), LF3d_grid_x )
-  CALL init_grid_1d_p( Ny, AA(2), BB(2), LF3d_grid_y )
-  CALL init_grid_1d_p( Nz, AA(3), BB(3), LF3d_grid_z )
-
-  ! Initialize matrices D1jl and D2jl
-  ALLOCATE( LF3d_D1jl_x( Nx, Nx ) )
-  ALLOCATE( LF3d_D1jl_y( Ny, Ny ) )
-  ALLOCATE( LF3d_D1jl_z( Nz, Nz ) )
-
+  CALL init_grid_1d_c( Nx, AA(1), BB(1), LF3d_grid_x )
+  CALL init_grid_1d_c( Ny, AA(2), BB(2), LF3d_grid_y )
+  CALL init_grid_1d_c( Nz, AA(3), BB(3), LF3d_grid_z )
+  
+  ! Initialize matrices D2jl
+  !
+  ! NOTE: We don't need D1jl matrices for the moment
   ALLOCATE( LF3d_D2jl_x( Nx, Nx ) )
   ALLOCATE( LF3d_D2jl_y( Ny, Ny ) )
   ALLOCATE( LF3d_D2jl_z( Nz, Nz ) )
 
-  CALL init_deriv_matrix_p( Nx, Lx, LF3d_D1jl_x, LF3d_D2jl_x )
-  CALL init_deriv_matrix_p( Ny, Ly, LF3d_D1jl_y, LF3d_D2jl_y )
-  CALL init_deriv_matrix_p( Nz, Lz, LF3d_D1jl_z, LF3d_D2jl_z )
+  CALL init_deriv_matrix_p( Nx, Lx, LF3d_D2jl_x )
+  CALL init_deriv_matrix_p( Ny, Ly, LF3d_D2jl_y )
+  CALL init_deriv_matrix_p( Nz, Lz, LF3d_D2jl_z )
 
   !
   ! 3D mapping stuffs
@@ -86,7 +94,5 @@ SUBROUTINE init_LF3d_p( NN, AA, BB )
     ENDDO
   ENDDO
 
-  ! FIXME: This should be called only for periodic case
-  CALL init_gvec()
-
 END SUBROUTINE
+
