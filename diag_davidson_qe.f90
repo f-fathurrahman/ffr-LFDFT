@@ -37,7 +37,6 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
     ! counter on the reduced basis vectors
     ! do-loop counters
     ! counter on the bands
-  INTEGER :: ierr
   REAL(DP), ALLOCATABLE :: hr(:,:), sr(:,:), vr(:,:), ew(:)
     ! Hamiltonian on the reduced basis
     ! S matrix on the reduced basis
@@ -51,7 +50,7 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
   REAL(DP), EXTERNAL :: ddot
   !
   IF ( nvec > nvecx / 2 ) THEN
-    WRITE(*,*) 'Error in regterg: nvec is too small'
+    WRITE(*,*) 'Error in diag_davidson_qe: nvec is too small'
     STOP
   ENDIF
   !
@@ -59,14 +58,14 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
   !
   empty_ethr = MAX( ( ethr * 5.D0 ), 1.D-5 )
   !
-  ALLOCATE( psi(  Nbasis, nvecx ), STAT=ierr )
-  ALLOCATE( hpsi( Nbasis, nvecx ), STAT=ierr )
+  ALLOCATE( psi(  Nbasis, nvecx ) )
+  ALLOCATE( hpsi( Nbasis, nvecx ) )
   !
-  ALLOCATE( sr( nvecx, nvecx ), STAT=ierr )
-  ALLOCATE( hr( nvecx, nvecx ), STAT=ierr )
-  ALLOCATE( vr( nvecx, nvecx ), STAT=ierr )
-  ALLOCATE( ew( nvecx ), STAT=ierr )
-  ALLOCATE( conv( nvec ), STAT=ierr )
+  ALLOCATE( sr( nvecx, nvecx ) )
+  ALLOCATE( hr( nvecx, nvecx ) )
+  ALLOCATE( vr( nvecx, nvecx ) )
+  ALLOCATE( ew( nvecx ) )
+  ALLOCATE( conv( nvec ) )
   !
   notcnv = nvec
   Nred  = nvec
