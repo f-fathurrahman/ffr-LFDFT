@@ -25,15 +25,16 @@ SUBROUTINE info_LF3d()
 
   999 FORMAT(1x,I8,F10.5,I8,F10.5,I8,F10.5)
 
-  ! FIXME This should be called only for periodic case
-  ! G2 ------------------------------------------
-  N = LF3d_Npoints
-  WRITE(*,'(/,1x,A,/)') 'Some G2 values:'
-  WRITE(*,'(1x,I10,F10.5)') 1, LF3d_G2(1)
-  WRITE(*,'(1x,I10,F10.5)') 2, LF3d_G2(2)
-  WRITE(*,*) '       ...   .......'
-  WRITE(*,'(1x,I10,F10.5)') N-1, LF3d_G2(N-1)
-  WRITE(*,'(1x,I10,F10.5)') N,   LF3d_G2(N)
+  ! This should be called only for periodic case
+  IF( LF3d_TYPE == LF3d_PERIODIC ) THEN
+    N = LF3d_Npoints
+    WRITE(*,'(/,1x,A,/)') 'Some G2 values:'
+    WRITE(*,'(1x,I10,F10.5)') 1, LF3d_G2(1)
+    WRITE(*,'(1x,I10,F10.5)') 2, LF3d_G2(2)
+    WRITE(*,*) '       ...   .......'
+    WRITE(*,'(1x,I10,F10.5)') N-1, LF3d_G2(N-1)
+    WRITE(*,'(1x,I10,F10.5)') N,   LF3d_G2(N)
+  ENDIF 
 
 END SUBROUTINE
 

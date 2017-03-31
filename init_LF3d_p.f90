@@ -24,6 +24,9 @@ SUBROUTINE init_LF3d_p( NN, AA, BB )
   REAL(8) :: Lx, Ly, Lz
   INTEGER :: i, j, k, ip
 
+  ! Set the type of LF3d
+  LF3d_TYPE = LF3d_PERIODIC
+
   LF3d_NN(:) = NN(:)
   LF3d_AA(:) = AA(:)
   LF3d_BB(:) = BB(:)

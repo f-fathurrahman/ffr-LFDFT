@@ -23,7 +23,10 @@ SUBROUTINE init_LF3d_c( NN, AA, BB )
   INTEGER :: Nx, Ny, Nz
   REAL(8) :: Lx, Ly, Lz
   INTEGER :: i, j, k, ip
-  
+
+  ! Set the type of LF3d
+  LF3d_TYPE = LF3d_CLUSTER
+
   LF3d_NN(:) = NN(:)
   LF3d_AA(:) = AA(:)
   LF3d_BB(:) = BB(:)
@@ -69,9 +72,9 @@ SUBROUTINE init_LF3d_c( NN, AA, BB )
   ALLOCATE( LF3d_D2jl_y( Ny, Ny ) )
   ALLOCATE( LF3d_D2jl_z( Nz, Nz ) )
 
-  CALL init_deriv_matrix_p( Nx, Lx, LF3d_D2jl_x )
-  CALL init_deriv_matrix_p( Ny, Ly, LF3d_D2jl_y )
-  CALL init_deriv_matrix_p( Nz, Lz, LF3d_D2jl_z )
+  CALL init_deriv_matrix_c( Nx, Lx, LF3d_D2jl_x )
+  CALL init_deriv_matrix_c( Ny, Ly, LF3d_D2jl_y )
+  CALL init_deriv_matrix_c( Nz, Lz, LF3d_D2jl_z )
 
   !
   ! 3D mapping stuffs
