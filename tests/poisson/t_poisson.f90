@@ -18,7 +18,8 @@ PROGRAM t_poisson
   NN = (/ 63, 63, 65 /)
   LL = (/ 16.d0, 16.d0, 16.d0 /)
   !
-  CALL init_LF3d_p( NN, (/0.d0,0.d0,0.d0/), LL )
+  !CALL init_LF3d_p( NN, (/0.d0,0.d0,0.d0/), LL )
+  CALL init_LF3d_c( NN, (/0.d0,0.d0,0.d0/), LL )
   CALL info_LF3d()
   
   ALLOCATE( rho(Npoints) )
@@ -45,7 +46,7 @@ PROGRAM t_poisson
   WRITE(*,*) 'Integrated rho = ', sum( rho(:) )*dVol
 
   ! Solve Poisson equation
-  CALL solve_poisson_cg( rho, phi )
+  CALL Poisson_solve_cg( rho, phi )
   !CALL solve_poisson_fft( rho, phi )
 
   !

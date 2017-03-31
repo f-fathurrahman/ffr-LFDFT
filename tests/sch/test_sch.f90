@@ -24,7 +24,8 @@ PROGRAM test_sch
   AA = (/ 0.d0, 0.d0, 0.d0 /)
   BB = (/ 6.d0, 6.d0, 6.d0 /)
 
-  CALL init_LF3d_p( NN, AA, BB )
+  !CALL init_LF3d_p( NN, AA, BB )
+  CALL init_LF3d_c( NN, AA, BB )
 
   CALL info_LF3d()
 

@@ -20,38 +20,39 @@ SUBROUTINE Poisson_solve_cg( rho, phi )
   REAL(8) :: rho(Npoints), phi(Npoints)
   REAL(8), ALLOCATABLE :: r(:), p(:) ! residual
   REAL(8), ALLOCATABLE :: nabla2_phi(:)
-  INTEGER :: ip, iter
+  INTEGER :: iter
   REAL(8) :: rsold, rsnew, alpha
   LOGICAL :: conv
+  !
+  REAL(8) :: ddot
 
   ALLOCATE( r(Npoints), p(Npoints), nabla2_phi(Npoints) )
 
   !
-  DO ip=1,Npoints
+  !DO ip=1,Npoints
     !CALL random_number( phi(ip) )
-    phi(ip) = 0.d0
-  ENDDO
+  !  phi(ip) = 0.d0
+  !ENDDO
 
   CALL op_nabla2( phi, nabla2_phi )
   r(:) = -4.d0*PI*rho(:) - nabla2_phi(:)  ! NOTICE that we multiply rho by -4*pi
   p(:) = r(:)
 
   !
-  rsold = dot_product(r,r)
-  WRITE(*,*) 'Initial rsold = ', rsold
+  rsold = ddot( Npoints, r,1, r, 1 )
   
   conv = .FALSE.
   DO iter = 1,Npoints
     CALL op_nabla2( p, nabla2_phi )
     !
-    alpha = rsold/dot_product(p,nabla2_phi)
+    alpha = rsold/ddot( Npoints, p,1, nabla2_phi,1 )
     !
     phi(:) = phi(:) + alpha*p(:)
     !
     r(:) = r(:) - alpha*nabla2_phi(:)
     !
-    rsnew = dot_product(r,r)
-    WRITE(*,'(1x,A,E18.10)') 'rconv = ', sqrt(rsnew)
+    rsnew = ddot( Npoints, r,1, r,1 )
+    !WRITE(*,'(1x,A,E18.10)') 'rconv = ', sqrt(rsnew)
     !
     IF(sqrt(rsnew) < 1.d-10) THEN
     !IF(rsnew < 1.d-10) THEN
