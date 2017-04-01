@@ -23,6 +23,7 @@ mm_to_nn.f90 \
 init_gvec.f90 \
 dealloc_LF3d.f90 \
 op_nabla2.f90 \
+init_nabla2_sparse.f90 \
 dealloc_nabla2_sparse.f90 \
 Poisson_solve_cg.f90 \
 Poisson_solve_fft.f90 \
