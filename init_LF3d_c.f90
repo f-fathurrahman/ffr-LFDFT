@@ -97,5 +97,8 @@ SUBROUTINE init_LF3d_c( NN, AA, BB )
     ENDDO
   ENDDO
 
+  ! G-vectors
+  CALL init_gvec()
+
 END SUBROUTINE
 

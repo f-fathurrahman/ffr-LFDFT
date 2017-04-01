@@ -13,7 +13,8 @@ SUBROUTINE update_potentials()
   IF ( LF3d_TYPE == LF3d_PERIODIC ) THEN
     CALL Poisson_solve_fft( Rhoe, V_Hartree )
   ELSE 
-    CALL Poisson_solve_cg( Rhoe, V_Hartree )
+    !CALL Poisson_solve_cg( Rhoe, V_Hartree )
+    CALL Poisson_solve_fft_MT( Rhoe, V_Hartree )
   ENDIF
 
   CALL excVWN( Npoints, Rhoe, epsxc )

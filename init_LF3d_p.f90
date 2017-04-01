@@ -89,7 +89,7 @@ SUBROUTINE init_LF3d_p( NN, AA, BB )
     ENDDO
   ENDDO
 
-  ! FIXME: This should be called only for periodic case
+  ! G-vectors
   CALL init_gvec()
 
 END SUBROUTINE

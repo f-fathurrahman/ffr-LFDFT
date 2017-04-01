@@ -25,10 +25,10 @@ SUBROUTINE info_LF3d()
 
   999 FORMAT(1x,I8,F10.5,I8,F10.5,I8,F10.5)
 
-  ! This should be called only for periodic case
-  IF( LF3d_TYPE == LF3d_PERIODIC ) THEN
+  ! Just in case LF3d_G2 is not allocated
+  IF( allocated(LF3d_G2) ) THEN
     N = LF3d_Npoints
-    WRITE(*,'(/,1x,A,/)') 'Some G2 values:'
+    WRITE(*,'(/,1x,A,/)') 'Some G2 values'
     WRITE(*,'(1x,I10,F10.5)') 1, LF3d_G2(1)
     WRITE(*,'(1x,I10,F10.5)') 2, LF3d_G2(2)
     WRITE(*,*) '       ...   .......'

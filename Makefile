@@ -26,6 +26,7 @@ op_nabla2.f90 \
 dealloc_nabla2_sparse.f90 \
 Poisson_solve_cg.f90 \
 Poisson_solve_fft.f90 \
+Poisson_solve_fft_MT.f90 \
 op_H.f90 \
 diag_davidson_qe.f90 \
 rdiaghg.f90 \
@@ -42,6 +43,7 @@ update_potentials.f90 \
 KS_solve_Emin_cg.f90 \
 calc_grad.f90 \
 calc_dr_periodic.f90 \
+calc_dr.f90 \
 init_V_ps_loc_H_hgh.f90 \
 init_V_ps_loc_H_hgh_G.f90 \
 logrid.f90 \

@@ -15,7 +15,7 @@ PROGRAM t_poisson
   INTEGER :: ip
   REAL(8) :: Uana, Unum
 
-  NN = (/ 63, 63, 65 /)
+  NN = (/ 63, 63, 63 /)
   LL = (/ 16.d0, 16.d0, 16.d0 /)
   !
   !CALL init_LF3d_p( NN, (/0.d0,0.d0,0.d0/), LL )
@@ -46,8 +46,9 @@ PROGRAM t_poisson
   WRITE(*,*) 'Integrated rho = ', sum( rho(:) )*dVol
 
   ! Solve Poisson equation
-  CALL Poisson_solve_cg( rho, phi )
+  !CALL Poisson_solve_cg( rho, phi )
   !CALL solve_poisson_fft( rho, phi )
+  CALL Poisson_solve_fft_MT( rho, phi )
 
   !
   Unum = 0.5d0*sum( rho(:)*phi(:) )*dVol

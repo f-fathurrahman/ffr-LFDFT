@@ -20,13 +20,15 @@ SUBROUTINE Poisson_solve_cg( rho, phi )
   REAL(8) :: rho(Npoints), phi(Npoints)
   REAL(8), ALLOCATABLE :: r(:), p(:) ! residual
   REAL(8), ALLOCATABLE :: nabla2_phi(:)
-  INTEGER :: iter
+  INTEGER :: iter, NmaxIter
   REAL(8) :: rsold, rsnew, alpha
   LOGICAL :: conv
   !
   REAL(8) :: ddot
 
   ALLOCATE( r(Npoints), p(Npoints), nabla2_phi(Npoints) )
+
+  NmaxIter = Npoints/100
 
   !
   !DO ip=1,Npoints
@@ -42,7 +44,8 @@ SUBROUTINE Poisson_solve_cg( rho, phi )
   rsold = ddot( Npoints, r,1, r, 1 )
   
   conv = .FALSE.
-  DO iter = 1,Npoints
+
+  DO iter = 1,NmaxIter
     CALL op_nabla2( p, nabla2_phi )
     !
     alpha = rsold/ddot( Npoints, p,1, nabla2_phi,1 )
@@ -56,7 +59,7 @@ SUBROUTINE Poisson_solve_cg( rho, phi )
     !
     IF(sqrt(rsnew) < 1.d-10) THEN
     !IF(rsnew < 1.d-10) THEN
-      WRITE(*,*) 'Convergence in Poisson_solve_cg: iter', iter
+      WRITE(*,*) 'Convergence in Poisson_solve_cg: iter, sqrt(rsnew):', iter, sqrt(rsnew)
       conv = .TRUE.
       EXIT
     ENDIF
