@@ -26,25 +26,28 @@ PROGRAM test_Emin_cg_H
   !TYPE(hgh_t) :: ps
   REAL(8) :: LL(3)
   
-  NN = (/ 60, 60, 60 /)
+  NN = (/ 45, 45, 45 /)
   
-  LL(:) = (/ 20.d0, 20.d0, 20.d0 /)
+  LL(:) = (/ 16.d0, 16.d0, 16.d0 /)
   AA(:) = (/ 0.d0, 0.d0, 0.d0 /)
   BB(:) = LL(:)
-  !CALL init_LF3d_p( NN, AA, BB )
+  CALL init_LF3d_p( NN, AA, BB )
   center(:) = 0.5d0*LL
 
   !AA = (/ -8.d0, -8.d0, -8.d0 /)
   !BB = (/  8.d0,  8.d0,  8.d0 /)
-  CALL init_LF3d_c( NN, AA, BB )
+  !CALL init_LF3d_c( NN, AA, BB )
   !center(:) = (/ 8.d0, 8.d0, 8.d0 /)
 
   CALL info_LF3d()
 
   ! Set up potential
   CALL alloc_hamiltonian()
-  CALL init_K_diag()
 
+  CALL init_nabla2_sparse()
+  CALL init_ilu0_prec()
+
+  !CALL init_K_diag()
   !CALL hgh_init( ps, 'pseudo_HGH/HGH/H.hgh' )
   !CALL hgh_process( ps )
   !CALL hgh_info( ps )
@@ -79,8 +82,9 @@ PROGRAM test_Emin_cg_H
   CALL orthonormalize( Nstates, evecs )
   CALL ortho_check( Npoints, Nstates, dVol, evecs )
 
-  CALL KS_solve_Emin_cg( 3.d-5, 200, .FALSE. )
+  !CALL KS_solve_Emin_cg( 3.d-5, 200, .FALSE. )
   !CALL KS_solve_Emin_cg( 3.d-4, 200, .FALSE. )
+  CALL KS_solve_Emin_pcg( 3.d-5, 200, .FALSE. )
 
   CALL info_energies()
 
