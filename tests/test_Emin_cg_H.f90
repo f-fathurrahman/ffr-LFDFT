@@ -47,11 +47,6 @@ PROGRAM test_Emin_cg_H
   CALL init_nabla2_sparse()
   CALL init_ilu0_prec()
 
-  !CALL init_K_diag()
-  !CALL hgh_init( ps, 'pseudo_HGH/HGH/H.hgh' )
-  !CALL hgh_process( ps )
-  !CALL hgh_info( ps )
-
   ALLOCATE( dr(Npoints) )
 
   IF ( LF3d_TYPE == LF3d_PERIODIC ) THEN
@@ -59,9 +54,6 @@ PROGRAM test_Emin_cg_H
   ELSE
     CALL calc_dr( center, Npoints, lingrid, dr )
     CALL init_V_ps_loc_H_hgh( Npoints, dr, V_ps_loc )
-    !DO ip = 1, Npoints
-    !  V_ps_loc(ip) = vlocalr_scalar( dr(ip), ps )
-    !ENDDO 
   ENDIF 
 
   WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
@@ -91,6 +83,8 @@ PROGRAM test_Emin_cg_H
   DEALLOCATE( evecs, evals )
   DEALLOCATE( Focc )
   
+  CALL dealloc_nabla2_sparse()
+  CALL dealloc_ilu0_prec()
   CALL dealloc_hamiltonian()
   CALL dealloc_LF3d()
 

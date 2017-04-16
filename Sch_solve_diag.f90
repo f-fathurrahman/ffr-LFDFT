@@ -46,7 +46,7 @@ SUBROUTINE Sch_solve_diag()
 
   ethr(1) = 1.d-1
   ethr(2) = 1.d-3
-  ethr(3) = 1.d-5
+  ethr(3) = 1.d-7
 
   NiterTot = 0
 

@@ -157,6 +157,8 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
      ! ... approximate inverse iteration
      !
      !CALL g_psi( Nbasis, Nbasis, notcnv, 1, psi(1,nb1), ew(nb1) )
+     CALL prec_ilu0( psi(:,nb1), psi(:,nb1) )
+     !
      !
      ! ... "normalize" correction vectors psi(:,nb1:Nred+notcnv) in
      ! ... order to improve numerical stability of subspace diagonalization

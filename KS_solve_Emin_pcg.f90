@@ -13,8 +13,9 @@
 !!   Global variables `KS_evecs` and `E_total`
 !!
 !! NOTES:
-!!   As for now, this subroutine is not yet efficient, due to lack
-!!   of effective preconditioner.
+!!
+!!   ILU0 preconditioner from SPARSKIT is used as preconditioner.
+!!
 
 SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
 
@@ -89,11 +90,11 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
       ! Fletcher-Reeves
       !beta = sum( g * Kg ) / sum( g_old * Kg_old )
       ! Polak-Ribiere
-      !beta = sum( (g-g_old)*Kg ) / sum( g_old * Kg_old )
+      beta = sum( (g-g_old)*Kg ) / sum( g_old * Kg_old )
       ! Hestenes-Stiefel
       !beta = sum( (g-g_old)*Kg ) / sum( (g-g_old)*d_old )
       ! Dai-Yuan
-      beta = sum( g * Kg ) / sum( (g-g_old)*d_old )
+      !beta = sum( g * Kg ) / sum( (g-g_old)*d_old )
     ENDIF
     d(:,:) = -Kg(:,:) + beta*d_old(:,:)
     !

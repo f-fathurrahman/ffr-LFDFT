@@ -1,6 +1,6 @@
 #include platform/make.inc.ifort
-#include platform/make.inc.gfortran
-include platform/make.inc.g95
+include platform/make.inc.gfortran
+#include platform/make.inc.g95
 
 SRC = \
 m_constants.f90 \
@@ -85,10 +85,10 @@ OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) $(SPARSKIT_SRC:.f=.o)
 
 #
 # Fortran 77 sources
-#
+# supress warning
 .SUFFIXES: .o .f
 .f.o:
-	$(F90) $(F90_OPTS) -c $<
+	$(F90) -O3 -c $<
 
 
 # Targets
