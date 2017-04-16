@@ -58,7 +58,7 @@ PROGRAM test_sch
   DO ist = 1, Nstates
     WRITE(*,*) ist, ddot( Npoints, evecs(:,ist), 1, evecs(:,ist), 1 )
   ENDDO 
-  evecs(:,:) = evecs(:,:)/sqrt(dVol)
+  !evecs(:,:) = evecs(:,:)/sqrt(dVol)
 
   !ethr = 1.d-1
   !CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
@@ -71,8 +71,11 @@ PROGRAM test_sch
   !WRITE(*,*) 'dav_iter = ', dav_iter
   
   ethr = 1.d-6
-  CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
-                         evals, btype, notcnv, dav_iter )
+  !CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
+  !                       evals, btype, notcnv, dav_iter )
+  CALL davidson( Nstates, evals, evecs )
+  CALL davidson( Nstates, evals, evecs )
+
   WRITE(*,*) 'dav_iter = ', dav_iter
   
   DO ist = 1, Nstates
