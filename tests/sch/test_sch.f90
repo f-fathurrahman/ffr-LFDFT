@@ -32,16 +32,18 @@ PROGRAM test_sch
   ! Set up potential
   CALL alloc_hamiltonian()
 
-  CALL init_pot_harmonic( 2.d0, 0.5*(BB-AA) )
+  CALL init_nabla2_sparse()
+  CALL init_ilu0_prec()
+
+  CALL init_V_ps_loc_harmonic( 2.d0, 0.5*(BB-AA) )
   WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
 
   Nstates = 4
   ALLOCATE( Focc(Nstates) )
   Focc(:) = 1.d0
 
-  CALL sch_solve_Emin_cg( 3.d-5, 100, .FALSE. )
-  GOTO 111
-
+  !CALL sch_solve_Emin_cg( 3.d-5, 100, .FALSE. )
+  !GOTO 111
 
   ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
 
@@ -58,15 +60,15 @@ PROGRAM test_sch
   ENDDO 
   evecs(:,:) = evecs(:,:)/sqrt(dVol)
 
-  ethr = 1.d-1
-  CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
-                         evals, btype, notcnv, dav_iter )
-  WRITE(*,*) 'dav_iter = ', dav_iter
+  !ethr = 1.d-1
+  !CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
+  !                       evals, btype, notcnv, dav_iter )
+  !WRITE(*,*) 'dav_iter = ', dav_iter
  
-  ethr = 1.d-3
-  CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
-                         evals, btype, notcnv, dav_iter )
-  WRITE(*,*) 'dav_iter = ', dav_iter
+  !ethr = 1.d-3
+  !CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
+  !                       evals, btype, notcnv, dav_iter )
+  !WRITE(*,*) 'dav_iter = ', dav_iter
   
   ethr = 1.d-6
   CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
@@ -83,15 +85,18 @@ PROGRAM test_sch
 
   evecs(:,:) = evecs(:,:)/sqrt(dVol)
 
-  CALL calc_Energies( evecs, Ekin, Epot, Etot )
-  WRITE(*,*) 'Ekin = ', Ekin
-  WRITE(*,*) 'Epot = ', Epot
-  WRITE(*,*) 'Etot = ', Etot
+  !CALL calc_Energies( evecs, Ekin, Epot, Etot )
+  !WRITE(*,*) 'Ekin = ', Ekin
+  !WRITE(*,*) 'Epot = ', Epot
+  !WRITE(*,*) 'Etot = ', Etot
 
   DEALLOCATE( evecs, evals )
   
   111 WRITE(*,*) 'Deallocating ...'
+  
   DEALLOCATE( Focc )
+  CALL dealloc_nabla2_sparse()
+  CALL dealloc_ilu0_prec()
   CALL dealloc_hamiltonian()
   CALL dealloc_LF3d()
 

@@ -31,6 +31,9 @@ PROGRAM test_scf
   ! Set up potential
   CALL alloc_hamiltonian()
 
+  CALL init_nabla2_sparse()
+  CALL init_ilu0_prec()
+
   CALL init_V_ps_loc_harmonic( 2.d0, 0.5*(BB-AA) )
 
   WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
@@ -92,6 +95,8 @@ PROGRAM test_scf
   DEALLOCATE( evecs, evals )
   DEALLOCATE( Focc )
   
+  CALL dealloc_nabla2_sparse()
+  CALL dealloc_ilu0_prec()
   CALL dealloc_hamiltonian()
   CALL dealloc_LF3d()
 

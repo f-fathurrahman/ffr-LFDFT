@@ -104,12 +104,13 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
   CALL rdiaghg( Nred, nvec, hr, sr, nvecx, ew, vr )
   !
   e(1:nvec) = ew(1:nvec)
+  WRITE(*,*) 'nvecx = ', nvecx
   !
   !
   ! ... iterate
   !
   iterate: DO kter = 1, maxter
-     !WRITE(*,*) 'kter = ', kter
+     WRITE(*,*) 'kter = ', kter
      !
      dav_iter = kter
      !     !
@@ -157,7 +158,8 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
      ! ... approximate inverse iteration
      !
      !CALL g_psi( Nbasis, Nbasis, notcnv, 1, psi(1,nb1), ew(nb1) )
-     CALL prec_ilu0( psi(:,nb1), psi(:,nb1) )
+     !WRITE(*,*) 'nb1 = ', nb1
+     CALL prec_ilu0_inplace( psi(1,nb1) )
      !
      !
      ! ... "normalize" correction vectors psi(:,nb1:Nred+notcnv) in
@@ -226,6 +228,9 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
         conv(1:nvec) = ( ( ABS( ew(1:nvec) - e(1:nvec) ) < empty_ethr ) )
         !
      END WHERE
+     DO n = 1,nvec
+       WRITE(*,*) n, ABS( ew(1:nvec) - e(1:nvec) )
+     ENDDO
      !
      notcnv = COUNT( .NOT. conv(:) )
      !
