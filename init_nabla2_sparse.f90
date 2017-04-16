@@ -15,6 +15,8 @@ SUBROUTINE init_nabla2_sparse()
   INTEGER :: ix, iy, iz, ip
   INTEGER :: yy, colLoc_x, colLoc_y, colLoc_z, izz
   INTEGER :: colGbl, ii
+  INTEGER, ALLOCATABLE :: iwork(:)
+  INTEGER :: nwork
 
   Nx = NN(1)
   Ny = NN(2)
@@ -114,5 +116,9 @@ SUBROUTINE init_nabla2_sparse()
   DEALLOCATE( rowGbl_y_orig )
   DEALLOCATE( rowGbl_z_orig )
 
+  nwork = max( Npoints+1, 2*(colptr(Npoints+1)-colptr(1)) )
+  ALLOCATE( iwork( nwork ) )
+  CALL csort( Npoints, nzval, rowval, colptr, iwork, .TRUE. )
+  DEALLOCATE( iwork )
 
 END SUBROUTINE 

@@ -58,7 +58,10 @@ op_K.f90 \
 prec_linsolve_cg_K.f90 \
 init_K_diag.f90 \
 prec_H_diag.f90 \
-prec_linsolve_pcg_H.f90
+prec_linsolve_pcg_H.f90 \
+m_ilu0_prec.f90 \
+init_ilu0_prec.f90 \
+prec_ilu0.f90
 
 
 OBJ = $(SRC:.f90=.o) $(SRC:.f=.o)

@@ -59,7 +59,7 @@ SUBROUTINE Poisson_solve_cg( rho, phi )
     !
     IF(sqrt(rsnew) < 1.d-10) THEN
     !IF(rsnew < 1.d-10) THEN
-      WRITE(*,*) 'Convergence in Poisson_solve_cg: iter, sqrt(rsnew):', iter, sqrt(rsnew)
+      !WRITE(*,*) 'Convergence in Poisson_solve_cg: iter, sqrt(rsnew):', iter, sqrt(rsnew)
       conv = .TRUE.
       EXIT
     ENDIF

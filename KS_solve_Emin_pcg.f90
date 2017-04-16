@@ -83,8 +83,12 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
     DO ist = 1, Nstates
       !WRITE(*,*) 'ist = ', ist
       !CALL prec_linsolve_pcg_H( g(:,ist), Kg(:,ist), 1000 )
-      CALL prec_H_diag( g(:,ist), Kg(:,ist) )
+      !CALL prec_H_diag( g(:,ist), Kg(:,ist) )
+      CALL prec_ilu0( g(:,ist), Kg(:,ist) )
     ENDDO
+    !Kg(:,:) = -Kg(:,:)   ! FIXME: Need to change to minus ??
+    !WRITE(*,*) 'sum(g) = ', sum(g)
+    !WRITE(*,*) 'sum(Kg) = ', sum(Kg)
     !
     ! set search direction
     IF( iter /= 1 ) THEN

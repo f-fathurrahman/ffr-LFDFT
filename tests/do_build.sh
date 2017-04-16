@@ -1,7 +1,8 @@
 #!/bin/bash
 
 INC="-I../"
-LIB="../libmain.a -lblas -llapack -lfftw3"
+LIB_SPARSKIT=/home/efefer/mysoftwares/lib/libskit.a
+LIB="../libmain.a -lblas -llapack -lfftw3 $LIB_SPARSKIT"
 
 cd ../
 make Makefile

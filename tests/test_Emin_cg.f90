@@ -22,15 +22,16 @@ PROGRAM test_Emin_cg
   AA = (/ 0.d0, 0.d0, 0.d0 /)
   BB = (/ 6.d0, 6.d0, 6.d0 /)
 
-  !CALL init_LF3d_p( NN, AA, BB )
-  CALL init_LF3d_c( NN, AA, BB )
+  CALL init_LF3d_p( NN, AA, BB )
+  !CALL init_LF3d_c( NN, AA, BB )
 
   CALL info_LF3d()
 
   ! Set up potential
   CALL alloc_hamiltonian()
 
-  CALL init_K_diag()  ! FIXME: move this to alloc_hamiltonian ?
+  CALL init_nabla2_sparse()
+  CALL init_ilu0_prec()
 
   CALL init_V_ps_loc_harmonic( 2.d0, 0.5*(BB-AA) )
 
@@ -52,8 +53,8 @@ PROGRAM test_Emin_cg
   CALL orthonormalize( Nstates, evecs )
   CALL ortho_check( Npoints, Nstates, dVol, evecs )
 
-  CALL KS_solve_Emin_cg( 3.d-5, 100, .FALSE. )
-  !CALL KS_solve_Emin_pcg( 3.d-5, 100, .FALSE. )
+  !CALL KS_solve_Emin_cg( 3.d-5, 100, .FALSE. )
+  CALL KS_solve_Emin_pcg( 3.d-5, 100, .FALSE. )
 
   CALL info_energies()
 
