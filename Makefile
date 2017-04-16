@@ -58,7 +58,8 @@ m_ilu0_prec.f90 \
 init_ilu0_prec.f90 \
 prec_ilu0.f90 \
 dealloc_ilu0_prec.f90 \
-davidson.f90
+diag_davidson.f90 \
+diag_lobpcg.f90
 
 SPARSKIT_SRC = \
 formats.f \

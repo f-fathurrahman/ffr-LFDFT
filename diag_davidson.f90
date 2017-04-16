@@ -1,4 +1,4 @@
-SUBROUTINE davidson( Nstates, evals, v )
+SUBROUTINE diag_davidson( Nstates, evals, v )
   
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   IMPLICIT NONE
