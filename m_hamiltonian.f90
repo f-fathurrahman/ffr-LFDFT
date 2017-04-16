@@ -8,8 +8,5 @@ MODULE m_hamiltonian
 
   REAL(8), ALLOCATABLE :: Rhoe(:)
 
-  ! Diagonal elements of Hamiltonian
-  REAL(8), ALLOCATABLE :: K_diag(:)
-
 END MODULE 
 

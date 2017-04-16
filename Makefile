@@ -1,6 +1,6 @@
 #include platform/make.inc.ifort
-include platform/make.inc.gfortran
-#include platform/make.inc.g95
+#include platform/make.inc.gfortran
+include platform/make.inc.g95
 
 SRC = \
 m_constants.f90 \
@@ -52,19 +52,24 @@ my_atomic.f90 \
 ps_hgh.f90 \
 hgh_info.f90 \
 calc_strfact.f90 \
-prec_linsolve_cg_H.f90 \
 KS_solve_Emin_pcg.f90 \
 op_K.f90 \
-prec_linsolve_cg_K.f90 \
-init_K_diag.f90 \
-prec_H_diag.f90 \
-prec_linsolve_pcg_H.f90 \
 m_ilu0_prec.f90 \
 init_ilu0_prec.f90 \
-prec_ilu0.f90
+prec_ilu0.f90 \
+dealloc_ilu0_prec.f90
+
+SPARSKIT_SRC = \
+formats.f \
+ilut.f \
+itaux.f \
+iters.f \
+unary.f \
+blassm.f \
+matvec.f
 
 
-OBJ = $(SRC:.f90=.o) $(SRC:.f=.o)
+OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) $(SPARSKIT_SRC:.f=.o)
 
 #
 # Suffix rule for Fortran 90
@@ -83,7 +88,7 @@ OBJ = $(SRC:.f90=.o) $(SRC:.f=.o)
 #
 .SUFFIXES: .o .f
 .f.o:
-	$(F77) $(F77_OPTS) -c $<
+	$(F90) $(F90_OPTS) -c $<
 
 
 # Targets

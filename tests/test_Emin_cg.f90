@@ -61,6 +61,8 @@ PROGRAM test_Emin_cg
   DEALLOCATE( evecs, evals )
   DEALLOCATE( Focc )
   
+  CALL dealloc_nabla2_sparse()
+  CALL dealloc_ilu0_prec()
   CALL dealloc_hamiltonian()
   CALL dealloc_LF3d()
 

@@ -81,19 +81,19 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
     CALL calc_grad( Nstates, v, g )
     ! Precondition
     DO ist = 1, Nstates
-      !WRITE(*,*) 'ist = ', ist
-      !CALL prec_linsolve_pcg_H( g(:,ist), Kg(:,ist), 1000 )
-      !CALL prec_H_diag( g(:,ist), Kg(:,ist) )
       CALL prec_ilu0( g(:,ist), Kg(:,ist) )
     ENDDO
-    !Kg(:,:) = -Kg(:,:)   ! FIXME: Need to change to minus ??
-    !WRITE(*,*) 'sum(g) = ', sum(g)
-    !WRITE(*,*) 'sum(Kg) = ', sum(Kg)
     !
     ! set search direction
     IF( iter /= 1 ) THEN
       ! Fletcher-Reeves
-      beta = sum( g * Kg ) / sum( g_old * Kg_old )
+      !beta = sum( g * Kg ) / sum( g_old * Kg_old )
+      ! Polak-Ribiere
+      !beta = sum( (g-g_old)*Kg ) / sum( g_old * Kg_old )
+      ! Hestenes-Stiefel
+      !beta = sum( (g-g_old)*Kg ) / sum( (g-g_old)*d_old )
+      ! Dai-Yuan
+      beta = sum( g * Kg ) / sum( (g-g_old)*d_old )
     ENDIF
     d(:,:) = -Kg(:,:) + beta*d_old(:,:)
     !

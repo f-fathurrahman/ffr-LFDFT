@@ -7,6 +7,4 @@ SUBROUTINE dealloc_hamiltonian()
   IF( allocated(V_Hartree) ) DEALLOCATE( V_Hartree )
   IF( allocated(V_xc) ) DEALLOCATE( V_xc )
 
-  IF( allocated(K_diag) ) DEALLOCATE( K_diag ) 
-
 END SUBROUTINE 
