@@ -3,6 +3,10 @@ SUBROUTINE op_H( Ncols, v, Hv )
 
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_hamiltonian, ONLY : V_ps_loc, V_Hartree, V_xc
+  USE m_nabla2_sparse, ONLY : nzval => nabla2_nzval, &
+                              rowval => nabla2_rowval, &
+                              colptr => nabla2_colptr
+  USE m_options, ONLY : FREE_NABLA2
   IMPLICIT NONE
   ! arguments
   INTEGER :: Ncols
@@ -13,10 +17,17 @@ SUBROUTINE op_H( Ncols, v, Hv )
 
   Hv(:,:) = 0.d0  ! FIXME need this ?
 
-  DO ic = 1, Ncols
-    CALL op_nabla2( v(:,ic), Hv(:,ic) )
-    Hv(:,ic) = -0.5*Hv(:,ic) + ( V_ps_loc(:) + V_Hartree(:) + V_xc(:) )* v(:,ic)
-  ENDDO 
+  IF( FREE_NABLA2 ) THEN 
+    DO ic = 1, Ncols
+      CALL op_nabla2( v(:,ic), Hv(:,ic) )
+      Hv(:,ic) = -0.5*Hv(:,ic) + ( V_ps_loc(:) + V_Hartree(:) + V_xc(:) )* v(:,ic)
+    ENDDO 
+  ELSE 
+    DO ic = 1, Ncols
+      CALL amux( Npoints, v(:,ic), Hv(:,ic), nzval, rowval, colptr )
+      Hv(:,ic) = -0.5*Hv(:,ic) + ( V_ps_loc(:) + V_Hartree(:) + V_xc(:) )* v(:,ic)
+    ENDDO 
+  ENDIF 
 
 END SUBROUTINE
 
@@ -25,6 +36,11 @@ SUBROUTINE op_H_1col( v, Hv )
 
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_hamiltonian, ONLY : V_ps_loc, V_Hartree, V_xc
+  USE m_nabla2_sparse, ONLY : nzval => nabla2_nzval, &
+                              rowval => nabla2_rowval, &
+                              colptr => nabla2_colptr
+  USE m_options, ONLY : FREE_NABLA2
+
   IMPLICIT NONE
   ! arguments
   REAL(8) :: v(Npoints)
@@ -32,8 +48,13 @@ SUBROUTINE op_H_1col( v, Hv )
   
   Hv(:) = 0.d0  ! FIXME need this ?
 
-  CALL op_nabla2( v(:), Hv(:) )
-  Hv(:) = -0.5*Hv(:) + ( V_ps_loc(:) + V_Hartree(:) + V_xc(:) ) * v(:)
+  IF( FREE_NABLA2 ) THEN 
+    CALL op_nabla2( v(:), Hv(:) )
+    Hv(:) = -0.5*Hv(:) + ( V_ps_loc(:) + V_Hartree(:) + V_xc(:) ) * v(:)
+  ELSE 
+    CALL amux( Npoints, v(:), Hv(:), nzval, rowval, colptr )
+    Hv(:) = -0.5*Hv(:) + ( V_ps_loc(:) + V_Hartree(:) + V_xc(:) )* v(:)
+  ENDIF 
 
 END SUBROUTINE
 

@@ -1,9 +1,10 @@
-#include platform/make.inc.ifort
+include platform/make.inc.ifort
 #include platform/make.inc.gfortran
-include platform/make.inc.g95
+#include platform/make.inc.g95
 
 SRC = \
 m_constants.f90 \
+m_options.f90 \
 m_LF3d.f90 \
 m_nabla2_sparse.f90 \
 m_hamiltonian.f90 \

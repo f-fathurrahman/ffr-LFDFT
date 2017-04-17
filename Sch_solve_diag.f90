@@ -65,7 +65,7 @@ SUBROUTINE Sch_solve_diag()
   ENDDO
   WRITE(*,'(1x,A,I10)') 'NiterTot = ', NiterTot
  
-  999 FORMAT(1x,A,I2,A,E9.4,A,I5)
+  999 FORMAT(1x,A,I2,A,ES11.4,A,I5)
 
   WRITE(*,*)
   WRITE(*,*) 'Eigenvalues:'

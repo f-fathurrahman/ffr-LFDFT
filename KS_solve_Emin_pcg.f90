@@ -24,6 +24,9 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
                        Focc, &
                        v => KS_evecs
   USE m_energies, ONLY : Etot => E_total
+  
+  USE m_options, ONLY : CG_BETA
+
   IMPLICIT NONE
   !
   INTEGER :: NiterMax
@@ -87,14 +90,20 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
     !
     ! set search direction
     IF( iter /= 1 ) THEN
-      ! Fletcher-Reeves
-      !beta = sum( g * Kg ) / sum( g_old * Kg_old )
-      ! Polak-Ribiere
-      beta = sum( (g-g_old)*Kg ) / sum( g_old * Kg_old )
-      ! Hestenes-Stiefel
-      !beta = sum( (g-g_old)*Kg ) / sum( (g-g_old)*d_old )
-      ! Dai-Yuan
-      !beta = sum( g * Kg ) / sum( (g-g_old)*d_old )
+      SELECT CASE ( CG_BETA )
+      CASE(1)
+        ! Fletcher-Reeves
+        beta = sum( g * Kg ) / sum( g_old * Kg_old )
+      CASE(2)
+        ! Polak-Ribiere
+        beta = sum( (g-g_old)*Kg ) / sum( g_old * Kg_old )
+      CASE(3)
+        ! Hestenes-Stiefel
+        beta = sum( (g-g_old)*Kg ) / sum( (g-g_old)*d_old )
+      CASE(4)
+        ! Dai-Yuan
+        beta = sum( g * Kg ) / sum( (g-g_old)*d_old )
+      END SELECT 
     ENDIF
     d(:,:) = -Kg(:,:) + beta*d_old(:,:)
     !
@@ -121,9 +130,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
 
     CALL calc_energies( v )
     !
-    !WRITE(*,'(/,1x,A,I5,2F18.10)') 'iter, conv, ||grad||: ', iter, abs(Etot-Etot_old), norm_grad
-    !WRITE(*,'(1x,A,3F18.10)') 'Ekin, Epot, Etot: ', Ekin, Epot, Etot
-    WRITE(*,'(1x,I5,F18.10,E18.10)') iter, Etot, abs(Etot-Etot_old)
+    WRITE(*,'(1x,I5,F18.10,ES18.10)') iter, Etot, abs(Etot-Etot_old)
     !
     IF( abs(Etot - Etot_old) < 1.d-7 ) THEN
       WRITE(*,*) 'KS_solve_Emin_pcg converged in iter', iter
