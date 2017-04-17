@@ -1,10 +1,11 @@
-include platform/make.inc.ifort
+#include platform/make.inc.ifort
 #include platform/make.inc.gfortran
-#include platform/make.inc.g95
+include platform/make.inc.g95
 
 SRC = \
 m_constants.f90 \
 m_options.f90 \
+m_atoms.f90 \
 m_LF3d.f90 \
 m_nabla2_sparse.f90 \
 m_hamiltonian.f90 \
@@ -12,6 +13,7 @@ m_states.f90 \
 m_energies.f90 \
 fft_fftw3.f90 \
 LDA_VWN.f90 \
+init_atoms_xyz.f90 \
 init_grid_1d_p.f90 \
 init_grid_1d_c.f90 \
 init_deriv_matrix_p.f90 \
@@ -20,12 +22,14 @@ init_LF3d_p.f90 \
 init_LF3d_c.f90 \
 info_LF3d.f90 \
 info_energies.f90 \
+info_atoms.f90 \
 mm_to_nn.f90 \
 init_gvec.f90 \
 dealloc_LF3d.f90 \
 op_nabla2.f90 \
 init_nabla2_sparse.f90 \
 dealloc_nabla2_sparse.f90 \
+dealloc_atoms.f90 \
 Poisson_solve_cg.f90 \
 Poisson_solve_fft.f90 \
 Poisson_solve_fft_MT.f90 \
