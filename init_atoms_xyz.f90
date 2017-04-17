@@ -26,6 +26,7 @@ SUBROUTINE init_atoms_xyz( fil_xyz )
   ! Read
   !
   READ( unitxyz, * ) Natoms
+  READ( unitxyz, * )
 
   ALLOCATE( atmSymb( Natoms ) )
 
@@ -50,14 +51,12 @@ SUBROUTINE init_atoms_xyz( fil_xyz )
     ENDDO
     ! find different
     IF(k2==0) THEN
-      WRITE(*,*) 'Found new species'
       Nspecies = Nspecies + 1
     ENDIF
   ENDDO
 
-  WRITE(*,*) 'Nspecies = ', Nspecies
-
   ALLOCATE( SpeciesSymbols(NSPECIES) )
+
   idx1 = 0
   DO ia=1,Natoms
     k2 = 0
@@ -85,6 +84,10 @@ SUBROUTINE init_atoms_xyz( fil_xyz )
       ENDIF
     ENDDO 
   ENDDO
+
+  ! 
+  ALLOCATE( AtomicValences(Nspecies) )
+  AtomicValences(:) = 0.d0  ! NOTE: They should be set by pseudopotentials or manually
 
 END SUBROUTINE
 

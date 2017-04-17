@@ -2,6 +2,8 @@
 
 - ILU0 preconditioner from SPARSKIT can be used now.
   The CG algorithm is now faster due to use of preconditioner.
+  Selected files from SPARSKIT is added in the repository
+  in order to reduce external dependencies.
 
 - Davidson and LOBPCG methods are working with ILU0 preconditioner.
   However, it is not yet working in QE's Davidson subroutine.
