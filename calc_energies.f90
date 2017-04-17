@@ -53,7 +53,7 @@ SUBROUTINE calc_energies( psi )
   CALL excVWN( Npoints, Rhoe, epsxc )
   E_xc = sum( Rhoe(:) * epsxc(:) )*dVol
 
-  E_total = E_kinetic + E_ps_loc + E_Hartree + E_xc
+  E_total = E_kinetic + E_ps_loc + E_Hartree + E_xc + E_nn
 
   DEALLOCATE( epsxc )
   DEALLOCATE( nabla2_psi )

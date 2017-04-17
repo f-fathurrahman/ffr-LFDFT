@@ -25,8 +25,6 @@ SUBROUTINE calc_Ewald( )
   COMPLEX(8), ALLOCATABLE :: ctmp(:)
   REAL(8) :: E_H, E_self
   
-  WRITE(*,*) 'Calculating Ewald energy'
-
   ALLOCATE( sigma(Nspecies) )
   sigma(:) = 0.25d0   !!! DEFAULT !!!
 
@@ -62,8 +60,8 @@ SUBROUTINE calc_Ewald( )
       gchg = Zv(isp) * exp( -dr(ip)**2/c1 ) / cc1
       ctmp(ip) = cmplx( gchg, 0.d0, kind=8 )
     ENDDO
-    intrho = real( sum(ctmp)*dVol )
-    WRITE(*,*) 'ctmp initial: ', isp, intrho
+    !intrho = real( sum(ctmp)*dVol )
+    !WRITE(*,*) 'ctmp initial: ', isp, intrho
     !
     CALL fft_fftw3( ctmp, Nx, Ny, Nz, .false. )  ! to G-space
     !

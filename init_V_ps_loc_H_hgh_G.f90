@@ -17,9 +17,9 @@ SUBROUTINE init_V_ps_loc_H_hgh_G( Npoints, V )
 
   USE m_constants, ONLY : PI
   USE m_LF3d, ONLY : G2 => LF3d_G2, &
-                     Gv => LF3d_Gv, &
                      LL => LF3d_LL, &
                      NN => LF3d_NN
+  USE m_atoms, ONLY : strf => StructureFactor
   IMPLICIT NONE
   !! Number of points
   INTEGER :: Npoints
@@ -37,29 +37,13 @@ SUBROUTINE init_V_ps_loc_H_hgh_G( Npoints, V )
   REAL(8) :: pre1, pre2, Gr, expGr2
   ! temporary array for FFT
   COMPLEX(8), ALLOCATABLE :: ctmp(:)
-  ! structure factor
-  COMPLEX(8), ALLOCATABLE :: strf(:,:)
-  ! some hardcoded parameters, for structure factor calculation
-  INTEGER, PARAMETER :: Nspecies = 1
-  INTEGER, PARAMETER :: Natoms = 1
-  REAL(8) :: Xpos(3,Natoms)
-  INTEGER :: atm2species(Natoms)
-
-  Xpos(:,1) = 0.5d0*LL
-  WRITE(*,*) 'Xpos = ', Xpos
-
-  atm2species(1) = 1
 
   ALLOCATE( ctmp(Npoints) )
-  ALLOCATE( strf(Npoints,Nspecies) )
 
   Ng = Npoints
   Nx = NN(1)
   Ny = NN(2)
   Nz = NN(3)
-
-  CALL calc_strfact( Natoms, Xpos, Nspecies, atm2species, Ng, Gv, strf )
-  WRITE(*,*) 'sum(strf) = ', sum(strf)
 
   z_val = 1.d0
   rlocal = 0.2d0

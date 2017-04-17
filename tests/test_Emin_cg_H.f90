@@ -4,42 +4,47 @@
 PROGRAM test_Emin_cg_H
 
   USE m_constants, ONLY: PI
+
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol, &
-                     lingrid => LF3d_lingrid, &
-                     LF3d_TYPE, LF3d_PERIODIC
+                     Gv => LF3d_Gv
+
   USE m_states, ONLY : Nstates, Focc, &
                        evals => KS_evals, &
                        evecs => KS_evecs
+
   USE m_hamiltonian, ONLY : V_ps_loc
-  !USE ps_hgh_m, ONLY : hgh_t, &
-  !                     hgh_init, &
-  !                     hgh_process, &
-  !                     hgh_end, &
-  !                     vlocalr_scalar
+
+  USE m_atoms, ONLY : Nspecies, Natoms, atm2species, &
+                      atpos => AtomicCoords, &
+                      strf => StructureFactor, &
+                      Zv => AtomicValences
   IMPLICIT NONE
   !
   INTEGER :: ist, ip
   INTEGER :: NN(3)
-  REAL(8) :: center(3), AA(3), BB(3)
-  REAL(8), ALLOCATABLE :: dr(:)
+  REAL(8) :: AA(3), BB(3)
   !TYPE(hgh_t) :: ps
   REAL(8) :: LL(3)
   
-  NN = (/ 45, 45, 45 /)
+  NN = (/ 55, 55, 55 /)
   
   LL(:) = (/ 16.d0, 16.d0, 16.d0 /)
   AA(:) = (/ 0.d0, 0.d0, 0.d0 /)
   BB(:) = LL(:)
+
   CALL init_LF3d_p( NN, AA, BB )
-  center(:) = 0.5d0*LL
-
-  !AA = (/ -8.d0, -8.d0, -8.d0 /)
-  !BB = (/  8.d0,  8.d0,  8.d0 /)
-  !CALL init_LF3d_c( NN, AA, BB )
-  !center(:) = (/ 8.d0, 8.d0, 8.d0 /)
-
   CALL info_LF3d()
+
+  CALL init_atoms_xyz( '../structures/H.xyz' )
+  Zv(1) = 1.d0
+  CALL info_atoms()
+
+  ALLOCATE( strf(Npoints,Nspecies) )
+  CALL calc_strfact( Natoms, atpos, Nspecies, atm2species, Npoints, Gv, strf )
+
+  ! At this point we can already calculate E_nn
+  CALL calc_Ewald()
 
   ! Set up potential
   CALL alloc_hamiltonian()
@@ -47,14 +52,7 @@ PROGRAM test_Emin_cg_H
   CALL init_nabla2_sparse()
   CALL init_ilu0_prec()
 
-  ALLOCATE( dr(Npoints) )
-
-  IF ( LF3d_TYPE == LF3d_PERIODIC ) THEN
-    CALL init_V_ps_loc_H_hgh_G( Npoints, V_ps_loc )
-  ELSE
-    CALL calc_dr( center, Npoints, lingrid, dr )
-    CALL init_V_ps_loc_H_hgh( Npoints, dr, V_ps_loc )
-  ENDIF 
+  CALL init_V_ps_loc_H_hgh_G( Npoints, V_ps_loc )
 
   WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
 

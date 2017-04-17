@@ -23,7 +23,7 @@ PROGRAM test_Ewald
 
   CALL info_atoms()
 
-  NN = (/ 55, 55, 55 /)
+  NN = (/ 63, 63, 63 /)
   AA = (/ 0.d0, 0.d0, 0.d0 /)
   BB = (/ 16.d0, 16.d0, 16.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
@@ -33,13 +33,7 @@ PROGRAM test_Ewald
 
   CALL calc_strfact( Natoms, atpos, Nspecies, atm2species, Npoints, Gv, strf )
 
-  WRITE(*,*) 'Natoms = ', Natoms
-  WRITE(*,*) 'Nspecies = ', Nspecies
-  WRITE(*,*) 'shape(strf) = ', shape(strf)
-  WRITE(*,*) 'sum(strf) = ', sum(strf)
-
   CALL calc_Ewald()
-
 
   DEALLOCATE( strf )
   CALL dealloc_LF3d()
