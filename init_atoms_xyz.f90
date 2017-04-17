@@ -69,12 +69,7 @@ SUBROUTINE init_atoms_xyz( fil_xyz )
       SpeciesSymbols(idx1) = atmSymb(ia)
     ENDIF
   ENDDO
-  !
-  WRITE(*,*) 'Species:'
-  DO isp=1,NSPECIES
-    WRITE(*,*) SpeciesSymbols(isp)
-  ENDDO
-
+  
   ! Mapping of atoms to species index
   ALLOCATE( atm2species(NATOMS) )
   DO ia=1,Natoms

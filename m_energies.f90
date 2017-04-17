@@ -5,6 +5,7 @@ MODULE m_energies
   REAL(8) :: E_Hartree
   REAL(8) :: E_ps_loc
   REAL(8) :: E_xc
+  REAL(8) :: E_nn
 
 END MODULE 
 

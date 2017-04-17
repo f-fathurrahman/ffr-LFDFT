@@ -1,6 +1,6 @@
 #include platform/make.inc.ifort
-#include platform/make.inc.gfortran
-include platform/make.inc.g95
+include platform/make.inc.gfortran
+#include platform/make.inc.g95
 
 SRC = \
 m_constants.f90 \
@@ -64,7 +64,8 @@ init_ilu0_prec.f90 \
 prec_ilu0.f90 \
 dealloc_ilu0_prec.f90 \
 diag_davidson.f90 \
-diag_lobpcg.f90
+diag_lobpcg.f90 \
+calc_Ewald.f90
 
 SPARSKIT_SRC = \
 formats.f \

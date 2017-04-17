@@ -19,6 +19,7 @@ SUBROUTINE calc_strfact( Na, Xpos, Nspecies, atm2species, Ng, Gv, strf )
     DO ig = 1,Ng
       GX = Xpos(1,ia)*Gv(1,ig) + Xpos(2,ia)*Gv(2,ig) + Xpos(3,ia)*Gv(3,ig)
       strf(ig,isp) = strf(ig,isp) + cmplx( cos(GX), -sin(GX), kind=8 )
+      !WRITE(*,'(1x,3I8,2F18.10)') ia, isp, ig, strf(ig,isp)
     ENDDO 
   ENDDO 
 

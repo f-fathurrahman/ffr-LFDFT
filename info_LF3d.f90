@@ -3,6 +3,7 @@ SUBROUTINE info_LF3d()
   IMPLICIT NONE
   INTEGER :: N, Nx, Ny, Nz
 
+  WRITE(*,*)
   WRITE(*,*) 'Grid related variables'
   WRITE(*,*) '^^^^^^^^^^^^^^^^^^^^^^'
   WRITE(*,*)
