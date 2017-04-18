@@ -1,6 +1,5 @@
 ! This module is a simplified version of ps_hgh.F90 in Octopus code
 
-
 MODULE m_Ps_HGH
 
   IMPLICIT NONE
@@ -103,16 +102,8 @@ CONTAINS
     ENDIF
     CLOSE(iunit)
 
-    ! Finds out psp%lmax. The most special cases are H, He, Li_sc and Be_sc, where psp%lmax = -1.
-    psp%lmax = 0
-    DO WHILE(psp%rc(psp%lmax) > 0.01d0)
-      psp%lmax = psp%lmax + 1
-      IF(psp%lmax > 3) EXIT
-    ENDDO
-    psp%lmax = psp%lmax - 1
-
     ! Find Nproj_l based on values of h
-    DO l = 0,psp%lmax
+    DO l = 0,3
       DO i = 1,3
         IF( abs( psp%h(l,i,i) ) > 0.d0 ) psp%Nproj_l(l) = psp%Nproj_l(l) + 1
       ENDDO 
@@ -120,10 +111,23 @@ CONTAINS
     ENDDO 
 
     ! Find Nproj_l based on values of rc if Nproj_l == 0
-    DO l = 0,psp%lmax
-      IF( psp%Nproj_l(l) == 0 ) THEN
-        IF( abs(psp%rc(l)) > 0.d0 ) psp%Nproj_l(l) = 1
-      ENDIF
+    !DO l = 0,psp%lmax
+    !  IF( psp%Nproj_l(l) == 0 ) THEN
+    !    IF( abs(psp%rc(l)) > 0.d0 ) psp%Nproj_l(l) = 1
+    !  ENDIF
+    !ENDDO 
+
+    ! Finds out psp%lmax. The most special cases are H, He, Li_sc and Be_sc, where psp%lmax = -1.
+    !psp%lmax = 0
+    !DO WHILE(psp%rc(psp%lmax) > 0.01d0)
+    !  psp%lmax = psp%lmax + 1
+    !  IF(psp%lmax > 3) EXIT
+    !ENDDO
+    !psp%lmax = psp%lmax - 1
+
+    psp%lmax = -1
+    DO l = 0,3
+      IF( psp%Nproj_l(l) > 0 ) psp%lmax = psp%lmax + 1
     ENDDO 
 
     CALL find_NL_cutoff(psp)
