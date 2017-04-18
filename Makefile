@@ -1,6 +1,6 @@
 #include platform/make.inc.ifort
-include platform/make.inc.gfortran
-#include platform/make.inc.g95
+#include platform/make.inc.gfortran
+include platform/make.inc.g95
 
 SRC = \
 m_constants.f90 \
@@ -52,10 +52,6 @@ calc_dr_periodic.f90 \
 calc_dr.f90 \
 init_V_ps_loc_H_hgh.f90 \
 init_V_ps_loc_H_hgh_G.f90 \
-logrid.f90 \
-my_atomic.f90 \
-ps_hgh.f90 \
-hgh_info.f90 \
 init_strfact.f90 \
 KS_solve_Emin_pcg.f90 \
 op_K.f90 \

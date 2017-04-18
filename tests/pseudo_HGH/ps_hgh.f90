@@ -441,6 +441,44 @@ contains
 
   end function projectorg
 
+  !----------------------------------------------------------------------------
+  SUBROUTINE hgh_info( ps )
+  !----------------------------------------------------------------------------
+    TYPE(hgh_t) :: ps
+    INTEGER :: i, j, l
+
+    WRITE(*,*) 'atom_name = ', trim(ps%atom_name)
+    WRITE(*,'(1x,A,I5)') 'zval = ', ps%z_val
+    WRITE(*,'(1x,A,I5)') 'lmax = ', ps%l_max
+    WRITE(*,*)
+    WRITE(*,*) 'Local pseudopotential parameters:'
+    WRITE(*,*)
+    WRITE(*,'(1x,A,F18.10)') 'rlocal = ', ps%rlocal
+    !
+    WRITE(*,*)
+    WRITE(*,*) 'c (for local potential ) = '
+    DO i = 1, 4
+      WRITE(*,'(6x,I5,F18.10)') i, ps%c(i)
+    ENDDO
+  
+    WRITE(*,*)
+    WRITE(*,*) 'Nonlocal pseudopotential parameters:'
+    DO l = 0, ps%l_max
+      WRITE(*,*)
+      WRITE(*,*) 'Matrix h for l = ', l
+      WRITE(*,*) 'rc             = ', ps%rc(l)
+      WRITE(*,*) 'rcut_NL        = ', ps%kbr(l)
+      DO i = 1, 3
+        WRITE(*,*)
+        DO j = 1, 3
+          WRITE(*,'(F18.10)',advance='no') ps%h(l,i,j)
+        ENDDO
+      ENDDO
+      WRITE(*,*)
+    ENDDO
+  END SUBROUTINE
+
+
   ! ---------------------------------------------------------
 !  subroutine hgh_debug(psp, dir)
 !    type(hgh_t), intent(in) :: psp
