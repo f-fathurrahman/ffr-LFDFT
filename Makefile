@@ -56,7 +56,7 @@ logrid.f90 \
 my_atomic.f90 \
 ps_hgh.f90 \
 hgh_info.f90 \
-calc_strfact.f90 \
+init_strfact.f90 \
 KS_solve_Emin_pcg.f90 \
 op_K.f90 \
 m_ilu0_prec.f90 \

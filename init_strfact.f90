@@ -1,17 +1,19 @@
 ! Calculate structure factor
-SUBROUTINE calc_strfact( Na, Xpos, Nspecies, atm2species, Ng, Gv, strf )
-  
+SUBROUTINE init_strfact()
+ 
+  USE m_atoms, ONLY : Na => Natoms, &
+                      Xpos => AtomicCoords, &
+                      Nspecies, &
+                      atm2species, &
+                      strf => StructureFactor
+  USE m_LF3d, ONLY : Ng => LF3d_Npoints, &
+                     Gv => LF3d_Gv
   IMPLICIT NONE
-  INTEGER :: Na
-  REAL(8) :: Xpos(3,Na)
-  INTEGER :: Nspecies
-  INTEGER :: atm2species(Na) ! mapping from idx atm to idx species
-  INTEGER :: Ng
-  REAL(8) :: Gv(3,Ng)
-  COMPLEX(8) :: strf(Ng,Nspecies)
   !
   INTEGER :: ia, isp, ig
   REAL(8) :: GX
+
+  ALLOCATE( strf(Ng,Nspecies) )
 
   strf(:,:) = cmplx(0.d0,0.d0,kind=8)
   DO ia = 1,Na

@@ -10,6 +10,7 @@ SUBROUTINE info_energies()
   WRITE(*,fmt=999) 'Local PS = ', E_ps_loc
   WRITE(*,fmt=999) 'Hartree  = ', E_Hartree
   WRITE(*,fmt=999) 'XC       = ', E_xc
+  WRITE(*,fmt=999) 'NN       = ', E_nn
   WRITE(*,*)       '-----------------------------'
   WRITE(*,fmt=999) 'Total    = ', E_total
 

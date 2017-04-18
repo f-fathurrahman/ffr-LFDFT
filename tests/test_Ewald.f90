@@ -29,9 +29,10 @@ PROGRAM test_Ewald
   CALL init_LF3d_p( NN, AA, BB )
   CALL info_LF3d()
 
-  ALLOCATE( strf(Npoints, Nspecies) )
+  !ALLOCATE( strf(Npoints, Nspecies) )
+  !CALL calc_strfact( Natoms, atpos, Nspecies, atm2species, Npoints, Gv, strf )
 
-  CALL calc_strfact( Natoms, atpos, Nspecies, atm2species, Npoints, Gv, strf )
+  CALL init_strfact()
 
   CALL calc_Ewald()
 

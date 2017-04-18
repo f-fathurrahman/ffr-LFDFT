@@ -40,8 +40,7 @@ PROGRAM test_Emin_cg_H
   Zv(1) = 1.d0
   CALL info_atoms()
 
-  ALLOCATE( strf(Npoints,Nspecies) )
-  CALL calc_strfact( Natoms, atpos, Nspecies, atm2species, Npoints, Gv, strf )
+  CALL init_strfact()
 
   ! At this point we can already calculate E_nn
   CALL calc_Ewald()
@@ -74,7 +73,7 @@ PROGRAM test_Emin_cg_H
 
   !CALL KS_solve_Emin_cg( 3.d-5, 200, .FALSE. )
   !CALL KS_solve_Emin_cg( 3.d-4, 200, .FALSE. )
-  CALL KS_solve_Emin_pcg( 3.d-5, 200, .FALSE. )
+  CALL KS_solve_Emin_pcg( 3.d-5, 200, .TRUE. )
 
   CALL info_energies()
 

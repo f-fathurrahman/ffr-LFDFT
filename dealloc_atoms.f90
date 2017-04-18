@@ -7,5 +7,6 @@ SUBROUTINE dealloc_atoms()
   IF( allocated( SpeciesSymbols) ) DEALLOCATE( SpeciesSymbols )
   IF( allocated( atm2species ) ) DEALLOCATE( atm2species )
   IF( allocated( AtomicValences ) ) DEALLOCATE( AtomicValences )
+  IF( allocated( StructureFactor ) ) DEALLOCATE( StructureFactor )
 
 END SUBROUTINE 
