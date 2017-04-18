@@ -12,7 +12,7 @@ SUBROUTINE init_atoms_xyz( fil_xyz )
   ! Local
   INTEGER, PARAMETER :: unitxyz=123
   INTEGER :: ios, ia, k1, k2, isp, idx1
-  CHARACTER(20), ALLOCATABLE :: atmSymb(:)
+  CHARACTER(5), ALLOCATABLE :: atmSymb(:)
 
   !
   OPEN( UNIT=unitxyz, FILE=fil_xyz, ACTION='read', STATUS='old', &

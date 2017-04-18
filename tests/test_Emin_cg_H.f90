@@ -73,7 +73,7 @@ PROGRAM test_Emin_cg_H
 
   !CALL KS_solve_Emin_cg( 3.d-5, 200, .FALSE. )
   !CALL KS_solve_Emin_cg( 3.d-4, 200, .FALSE. )
-  CALL KS_solve_Emin_pcg( 3.d-5, 200, .TRUE. )
+  CALL KS_solve_Emin_pcg( 3.d-5, 200, .FALSE. )
 
   CALL info_energies()
 

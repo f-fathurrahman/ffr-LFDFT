@@ -6,7 +6,7 @@ MODULE m_atoms
   INTEGER :: Nspecies
   REAL(8), ALLOCATABLE :: AtomicCoords(:,:)
   INTEGER, ALLOCATABLE :: atm2species(:)
-  CHARACTER(20), ALLOCATABLE :: SpeciesSymbols(:)  ! Nspecies
+  CHARACTER(5), ALLOCATABLE :: SpeciesSymbols(:)  ! Nspecies
   REAL(8), ALLOCATABLE :: AtomicValences(:)
 
   COMPLEX(8), ALLOCATABLE :: StructureFactor(:,:)

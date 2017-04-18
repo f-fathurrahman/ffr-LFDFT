@@ -17,9 +17,14 @@ PROGRAM test_Ewald
   !Zv(1) = 5.d0
   !Zv(2) = 1.d0
 
-  CALL init_atoms_xyz('../structures/H2.xyz')
+  !CALL init_atoms_xyz('../structures/H2.xyz')
   ! Manually set Zv => AtomicValences
-  Zv(1) = 1.d0
+  !Zv(1) = 1.d0
+  
+  CALL init_atoms_xyz('../structures/MoS2.xyz')
+  ! Manually set Zv => AtomicValences
+  Zv(1) = 14.d0  ! Mo
+  Zv(2) =  6.d0  ! S
 
   CALL info_atoms()
 

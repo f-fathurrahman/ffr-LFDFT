@@ -1,7 +1,7 @@
 SUBROUTINE calc_Ewald( )
 
   USE m_constants, ONLY : PI
-  USE m_atoms, ONLY : Natoms, Nspecies, atm2species, &
+  USE m_atoms, ONLY : Natoms, Nspecies, atm2species, SpeciesSymbols, &
                       Zv => AtomicValences, &
                       strf => StructureFactor
   USE m_LF3d, ONLY : G2 => LF3d_G2, &
@@ -24,9 +24,17 @@ SUBROUTINE calc_Ewald( )
   REAL(8), ALLOCATABLE :: Rho(:), phi(:)
   COMPLEX(8), ALLOCATABLE :: ctmp(:)
   REAL(8) :: E_H, E_self
-  
+ 
   ALLOCATE( sigma(Nspecies) )
   sigma(:) = 0.25d0   !!! DEFAULT !!!
+
+  WRITE(*,*)
+  WRITE(*,*) 'Calculating Ewald energy (E_nn)'
+  WRITE(*,*)
+  WRITE(*,*) 'Using the following parameters for Gaussian charge densities:'
+  DO isp = 1,Nspecies
+    WRITE(*,'(1x,A,F10.3)') adjustl(SpeciesSymbols(isp)), sigma(isp)
+  ENDDO 
 
   cx = 0.5d0*LL(1)
   cy = 0.5d0*LL(2)
@@ -51,6 +59,7 @@ SUBROUTINE calc_Ewald( )
 
   Rho(:) = 0.d0
 
+  WRITE(*,*)
   DO isp = 1, Nspecies
     !
     c1 = 2.d0*sigma(isp)**2
@@ -60,8 +69,6 @@ SUBROUTINE calc_Ewald( )
       gchg = Zv(isp) * exp( -dr(ip)**2/c1 ) / cc1
       ctmp(ip) = cmplx( gchg, 0.d0, kind=8 )
     ENDDO
-    !intrho = real( sum(ctmp)*dVol )
-    !WRITE(*,*) 'ctmp initial: ', isp, intrho
     !
     CALL fft_fftw3( ctmp, Nx, Ny, Nz, .false. )  ! to G-space
     !
@@ -75,13 +82,13 @@ SUBROUTINE calc_Ewald( )
     ENDDO 
     !
     intrho = sum( rho_is(:,isp) ) * dVol
-    WRITE(*,*) 'isp, intrho = ', isp, intrho
+    WRITE(*,'(1x,A,8x,A,F18.10)') adjustl(SpeciesSymbols(isp)), '= ', intrho
     !
     Rho(:) = Rho(:) + rho_is(:,isp)
   ENDDO 
 
   intrho = sum(Rho)*dVol
-  WRITE(*,*) 'Total intrho = ', intrho
+  WRITE(*,'(1x,A,F18.10)') 'Total intrho = ', intrho
 
   ! Solve Poisson equation
   DO ip = 1,Npoints
@@ -108,7 +115,7 @@ SUBROUTINE calc_Ewald( )
 
   E_nn = E_H - E_self
 
-  WRITE(*,*) 'E_nn = ', E_nn
+  WRITE(*,'(/,1x,A,F18.10)') 'E_nn         = ', E_nn
 
   DEALLOCATE( phi )
   DEALLOCATE( ctmp )
