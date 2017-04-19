@@ -30,6 +30,7 @@ info_energies.f90 \
 info_atoms.f90 \
 mm_to_nn.f90 \
 init_gvec.f90 \
+init_V_ps_loc_G.f90 \
 dealloc_LF3d.f90 \
 op_nabla2.f90 \
 init_nabla2_sparse.f90 \

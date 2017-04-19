@@ -44,20 +44,31 @@ CONTAINS
     type(Ps_HGH_Params_T), INTENT(in) :: p
     REAL(8), INTENT(in) :: g
     REAL(8) :: Vloc
+    REAL(8), PARAMETER :: SMALL = 1.d-8
 
     REAL(8) :: g1, g2, g4, g6
 
-    g1 = g*p%rlocal
-    g2 = g1*g1
-    g4 = g2*g2
-    g6 = g4*g2
+    IF( g > SMALL ) THEN
 
-    Vloc = -(4.d0*PI*p%zval/g**2) * exp( -g2/2.d0) + &
-           sqrt(8.d0*PI**3) * p%rlocal**3 * exp( -g2/2.d0) * &
-           ( p%c(1) + p%c(2)*(3.d0 - g2) + p%c(3)*(15.d0 - 10.d0*g2 + g4) + &
-             p%c(4)*(105.d0 - 105.d0*g2 + 21.d0*g4 - g6) )
+      g1 = g*p%rlocal
+      g2 = g1*g1
+      g4 = g2*g2
+      g6 = g4*g2
+
+      Vloc = -(4.d0*PI*p%zval/g**2) * exp( -g2/2.d0) + &
+              sqrt(8.d0*PI**3) * p%rlocal**3 * exp( -g2/2.d0) * &
+              ( p%c(1) + p%c(2)*(3.d0 - g2) + p%c(3)*(15.d0 - 10.d0*g2 + g4) + &
+                p%c(4)*(105.d0 - 105.d0*g2 + 21.d0*g4 - g6) )
+    ELSE 
+
+      !WRITE(*,*) 'hgh_eval_Vloc_G: small G = ', g
+      Vloc = 2.d0*PI * p%rlocal**2 * p%zval + (2.d0*PI)**(1.5d0) * p%rlocal**3 * & 
+             ( p%c(1) + 3.d0*p%c(2) + 15.d0*p%c(3) + 105.d0*p%c(4) )
+
+    ENDIF 
 
   END FUNCTION
+
 
   !----------------------------------------------------------------------------
   FUNCTION hgh_eval_proj_R(p, l, i, r) RESULT(f_prj)

@@ -27,10 +27,9 @@ SUBROUTINE init_V_ps_loc_H_hgh_G( Npoints, V )
   !! The potential (in real space)
   REAL(8) :: V(Npoints)
 
-  
   INTEGER :: ig
   REAL(8) :: Vol  ! unit cell volume
-  INTEGER :: Ng, Nx, Ny, Nz
+  INTEGER :: Nx, Ny, Nz
   REAL(8) :: z_val
   REAL(8) :: rlocal
   REAL(8) :: c(2)
@@ -40,7 +39,6 @@ SUBROUTINE init_V_ps_loc_H_hgh_G( Npoints, V )
 
   ALLOCATE( ctmp(Npoints) )
 
-  Ng = Npoints
   Nx = NN(1)
   Ny = NN(2)
   Nz = NN(3)
@@ -56,7 +54,7 @@ SUBROUTINE init_V_ps_loc_H_hgh_G( Npoints, V )
 
   ! In the current implementatation Ng = Npoints
   ctmp(1) = cmplx(0.0,0.0,kind=8)
-  DO ig = 2, Npoints
+  DO ig = 1, Npoints
     Gr = sqrt( G2(ig) )*rlocal
     expGr2 = exp(-0.5*Gr**2)
     ctmp(ig) = pre1/G2(ig)*expGr2 + pre2*expGr2 * ( c(1) + c(2)*(3d0 - Gr**2) )

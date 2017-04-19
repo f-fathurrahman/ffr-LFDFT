@@ -13,6 +13,9 @@ SUBROUTINE init_strfact()
   INTEGER :: ia, isp, ig
   REAL(8) :: GX
 
+  WRITE(*,*)
+  WRITE(*,*) 'Calculating structure factor'
+
   ALLOCATE( strf(Ng,Nspecies) )
 
   strf(:,:) = cmplx(0.d0,0.d0,kind=8)
