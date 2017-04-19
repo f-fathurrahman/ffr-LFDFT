@@ -44,6 +44,7 @@ SUBROUTINE init_V_ps_loc_G()
     ! inverse FFT: G -> R
     CALL fft_fftw3( ctmp, Nx, Ny, Nz, .true. )
 
+    ! XXX: Move this outside isp loop ?
     DO ip = 1,Npoints
       V_ps_loc(ip) = V_ps_loc(ip) + real( ctmp(ip), kind=8 )
     ENDDO 

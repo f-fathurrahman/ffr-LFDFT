@@ -10,7 +10,7 @@ SUBROUTINE info_atoms()
   WRITE(*,*)
   WRITE(*,*) 'Valence information:'
   DO isp = 1, Nspecies
-    WRITE(*,'(1x,A4,F10.3)') adjustl(SpeciesSymbols(isp)), AtomicValences(isp)
+    WRITE(*,'(1x,A5,F10.3)') adjustl(SpeciesSymbols(isp)), AtomicValences(isp)
   ENDDO
 
   WRITE(*,*)
@@ -18,7 +18,7 @@ SUBROUTINE info_atoms()
   WRITE(*,*)
   DO ia = 1,Natoms
     isp = atm2species(ia)
-    WRITE(*,'(1x,A4,3F18.10)') trim(SpeciesSymbols(isp)), AtomicCoords(1:3,ia)
+    WRITE(*,'(1x,A5,3F18.10)') adjustl(SpeciesSymbols(isp)), AtomicCoords(1:3,ia)
   ENDDO 
 
 END SUBROUTINE 

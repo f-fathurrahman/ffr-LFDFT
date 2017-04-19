@@ -38,6 +38,9 @@ PROGRAM test_init_V_ps_loc_G
   CALL init_LF3d_p( NN, AA, BB )
   CALL info_LF3d()
 
+  ! Initialize occupation numbers
+  CALL init_states()
+
   CALL init_strfact()
 
   CALL calc_Ewald()
@@ -49,13 +52,7 @@ PROGRAM test_init_V_ps_loc_G
 
   CALL init_V_ps_loc_G()
 
-  ! Initialize electronic states variables
-  Nstates = 1
-
   ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
-  ALLOCATE( Focc(Nstates) )
-
-  Focc(:) = 1.d0
 
   DO ist = 1, Nstates
     DO ip = 1, Npoints
@@ -65,16 +62,14 @@ PROGRAM test_init_V_ps_loc_G
   CALL orthonormalize( Nstates, evecs )
   CALL ortho_check( Npoints, Nstates, dVol, evecs )
 
-  !CALL KS_solve_Emin_cg( 3.d-5, 200, .FALSE. )
-  !CALL KS_solve_Emin_cg( 3.d-4, 200, .FALSE. )
   CALL KS_solve_Emin_pcg( 3.d-5, 200, .FALSE. )
 
   CALL info_energies()
 
+
+  !
   DEALLOCATE( evecs, evals )
   DEALLOCATE( Focc )
-
-
   CALL dealloc_nabla2_sparse()
   CALL dealloc_ilu0_prec()
   CALL dealloc_hamiltonian()

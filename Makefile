@@ -1,6 +1,6 @@
 #include platform/make.inc.ifort
-#include platform/make.inc.gfortran
-include platform/make.inc.g95
+include platform/make.inc.gfortran
+#include platform/make.inc.g95
 
 SRC = \
 m_constants.f90 \
@@ -24,6 +24,7 @@ init_deriv_matrix_p.f90 \
 init_deriv_matrix_c.f90 \
 init_LF3d_p.f90 \
 init_LF3d_c.f90 \
+init_states.f90 \
 info_LF3d.f90 \
 info_PsPot.f90 \
 info_energies.f90 \
