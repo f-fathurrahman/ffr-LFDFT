@@ -35,7 +35,7 @@ SUBROUTINE init_V_ps_loc_G()
 
   DO isp = 1,Nspecies
 
-    DO ip = 2,Npoints
+    DO ip = 1,Npoints
       Gm = sqrt(G2(ip))
       !WRITE(*,*) ip, G2(ip), Gm
       ctmp(ip) = hgh_eval_Vloc_G( Ps(isp), Gm ) * strf(ip,isp) / Omega

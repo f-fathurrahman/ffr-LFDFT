@@ -1,5 +1,6 @@
 PROGRAM test_init_V_ps_loc_G
 
+  USE m_options, ONLY : FREE_NABLA2
   USE m_PsPot, ONLY : PsPot_Dir
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
@@ -49,6 +50,10 @@ PROGRAM test_init_V_ps_loc_G
 
   CALL init_nabla2_sparse()
   CALL init_ilu0_prec()
+
+  IF( FREE_NABLA2 ) THEN 
+    CALL dealloc_nabla2_sparse()
+  ENDIF 
 
   CALL init_V_ps_loc_G()
 
