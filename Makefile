@@ -11,6 +11,10 @@ m_nabla2_sparse.f90 \
 m_hamiltonian.f90 \
 m_states.f90 \
 m_energies.f90 \
+m_Ps_HGH.f90 \
+m_PsPot.f90 \
+init_PsPot.f90 \
+dealloc_PsPot.f90 \
 fft_fftw3.f90 \
 LDA_VWN.f90 \
 init_atoms_xyz.f90 \
@@ -21,6 +25,7 @@ init_deriv_matrix_c.f90 \
 init_LF3d_p.f90 \
 init_LF3d_c.f90 \
 info_LF3d.f90 \
+info_PsPot.f90 \
 info_energies.f90 \
 info_atoms.f90 \
 mm_to_nn.f90 \
@@ -38,7 +43,7 @@ diag_davidson_qe.f90 \
 rdiaghg.f90 \
 alloc_hamiltonian.f90 \
 dealloc_hamiltonian.f90 \
-init_V_ps_loc.f90 \
+init_V_ps_loc_harmonic.f90 \
 ortho_gram_schmidt.f90 \
 orthonormalize.f90 \
 ortho_check.f90 \
@@ -61,8 +66,7 @@ prec_ilu0.f90 \
 dealloc_ilu0_prec.f90 \
 diag_davidson.f90 \
 diag_lobpcg.f90 \
-calc_Ewald.f90 \
-m_Ps_HGH.f90
+calc_Ewald.f90
 
 SPARSKIT_SRC = \
 formats.f \

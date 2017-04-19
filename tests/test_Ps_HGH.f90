@@ -3,7 +3,7 @@ PROGRAM test_hgh
   USE m_Ps_HGH
 
   IMPLICIT NONE
-  TYPE(Ps_HGH_Params) :: ps
+  TYPE(Ps_HGH_Params_T) :: ps
   CHARACTER(64) :: filename
 
   IF( iargc() /= 1 ) THEN 
@@ -13,9 +13,10 @@ PROGRAM test_hgh
 
   CALL getarg(1,filename)
 
-  CALL hgh_init( ps, filename )
+  CALL init_Ps_HGH_Params( ps, filename )
 
-  CALL hgh_info( ps )
+  CALL info_Ps_HGH_Params( ps )
+
   !CALL dump_plot_data( ps )
   !CALL dump_logrid( ps )
 

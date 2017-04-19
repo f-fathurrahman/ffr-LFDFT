@@ -2,9 +2,11 @@
 
 MODULE m_Ps_HGH
 
+  USE m_constants, ONLY : PI
+
   IMPLICIT NONE
 
-  TYPE Ps_HGH_Params
+  TYPE Ps_HGH_Params_T
     CHARACTER(5) :: atom_name
     INTEGER :: zval
     REAL(8) :: rlocal
@@ -23,7 +25,7 @@ CONTAINS
 !  !----------------------------------------------------------------------------
 !  FUNCTION hgh_eval_proj( psp, l, i, r ) RESULT( pil )
 !  !----------------------------------------------------------------------------
-!    TYPE(Ps_HGH_Params) :: psp
+!    TYPE(Ps_HGH_Params_T) :: psp
 !    INTEGER :: l, i  ! l can be zero, i varies from 1 to 3
 !    REAL(8) :: r
 !    REAL(8) :: pil
@@ -35,34 +37,57 @@ CONTAINS
 !    pil = num/denum
 !  END FUNCTION
 
-  FUNCTION hgh_eval_proj(p, l, i, r)
-  !
-    TYPE(Ps_HGH_Params), INTENT(in) :: p
+
+  !----------------------------------------------------------------------------
+  FUNCTION hgh_eval_Vloc_G(p, g) RESULT(Vloc)
+  !----------------------------------------------------------------------------
+    type(Ps_HGH_Params_T), INTENT(in) :: p
+    REAL(8), INTENT(in) :: g
+    REAL(8) :: Vloc
+
+    REAL(8) :: g1, g2, g4, g6
+
+    g1 = g*p%rlocal
+    g2 = g1*g1
+    g4 = g2*g2
+    g6 = g4*g2
+
+    Vloc = -(4.d0*PI*p%zval/g**2) * exp( -g2/2.d0) + &
+           sqrt(8.d0*PI**3) * p%rlocal**3 * exp( -g2/2.d0) * &
+           ( p%c(1) + p%c(2)*(3.d0 - g2) + p%c(3)*(15.d0 - 10.d0*g2 + g4) + &
+             p%c(4)*(105.d0 - 105.d0*g2 + 21.d0*g4 - g6) )
+
+  END FUNCTION
+
+  !----------------------------------------------------------------------------
+  FUNCTION hgh_eval_proj_R(p, l, i, r) RESULT(f_prj)
+  !----------------------------------------------------------------------------
+    TYPE(Ps_HGH_Params_T), INTENT(in) :: p
     REAL(8), INTENT(in) :: r
     INTEGER, INTENT(in) :: i, l
-    REAL(8) :: hgh_eval_proj
+    REAL(8) :: f_prj
 
     REAL(8) :: x, y, rr
 
     x = l + real(4*i-1, kind=8)/2.d0
     y = gamma(x)  ! use intrinsic function ?
     x = sqrt(y)
-    if(l==0 .and. i==1) then
+    IF(l==0 .and. i==1) THEN
       rr = 1.d0
-    else
+    ELSE
       rr = r ** (l + 2*(i-1))
-    end if
+    ENDIF
 
-    hgh_eval_proj = sqrt(2.d0) * rr * exp(-r**2/(2.d0*p%rc(l)**2)) / &
-      (  p%rc(l)**(l + real(4*i-1, kind=8)/2.d0) * x )
+    f_prj = sqrt(2.d0) * rr * exp(-r**2/(2.d0*p%rc(l)**2)) / &
+            ( p%rc(l)**(l + real(4*i-1, kind=8)/2.d0) * x )
 
   END FUNCTION 
 
 
   !----------------------------------------------------------------------------
-  FUNCTION hgh_eval_Vloc( psp, r ) RESULT(Vloc)
+  FUNCTION hgh_eval_Vloc_R( psp, r ) RESULT(Vloc)
   !----------------------------------------------------------------------------
-    TYPE(Ps_HGH_Params) :: psp
+    TYPE(Ps_HGH_Params_T) :: psp
     REAL(8) :: r
     !
     INTEGER :: i
@@ -79,9 +104,9 @@ CONTAINS
 
 
   !----------------------------------------------------------------------------
-  SUBROUTINE hgh_init(psp, filename)
+  SUBROUTINE init_Ps_HGH_Params(psp, filename)
   !----------------------------------------------------------------------------
-    TYPE(Ps_HGH_Params), INTENT(INOUT) :: psp
+    TYPE(Ps_HGH_Params_T), INTENT(INOUT) :: psp
     CHARACTER(len=*), INTENT(IN)  :: filename
 
     INTEGER :: iunit, i, l
@@ -107,7 +132,7 @@ CONTAINS
       DO i = 1,3
         IF( abs( psp%h(l,i,i) ) > 0.d0 ) psp%Nproj_l(l) = psp%Nproj_l(l) + 1
       ENDDO 
-      WRITE(*,*) l, psp%Nproj_l(l)
+      !WRITE(*,*) l, psp%Nproj_l(l)
     ENDDO 
 
     ! Find Nproj_l based on values of rc if Nproj_l == 0
@@ -139,7 +164,7 @@ CONTAINS
   FUNCTION load_params(iunit, params)
   !----------------------------------------------------------------------------
     INTEGER, INTENT(IN)  :: iunit ! where to read from
-    TYPE(Ps_HGH_Params), INTENT(out) :: params ! should INOUT instead?
+    TYPE(Ps_HGH_Params_T), INTENT(out) :: params ! should INOUT instead?
     INTEGER :: load_params ! 0 if success, 1 otherwise.
     CHARACTER(80) :: line
 
@@ -245,7 +270,7 @@ CONTAINS
   !----------------------------------------------------------------------------
   SUBROUTINE find_NL_cutoff( psp )
   !----------------------------------------------------------------------------
-    TYPE(Ps_HGH_Params) :: psp
+    TYPE(Ps_HGH_Params_T) :: psp
     !
     INTEGER :: i, iprj, l
     REAL(8) :: r, rcut_tmp
@@ -263,10 +288,10 @@ CONTAINS
       DO iprj = 1, psp%Nproj_l(l)
         DO i = 1,NRMAX
           r = psp%rc(l) + i*dr
-          f_prj = hgh_eval_proj( psp, l, iprj, r )
+          f_prj = hgh_eval_proj_R( psp, l, iprj, r )
           IF( f_prj < SMALL ) THEN 
             rcut_tmp = r
-            WRITE(*,*) 'l, iprj, i, r', l, iprj, i, rcut_tmp
+            !WRITE(*,*) 'l, iprj, i, r', l, iprj, i, rcut_tmp
             EXIT
           ENDIF 
         ENDDO
@@ -278,9 +303,9 @@ CONTAINS
 
 
   !----------------------------------------------------------------------------
-  SUBROUTINE hgh_info( ps )
+  SUBROUTINE info_Ps_HGH_Params( ps )
   !----------------------------------------------------------------------------
-    TYPE(Ps_HGH_Params) :: ps
+    TYPE(Ps_HGH_Params_T) :: ps
     INTEGER :: i, j, l
 
     WRITE(*,*) 'atom_name = ', trim(ps%atom_name)
@@ -297,22 +322,26 @@ CONTAINS
       WRITE(*,'(6x,I5,F18.10)') i, ps%c(i)
     ENDDO
   
-    WRITE(*,*)
-    WRITE(*,*) 'Nonlocal pseudopotential parameters:'
-    DO l = 0, ps%lmax
+    IF( ps%lmax >= 0 ) THEN
+
       WRITE(*,*)
-      WRITE(*,*) 'Matrix h for l = ', l
-      WRITE(*,*) 'Nproj_l        = ', ps%Nproj_l(l)
-      WRITE(*,*) 'rc             = ', ps%rc(l)
-      WRITE(*,*) 'rcut_NL        = ', ps%rcut_NL(l)
-      DO i = 1, 3
+      WRITE(*,*) 'Nonlocal pseudopotential parameters:'
+      DO l = 0, ps%lmax
         WRITE(*,*)
-        DO j = 1, 3
-          WRITE(*,'(F18.10)',advance='no') ps%h(l,i,j)
+        WRITE(*,*) 'Matrix h for l = ', l
+        WRITE(*,*) 'Nproj_l        = ', ps%Nproj_l(l)
+        WRITE(*,*) 'rc             = ', ps%rc(l)
+        WRITE(*,*) 'rcut_NL        = ', ps%rcut_NL(l)
+        DO i = 1, 3
+          WRITE(*,*)
+          DO j = 1, 3
+            WRITE(*,'(F18.10)',advance='no') ps%h(l,i,j)
+          ENDDO
         ENDDO
+        WRITE(*,*)
       ENDDO
-      WRITE(*,*)
-    ENDDO
+
+    ENDIF
   END SUBROUTINE
 
 
