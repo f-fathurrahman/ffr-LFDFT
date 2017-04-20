@@ -3,10 +3,6 @@
 INC="-I../"
 LIB="../libmain.a -lblas -llapack -lfftw3"
 
-cd ../
-make Makefile
-cd tests/
-
 bas=`basename $1 .f90`
 
 # remove the previous executable

@@ -48,6 +48,7 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
   LOGICAL, ALLOCATABLE :: conv(:) ! true if the root is converged
   REAL(DP) :: empty_ethr ! threshold for empty bands
   REAL(DP), EXTERNAL :: ddot
+  INTEGER :: ib
   !
   IF ( nvec > nvecx / 2 ) THEN
     WRITE(*,*) 'Error in diag_davidson_qe: nvec is too small'
@@ -104,7 +105,6 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
   CALL rdiaghg( Nred, nvec, hr, sr, nvecx, ew, vr )
   !
   e(1:nvec) = ew(1:nvec)
-  WRITE(*,*) 'nvecx = ', nvecx
   !
   !
   ! ... iterate
@@ -159,7 +159,9 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
      !
      !CALL g_psi( Nbasis, Nbasis, notcnv, 1, psi(1,nb1), ew(nb1) )
      !WRITE(*,*) 'nb1 = ', nb1
-     CALL prec_ilu0_inplace( psi(1,nb1) )
+     DO ib = 1,notcnv
+       CALL prec_ilu0_inplace( psi(:,nb1+ib-1) )
+     ENDDO
      !
      !
      ! ... "normalize" correction vectors psi(:,nb1:Nred+notcnv) in
@@ -228,9 +230,9 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
         conv(1:nvec) = ( ( ABS( ew(1:nvec) - e(1:nvec) ) < empty_ethr ) )
         !
      END WHERE
-     DO n = 1,nvec
-       WRITE(*,*) n, ABS( ew(1:nvec) - e(1:nvec) )
-     ENDDO
+     !DO n = 1,nvec
+     !  WRITE(*,*) n, ABS( ew(1:nvec) - e(1:nvec) )
+     !ENDDO
      !
      notcnv = COUNT( .NOT. conv(:) )
      !

@@ -23,15 +23,12 @@ SUBROUTINE Sch_solve_diag()
   USE m_states, ONLY : Nstates, &
                        evecs => KS_evecs, &
                        evals => KS_evals
-
+  USE m_options, ONLY : ethr => DIAG_DAVIDSON_QE_ETHR
   IMPLICIT NONE 
   INTEGER, ALLOCATABLE :: btype(:)
-  INTEGER, PARAMETER :: Nstages = 3
-  REAL(8) :: ethr(Nstages)
-  INTEGER :: dav_iter(Nstages)
+  INTEGER :: dav_iter
   INTEGER :: notcnv
-  INTEGER :: istage, ist !, ip
-  INTEGER :: NiterTot
+  INTEGER :: ist
 
   ! starting from random eigenvectors
 !  DO ist = 1, Nstates
@@ -44,28 +41,14 @@ SUBROUTINE Sch_solve_diag()
   ALLOCATE( btype(Nstates) )
   btype(:) = 1 ! all bands are occupied
 
-  ethr(1) = 1.d-1
-  ethr(2) = 1.d-3
-  ethr(3) = 1.d-6
-
-  NiterTot = 0
-
   WRITE(*,*)
   WRITE(*,*) 'Solving Schrodinger equation with Davidson iterative diagonalization'
   WRITE(*,*)
-  DO istage = 1, Nstages
     
-    CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr(istage), &
-                           evals, btype, notcnv, dav_iter(istage) )
+  CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
+                         evals, btype, notcnv, dav_iter )
     
-    WRITE(*,fmt=999) 'Davidson stage: ', istage, ' ethr = ', ethr(istage), ' dav_iter = ', dav_iter(istage)
-
-    NiterTot = NiterTot + dav_iter(istage)
-
-  ENDDO
-  WRITE(*,'(1x,A,I10)') 'NiterTot = ', NiterTot
- 
-  999 FORMAT(1x,A,I2,A,ES11.4,A,I5)
+  WRITE(*,'(1x,A,ES18.10,A,I4)') 'Davidson_QE: ethr = ', ethr, ' dav_iter = ', dav_iter
 
   WRITE(*,*)
   WRITE(*,*) 'Eigenvalues:'

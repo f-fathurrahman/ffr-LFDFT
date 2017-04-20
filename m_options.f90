@@ -12,5 +12,7 @@ MODULE m_options
   ! whether free nabla2 after constructing matrix or not
   LOGICAL :: FREE_NABLA2 = .FALSE.
 
+  REAL(8) :: DIAG_DAVIDSON_QE_ETHR = 1.0d-5
+
 END MODULE 
 
