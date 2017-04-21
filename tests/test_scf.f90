@@ -80,7 +80,7 @@ PROGRAM test_scf
 
   ALLOCATE( Rhoe_old(Npoints) )
 
-  beta0 = 0.05d0
+  beta0 = 0.1d0
   betamax = 1.d0
   ! Broyden parameters recommended by M. Meinert
   mixsdb = 5
@@ -93,7 +93,8 @@ PROGRAM test_scf
   Etot_old = 0.d0
   Rhoe_old(:) = Rhoe(:)
 
-  CALL mixadapt( 0, beta0, betamax, Npoints, Rhoe, Rhoe_old, beta_work, f_work, dr2 )
+  !CALL mixadapt( 0, beta0, betamax, Npoints, Rhoe, Rhoe_old, beta_work, f_work, dr2 )
+  
   dr2 = 1.d0
   DO iterSCF = 1, 100
 
@@ -125,9 +126,9 @@ PROGRAM test_scf
 
     !Rhoe(:) = 0.5d0*Rhoe(:) + 0.5d0*Rhoe_old(:)
     !CALL mixerifc( iterSCF, 1, Npoints, Rhoe, dr2, Npoints, Rhoe_old )
-    !CALL mixlinear( iterSCF, 0.5d0, Npoints, Rhoe, Rhoe_old, dr2 )
+    CALL mixlinear( iterSCF, 0.5d0, Npoints, Rhoe, Rhoe_old, dr2 )
 
-    CALL mixadapt( iterSCF, beta0, betamax, Npoints, Rhoe, Rhoe_old, beta_work, f_work, dr2 )
+    !CALL mixadapt( iterSCF, beta0, betamax, Npoints, Rhoe, Rhoe_old, beta_work, f_work, dr2 )
 
     !IF( iterSCF > 2 ) THEN 
     !  dr2 = sqrt( ddot( Npoints, Rhoe(:)-Rhoe_old(:), 1, Rhoe(:)-Rhoe_old(:), 1 ) )

@@ -155,10 +155,8 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
                  hpsi, Nbasis, vr, nvecx, 1.D0, psi(1,nb1), Nbasis )
      !
      !
-     ! ... approximate inverse iteration
+     ! ... approximate inverse iteration / preconditioning
      !
-     !CALL g_psi( Nbasis, Nbasis, notcnv, 1, psi(1,nb1), ew(nb1) )
-     !WRITE(*,*) 'nb1 = ', nb1
      DO ib = 1,notcnv
        CALL prec_ilu0_inplace( psi(:,nb1+ib-1) )
      ENDDO

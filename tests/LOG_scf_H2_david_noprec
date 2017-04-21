@@ -1,0 +1,866 @@
+
+ Grid related variables
+ ^^^^^^^^^^^^^^^^^^^^^^
+
+ Box size            =   16.00000  16.00000  16.00000
+ Grid spacing        =    0.29091   0.29091   0.29091
+ Sampling Nx, Ny, Nz =    55   55   55
+ Number of points    =     166375
+ dVol                =    0.02462
+
+ Some grid points in x, y, and z directions:
+
+        1   0.14545       1   0.14545       1   0.14545
+        2   0.43636       2   0.43636       2   0.43636
+       ..   .......      ..   .......      ..   .......
+       54  15.56364      54  15.56364      54  15.56364
+       55  15.85455      55  15.85455      55  15.85455
+
+ Some G2 values
+
+          1   0.00000
+          2   0.15421
+        ...   .......
+     166374   0.92528
+     166375   0.46264
+
+ Number of electrons =            2.00000
+ Nstates =        1
+
+ Initial occupation numbers
+        1           2.00000
+
+ Calculating structure factor
+
+ Calculating Ewald energy (E_nn)
+
+ Using the following parameters for Gaussian charge densities:
+ H         0.250
+
+ H            =       2.0000055986
+ Total intrho =       2.0000055986
+
+ E_nn         =       0.3145052311
+ Memory required for nabla2_sparse:  0.30369963869452477       GB
+ ip =     27119125
+ NNZ =     27119125
+ Initializing ILU0 preconditioner
+
+ Initializing V_ps_loc via G-space
+ sum(V_ps_loc):  -0.10543391757396749     
+ sum(V_ps_loc) =  -0.10543391757396749     
+
+ Checking orthonormalization
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+ Norms:
+        1      1.0000000000
+
+ Check wrt to vector 1
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ Davidson_QE: ethr =   1.0000000000E-01 dav_iter =    4
+
+ Eigenvalues:
+
+    1      0.0313786811
+
+ SCF iter    1      0.3830765675  3.8307656752E-01  1.0000000000E+00
+ After mix: integRho =       2.0000040960
+ Rescaling Rho
+ After rescaling: integRho =       2.0000000000
+ ethr =   2.0000000000E-03
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ kter =           13
+ kter =           14
+ kter =           15
+ kter =           16
+ kter =           17
+ kter =           18
+ kter =           19
+ kter =           20
+ kter =           21
+ kter =           22
+ kter =           23
+ kter =           24
+ kter =           25
+ kter =           26
+ kter =           27
+ kter =           28
+ kter =           29
+ kter =           30
+ kter =           31
+ kter =           32
+ kter =           33
+ kter =           34
+ kter =           35
+ kter =           36
+ kter =           37
+ kter =           38
+ kter =           39
+ kter =           40
+ kter =           41
+ kter =           42
+ kter =           43
+ kter =           44
+ kter =           45
+ kter =           46
+ kter =           47
+ kter =           48
+ kter =           49
+ kter =           50
+ kter =           51
+ kter =           52
+ kter =           53
+ kter =           54
+ kter =           55
+ kter =           56
+ kter =           57
+ kter =           58
+ kter =           59
+ kter =           60
+ kter =           61
+ kter =           62
+ kter =           63
+ kter =           64
+ kter =           65
+ kter =           66
+ kter =           67
+ kter =           68
+ kter =           69
+ kter =           70
+ kter =           71
+ kter =           72
+ kter =           73
+ kter =           74
+ kter =           75
+ kter =           76
+ kter =           77
+ kter =           78
+ kter =           79
+ kter =           80
+ kter =           81
+ kter =           82
+ kter =           83
+ kter =           84
+ kter =           85
+ kter =           86
+ kter =           87
+ kter =           88
+ kter =           89
+ kter =           90
+ kter =           91
+ kter =           92
+ kter =           93
+ kter =           94
+ kter =           95
+ kter =           96
+ kter =           97
+ kter =           98
+ kter =           99
+ kter =          100
+     WARNING:     1 eigenvalues not converged in regterg
+ Davidson_QE: ethr =   2.0000000000E-03 dav_iter =  100
+
+ Eigenvalues:
+
+    1     -0.9353363563
+
+ SCF iter    2      1.3278927958  9.4481622829E-01  4.1153787564E-04
+ After mix: integRho =       1.9733310141
+ Rescaling Rho
+ After rescaling: integRho =       2.0000000000
+ ethr =   4.0000000000E-04
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ kter =           13
+ kter =           14
+ kter =           15
+ kter =           16
+ kter =           17
+ kter =           18
+ kter =           19
+ kter =           20
+ kter =           21
+ kter =           22
+ kter =           23
+ kter =           24
+ Davidson_QE: ethr =   4.0000000000E-04 dav_iter =   24
+
+ Eigenvalues:
+
+    1     -0.9392712079
+
+ SCF iter    3      0.8206238988  5.0726889699E-01  6.6511567227E-03
+ After mix: integRho =       1.9827102581
+ Rescaling Rho
+ After rescaling: integRho =       2.0000000000
+ ethr =   8.0000000000E-05
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ Davidson_QE: ethr =   8.0000000000E-05 dav_iter =   12
+
+ Eigenvalues:
+
+    1     -0.7245010706
+
+ SCF iter    4      0.0039334068  8.1669049201E-01  5.8939525292E-03
+ After mix: integRho =       1.9880758581
+ Rescaling Rho
+ After rescaling: integRho =       2.0000000000
+ ethr =   1.6000000000E-05
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ kter =           13
+ kter =           14
+ kter =           15
+ kter =           16
+ kter =           17
+ kter =           18
+ kter =           19
+ kter =           20
+ kter =           21
+ kter =           22
+ kter =           23
+ kter =           24
+ Davidson_QE: ethr =   1.6000000000E-05 dav_iter =   24
+
+ Eigenvalues:
+
+    1     -0.5324606488
+
+ SCF iter    5     -0.6755458295  6.7947923628E-01  3.7384638715E-03
+ After mix: integRho =       1.9914280183
+ Rescaling Rho
+ After rescaling: integRho =       2.0000000000
+ ethr =   3.2000000000E-06
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ kter =           13
+ kter =           14
+ kter =           15
+ kter =           16
+ kter =           17
+ kter =           18
+ kter =           19
+ kter =           20
+ kter =           21
+ kter =           22
+ kter =           23
+ kter =           24
+ kter =           25
+ kter =           26
+ kter =           27
+ kter =           28
+ kter =           29
+ kter =           30
+ kter =           31
+ kter =           32
+ kter =           33
+ kter =           34
+ kter =           35
+ kter =           36
+ kter =           37
+ kter =           38
+ kter =           39
+ kter =           40
+ kter =           41
+ kter =           42
+ kter =           43
+ kter =           44
+ kter =           45
+ kter =           46
+ kter =           47
+ kter =           48
+ Davidson_QE: ethr =   3.2000000000E-06 dav_iter =   48
+
+ Eigenvalues:
+
+    1     -0.4180543618
+
+ SCF iter    6     -1.0465217258  3.7097589634E-01  1.6790520085E-03
+ After mix: integRho =       1.9974796466
+ Rescaling Rho
+ After rescaling: integRho =       2.0000000000
+ ethr =   6.4000000000E-07
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ kter =           13
+ kter =           14
+ kter =           15
+ kter =           16
+ kter =           17
+ kter =           18
+ kter =           19
+ kter =           20
+ kter =           21
+ kter =           22
+ kter =           23
+ kter =           24
+ kter =           25
+ kter =           26
+ kter =           27
+ kter =           28
+ kter =           29
+ kter =           30
+ kter =           31
+ kter =           32
+ kter =           33
+ kter =           34
+ kter =           35
+ kter =           36
+ kter =           37
+ kter =           38
+ kter =           39
+ kter =           40
+ kter =           41
+ kter =           42
+ kter =           43
+ kter =           44
+ kter =           45
+ kter =           46
+ kter =           47
+ kter =           48
+ kter =           49
+ kter =           50
+ kter =           51
+ kter =           52
+ kter =           53
+ kter =           54
+ Davidson_QE: ethr =   6.4000000000E-07 dav_iter =   54
+
+ Eigenvalues:
+
+    1     -0.3726540006
+
+ SCF iter    7     -1.1621363369  1.1561461105E-01  6.4664528957E-04
+ After mix: integRho =       2.0033616627
+ Rescaling Rho
+ After rescaling: integRho =       2.0000000000
+ ethr =   1.2800000000E-07
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ kter =           13
+ kter =           14
+ kter =           15
+ kter =           16
+ kter =           17
+ kter =           18
+ kter =           19
+ kter =           20
+ kter =           21
+ kter =           22
+ kter =           23
+ kter =           24
+ kter =           25
+ kter =           26
+ kter =           27
+ kter =           28
+ kter =           29
+ kter =           30
+ kter =           31
+ kter =           32
+ kter =           33
+ kter =           34
+ kter =           35
+ kter =           36
+ kter =           37
+ kter =           38
+ kter =           39
+ kter =           40
+ kter =           41
+ kter =           42
+ Davidson_QE: ethr =   1.2800000000E-07 dav_iter =   42
+
+ Eigenvalues:
+
+    1     -0.3623990814
+
+ SCF iter    8     -1.1669969164  4.8605795427E-03  4.0437799671E-04
+ After mix: integRho =       2.0018861745
+ Rescaling Rho
+ After rescaling: integRho =       2.0000000000
+ ethr =   2.5600000000E-08
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ kter =           13
+ kter =           14
+ kter =           15
+ kter =           16
+ kter =           17
+ kter =           18
+ kter =           19
+ kter =           20
+ kter =           21
+ kter =           22
+ kter =           23
+ kter =           24
+ kter =           25
+ kter =           26
+ kter =           27
+ kter =           28
+ kter =           29
+ kter =           30
+ kter =           31
+ kter =           32
+ kter =           33
+ kter =           34
+ kter =           35
+ kter =           36
+ Davidson_QE: ethr =   2.5600000000E-08 dav_iter =   36
+
+ Eigenvalues:
+
+    1     -0.3630276131
+
+ SCF iter    9     -1.1508653684  1.6131547979E-02  2.3350823854E-04
+ After mix: integRho =       2.0000012671
+ Rescaling Rho
+ After rescaling: integRho =       2.0000000000
+ ethr =   5.1200000000E-09
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ kter =           13
+ kter =           14
+ kter =           15
+ kter =           16
+ kter =           17
+ kter =           18
+ kter =           19
+ kter =           20
+ kter =           21
+ kter =           22
+ kter =           23
+ kter =           24
+ Davidson_QE: ethr =   5.1200000000E-09 dav_iter =   24
+
+ Eigenvalues:
+
+    1     -0.3648222428
+
+ SCF iter   10     -1.1402604906  1.0604877859E-02  9.6738010502E-05
+ After mix: integRho =       1.9998273657
+ Rescaling Rho
+ After rescaling: integRho =       2.0000000000
+ ethr =   1.0240000000E-09
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ kter =           13
+ kter =           14
+ kter =           15
+ kter =           16
+ kter =           17
+ kter =           18
+ kter =           19
+ kter =           20
+ kter =           21
+ kter =           22
+ kter =           23
+ kter =           24
+ Davidson_QE: ethr =   1.0240000000E-09 dav_iter =   24
+
+ Eigenvalues:
+
+    1     -0.3657630443
+
+ SCF iter   11     -1.1357673445  4.4931460862E-03  2.9022711841E-05
+ After mix: integRho =       2.0000615366
+ Rescaling Rho
+ After rescaling: integRho =       2.0000000000
+ ethr =   2.0480000000E-10
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ kter =           13
+ kter =           14
+ kter =           15
+ kter =           16
+ kter =           17
+ kter =           18
+ kter =           19
+ kter =           20
+ kter =           21
+ kter =           22
+ kter =           23
+ kter =           24
+ kter =           25
+ kter =           26
+ kter =           27
+ kter =           28
+ kter =           29
+ kter =           30
+ Davidson_QE: ethr =   2.0480000000E-10 dav_iter =   30
+
+ Eigenvalues:
+
+    1     -0.3659857088
+
+ SCF iter   12     -1.1348056797  9.6166482285E-04  5.6461455862E-06
+ After mix: integRho =       1.9999833326
+ Rescaling Rho
+ After rescaling: integRho =       2.0000000000
+ ethr =   4.0960000000E-11
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ kter =           13
+ kter =           14
+ kter =           15
+ kter =           16
+ kter =           17
+ kter =           18
+ kter =           19
+ Davidson_QE: ethr =   4.0960000000E-11 dav_iter =   19
+
+ Eigenvalues:
+
+    1     -0.3659536920
+
+ SCF iter   13     -1.1349846180  1.7893831470E-04  3.2957547976E-06
+ After mix: integRho =       1.9999713480
+ Rescaling Rho
+ After rescaling: integRho =       2.0000000000
+ ethr =   8.1920000000E-12
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ kter =           13
+ kter =           14
+ kter =           15
+ kter =           16
+ kter =           17
+ kter =           18
+ Davidson_QE: ethr =   8.1920000000E-12 dav_iter =   18
+
+ Eigenvalues:
+
+    1     -0.3659217236
+
+ SCF iter   14     -1.1351270926  1.4247459539E-04  1.6163961180E-06
+ After mix: integRho =       1.9999918024
+ Rescaling Rho
+ After rescaling: integRho =       2.0000000000
+ ethr =   1.6384000000E-12
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ kter =           13
+ kter =           14
+ kter =           15
+ kter =           16
+ kter =           17
+ kter =           18
+ kter =           19
+ kter =           20
+ kter =           21
+ kter =           22
+ kter =           23
+ kter =           24
+ kter =           25
+ kter =           26
+ kter =           27
+ kter =           28
+ kter =           29
+ kter =           30
+ kter =           31
+ kter =           32
+ kter =           33
+ kter =           34
+ kter =           35
+ kter =           36
+ kter =           37
+ kter =           38
+ kter =           39
+ kter =           40
+ kter =           41
+ kter =           42
+ Davidson_QE: ethr =   1.6384000000E-12 dav_iter =   42
+
+ Eigenvalues:
+
+    1     -0.3659092666
+
+ SCF iter   15     -1.1351899806  6.2887977888E-05  5.7327040561E-07
+ After mix: integRho =       2.0000010547
+ Rescaling Rho
+ After rescaling: integRho =       2.0000000000
+ ethr =   3.2768000000E-13
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ kter =           13
+ kter =           14
+ kter =           15
+ kter =           16
+ kter =           17
+ kter =           18
+ kter =           19
+ kter =           20
+ kter =           21
+ kter =           22
+ kter =           23
+ kter =           24
+ Davidson_QE: ethr =   3.2768000000E-13 dav_iter =   24
+
+ Eigenvalues:
+
+    1     -0.3659086132
+
+ SCF iter   16     -1.1351983161  8.3355729721E-06  1.3768769488E-07
+ After mix: integRho =       2.0000006999
+ ethr =   1.0000000000E-13
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ kter =            2
+ kter =            3
+ kter =            4
+ kter =            5
+ kter =            6
+ kter =            7
+ kter =            8
+ kter =            9
+ kter =           10
+ kter =           11
+ kter =           12
+ kter =           13
+ Davidson_QE: ethr =   1.0000000000E-13 dav_iter =   13
+
+ Eigenvalues:
+
+    1     -0.3659092685
+
+ SCF iter   17     -1.1351968966  1.4194848887E-06  4.1671749939E-08
+ After mix: integRho =       2.0000003391
+ ethr =   1.0000000000E-13
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ Davidson_QE: ethr =   1.0000000000E-13 dav_iter =    1
+
+ Eigenvalues:
+
+    1     -0.3659099760
+
+ SCF iter   18     -1.1351947583  2.1383435858E-06  1.9005204312E-08
+ After mix: integRho =       2.0000001027
+ ethr =   1.0000000000E-13
+
+ Solving Schrodinger equation with Davidson iterative diagonalization
+
+ kter =            1
+ Davidson_QE: ethr =   1.0000000000E-13 dav_iter =    1
+
+ Eigenvalues:
+
+    1     -0.3659102899
+
+ SCF converged!!!
+
+ Energy components:
+
+ Kinetic  =       1.0538241441
+ Local PS =      -2.7789321650
+ Hartree  =       0.9131023726
+ XC       =      -0.6376933633
+ NN       =       0.3145052311
+ -----------------------------
+ Total    =      -1.1351937805

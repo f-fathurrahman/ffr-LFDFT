@@ -1,9 +1,9 @@
-SUBROUTINE diag_davidson( Nstates, evals, v )
+SUBROUTINE diag_davidson( evals, v, TOLERANCE )
   
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
+  USE m_states, ONLY : Nstates
   IMPLICIT NONE
   ! Arguments
-  INTEGER :: Nstates
   REAL(8) :: v(Npoints,Nstates)
   REAL(8) :: evals(Nstates)
   ! Local variable
@@ -31,8 +31,6 @@ SUBROUTINE diag_davidson( Nstates, evals, v )
   ALLOCATE( HR(Npoints,Nstates) )
   ALLOCATE( xtemp(Npoints,Nstates) )
 
-  WRITE(*,*) 'Calling davidson'
-
   ! Apply Hamiltonian
   CALL op_H( Nstates, V, HV ) 
 
@@ -47,11 +45,11 @@ SUBROUTINE diag_davidson( Nstates, evals, v )
     RES_TOL(ist) = SQRT( ddot(Npoints, R(:,ist),1, R(:,ist),1) )
   ENDDO
 
-  istEP = 1
+  istep = 1
   IS_CONVERGED = .FALSE.
   MAX_DIR = 100
   MACHINE_ZERO = 2.220446049250313D-16
-  TOLERANCE = 1.0D-7
+  !TOLERANCE = 1.0D-7
   RNORM = 1.D0
 
   DO WHILE ( (istep <= MAX_DIR) .AND. (.NOT.IS_CONVERGED) )
@@ -59,17 +57,18 @@ SUBROUTINE diag_davidson( Nstates, evals, v )
     WRITE(*,'(I8,F18.10)') istep, RNORM
     RES_NORM = 1.D0
 
-    WHERE(MACHINE_ZERO < RES_TOL) RES_NORM = 1.d0/RES_TOL
-    !WRITE(*,*) 'RES_NORM:'
+    !WHERE(MACHINE_ZERO < RES_TOL) RES_NORM = 1.d0/RES_TOL
+    !WRITE(*,*) 'RES_NORM:', RES_NORM
+    
     DO ist = 1,Nstates
       IF(MACHINE_ZERO < RES_TOL(ist)) RES_NORM(ist) = 1.D0/RES_TOL(ist)
-      WRITE(*,*) ist, RES_NORM(ist)
+      !WRITE(*,*) ist, RES_NORM(ist)
     END DO
 
     ! Scale the residual vectors
-    !DO ist=1,Nstates
-    !  R(:,ist) = RES_NORM(ist)*R(:,ist)
-    !ENDDO
+    DO ist=1,Nstates
+      R(:,ist) = RES_NORM(ist)*R(:,ist)
+    ENDDO
 
     ! Apply preconditioner
     DO ist=1,Nstates
@@ -150,7 +149,7 @@ SUBROUTINE diag_davidson( Nstates, evals, v )
     DO ist=1,Nstates
       R(:,ist) = evals(ist)*V(:,ist) - HV(:,ist)
       RES_TOL(ist) = SQRT( ddot(Npoints, R(:,ist),1, R(:,ist),1) )
-      !WRITE(*,'(1X,I5,F18.10,ES18.10)') ist, evals(ist), RES_TOL(ist)
+      WRITE(*,'(1X,I5,F18.10,ES18.10)') ist, evals(ist), RES_TOL(ist)
     ENDDO
    
     RNORM = SUM(RES_TOL)/REAL(Nstates, kind=8)

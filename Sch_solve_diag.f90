@@ -47,6 +47,7 @@ SUBROUTINE Sch_solve_diag()
     
   CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
                          evals, btype, notcnv, dav_iter )
+  !CALL diag_davidson( evals, evecs, 1d-7 )
     
   WRITE(*,'(1x,A,ES18.10,A,I4)') 'Davidson_QE: ethr = ', ethr, ' dav_iter = ', dav_iter
 
