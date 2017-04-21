@@ -38,6 +38,8 @@ SUBROUTINE init_atoms_xyz( fil_xyz )
     !WRITE(*,'(1x,A,3G18.10)') trim(atoms%atmSymb(ia)), atoms%positions(1,ia), &
     !  atoms%positions(2,ia), atoms%positions(3,ia)
   ENDDO
+  CLOSE(unitxyz)
+
   !
   ! convert from angstrom to bohr
   AtomicCoords(:,:) = AtomicCoords(:,:) * ANG2BOHR

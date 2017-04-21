@@ -68,7 +68,11 @@ prec_ilu0.f90 \
 dealloc_ilu0_prec.f90 \
 diag_davidson.f90 \
 diag_lobpcg.f90 \
-calc_Ewald.f90
+calc_Ewald.f90 \
+mixadapt.f90 \
+mixbroyden.f90 \
+mixerifc.f90 \
+mixlinear.f90
 
 SPARSKIT_SRC = \
 formats.f \

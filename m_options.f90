@@ -14,5 +14,18 @@ MODULE m_options
 
   REAL(8) :: DIAG_DAVIDSON_QE_ETHR = 1.0d-5
 
+  ! type of mixing to use for the potential
+  integer :: mixtype
+  ! mixing type description
+  character(256) :: mixdescr
+  ! adaptive mixing parameter
+  REAL(8) :: beta0
+  REAL(8) :: betamax
+  ! subspace dimension for Broyden mixing
+  INTEGER :: mixsdb
+  ! Broyden mixing parameters alpha and w0
+  REAL(8) :: broydpm(2)
+
+
 END MODULE 
 
