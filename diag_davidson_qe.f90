@@ -110,7 +110,7 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
   ! ... iterate
   !
   iterate: DO kter = 1, maxter
-     WRITE(*,*) 'kter = ', kter
+     !WRITE(*,*) 'kter = ', kter
      !
      dav_iter = kter
      !     !

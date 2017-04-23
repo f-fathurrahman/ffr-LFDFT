@@ -73,8 +73,7 @@ PROGRAM test_sch
   ethr = 1.d-6
   !CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
   !                       evals, btype, notcnv, dav_iter )
-  !CALL diag_davidson( Nstates, evals, evecs )
-  !CALL diag_davidson( Nstates, evals, evecs )
+  !CALL diag_davidson( evals, evecs, ethr )
   CALL diag_lobpcg( Nstates, evals, evecs )
 
   WRITE(*,*) 'dav_iter = ', dav_iter
