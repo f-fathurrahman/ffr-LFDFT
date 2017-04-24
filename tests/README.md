@@ -24,3 +24,5 @@ for l = 1, nbeta = 3
 for l = 2, nbeta = 5
 for l = 3, nbeta = 7
 
+Pseudopotentials with only local component: H, He, Li\_sc and Be\_sc
+

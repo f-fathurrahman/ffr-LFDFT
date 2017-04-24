@@ -1,4 +1,4 @@
-PROGRAM test_init_V_ps_loc_G
+PROGRAM do_Emin_pcg
 
   USE m_options, ONLY : FREE_NABLA2
   USE m_PsPot, ONLY : PsPot_Dir
@@ -82,4 +82,5 @@ PROGRAM test_init_V_ps_loc_G
   CALL dealloc_PsPot()
   CALL dealloc_atoms()
 
-END PROGRAM 
+END PROGRAM
+
