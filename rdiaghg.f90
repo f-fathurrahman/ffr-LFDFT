@@ -112,9 +112,18 @@ SUBROUTINE rdiaghg( n, m, h, s, ldh, e, v )
   !
   DEALLOCATE( work )
   !
-  IF ( info > n ) WRITE(*,*) 'rdiaghg: S matrix not positive definite', ABS( info )
-  IF ( info > 0 ) WRITE(*,*) 'rdiaghg: eigenvectors failed to converge', ABS( info )
-  IF ( info < 0 ) WRITE(*,*) 'rdiaghg: incorrect call to DSYGV*', ABS( info )
+  IF ( info > n ) THEN
+    WRITE(*,*) 'ERROR in rdiaghg: S matrix not positive definite', ABS( info )
+    STOP
+  ENDIF
+  IF ( info > 0 ) THEN 
+    WRITE(*,*) 'ERROR in rdiaghg: eigenvectors failed to converge', ABS( info )
+    STOP 
+  ENDIF 
+  IF ( info < 0 ) THEN
+    WRITE(*,*) 'ERROR in rdiaghg: incorrect call to DSYGV*', ABS( info )
+    STOP 
+  ENDIF 
   
   ! ... restore input S matrix from saved diagonal and lower triangle
   !
@@ -132,4 +141,5 @@ SUBROUTINE rdiaghg( n, m, h, s, ldh, e, v )
   !
   RETURN
   !
-END SUBROUTINE rdiaghg
+END SUBROUTINE
+

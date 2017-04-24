@@ -31,6 +31,8 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
   ALLOCATE( HR(Npoints,Nstates) )
   ALLOCATE( xtemp(Npoints,Nstates) )
 
+  CALL ortho_gram_schmidt( V, Npoints, Npoints, Nstates )
+
   ! Apply Hamiltonian
   CALL op_H( Nstates, V, HV ) 
 

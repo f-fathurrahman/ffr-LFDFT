@@ -3,8 +3,8 @@
 !------------------------------------------------
 SUBROUTINE diag_lobpcg( Nstates, LAMBDA, X )
 !------------------------------------------------
-  use m_LF3d, only : Npoints => LF3d_Npoints
-  implicit none
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
+  IMPLICIT NONE 
   ! arguments
   integer :: Nstates
   integer :: ik
@@ -43,21 +43,21 @@ SUBROUTINE diag_lobpcg( Nstates, LAMBDA, X )
   Nstates2 = Nstates*2
   Nstates3 = Nstates*3
 
-! Allocate memory
-  allocate(Q(Npoints,Nstates3)); Q(:,:) = 0.d0
-  allocate(HQ(Npoints,Nstates3)); HQ(:,:) = 0.d0
-  allocate(temp1(Nstates,Nstates)); temp1(:,:) = 0.d0
-  allocate(T(Nstates3,Nstates3)); T(:,:) = 0.d0
-  allocate(G(Nstates3,Nstates3)); G(:,:) = 0.d0
-  allocate(tempX(Npoints,Nstates)); tempX(:,:) = 0.d0
-  allocate(U(Nstates3,Nstates3)); U(:,:) = 0.d0
-  allocate(resnrm(Nstates)); resnrm(:) = 0.d0
+  ! Allocate memory
+  ALLOCATE(Q(Npoints,Nstates3)); Q(:,:) = 0.d0
+  ALLOCATE(HQ(Npoints,Nstates3)); HQ(:,:) = 0.d0
+  ALLOCATE(temp1(Nstates,Nstates)); temp1(:,:) = 0.d0
+  ALLOCATE(T(Nstates3,Nstates3)); T(:,:) = 0.d0
+  ALLOCATE(G(Nstates3,Nstates3)); G(:,:) = 0.d0
+  ALLOCATE(tempX(Npoints,Nstates)); tempX(:,:) = 0.d0
+  ALLOCATE(U(Nstates3,Nstates3)); U(:,:) = 0.d0
+  ALLOCATE(resnrm(Nstates)); resnrm(:) = 0.d0
 
   ALLOCATE( evals_T(Nstates3) ); evals_T(:) = 0.d0
 
   mem = (7.d0*Npoints*Nstates3 + Nstates*Nstates + 3.d0*Nstates3*Nstates3)*16.0
   mem = mem + Nstates*8.0
-  write(*,*) 'Allocated dynamic memory in LOBPCG = ', mem/1024.d0/1024.d0
+  WRITE(*,*) 'Allocated dynamic memory in LOBPCG = ', mem/1024.d0/1024.d0
 
   ! Initial wavefunction
   Q(1:Npoints,1:Nstates) = X(:,:)

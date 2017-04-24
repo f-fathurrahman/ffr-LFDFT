@@ -45,9 +45,12 @@ SUBROUTINE Sch_solve_diag()
   WRITE(*,*) 'Solving Schrodinger equation with Davidson iterative diagonalization'
   WRITE(*,*)
     
-  CALL diag_davidson_qe( Npoints, Nstates, 2*Nstates, evecs, ethr, &
-                         evals, btype, notcnv, dav_iter )
+  !CALL diag_davidson_qe( Npoints, Nstates, 2*Nstates, evecs, ethr, &
+  !                       evals, btype, notcnv, dav_iter )
+  
   !CALL diag_davidson( evals, evecs, 1d-7 )
+
+  CALL diag_lobpcg( Nstates, evals, evecs )
     
   WRITE(*,'(1x,A,ES18.10,A,I4)') 'Davidson_QE: ethr = ', ethr, ' dav_iter = ', dav_iter
 

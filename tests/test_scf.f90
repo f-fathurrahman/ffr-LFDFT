@@ -63,8 +63,6 @@ PROGRAM test_scf
 
   CALL init_V_ps_loc_G( )
 
-  WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
-
   ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
 
   DO ist = 1, Nstates
@@ -77,6 +75,10 @@ PROGRAM test_scf
 
   CALL calc_rhoe( evecs, Focc )
   CALL update_potentials()
+
+  integRho = sum(Rhoe)*dVol
+  WRITE(*,*)
+  WRITE(*,'(1x,A,F18.10)') 'Initial guess: integRho = ', integRho
 
   ALLOCATE( Rhoe_old(Npoints) )
 

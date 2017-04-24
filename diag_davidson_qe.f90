@@ -110,7 +110,8 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
   ! ... iterate
   !
   iterate: DO kter = 1, maxter
-     !WRITE(*,*) 'kter = ', kter
+     WRITE(*,*)
+     WRITE(*,*) 'dav_iter = ', kter
      !
      dav_iter = kter
      !     !
@@ -228,9 +229,11 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
         conv(1:nvec) = ( ( ABS( ew(1:nvec) - e(1:nvec) ) < empty_ethr ) )
         !
      END WHERE
-     !DO n = 1,nvec
-     !  WRITE(*,*) n, ABS( ew(1:nvec) - e(1:nvec) )
-     !ENDDO
+     WRITE(*,*)
+     WRITE(*,*) 'Error estimates:'
+     DO n = 1,nvec
+       WRITE(*,'(1x,I8,ES18.10)') n, ABS( ew(n) - e(n) )
+     ENDDO
      !
      notcnv = COUNT( .NOT. conv(:) )
      !
