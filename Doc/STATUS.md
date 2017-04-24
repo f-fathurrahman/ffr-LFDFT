@@ -1,3 +1,12 @@
+# Status as of 24 April 2017
+
+- QE's Davidson routine is now working with ILU0 preconditioner.
+  On some systems, it is failed for yet known reason.
+
+- SCF is working, however, the convergence needs to be stabilized.
+
+- The process of constructing local potentials is now automatic.
+
 # Status as of 17 April 2017
 
 - ILU0 preconditioner from SPARSKIT can be used now.
