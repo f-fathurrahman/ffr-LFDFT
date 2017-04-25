@@ -12,16 +12,20 @@ PROGRAM do_Emin_pcg
   INTEGER :: Narg
   INTEGER :: NN(3)
   REAL(8) :: AA(3), BB(3)
-  CHARACTER(64) :: filexyz
-  INTEGER :: ip, ist
+  CHARACTER(64) :: filexyz, arg_N
+  INTEGER :: ip, ist, N_in
 
   Narg = iargc()
-  IF( Narg /= 1 ) THEN 
-    WRITE(*,*) 'ERROR: exactly one argument must be given'
+  IF( Narg /= 2 ) THEN 
+    WRITE(*,*) 'ERROR: exactly two arguments must be given:'
+    WRITE(*,*) '       N and path to structure file'
     STOP 
   ENDIF 
 
-  CALL getarg(1,filexyz)
+  CALL getarg( 1, arg_N )
+  READ(arg_N, *) N_in
+
+  CALL getarg( 2, filexyz )
 
   CALL init_atoms_xyz(filexyz)
 
@@ -33,7 +37,7 @@ PROGRAM do_Emin_pcg
   CALL info_PsPot()
 
   !
-  NN = (/ 63, 63, 63 /)
+  NN = (/ N_in, N_in, N_in /)
   AA = (/ 0.d0, 0.d0, 0.d0 /)
   BB = (/ 16.d0, 16.d0, 16.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
