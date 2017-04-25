@@ -20,7 +20,7 @@ SUBROUTINE Sch_solve_diag()
 
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
-  USE m_states, ONLY : Nstates, &
+  USE m_states, ONLY : Nstates, Focc, &
                        evecs => KS_evecs, &
                        evals => KS_evals
   USE m_options, ONLY : ethr => DIAG_DAVIDSON_QE_ETHR
@@ -30,27 +30,22 @@ SUBROUTINE Sch_solve_diag()
   INTEGER :: notcnv
   INTEGER :: ist
 
-  ! starting from random eigenvectors
-!  DO ist = 1, Nstates
-!    DO ip = 1, Npoints
-!      CALL random_number( evecs(ip,ist) )
-!    ENDDO
-!  ENDDO
-!  CALL orthonormalize( Nstates, evecs )
-
   ALLOCATE( btype(Nstates) )
-  btype(:) = 1 ! all bands are occupied
+  btype(:) = 1 ! assume all bands are occupied
+  DO ist = 1,Nstates
+    IF( Focc(ist) <= 1d-13 ) btype(ist) = 0
+  ENDDO 
 
   WRITE(*,*)
   WRITE(*,*) 'Solving Schrodinger equation with Davidson iterative diagonalization'
   WRITE(*,*)
     
-  !CALL diag_davidson_qe( Npoints, Nstates, 2*Nstates, evecs, ethr, &
+  !CALL diag_davidson_qe( Npoints, Nstates, 3*Nstates, evecs, ethr, &
   !                       evals, btype, notcnv, dav_iter )
   
-  !CALL diag_davidson( evals, evecs, 1d-7 )
+  CALL diag_davidson( evals, evecs, ethr )
 
-  CALL diag_lobpcg( Nstates, evals, evecs )
+  !CALL diag_lobpcg( Nstates, evals, evecs )
     
   WRITE(*,'(1x,A,ES18.10,A,I4)') 'Davidson_QE: ethr = ', ethr, ' dav_iter = ', dav_iter
 

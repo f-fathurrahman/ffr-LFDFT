@@ -1,6 +1,7 @@
 SUBROUTINE diag_davidson( evals, v, TOLERANCE )
   
-  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
+                     dVol => LF3d_dVol
   USE m_states, ONLY : Nstates
   IMPLICIT NONE
   ! Arguments
@@ -14,6 +15,7 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
   REAL(8), ALLOCATABLE :: RES_TOL(:), RES_NORM(:), evals_red(:)
   REAL(8), ALLOCATABLE :: cmat(:,:), H_MAT(:,:), O_MAT(:,:), evecs(:,:)
   REAL(8), ALLOCATABLE :: HV(:,:), R(:,:), HR(:,:), xtemp(:,:)
+  REAL(8), ALLOCATABLE :: evals_old(:)
   ! BLAS function
   REAL(8) :: ddot
 
@@ -25,13 +27,15 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
   ALLOCATE( O_MAT(2*Nstates,2*Nstates) )
   ALLOCATE( evecs(2*Nstates,2*Nstates) )
   ALLOCATE( evals_red(2*Nstates) )
+  ALLOCATE( evals_old(Nstates) )
 
   ALLOCATE( HV(Npoints,Nstates) )
   ALLOCATE( R(Npoints,Nstates) )
   ALLOCATE( HR(Npoints,Nstates) )
   ALLOCATE( xtemp(Npoints,Nstates) )
 
-  CALL ortho_gram_schmidt( V, Npoints, Npoints, Nstates )
+  !CALL ortho_gram_schmidt( V, Npoints, Npoints, Nstates )
+  V(:,:) = sqrt(dVol)*V(:,:)
 
   ! Apply Hamiltonian
   CALL op_H( Nstates, V, HV ) 
@@ -51,12 +55,14 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
   IS_CONVERGED = .FALSE.
   MAX_DIR = 100
   MACHINE_ZERO = 2.220446049250313D-16
-  !TOLERANCE = 1.0D-7
+  
   RNORM = 1.D0
+
+  evals_old(:) = 0.d0
 
   DO WHILE ( (istep <= MAX_DIR) .AND. (.NOT.IS_CONVERGED) )
     
-    WRITE(*,'(I8,F18.10)') istep, RNORM
+    WRITE(*,'(I8,ES18.10)') istep, RNORM
     RES_NORM = 1.D0
 
     !WHERE(MACHINE_ZERO < RES_TOL) RES_NORM = 1.d0/RES_TOL
@@ -151,29 +157,23 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
     DO ist=1,Nstates
       R(:,ist) = evals(ist)*V(:,ist) - HV(:,ist)
       RES_TOL(ist) = SQRT( ddot(Npoints, R(:,ist),1, R(:,ist),1) )
-      WRITE(*,'(1X,I5,F18.10,ES18.10)') ist, evals(ist), RES_TOL(ist)
     ENDDO
-   
-    RNORM = SUM(RES_TOL)/REAL(Nstates, kind=8)
 
-    IS_CONVERGED = .TRUE.
+    WRITE(*,*)
+    WRITE(*,*) 'Eigenvalues convergence:'
     DO ist = 1,Nstates
-      IS_CONVERGED = (IS_CONVERGED .AND. (RES_TOL(ist) < TOLERANCE) )
-      WRITE(*,*) ist, IS_CONVERGED
-    END DO
-    
-    !IS_CONVERGED = rnorm < TOLERANCE
-    !WRITE(*,*)
-    
+      WRITE(*,'(1X,I5,F18.10,ES18.10)') ist, evals(ist), abs( evals(ist)-evals_old(ist) )
+    ENDDO 
+
+    RNORM = SUM( abs(evals - evals_old) )/REAL(Nstates, kind=8)
+
+    IS_CONVERGED = rnorm <= TOLERANCE
+
+    evals_old(:) = evals(:)
     istep = istep + 1
   END DO
 
-  !rnorm = sum(res_tol)/real(nstates,8)
-
-  !DO ist=1,Nstates
-  !  WRITE(*,'(1X,I5,2F18.10)') ist, evals(ist), RES_TOL(ist)
-  !ENDDO
-  WRITE(*,*) 'END OF DAVIDSON ITERATION: RNORM = ', RNORM
+  WRITE(*,*) 'End od block-Davidson iteration: rnorm = ', RNORM
   
   DEALLOCATE(RES_TOL)
   DEALLOCATE(RES_NORM)

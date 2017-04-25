@@ -107,26 +107,12 @@ PROGRAM test_scf
       !ethr = min( ethr, 1.d-2*dEtot / max(1.d0,Nelectrons) )
       ethr = ethr/5.d0
       ethr = max( ethr, 1d-13 )
-      WRITE(*,'(1x,A,ES18.10)') 'ethr = ', ethr
     ENDIF 
 
     CALL Sch_solve_diag()
-    CALL calc_energies( evecs ) ! not updating potentials
-
-    dEtot = abs(Etot - Etot_old)
-
-    IF( dEtot < 1d-6) THEN 
-      WRITE(*,*)
-      WRITE(*,*) 'SCF converged!!!'
-      EXIT 
-    ENDIF 
-
-    WRITE(*,*)
-    WRITE(*,'(1x,A,I5,F18.10,2ES18.10)') 'SCF iter', iterSCF, Etot, dEtot, dr2
 
     CALL calc_rhoe( evecs, Focc )
 
-    !Rhoe(:) = 0.5d0*Rhoe(:) + 0.5d0*Rhoe_old(:)
     !CALL mixerifc( iterSCF, 1, Npoints, Rhoe, dr2, Npoints, Rhoe_old )
     CALL mixlinear( iterSCF, 0.5d0, Npoints, Rhoe, Rhoe_old, dr2 )
 
@@ -146,6 +132,19 @@ PROGRAM test_scf
     ENDIF 
 
     CALL update_potentials()
+
+    CALL calc_energies( evecs ) ! update the potentials or not ?
+
+    dEtot = abs(Etot - Etot_old)
+
+    IF( dEtot < 1d-6) THEN 
+      WRITE(*,*)
+      WRITE(*,*) 'SCF converged!!!'
+      EXIT 
+    ENDIF 
+
+    WRITE(*,*)
+    WRITE(*,'(1x,A,I5,F18.10,2ES18.10)') 'SCF iter', iterSCF, Etot, dEtot, dr2
 
     Etot_old = Etot
     Rhoe_old(:) = Rhoe(:)
