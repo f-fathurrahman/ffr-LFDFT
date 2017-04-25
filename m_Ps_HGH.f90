@@ -94,6 +94,25 @@ CONTAINS
 
   END FUNCTION 
 
+  
+  ! evaluate 4*pi*r2*Vloc(r)
+  !----------------------------------------------------------------------------
+  FUNCTION hgh_eval_Vloc_4pi_r2( psp, r ) RESULT(Vloc)
+  !----------------------------------------------------------------------------
+    TYPE(Ps_HGH_Params_T) :: psp
+    REAL(8) :: r
+    !
+    INTEGER :: i
+    REAL(8) :: rrloc ! r/rlocal
+    REAL(8) :: term1, Vloc
+
+    rrloc = r/psp%rlocal
+    term1 = psp%c(1)
+    DO i = 2, 4
+      term1 = term1 + psp%c(i)*rrloc**(2*(i-1))
+    ENDDO
+    Vloc = -4.d0*PI*r*psp%zval * erf( rrloc/sqrt(2.d0) ) + exp(-0.5d0*rrloc**2)*term1 * 4.d0*pi*r**2
+  END FUNCTION
 
   !----------------------------------------------------------------------------
   FUNCTION hgh_eval_Vloc_R( psp, r ) RESULT(Vloc)
