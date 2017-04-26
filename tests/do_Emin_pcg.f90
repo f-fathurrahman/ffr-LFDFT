@@ -35,8 +35,10 @@ PROGRAM do_Emin_pcg
 
   !
   NN = (/ N_in, N_in, N_in /)
-  AA = (/ 0.d0, 0.d0, 0.d0 /)
-  BB = (/ 16.d0, 16.d0, 16.d0 /)
+  !AA = (/ 0.d0, 0.d0, 0.d0 /)
+  !BB = (/ 16.d0, 16.d0, 16.d0 /)
+  AA = (/ -8.d0, -8.d0, -8.d0 /)
+  BB = (/  8.d0,  8.d0,  8.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
 
   CALL shift_atoms()
@@ -54,14 +56,14 @@ PROGRAM do_Emin_pcg
 
   CALL alloc_hamiltonian()
 
+  CALL init_V_ps_loc_G()
+
   CALL init_nabla2_sparse()
   CALL init_ilu0_prec()
 
   IF( FREE_NABLA2 ) THEN 
     CALL dealloc_nabla2_sparse()
   ENDIF 
-
-  CALL init_V_ps_loc_G()
 
   ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
 

@@ -7,7 +7,8 @@ SUBROUTINE calc_Ewald( )
   USE m_LF3d, ONLY : G2 => LF3d_G2, &
                      Npoints => LF3d_Npoints, &
                      NN => LF3d_NN, &
-                     LL => LF3d_LL, &
+                     AA => LF3d_AA, &
+                     BB => LF3d_BB, &
                      lingrid => LF3d_lingrid, &
                      dVol => LF3d_dVol
   USE m_energies, ONLY : E_nn
@@ -36,9 +37,11 @@ SUBROUTINE calc_Ewald( )
     WRITE(*,'(1x,A,F10.3)') adjustl(SpeciesSymbols(isp)), sigma(isp)
   ENDDO 
 
-  cx = 0.5d0*LL(1)
-  cy = 0.5d0*LL(2)
-  cz = 0.5d0*LL(3)
+  cx = 0.5d0*( BB(1) - AA(1) ) + AA(1)
+  cy = 0.5d0*( BB(2) - AA(2) ) + AA(2)
+  cz = 0.5d0*( BB(3) - AA(3) ) + AA(3)
+
+  WRITE(*,'(1x,A,3F18.10)') 'center = ', cx, cy, cz
 
   ALLOCATE( dr(Npoints) )
   DO ip = 1,Npoints
