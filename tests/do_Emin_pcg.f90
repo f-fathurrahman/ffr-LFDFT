@@ -33,14 +33,16 @@ PROGRAM do_Emin_pcg
   PsPot_Dir = '../HGH/'
   CALL init_PsPot()
 
-  CALL info_atoms()
-  CALL info_PsPot()
-
   !
   NN = (/ N_in, N_in, N_in /)
   AA = (/ 0.d0, 0.d0, 0.d0 /)
   BB = (/ 16.d0, 16.d0, 16.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
+
+  CALL shift_atoms()
+
+  CALL info_atoms()
+  CALL info_PsPot()
   CALL info_LF3d()
 
   ! Initialize occupation numbers

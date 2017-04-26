@@ -64,6 +64,7 @@ CONTAINS
       !WRITE(*,*) 'hgh_eval_Vloc_G: small G = ', g
       Vloc = 2.d0*PI * p%rlocal**2 * p%zval + (2.d0*PI)**(1.5d0) * p%rlocal**3 * & 
              ( p%c(1) + 3.d0*p%c(2) + 15.d0*p%c(3) + 105.d0*p%c(4) )
+      !WRITE(*,*) 'Vloc = ', Vloc
 
     ENDIF 
 

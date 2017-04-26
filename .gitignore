@@ -1,6 +1,7 @@
 *.swp
 *.swo
 *~
+work/
 
 compare_cg/
 logs/

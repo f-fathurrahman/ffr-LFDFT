@@ -32,6 +32,7 @@ info_atoms.f90 \
 mm_to_nn.f90 \
 init_gvec.f90 \
 init_V_ps_loc_G.f90 \
+init_V_coul_G.f90 \
 dealloc_LF3d.f90 \
 op_nabla2.f90 \
 init_nabla2_sparse.f90 \
@@ -70,7 +71,8 @@ calc_Ewald.f90 \
 mixadapt.f90 \
 mixbroyden.f90 \
 mixerifc.f90 \
-mixlinear.f90
+mixlinear.f90 \
+shift_atoms.f90
 
 SPARSKIT_SRC = \
 formats.f \
@@ -107,18 +109,6 @@ OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) $(SPARSKIT_SRC:.f=.o)
 # Targets
 lib: $(OBJ)
 	ar rcs libmain.a *.o
-
-test_scf:
-	$(F90) $(F90_OPTS) test_scf.f90 libmain.a $(LIBS) -o test_scf.x
-
-test_scf_H:
-	$(F90) $(F90_OPTS) test_scf_H.f90 libmain.a $(LIBS) -o test_scf_H.x
-
-test_Emin_cg:
-	$(F90) $(F90_OPTS) test_Emin_cg.f90 libmain.a $(LIBS) -o test_Emin_cg.x
-
-test_Emin_cg_H:
-	$(F90) $(F90_OPTS) test_Emin_cg_H.f90 libmain.a $(LIBS) -o test_Emin_cg_H.x
 
 clean:
 	rm -rf *.o *.mod libmain.a *.x

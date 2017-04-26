@@ -55,7 +55,7 @@ SUBROUTINE Poisson_solve_cg( rho, phi )
     r(:) = r(:) - alpha*nabla2_phi(:)
     !
     rsnew = ddot( Npoints, r,1, r,1 )
-    !WRITE(*,'(1x,A,E18.10)') 'rconv = ', sqrt(rsnew)
+    WRITE(*,'(1x,A,E18.10)') 'rconv = ', sqrt(rsnew)
     !
     IF(sqrt(rsnew) < 1.d-10) THEN
     !IF(rsnew < 1.d-10) THEN
