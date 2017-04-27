@@ -17,7 +17,7 @@ PROGRAM test
 
   AA(:) = 0.d0
   BB(:) = 4.d0
-  NN(:) = 55
+  NN(:) = 75
 
   CALL init_LF3d_p( NN, AA, BB )
 
@@ -31,31 +31,29 @@ PROGRAM test
   x0_code = 0  ! periodic
   x1_code = 0
 
+  delta = grid_x(2)-grid_x(1)
+
   work(1:num_x) = grid_x(:)
   DO ix = 1,num_x
-    dat(ix) = func(grid_x(ix))  !sin( 2.d0*PI*grid_x(ix)/LL(1) )
-    WRITE(201,*) grid_x(ix), dat(ix)
+    dat(ix) = func(grid_x(ix))
+    WRITE(201,'(2F22.12)') grid_x(ix), dat(ix)
   ENDDO 
-  dat(num_x+1) = dat(1)
-  work(num_x+1) = grid_x(num_x) + ( grid_x(2) - grid_x(1) )
-  WRITE(201,*) work(num_x+1), dat(num_x+1)
+  dat(num_x+1) = dat(1)  ! value at the end point is the same as the value at start point
+  work(num_x+1) = grid_x(num_x) + delta  ! the end points
+  WRITE(201,'(2F22.12)') work(num_x+1), dat(num_x+1)
 
   CALL FCREATE_UBSPLINE_1D_D(x0, x1, num_x, x0_code, x0_val, x1_code, x1_val, dat, spline)
 
-  !x0_val ??
-  !x1_val ??
+  !x0_val and x1_val are not used ??
 
-  x = 3.9d0
-  CALL feval_ubspline_1d_d( spline, x, val ) 
-  WRITE(*,'(1x,2F18.10,ES18.10)') x, val, abs( val - func(x) )
+  ! Now evaluate the value at FFT / FD grid
+  DO ix = 1,num_x
+    x = ( grid_x(1) + delta*0.5d0 ) + (ix-1)*delta
+    CALL feval_ubspline_1d_d( spline, x, val ) 
+    WRITE(*,'(1x,2F18.10,ES18.10)') x, val, abs( val - func(x) )
+    WRITE(202,'(2F22.12)') x, val
+  ENDDO 
 
-  x = 2.9d0
-  CALL feval_ubspline_1d_d( spline, x, val ) 
-  WRITE(*,'(1x,2F18.10,ES18.10)') x, val, abs( val - func(x) )
-
-  x = 1.9d0
-  CALL feval_ubspline_1d_d( spline, x, val ) 
-  WRITE(*,'(1x,2F18.10,ES18.10)') x, val, abs( val - func(x) )
 
   CALL fdestroy_bspline( spline )
 
@@ -70,9 +68,13 @@ FUNCTION func( x ) RESULT( res )
   USE m_LF3d, ONLY : LL => LF3d_LL
   REAL(8) :: res
   REAL(8) :: x
+  INTEGER, PARAMETER :: N = 5
+  INTEGER :: i
 
-  res = cos( 2.d0*PI*x/LL(1) )
-  !WRITE(*,*) 'x = ', x, ' res = ', res
+  res = 0.d0
+  DO i = 1, N
+    res = res + cos( i*2.d0*PI*x/LL(1) )
+  ENDDO 
 
 END FUNCTION 
 
