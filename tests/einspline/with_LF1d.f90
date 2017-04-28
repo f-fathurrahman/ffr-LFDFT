@@ -54,7 +54,6 @@ PROGRAM test
     WRITE(202,'(2F22.12)') x, val
   ENDDO 
 
-
   CALL fdestroy_bspline( spline )
 
   DEALLOCATE( dat )

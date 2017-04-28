@@ -3,7 +3,7 @@ MODULE m_options
   IMPLICIT NONE 
 
   ! Options for controlling how beta is calculated
-  INTEGER :: CG_BETA = 2
+  INTEGER :: CG_BETA = 4
   ! 1 => Fletcher-Reeves
   ! 2 => Polak-Ribiere
   ! 3 => Hestenes-Stiefel

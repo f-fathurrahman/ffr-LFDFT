@@ -41,7 +41,7 @@ PROGRAM do_Emin_pcg
   !BB = (/  8.d0,  8.d0,  8.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
 
-  CALL shift_atoms()
+  !CALL shift_atoms()
 
   CALL info_atoms()
   CALL info_PsPot()
