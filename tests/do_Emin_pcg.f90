@@ -78,8 +78,8 @@ PROGRAM do_Emin_pcg
   CALL orthonormalize( Nstates, evecs )
   CALL ortho_check( Npoints, Nstates, dVol, evecs )
 
-  !CALL KS_solve_Emin_pcg( 3.d-5, 200, .FALSE. )
-  CALL KS_solve_Emin_pcg( 3.d-5, 200, .TRUE. )
+  CALL KS_solve_Emin_pcg( 3.d-5, 200, .FALSE. )
+  !CALL KS_solve_Emin_pcg( 3.d-5, 200, .TRUE. )
 
   CALL info_energies()
 
