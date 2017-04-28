@@ -105,6 +105,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
         beta = sum( g * Kg ) / sum( (g-g_old)*d_old )
       END SELECT 
     ENDIF
+    beta = max( 0.d0, beta )
     d(:,:) = -Kg(:,:) + beta*d_old(:,:)
     !
     ! Evaluate gradient at trial step

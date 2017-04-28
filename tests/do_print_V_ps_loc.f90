@@ -1,15 +1,15 @@
 PROGRAM do_print_V_ps_loc
 
   USE m_PsPot, ONLY : PsPot_Dir
-  USE m_LF3d, ONLY : dVol => LF3d_dVol, &
-                     grid_x => LF3d_grid_x, &
-                     xyz2lin => LF3d_xyz2lin
+  USE m_LF3d, ONLY : xyz2lin => LF3d_xyz2lin, &
+                     lingrid => LF3d_lingrid
+  USE m_hamiltonian, ONLY : V_ps_loc
   IMPLICIT NONE 
   INTEGER :: Narg
   INTEGER :: NN(3)
   REAL(8) :: AA(3), BB(3)
   CHARACTER(64) :: filexyz, arg_N
-  INTEGER :: ip, ist, N_in, ix, iy, iz
+  INTEGER :: ip, N_in, ix, iy, iz
 
   Narg = iargc()
   IF( Narg /= 2 ) THEN 
@@ -35,7 +35,7 @@ PROGRAM do_print_V_ps_loc
   BB = (/ 16.d0, 16.d0, 16.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
 
-  !CALL shift_atoms()
+  CALL shift_atoms()
 
   CALL info_atoms()
   CALL info_PsPot()
@@ -52,11 +52,12 @@ PROGRAM do_print_V_ps_loc
 
   CALL init_V_ps_loc_G()
 
-  iy = 28
-  iz = 28
+  iy = NN(2)/2 + 1
+  iz = NN(3)/2 + 1
+  WRITE(*,*) 'iy iz = ', iy, iz
   DO ix = 1,NN(1)
     ip = xyz2lin(ix,iy,iz)
-    WRITE(*,*) lingrid(:,ip)
+    WRITE(N_in,'(2F22.12)') lingrid(1,ip), V_ps_loc(ip)
   ENDDO 
 
   CALL dealloc_hamiltonian()

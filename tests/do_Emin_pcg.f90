@@ -3,17 +3,20 @@ PROGRAM do_Emin_pcg
   USE m_options, ONLY : FREE_NABLA2
   USE m_PsPot, ONLY : PsPot_Dir
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
-                     dVol => LF3d_dVol
+                     dVol => LF3d_dVol, &
+                     lingrid => LF3d_lingrid, &
+                     xyz2lin => LF3d_xyz2lin
   USE m_states, ONLY : Nstates, Focc, &
                        evals => KS_evals, &
                        evecs => KS_evecs
+  USE m_hamiltonian, ONLY : V_ps_loc, V_Hartree
 
   IMPLICIT NONE 
   INTEGER :: Narg
   INTEGER :: NN(3)
   REAL(8) :: AA(3), BB(3)
   CHARACTER(64) :: filexyz, arg_N
-  INTEGER :: ip, ist, N_in
+  INTEGER :: ip, ist, N_in, ix, iy, iz
 
   Narg = iargc()
   IF( Narg /= 2 ) THEN 
@@ -41,7 +44,7 @@ PROGRAM do_Emin_pcg
   !BB = (/  8.d0,  8.d0,  8.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
 
-  !CALL shift_atoms()
+  CALL shift_atoms()
 
   CALL info_atoms()
   CALL info_PsPot()
@@ -75,10 +78,18 @@ PROGRAM do_Emin_pcg
   CALL orthonormalize( Nstates, evecs )
   CALL ortho_check( Npoints, Nstates, dVol, evecs )
 
-  CALL KS_solve_Emin_pcg( 3.d-5, 200, .FALSE. )
+  !CALL KS_solve_Emin_pcg( 3.d-5, 200, .FALSE. )
+  CALL KS_solve_Emin_pcg( 3.d-5, 200, .TRUE. )
 
   CALL info_energies()
 
+  iy = NN(2)/2 + 1
+  iz = NN(3)/2 + 1
+  WRITE(*,*) 'iy iz = ', iy, iz
+  DO ix = 1,NN(1)
+    ip = xyz2lin(ix,iy,iz)
+    WRITE(N_in,'(3F22.12)') lingrid(1,ip), V_ps_loc(ip), V_Hartree(ip)
+  ENDDO 
 
   !
   DEALLOCATE( evecs, evals )
