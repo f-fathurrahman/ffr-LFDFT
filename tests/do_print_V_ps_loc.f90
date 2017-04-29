@@ -35,8 +35,6 @@ PROGRAM do_print_V_ps_loc
   BB = (/ 16.d0, 16.d0, 16.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
 
-  CALL shift_atoms()
-
   CALL info_atoms()
   CALL info_PsPot()
   CALL info_LF3d()

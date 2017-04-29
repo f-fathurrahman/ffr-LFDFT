@@ -105,6 +105,9 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
         beta = sum( g * Kg ) / sum( (g-g_old)*d_old )
       END SELECT 
     ENDIF
+    IF( beta < 0 ) THEN 
+      WRITE(*,'(1x,A,F18.10,A)') 'beta is smaller than zero: ', beta, ': setting it to zero'
+    ENDIF 
     beta = max( 0.d0, beta )
     d(:,:) = -Kg(:,:) + beta*d_old(:,:)
     !

@@ -44,7 +44,7 @@ PROGRAM do_Emin_pcg
   !BB = (/  8.d0,  8.d0,  8.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
 
-  CALL shift_atoms()
+  !CALL shift_atoms()
 
   CALL info_atoms()
   CALL info_PsPot()
@@ -78,13 +78,13 @@ PROGRAM do_Emin_pcg
   CALL orthonormalize( Nstates, evecs )
   CALL ortho_check( Npoints, Nstates, dVol, evecs )
 
-  CALL KS_solve_Emin_pcg( 3.d-5, 200, .FALSE. )
-  !CALL KS_solve_Emin_pcg( 3.d-5, 200, .TRUE. )
+  CALL KS_solve_Emin_pcg( 3.d-5, 1000, .FALSE. )
+  !CALL KS_solve_Emin_pcg( 3.d-5, 1000, .TRUE. )
 
   CALL info_energies()
 
-  iy = NN(2)/2 + 1
-  iz = NN(3)/2 + 1
+  iy = 1
+  iz = 1
   WRITE(*,*) 'iy iz = ', iy, iz
   DO ix = 1,NN(1)
     ip = xyz2lin(ix,iy,iz)
