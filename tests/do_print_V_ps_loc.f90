@@ -4,12 +4,14 @@ PROGRAM do_print_V_ps_loc
   USE m_LF3d, ONLY : xyz2lin => LF3d_xyz2lin, &
                      lingrid => LF3d_lingrid
   USE m_hamiltonian, ONLY : V_ps_loc
+  USE m_atoms, ONLY : strf => StructureFactor
   IMPLICIT NONE 
   INTEGER :: Narg
   INTEGER :: NN(3)
   REAL(8) :: AA(3), BB(3)
   CHARACTER(64) :: filexyz, arg_N
   INTEGER :: ip, N_in, ix, iy, iz
+  REAL(8) :: shift
 
   Narg = iargc()
   IF( Narg /= 2 ) THEN 
@@ -53,9 +55,11 @@ PROGRAM do_print_V_ps_loc
   iy = NN(2)/2 + 1
   iz = NN(3)/2 + 1
   WRITE(*,*) 'iy iz = ', iy, iz
+  WRITE(*,*) 'sum(strf) = ', sum(strf)
+  shift = 0.5d0*( lingrid(1,2) - lingrid(1,1) ) ! shift to get the usual FFT grid
   DO ix = 1,NN(1)
-    ip = xyz2lin(ix,iy,iz)
-    WRITE(N_in,'(2F22.12)') lingrid(1,ip), V_ps_loc(ip)
+    ip = xyz2lin(ix,1,1)
+    WRITE(N_in,'(2F22.12)') lingrid(1,ip)-shift, V_ps_loc(ip)
   ENDDO 
 
   CALL dealloc_hamiltonian()
