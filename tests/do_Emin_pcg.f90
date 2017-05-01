@@ -59,7 +59,10 @@ PROGRAM do_Emin_pcg
 
   CALL alloc_hamiltonian()
 
-  CALL init_V_ps_loc_G()
+  !CALL init_V_ps_loc_G()
+  !CALL init_V_coul_G()
+  CALL init_V_ps_loc_G_interp()
+  !CALL init_V_coul_G_interp()
 
   CALL init_nabla2_sparse()
   CALL init_ilu0_prec()

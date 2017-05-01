@@ -19,7 +19,7 @@ SUBROUTINE init_V_ps_loc_G()
   COMPLEX(8), ALLOCATABLE :: ctmp(:)
 
   WRITE(*,*)
-  WRITE(*,*) 'Initializing V_ps_loc via G-space'
+  WRITE(*,*) 'Initializing V_ps_loc via G-space: Hi, I am called'
 
   Nx = NN(1)
   Ny = NN(2)
@@ -29,12 +29,12 @@ SUBROUTINE init_V_ps_loc_G()
   Omega = LL(1) * LL(2) * LL(3)
 
   ALLOCATE( ctmp(Npoints) )
-  ctmp(:) = cmplx(0.d0,0.d0)
 
   V_ps_loc(:) = 0.d0
 
   DO isp = 1,Nspecies
 
+    ctmp(:) = cmplx(0.d0,0.d0,kind=8)
     DO ip = 1,Npoints
       Gm = sqrt(G2(ip))
       ctmp(ip) = hgh_eval_Vloc_G( Ps(isp), Gm ) * strf(ip,isp) / Omega
@@ -50,6 +50,8 @@ SUBROUTINE init_V_ps_loc_G()
 
   ENDDO 
 
+  WRITE(*,*) 'sum(strf): ', sum(strf)
+  WRITE(*,*) 'sum(ctmp): ', sum(real(ctmp))
   WRITE(*,*) 'sum(V_ps_loc): ', sum(V_ps_loc)
 
   DEALLOCATE( ctmp )

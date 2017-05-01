@@ -1,4 +1,4 @@
-SUBROUTINE init_V_ps_loc_G()
+SUBROUTINE init_V_coul_G()
 
   USE m_constants, ONLY : PI
   USE m_PsPot, ONLY : Ps => Ps_HGH_Params
@@ -16,7 +16,7 @@ SUBROUTINE init_V_ps_loc_G()
   COMPLEX(8), ALLOCATABLE :: ctmp(:)
 
   WRITE(*,*)
-  WRITE(*,*) 'Initializing V_ps_loc via G-space'
+  WRITE(*,*) 'Initializing V_ps_loc via G-space: using full Coulomb potential'
 
   Nx = NN(1)
   Ny = NN(2)
@@ -31,7 +31,7 @@ SUBROUTINE init_V_ps_loc_G()
 
   DO isp = 1,Nspecies
 
-    ctmp(:) = cmplx(0.d0,0.d0)
+    ctmp(:) = cmplx(0.d0,0.d0,kind=8)
     DO ip = 2,Npoints
       ctmp(ip) = -4.d0*PI*Ps(isp)%zval/G2(ip) * strf(ip,isp) / Omega
     ENDDO

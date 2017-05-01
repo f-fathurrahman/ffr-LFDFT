@@ -55,16 +55,18 @@ CONTAINS
       g4 = g2*g2
       g6 = g4*g2
 
-      Vloc = -(4.d0*PI*p%zval/g**2) * exp( -g2/2.d0) + &
-              sqrt(8.d0*PI**3) * p%rlocal**3 * exp( -g2/2.d0) * &
-              ( p%c(1) + p%c(2)*(3.d0 - g2) + p%c(3)*(15.d0 - 10.d0*g2 + g4) + &
-                p%c(4)*(105.d0 - 105.d0*g2 + 21.d0*g4 - g6) )
+      Vloc = -(4.d0*PI*p%zval/g**2) * exp( -g2/2.d0) !+ &
+      !        sqrt(8.d0*PI**3) * p%rlocal**3 * exp( -g2/2.d0) * &
+      !        ( p%c(1) + p%c(2)*(3.d0 - g2) + p%c(3)*(15.d0 - 10.d0*g2 + g4) + &
+      !          p%c(4)*(105.d0 - 105.d0*g2 + 21.d0*g4 - g6) )
     ELSE 
 
-      !WRITE(*,*) 'hgh_eval_Vloc_G: small G = ', g
-      Vloc = 2.d0*PI * p%rlocal**2 * p%zval + (2.d0*PI)**(1.5d0) * p%rlocal**3 * & 
-             ( p%c(1) + 3.d0*p%c(2) + 15.d0*p%c(3) + 105.d0*p%c(4) )
-      !WRITE(*,*) 'Vloc = ', Vloc
+      WRITE(*,*) 'hgh_eval_Vloc_G: small G = ', g
+      Vloc = 2.d0*PI * p%rlocal**2 * p%zval !+ (2.d0*PI)**(1.5d0) * p%rlocal**3 * & 
+            ! ( p%c(1) + 3.d0*p%c(2) + 15.d0*p%c(3) + 105.d0*p%c(4) )
+      !Vloc = (2.d0*PI)**(1.5d0) * p%rlocal**3 * ( p%c(1) + 3.d0*p%c(2) + 15.d0*p%c(3) + 105.d0*p%c(4) )
+      !Vloc = 0.d0
+      WRITE(*,*) 'Vloc = ', Vloc
 
     ENDIF 
 
@@ -130,7 +132,8 @@ CONTAINS
     DO i = 2, 4
       term1 = term1 + psp%c(i)*rrloc**(2*(i-1))
     ENDDO
-    Vloc = -psp%zval/r * erf( rrloc/sqrt(2.d0) ) + exp(-0.5d0*rrloc**2)*term1
+    !Vloc = -psp%zval/r * erf( rrloc/sqrt(2.d0) ) + exp(-0.5d0*rrloc**2)*term1
+    Vloc = exp(-0.5d0*rrloc**2)*term1
   END FUNCTION
 
 

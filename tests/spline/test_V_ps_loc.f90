@@ -1,4 +1,4 @@
-PROGRAM do_print_V_ps_loc
+PROGRAM test_V_ps_loc
 
   USE m_PsPot, ONLY : PsPot_Dir
   USE m_LF3d, ONLY : xyz2lin => LF3d_xyz2lin, &
@@ -28,7 +28,7 @@ PROGRAM do_print_V_ps_loc
   CALL init_atoms_xyz(filexyz)
 
   ! Override PsPot_Dir
-  PsPot_Dir = '../HGH/'
+  PsPot_Dir = '../../HGH/'
   CALL init_PsPot()
 
   !
@@ -46,25 +46,19 @@ PROGRAM do_print_V_ps_loc
 
   CALL init_strfact()
 
-  CALL calc_Ewald()
-
   CALL alloc_hamiltonian()
 
-  CALL init_V_ps_loc_G()
-  !CALL init_V_ps_loc_G_interp()
+  CALL add_V_ps_loc_G(1)
 
-  !iy = NN(2)/2 + 1
-  !iz = NN(3)/2 + 1
-  ix = 1
-  iz = 1
-  WRITE(*,*) 'ix iz = ', ix, iz
-  WRITE(*,*) 'sum(strf) = ', sum(strf)
-  shift = 0.5d0*( lingrid(1,2) - lingrid(1,1) ) ! shift to get the usual FFT grid
-  WRITE(*,*) 'shift = ', shift
-  DO iy = 1,NN(2)
-    ip = xyz2lin(ix,iy,iz)
-    WRITE(N_in,'(2F22.12)') lingrid(2,ip)-shift, V_ps_loc(ip)
-  ENDDO 
+!  iy = NN(2)/2 + 1
+!  iz = NN(3)/2 + 1
+!  WRITE(*,*) 'iy iz = ', iy, iz
+!  WRITE(*,*) 'sum(strf) = ', sum(strf)
+!  shift = 0.5d0*( lingrid(1,2) - lingrid(1,1) ) ! shift to get the usual FFT grid
+!  DO ix = 1,NN(1)
+!    ip = xyz2lin(ix,1,1)
+!    WRITE(N_in,'(2F22.12)') lingrid(1,ip)-shift, V_ps_loc(ip)
+!  ENDDO 
 
   CALL dealloc_hamiltonian()
   CALL dealloc_LF3d()

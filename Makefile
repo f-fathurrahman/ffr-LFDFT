@@ -73,7 +73,9 @@ mixbroyden.f90 \
 mixerifc.f90 \
 mixlinear.f90 \
 shift_atoms.f90 \
-bspline_sub_module.f90 bspline_oo_module.f90 bspline_module.f90 
+bspline_sub_module.f90 bspline_oo_module.f90 bspline_module.f90 \
+init_V_ps_loc_G_interp.f90 \
+init_V_coul_G_interp.f90
 
 SPARSKIT_SRC = \
 formats.f \

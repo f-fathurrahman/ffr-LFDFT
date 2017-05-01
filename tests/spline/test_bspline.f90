@@ -58,7 +58,7 @@ FUNCTION fun1d( x, L ) RESULT(f)
   REAL(8) :: f
   REAL(8) :: x, L
 
-  f = sin(2.d0*PI/L * x) + sin(3*2.d0*PI/L * x)
+  f = cos(2.d0*PI/L * x) + sin(3*2.d0*PI/L * x)
 
 END FUNCTION 
 
