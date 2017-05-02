@@ -28,7 +28,6 @@ FUNCTION Ylm_real( l, m, R ) RESULT(ylm)
   sint = sqrt( max(0d0, 1.d0 - cost**2) )
 
 
-
   IF( l == 0 ) THEN
     ylm = 0.5d0*sqrt(1.d0/PI)
     RETURN

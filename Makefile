@@ -76,7 +76,9 @@ shift_atoms.f90 \
 bspline_sub_module.f90 bspline_oo_module.f90 bspline_module.f90 \
 init_V_ps_loc_G_interp.f90 \
 init_V_coul_G_interp.f90 \
-init_strfact_shifted.f90
+init_strfact_shifted.f90 \
+Ylm_real.f90 \
+xsf.f90
 
 SPARSKIT_SRC = \
 formats.f \
