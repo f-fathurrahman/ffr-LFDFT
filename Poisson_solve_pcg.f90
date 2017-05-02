@@ -1,7 +1,7 @@
 !! PURPOSE
 !!
-!!   This subroutine solves Poisson equation using conjugate gradient
-!!   algorithm.
+!!   This subroutine solves Poisson equation using preconditioned
+!!   conjugate gradient algorithm.
 !!
 !! AUTHOR
 !!
@@ -12,57 +12,64 @@
 !!   The input `rho` will be multiplied by -4*pi.
 !!   The output is given in `phi`.
 
-SUBROUTINE Poisson_solve_cg( rho, phi )
+SUBROUTINE Poisson_solve_pcg( rho, phi )
   USE m_constants, ONLY : PI
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   IMPLICIT NONE
   !
   REAL(8) :: rho(Npoints), phi(Npoints)
-  REAL(8), ALLOCATABLE :: r(:), p(:) ! residual
+  REAL(8), ALLOCATABLE :: r(:), v(:), z(:) ! residual
   REAL(8), ALLOCATABLE :: nabla2_phi(:)
   INTEGER :: iter, NmaxIter
-  REAL(8) :: rsold, rsnew, alpha
+  REAL(8) :: c, d, omega
   LOGICAL :: conv
   !
   REAL(8) :: ddot
 
-  ALLOCATE( r(Npoints), p(Npoints), nabla2_phi(Npoints) )
+  ALLOCATE( r(Npoints), v(Npoints), nabla2_phi(Npoints), z(Npoints) )
 
   NmaxIter = Npoints/100
 
   CALL op_nabla2( phi, nabla2_phi )
   r(:) = -4.d0*PI*rho(:) - nabla2_phi(:)  ! NOTICE that we multiply rho by -4*pi
-  p(:) = r(:)
+
+  CALL prec_ilu0( r, z )
+  !z(:) = 2.d0*z(:)
+
+  v(:) = z(:)
 
   !
-  rsold = ddot( Npoints, r,1, r, 1 )
+  c = ddot( Npoints, r,1, z, 1 )
   
   conv = .FALSE.
 
   DO iter = 1,NmaxIter
-    CALL op_nabla2( p, nabla2_phi )
+    CALL op_nabla2( v, z )
     !
-    alpha = rsold/ddot( Npoints, p,1, nabla2_phi,1 )
+    omega = c/ddot( Npoints, v,1, z,1 )
     !
-    phi(:) = phi(:) + alpha*p(:)
+    phi(:) = phi(:) + omega*v(:)
     !
-    r(:) = r(:) - alpha*nabla2_phi(:)
+    r(:) = r(:) - omega*z(:)
     !
-    rsnew = ddot( Npoints, r,1, r,1 )
-    WRITE(*,'(1x,A,I8,E18.10)') 'rconv = ', iter,sqrt(rsnew)
+    CALL prec_ilu0( r, z )
+    !z(:) = 2.d0*z(:)
+    d = ddot( Npoints, r,1, z,1 )
     !
-    IF(sqrt(rsnew) < 1.d-10) THEN
+    WRITE(*,'(1x,A,I8,E18.10)') 'rconv = ', iter, sqrt(d)
+    !
+    IF(sqrt(d) < 1.d-10) THEN
     !IF(rsnew < 1.d-10) THEN
       !WRITE(*,*) 'Convergence in Poisson_solve_cg: iter, sqrt(rsnew):', iter, sqrt(rsnew)
       conv = .TRUE.
       EXIT
     ENDIF
-    p(:) = r(:) + (rsnew/rsold)*p(:)
-    rsold = rsnew
+    v(:) = z(:) + (d/c)*v(:)
+    c = d
   ENDDO
 
   IF( .NOT. conv ) WRITE(*,*) 'No convergence in Poisson_solve_cg'
 
-  DEALLOCATE( r, p, nabla2_phi )
+  DEALLOCATE( r, v, nabla2_phi, z )
 END SUBROUTINE
 

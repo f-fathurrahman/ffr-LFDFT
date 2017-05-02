@@ -21,7 +21,10 @@ PROGRAM t_poisson
   !CALL init_LF3d_p( NN, (/0.d0,0.d0,0.d0/), LL )
   CALL init_LF3d_c( NN, (/0.d0,0.d0,0.d0/), LL )
   CALL info_LF3d()
-  
+ 
+  CALL init_nabla2_sparse()
+  CALL init_ilu0_prec()
+
   ALLOCATE( rho(Npoints) )
   ALLOCATE( phi(Npoints) )
 
@@ -46,9 +49,9 @@ PROGRAM t_poisson
   WRITE(*,*) 'Integrated rho = ', sum( rho(:) )*dVol
 
   ! Solve Poisson equation
-  !CALL Poisson_solve_cg( rho, phi )
+  CALL Poisson_solve_pcg( rho, phi )
   !CALL solve_poisson_fft( rho, phi )
-  CALL Poisson_solve_fft_MT( rho, phi )
+  !CALL Poisson_solve_fft_MT( rho, phi )
 
   !
   Unum = 0.5d0*sum( rho(:)*phi(:) )*dVol
@@ -59,6 +62,8 @@ PROGRAM t_poisson
 
   DEALLOCATE( rho, phi )
 
+  CALL dealloc_ilu0_prec()
+  CALL dealloc_nabla2_sparse()
   CALL dealloc_LF3d()
 END PROGRAM
 

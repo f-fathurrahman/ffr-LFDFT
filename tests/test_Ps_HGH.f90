@@ -17,9 +17,6 @@ PROGRAM test_hgh
 
   CALL info_Ps_HGH_Params( ps )
 
-  !CALL dump_plot_data( ps )
-  !CALL dump_logrid( ps )
-
 END PROGRAM
 
 

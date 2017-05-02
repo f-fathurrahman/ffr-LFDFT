@@ -50,10 +50,6 @@ SUBROUTINE init_V_ps_loc_G()
 
   ENDDO 
 
-  WRITE(*,*) 'sum(strf): ', sum(strf)
-  WRITE(*,*) 'sum(ctmp): ', sum(real(ctmp))
-  WRITE(*,*) 'sum(V_ps_loc): ', sum(V_ps_loc)
-
   DEALLOCATE( ctmp )
 
 END SUBROUTINE 

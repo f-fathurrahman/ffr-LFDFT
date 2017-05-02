@@ -84,14 +84,6 @@ PROGRAM do_Emin_pcg
 
   CALL info_energies()
 
-  iy = 1
-  iz = 1
-  WRITE(*,*) 'iy iz = ', iy, iz
-  DO ix = 1,NN(1)
-    ip = xyz2lin(ix,iy,iz)
-    WRITE(N_in,'(3F22.12)') lingrid(1,ip), V_ps_loc(ip), V_Hartree(ip)
-  ENDDO 
-
   !
   DEALLOCATE( evecs, evals )
   DEALLOCATE( Focc )

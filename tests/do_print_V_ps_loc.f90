@@ -4,7 +4,8 @@ PROGRAM do_print_V_ps_loc
   USE m_LF3d, ONLY : xyz2lin => LF3d_xyz2lin, &
                      lingrid => LF3d_lingrid
   USE m_hamiltonian, ONLY : V_ps_loc
-  USE m_atoms, ONLY : strf => StructureFactor
+  USE m_atoms, ONLY : strf => StructureFactor, atpos => AtomicCoords
+  USE m_constants, ONLY : ANG2BOHR
   IMPLICIT NONE 
   INTEGER :: Narg
   INTEGER :: NN(3)
@@ -26,6 +27,8 @@ PROGRAM do_print_V_ps_loc
   CALL getarg( 2, filexyz )
 
   CALL init_atoms_xyz(filexyz)
+  ! so that coord given in xyz file is in bohr
+  atpos(:,:) = atpos(:,:)/ANG2BOHR  
 
   ! Override PsPot_Dir
   PsPot_Dir = '../HGH/'
@@ -51,16 +54,11 @@ PROGRAM do_print_V_ps_loc
   CALL alloc_hamiltonian()
 
   CALL init_V_ps_loc_G()
-  !CALL init_V_ps_loc_G_interp()
 
-  !iy = NN(2)/2 + 1
-  !iz = NN(3)/2 + 1
   ix = 1
   iz = 1
   WRITE(*,*) 'ix iz = ', ix, iz
-  WRITE(*,*) 'sum(strf) = ', sum(strf)
   shift = 0.5d0*( lingrid(1,2) - lingrid(1,1) ) ! shift to get the usual FFT grid
-  WRITE(*,*) 'shift = ', shift
   DO iy = 1,NN(2)
     ip = xyz2lin(ix,iy,iz)
     WRITE(N_in,'(2F22.12)') lingrid(2,ip), V_ps_loc(ip)
