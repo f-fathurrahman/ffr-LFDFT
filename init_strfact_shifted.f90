@@ -1,5 +1,5 @@
 ! Calculate structure factor
-SUBROUTINE init_strfact()
+SUBROUTINE init_strfact_shifted()
  
   USE m_atoms, ONLY : Na => Natoms, &
                       Xpos => AtomicCoords, &
@@ -7,14 +7,21 @@ SUBROUTINE init_strfact()
                       atm2species, &
                       strf => StructureFactor
   USE m_LF3d, ONLY : Ng => LF3d_Npoints, &
-                     Gv => LF3d_Gv
+                     Gv => LF3d_Gv, &
+                     grid_x => LF3d_grid_x, &
+                     grid_y => LF3d_grid_y, &
+                     grid_z => LF3d_grid_z
   IMPLICIT NONE
   !
   INTEGER :: ia, isp, ig
   REAL(8) :: GX, shiftx, shifty, shiftz
 
   WRITE(*,*)
-  WRITE(*,*) 'Calculating structure factor'
+  WRITE(*,*) 'Calculating structure factor: shifted to Fourier grid'
+
+  shiftx = 0.5d0*( grid_x(2) - grid_x(1) )
+  shifty = 0.5d0*( grid_y(2) - grid_y(1) )
+  shiftz = 0.5d0*( grid_z(2) - grid_z(1) )
 
   ALLOCATE( strf(Ng,Nspecies) )
 
@@ -22,7 +29,7 @@ SUBROUTINE init_strfact()
   DO ia = 1,Na
     isp = atm2species(ia)
     DO ig = 1,Ng
-      GX = Xpos(1,ia)*Gv(1,ig) + Xpos(2,ia)*Gv(2,ig) + Xpos(3,ia)*Gv(3,ig)
+      GX = (Xpos(1,ia)-shiftx)*Gv(1,ig) + (Xpos(2,ia)-shifty)*Gv(2,ig) + (Xpos(3,ia)-shiftz)*Gv(3,ig)
       strf(ig,isp) = strf(ig,isp) + cmplx( cos(GX), -sin(GX), kind=8 )
     ENDDO 
   ENDDO 

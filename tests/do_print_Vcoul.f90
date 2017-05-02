@@ -44,14 +44,13 @@ PROGRAM do_print_V_ps_loc
   ! Initialize occupation numbers
   CALL init_states()
 
-  CALL init_strfact_shifted()
+  CALL init_strfact()
 
   CALL calc_Ewald()
 
   CALL alloc_hamiltonian()
 
-  CALL init_V_ps_loc_G()
-  !CALL init_V_ps_loc_G_interp()
+  CALL init_V_coul_G()
 
   !iy = NN(2)/2 + 1
   !iz = NN(3)/2 + 1
@@ -59,11 +58,11 @@ PROGRAM do_print_V_ps_loc
   iz = 1
   WRITE(*,*) 'ix iz = ', ix, iz
   WRITE(*,*) 'sum(strf) = ', sum(strf)
-  shift = 0.5d0*( lingrid(1,2) - lingrid(1,1) ) ! shift to get the usual FFT grid
+  shift = 0.5d0*( lingrid(1,2) - lingrid(1,1) ) ! shift to get the usual FFT grid, only works for Nx=Ny=Nz
   WRITE(*,*) 'shift = ', shift
   DO iy = 1,NN(2)
     ip = xyz2lin(ix,iy,iz)
-    WRITE(N_in,'(2F22.12)') lingrid(2,ip), V_ps_loc(ip)
+    WRITE(N_in+1,'(2F22.12)') lingrid(2,ip)-shift, V_ps_loc(ip)
   ENDDO 
 
   CALL dealloc_hamiltonian()

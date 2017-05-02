@@ -44,8 +44,6 @@ PROGRAM do_Emin_pcg
   !BB = (/  8.d0,  8.d0,  8.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
 
-  !CALL shift_atoms()
-
   CALL info_atoms()
   CALL info_PsPot()
   CALL info_LF3d()
@@ -53,15 +51,15 @@ PROGRAM do_Emin_pcg
   ! Initialize occupation numbers
   CALL init_states()
 
-  CALL init_strfact()
+  CALL init_strfact_shifted()
 
   CALL calc_Ewald()
 
   CALL alloc_hamiltonian()
 
-  !CALL init_V_ps_loc_G()
+  CALL init_V_ps_loc_G()
   !CALL init_V_coul_G()
-  CALL init_V_ps_loc_G_interp()
+  !CALL init_V_ps_loc_G_interp()
   !CALL init_V_coul_G_interp()
 
   CALL init_nabla2_sparse()
