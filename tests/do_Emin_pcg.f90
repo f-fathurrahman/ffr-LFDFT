@@ -13,6 +13,7 @@ PROGRAM do_Emin_pcg
   REAL(8) :: AA(3), BB(3)
   CHARACTER(64) :: filexyz, arg_N
   INTEGER :: ip, ist, N_in
+  INTEGER :: iargc  ! pgf90 
 
   Narg = iargc()
   IF( Narg /= 2 ) THEN 

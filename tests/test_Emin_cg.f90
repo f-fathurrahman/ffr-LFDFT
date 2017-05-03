@@ -17,6 +17,7 @@ PROGRAM test_Emin_cg
   INTEGER :: NN(3)
   REAL(8) :: AA(3), BB(3)
   REAL(8), PARAMETER :: mixing_beta = 0.1d0
+
   
   NN = (/ 25, 25, 25 /)
   AA = (/ 0.d0, 0.d0, 0.d0 /)
