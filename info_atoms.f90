@@ -4,6 +4,10 @@ SUBROUTINE info_atoms()
   IMPLICIT NONE 
   INTEGER :: ia, isp
 
+
+  WRITE(*,*)
+  WRITE(*,'(9x,A)') 'Atoms Information'
+  WRITE(*,'(9x,A)') '-----------------'
   WRITE(*,*)
   WRITE(*,*) 'Natoms   = ', Natoms
   WRITE(*,*) 'Nspecies = ', Nspecies
@@ -14,7 +18,7 @@ SUBROUTINE info_atoms()
   ENDDO
 
   WRITE(*,*)
-  WRITE(*,*) 'Atomic coordinates:'
+  WRITE(*,*) 'Atomic coordinates: (in bohr)'
   WRITE(*,*)
   DO ia = 1,Natoms
     isp = atm2species(ia)

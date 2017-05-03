@@ -33,6 +33,8 @@ SUBROUTINE init_nabla2_sparse()
   ALLOCATE( nzval(NNZ) )
   ALLOCATE( colptr(Npoints+1) )
 
+  WRITE(*,*)
+  WRITE(*,*) 'Initializing nabla2_sparse'
   WRITE(*,*) 'Memory required for nabla2_sparse:', &
              ( NNZ*8d0 + (NNZ + Npoints + 1)*4.d0 )/1024.d0/1024.d0/1024.d0, &
              ' GB'
@@ -109,7 +111,7 @@ SUBROUTINE init_nabla2_sparse()
     colptr(ii) = colptr(ii-1) + nnzc
   ENDDO 
 
-  WRITE(*,*) 'ip = ', ip
+  WRITE(*,*) 'ip  = ', ip
   WRITE(*,*) 'NNZ = ', NNZ
 
   DEALLOCATE( rowGbl_x_orig )

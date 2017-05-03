@@ -2,21 +2,17 @@ PROGRAM do_Emin_pcg
 
   USE m_options, ONLY : FREE_NABLA2
   USE m_PsPot, ONLY : PsPot_Dir
-  USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
-                     dVol => LF3d_dVol, &
-                     lingrid => LF3d_lingrid, &
-                     xyz2lin => LF3d_xyz2lin
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates, Focc, &
                        evals => KS_evals, &
                        evecs => KS_evecs
-  USE m_hamiltonian, ONLY : V_ps_loc, V_Hartree
 
   IMPLICIT NONE 
   INTEGER :: Narg
   INTEGER :: NN(3)
   REAL(8) :: AA(3), BB(3)
   CHARACTER(64) :: filexyz, arg_N
-  INTEGER :: ip, ist, N_in, ix, iy, iz
+  INTEGER :: ip, ist, N_in
 
   Narg = iargc()
   IF( Narg /= 2 ) THEN 
@@ -51,33 +47,37 @@ PROGRAM do_Emin_pcg
   ! Initialize occupation numbers
   CALL init_states()
 
+  ! Structure factor, shifted to FFT grid
   CALL init_strfact_shifted()
 
+  ! Ewald energy
   CALL calc_Ewald()
 
+  ! Memory for potentials
   CALL alloc_hamiltonian()
 
+  ! Local pseudopotential
   CALL init_V_ps_loc_G()
-  !CALL init_V_coul_G()
-  !CALL init_V_ps_loc_G_interp()
-  !CALL init_V_coul_G_interp()
 
+  ! Laplacian matrix
   CALL init_nabla2_sparse()
+  ! ILU0 preconditioner based on kinetic matrix
   CALL init_ilu0_prec()
 
   IF( FREE_NABLA2 ) THEN 
     CALL dealloc_nabla2_sparse()
   ENDIF 
 
+  ! Manually allocate KS eigenvectors and eigenvalues
   ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
 
+  ! Initialize to random wavefunction
   DO ist = 1, Nstates
     DO ip = 1, Npoints
       CALL random_number( evecs(ip,ist) )
     ENDDO
   ENDDO
   CALL orthonormalize( Nstates, evecs )
-  CALL ortho_check( Npoints, Nstates, dVol, evecs )
 
   CALL KS_solve_Emin_pcg( 3.d-5, 1000, .FALSE. )
   !CALL KS_solve_Emin_pcg( 3.d-5, 1000, .TRUE. )

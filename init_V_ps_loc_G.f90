@@ -19,7 +19,7 @@ SUBROUTINE init_V_ps_loc_G()
   COMPLEX(8), ALLOCATABLE :: ctmp(:)
 
   WRITE(*,*)
-  WRITE(*,*) 'Initializing V_ps_loc via G-space: Hi, I am called'
+  WRITE(*,*) 'V_ps_loc is initialized via G-space'
 
   Nx = NN(1)
   Ny = NN(2)

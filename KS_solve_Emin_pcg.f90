@@ -39,7 +39,8 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
   REAL(8) :: alpha, beta, denum, Etot_old
   !
   INTEGER :: iter, ist
-  REAL(8) :: memGB
+
+  CALL info_KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
 
   ALLOCATE( g(Npoints,Nstates) )
   ALLOCATE( g_old(Npoints,Nstates) )
@@ -52,10 +53,6 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
 
   ALLOCATE( tv(Npoints,Nstates) )
 
-  memGB = Npoints*Nstates*8d0 * 8d0 / (1024d0*1024d0*1024.d0)
-
-  WRITE(*,*)
-  WRITE(*,*) 'KS_solve_Emin_pcg: memGB = ', memGB
 
   ! Read starting eigenvectors from file
   IF( restart ) THEN
@@ -65,7 +62,6 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
   CALL calc_rhoe( v, Focc )
   CALL update_potentials()
   CALL calc_energies( v )
-  WRITE(*,*) 'Initial Etot = ', Etot
 
   Etot_old = Etot
 
@@ -152,3 +148,41 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
   DEALLOCATE( g, g_old, g_t, d, d_old, tv, Kg, Kg_old )
 END SUBROUTINE
 
+
+SUBROUTINE info_KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
+  USE m_options, ONLY : CG_BETA
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
+  USE m_states, ONLY : Nstates
+  IMPLICIT NONE 
+  INTEGER :: NiterMax
+  REAL(8) :: alpha_t
+  LOGICAL :: restart
+  !
+  REAL(8) :: memGB
+
+  memGB = Npoints*Nstates*8d0 * 8d0 / (1024d0*1024d0*1024.d0)
+
+  WRITE(*,*)
+  WRITE(*,*) 'Minimizing KS total energy functional using PCG algorithm'
+  WRITE(*,*) '---------------------------------------------------------'
+  WRITE(*,*)
+  WRITE(*,*) 'NiterMax = ', NiterMax
+  WRITE(*,*) 'alpha_t  = ', alpha_t
+  WRITE(*,*) 'restart  = ', restart
+  WRITE(*,*)
+  IF( CG_BETA == 1 ) THEN
+    WRITE(*,*) 'Using Fletcher-Reeves formula'
+  ELSEIF( CG_BETA == 2 ) THEN 
+    WRITE(*,*) 'Using Polak-Ribiere formula'
+  ELSEIF( CG_BETA == 3 ) THEN 
+    WRITE(*,*) 'Using Hestenes-Stiefel formula'
+  ELSEIF( CG_BETA == 4 ) THEN 
+    WRITE(*,*) 'Using Dai-Yuan formula'
+  ELSE 
+    WRITE(*,*) 'XXXXX WARNING: Unknow CG_BETA: ', CG_BETA
+  ENDIF 
+  WRITE(*,*)
+  WRITE(*,*) 'KS_solve_Emin_pcg: memGB = ', memGB
+  WRITE(*,*)
+
+END SUBROUTINE 

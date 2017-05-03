@@ -3,9 +3,10 @@ SUBROUTINE info_LF3d()
   IMPLICIT NONE
   INTEGER :: N, Nx, Ny, Nz
 
+
   WRITE(*,*)
-  WRITE(*,*) 'Grid related variables'
-  WRITE(*,*) '^^^^^^^^^^^^^^^^^^^^^^'
+  WRITE(*,'(9x,A)') 'LF3d Grid Information'
+  WRITE(*,'(9x,A)') '---------------------'
   WRITE(*,*)
   WRITE(*,'(1x,A,3F10.5)') 'Box size            = ', LF3d_LL(:)
   WRITE(*,'(1x,A,3F10.5)') 'Grid spacing        = ', LF3d_hh
