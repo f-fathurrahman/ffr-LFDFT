@@ -17,7 +17,7 @@ SUBROUTINE xsf_struct( at, nat, tau, atm, ityp, ounit)
   USE m_constants, ONLY : ANG2BOHR
   IMPLICIT NONE
   integer, parameter :: DP=8
-  INTEGER          :: nat, ityp (nat), ounit
+  INTEGER          :: nat, ityp(nat), ounit
   CHARACTER(len=5) :: atm(*)
   real(DP)    :: tau(3, nat), at(3, 3)
   ! --
@@ -53,12 +53,12 @@ END SUBROUTINE xsf_struct
 !   in XSF format using the FFT mesh (i.e. fast write)
 ! -------------------------------------------------------------------
 SUBROUTINE xsf_fast_datagrid_3d &
-     (rho, nr1, nr2, nr3, nr1x, nr2x, nr3x, at, ounit)
+     (rho, nr1, nr2, nr3, nr1x, nr2x, nr3x, x0, at, ounit)
   USE m_constants, ONLY : ANG2BOHR
   IMPLICIT NONE
   integer, parameter :: DP=8
   INTEGER       :: nr1x, nr2x, nr3x, nr1, nr2, nr3, ounit
-  real(DP) :: at (3, 3), rho(nr1x,nr2x,nr3x)
+  real(DP) :: at (3, 3), rho(nr1x,nr2x,nr3x), x0(3)
   ! --
   INTEGER       :: i1, i2, i3, ix, iy, iz, count, i, &
        ind_x(10), ind_y(10),ind_z(10)
@@ -71,7 +71,7 @@ SUBROUTINE xsf_fast_datagrid_3d &
   ! number of points in each direction
   WRITE(ounit,*) nr1+1, nr2+1, nr3+1
   ! origin
-  WRITE(ounit,'(3f10.6)') 0.0d0, 0.0d0, 0.0d0
+  WRITE(ounit,'(3f10.6)') x0/ANG2BOHR
   ! 1st spanning (=lattice) vector
   WRITE(ounit,'(3f12.6)') (at(i,1)/ANG2BOHR,i=1,3) ! in ANGSTROMS
   ! 2nd spanning (=lattice) vector
