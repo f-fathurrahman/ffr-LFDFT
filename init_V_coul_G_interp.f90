@@ -20,7 +20,7 @@ SUBROUTINE init_V_coul_G_interp()
                      grid_z => LF3d_grid_z
 
   USE m_constants, ONLY : PI
-  USE bspline_module
+  USE bspline
 
   IMPLICIT NONE 
   INTEGER :: ip, isp, Nx, Ny, Nz, ispw, ia

@@ -1,5 +1,5 @@
 PROGRAM test_bspline
-  USE bspline_module
+  USE bspline
   INTEGER :: Nx
   INTEGER :: i
   REAL(8), ALLOCATABLE :: x(:), fx(:)

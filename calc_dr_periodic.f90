@@ -9,7 +9,8 @@
 !!
 !! NOTE:
 !!
-!!   This will only works for orthorombic cell
+!!   This will only works for orthorombic cell.
+!!   The center r0 should be located within LL.
 !!
 
 SUBROUTINE calc_dr_periodic( LL, r0, Npoints, lingrid, dr )
@@ -34,18 +35,18 @@ SUBROUTINE calc_dr_periodic( LL, r0, Npoints, lingrid, dr )
 
   DO ip = 1, Npoints
     xx1 = abs( lingrid(1,ip) - r0(1) )
-    xx2 = abs( r0(1) + Lx - lingrid(1,ip) )
-    xx3 = abs( lingrid(1,ip) - r0(1) - Lx)
+    xx2 = abs( lingrid(1,ip) - r0(1) + Lx )
+    xx3 = abs( lingrid(1,ip) - r0(1) - Lx )
     xx  = minval( (/xx1,xx2,xx3/) )
     !
     yy1 = abs( lingrid(2,ip) - r0(2) )
-    yy2 = abs( r0(2) + Ly - lingrid(2,ip) )
-    yy3 = abs( lingrid(2,ip) - r0(2) - Ly)
+    yy2 = abs( lingrid(2,ip) - r0(2) + Ly )
+    yy3 = abs( lingrid(2,ip) - r0(2) - Ly )
     yy  = minval( (/yy1,yy2,yy3/) )
     !
     zz1 = abs( lingrid(3,ip) - r0(3) )
-    zz2 = abs( r0(3) + Lz - lingrid(3,ip) )
-    zz3 = abs( lingrid(3,ip) - r0(3) - Lz)
+    zz2 = abs( lingrid(3,ip) - r0(3) + Lz )
+    zz3 = abs( lingrid(3,ip) - r0(3) - Lz )
     zz  = minval( (/zz1,zz2,zz3/) )
     !
     dr(ip) = sqrt( xx**2 + yy**2 + zz**2 )

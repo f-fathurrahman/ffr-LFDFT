@@ -19,7 +19,7 @@ SUBROUTINE init_V_ps_loc_G_interp()
                      grid_y => LF3d_grid_y, &
                      grid_z => LF3d_grid_z
 
-  USE bspline_module
+  USE bspline
 
   IMPLICIT NONE 
   INTEGER :: ip, isp, Nx, Ny, Nz, ispw, ia

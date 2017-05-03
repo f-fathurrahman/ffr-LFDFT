@@ -63,21 +63,25 @@ PROGRAM test_Ylm_real
 
   DO l = 0,3
     
-    m = 0
-    WRITE( filexsf, '(A,I1,A)' ) 'fort.',l,'.0'
-    WRITE(*,*) 'filexsf = ', filexsf
-    OPEN( unit=unitxsf, file=filexsf )
-    CALL xsf_struct( LatVecs, Natoms, atpos, SpeciesSymbols, atm2species, unitxsf )
-    DO ip = 1,Npoints
-      CALL calc_dr_periodic_1pnt( LL, atpos(:,ia), lingrid(:,ip), dr_vec )
-      dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
-      !WRITE(*,'(1x,6F8.3)') lingrid(:,ip), dr_vec(1:3)
-      fun(ip) = exp(-0.5d0*dr) * Ylm_real( l,m, dr_vec )
-    ENDDO 
-    CALL xsf_fast_datagrid_3d(fun, NN(1), NN(2), NN(3), NN(1), NN(2), NN(3), &
+    DO m = -l,l
+      IF( m < 0 ) THEN 
+        WRITE( filexsf, '(A,I1,A,I1,A)' ) 'fort.',l,'.m',abs(m),'.xsf'
+      ELSE 
+        WRITE( filexsf, '(A,I1,A,I1,A)' ) 'fort.',l,'.',m,'.xsf'
+      ENDIF 
+      WRITE(*,*) 'filexsf = ', filexsf
+      OPEN( unit=unitxsf, file=filexsf )
+      CALL xsf_struct( LatVecs, Natoms, atpos, SpeciesSymbols, atm2species, unitxsf )
+      DO ip = 1,Npoints
+        CALL calc_dr_periodic_1pnt( LL, atpos(:,ia), lingrid(:,ip), dr_vec )
+        dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
+        !WRITE(*,'(1x,6F8.3)') lingrid(:,ip), dr_vec(1:3)
+        fun(ip) = exp(-0.5d0*dr) * Ylm_real( l,m, dr_vec )
+      ENDDO 
+      CALL xsf_fast_datagrid_3d(fun, NN(1), NN(2), NN(3), NN(1), NN(2), NN(3), &
             origin, LatVecs, unitxsf)
-    CLOSE(unitxsf)
-
+      CLOSE(unitxsf)
+    ENDDO 
   ENDDO 
 
 

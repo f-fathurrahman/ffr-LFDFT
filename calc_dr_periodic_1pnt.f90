@@ -9,7 +9,8 @@
 !!
 !! NOTE:
 !!
-!!   This will only works for orthorombic cell
+!!   This will only works for orthorombic cell.
+!!   The center r0 should be located within LL.
 !!
 
 SUBROUTINE calc_dr_periodic_1pnt( LL, r0, lingrid, dr_vec )

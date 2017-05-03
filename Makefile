@@ -1,6 +1,6 @@
 #include platform/make.inc.ifort
-include platform/make.inc.gfortran
-#include platform/make.inc.g95
+#include platform/make.inc.gfortran
+include platform/make.inc.g95
 
 SRC = \
 m_constants.f90 \
@@ -73,7 +73,7 @@ mixbroyden.f90 \
 mixerifc.f90 \
 mixlinear.f90 \
 shift_atoms.f90 \
-bspline_sub_module.f90 bspline_oo_module.f90 bspline_module.f90 \
+bspline.f90 \
 init_V_ps_loc_G_interp.f90 \
 init_V_coul_G_interp.f90 \
 init_strfact_shifted.f90 \
