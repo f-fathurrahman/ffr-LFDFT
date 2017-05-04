@@ -8,6 +8,16 @@ SUBROUTINE info_LF3d()
   WRITE(*,'(9x,A)') 'LF3d Grid Information'
   WRITE(*,'(9x,A)') '---------------------'
   WRITE(*,*)
+  IF( LF3d_TYPE == LF3d_PERIODIC ) THEN 
+    WRITE(*,*) 'Type: PERIODIC'
+  ELSEIF( LF3d_TYPE == LF3d_CLUSTER ) THEN 
+    WRITE(*,*) 'Type: CLUSTER'
+  ELSEIF( LF3d_TYPE == LF3d_SINC ) THEN 
+    WRITE(*,*) 'Type: SINC'
+  ELSE
+    WRITE(*,*) 'Type: UNKNOWN'
+  ENDIF 
+  WRITE(*,*)
   WRITE(*,'(1x,A,3F10.5)') 'Box size            = ', LF3d_LL(:)
   WRITE(*,'(1x,A,3F10.5)') 'Grid spacing        = ', LF3d_hh
   WRITE(*,'(1x,A,3I5)')    'Sampling Nx, Ny, Nz = ', LF3d_NN(:)

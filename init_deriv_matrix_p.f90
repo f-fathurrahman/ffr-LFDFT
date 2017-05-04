@@ -1,7 +1,7 @@
 !! PURPOSE:
 !!
-!!   This subroutine calculates first derivative matrix D1jl and second derivative
-!!   matrix of Lagrange basis functions in 1D.
+!!   This subroutine calculates first and second derivative
+!!   matrix of periodic Lagrange basis functions in 1D.
 !!
 !! AUTHOR:
 !!
@@ -10,7 +10,7 @@
 !! NOTE:
 !!
 !!   This subroutine uses full storage of the matrix,
-!!   not yet exploiting the symmetry of D1jl and D2jl
+!!   not yet exploiting the derivative matrix
 !!
 !! IMPORTANT:
 !!

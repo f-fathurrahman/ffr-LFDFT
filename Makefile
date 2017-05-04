@@ -21,10 +21,13 @@ LDA_VWN.f90 \
 init_atoms_xyz.f90 \
 init_grid_1d_p.f90 \
 init_grid_1d_c.f90 \
+init_grid_1d_sinc.f90 \
 init_deriv_matrix_p.f90 \
 init_deriv_matrix_c.f90 \
+init_deriv_matrix_sinc.f90 \
 init_LF3d_p.f90 \
 init_LF3d_c.f90 \
+init_LF3d_sinc.f90 \
 init_states.f90 \
 info_LF3d.f90 \
 info_PsPot.f90 \
@@ -40,6 +43,7 @@ init_nabla2_sparse.f90 \
 dealloc_nabla2_sparse.f90 \
 dealloc_atoms.f90 \
 Poisson_solve_cg.f90 \
+Poisson_solve_pcg.f90 \
 Poisson_solve_fft.f90 \
 Poisson_solve_fft_MT.f90 \
 op_H.f90 \

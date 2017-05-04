@@ -1,7 +1,7 @@
 !! PURPOSE:
 !!
-!!   This subroutine calculates first derivative matrix D1jl and second derivative
-!!   matrix of Lagrange basis functions in 1D.
+!!   This subroutine calculates second derivative
+!!   matrix of cluster Lagrange basis functions in 1D.
 !!
 !! AUTHOR:
 !!
@@ -10,11 +10,11 @@
 !! NOTE:
 !!
 !!   This subroutine uses full storage of the matrix,
-!!   not yet exploiting the symmetry of D1jl and D2jl
+!!   not yet exploiting the symmetry of derivative matrix.
 !!
 !! IMPORTANT:
 !!
-!!   The matrices D1jl and D2jl are assumed to have been allocated somewhere else.
+!!   The matrices D2jl are assumed to have been allocated somewhere else.
 !!
 
 SUBROUTINE init_deriv_matrix_c( N, L, D2jl )
