@@ -128,7 +128,7 @@ PROGRAM test_scf
     !ENDIF
 
     integRho = sum(Rhoe)*dVol
-    WRITE(*,'(1x,A,F18.10)') 'After mix: integRho = ', integRho
+    !WRITE(*,'(1x,A,F18.10)') 'After mix: integRho = ', integRho
     IF( abs(integRho - Nelectrons) > 1.0d-6 ) THEN
       WRITE(*,*) 'Rescaling Rho'
       Rhoe(:) = Nelectrons/integRho * Rhoe(:)
@@ -148,7 +148,7 @@ PROGRAM test_scf
       EXIT 
     ENDIF 
 
-    WRITE(*,*)
+    !WRITE(*,*)
     WRITE(*,'(1x,A,I5,F18.10,2ES18.10)') 'SCF iter', iterSCF, Etot, dEtot, dr2
 
     Etot_old = Etot
