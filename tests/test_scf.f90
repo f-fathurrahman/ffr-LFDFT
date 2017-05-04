@@ -9,7 +9,7 @@ PROGRAM test_scf
   USE m_states, ONLY : Nstates, Focc, &
                        evals => KS_evals, &
                        evecs => KS_evecs
-  USE m_hamiltonian, ONLY : V_ps_loc, Rhoe
+  USE m_hamiltonian, ONLY : Rhoe
   USE m_energies, ONLY : Etot => E_total
   USE m_PsPot, ONLY : PsPot_Dir
   USE m_options, ONLY : ethr => DIAG_DAVIDSON_QE_ETHR
@@ -24,25 +24,30 @@ PROGRAM test_scf
   REAL(8) :: dr2
   REAL(8), ALLOCATABLE :: Rhoe_old(:)
   REAL(8), PARAMETER :: LL(3) = (/ 16.d0, 16.d0, 16.d0 /)
-  REAL(8) :: ddot
+
   REAL(8) :: integRho
-  CHARACTER(64) :: filexyz
+  CHARACTER(64) :: filexyz, arg_N
   REAL(8), ALLOCATABLE :: beta_work(:), f_work(:)
+  INTEGER :: N_in
+  INTEGER :: iargc
  
   Narg = iargc()
-  IF( Narg /= 1 ) THEN 
-    WRITE(*,*) 'ERROR: exactly one argument must be given'
+  IF( Narg /= 2 ) THEN 
+    WRITE(*,*) 'ERROR: exactly two arguments must be given:'
+    WRITE(*,*) '       N and path to structure file'
     STOP 
   ENDIF 
 
-  CALL getarg(1,filexyz)
+  CALL getarg( 1, arg_N )
+  READ(arg_N, *) N_in
 
+  CALL getarg( 2, filexyz )
   CALL init_atoms_xyz(filexyz)
 
   PsPot_Dir = '../HGH/'
   CALL init_PsPot()
 
-  NN = (/ 55, 55, 55 /)
+  NN = (/ N_in, N_in, N_in /)
   AA = (/ 0.d0, 0.d0, 0.d0 /)
   BB = (/ LL(1), LL(2), LL(3) /)
 
@@ -52,16 +57,16 @@ PROGRAM test_scf
 
   CALL init_states()
 
-  CALL init_strfact()
+  CALL init_strfact_shifted()
   CALL calc_Ewald()
 
   ! Set up potential
   CALL alloc_hamiltonian()
 
+  CALL init_V_ps_loc_G( )
+
   CALL init_nabla2_sparse()
   CALL init_ilu0_prec()
-
-  CALL init_V_ps_loc_G( )
 
   ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
 

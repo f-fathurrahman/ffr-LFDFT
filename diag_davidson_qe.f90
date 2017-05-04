@@ -110,8 +110,8 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
   ! ... iterate
   !
   iterate: DO kter = 1, maxter
-     WRITE(*,*)
-     WRITE(*,*) 'dav_iter = ', kter
+     !WRITE(*,*)
+     !WRITE(*,*) 'dav_iter = ', kter
      !
      dav_iter = kter
      !     !
@@ -229,11 +229,11 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
         conv(1:nvec) = ( ( ABS( ew(1:nvec) - e(1:nvec) ) < empty_ethr ) )
         !
      END WHERE
-     WRITE(*,*)
-     WRITE(*,*) 'Error estimates:'
-     DO n = 1,nvec
-       WRITE(*,'(1x,I8,ES18.10)') n, ABS( ew(n) - e(n) )
-     ENDDO
+     !WRITE(*,*)
+     !WRITE(*,*) 'Error estimates:'
+     !DO n = 1,nvec
+     !  WRITE(*,'(1x,I8,ES18.10)') n, ABS( ew(n) - e(n) )
+     !ENDDO
      !
      notcnv = COUNT( .NOT. conv(:) )
      !
@@ -263,7 +263,7 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
            ! ... last iteration, some roots not converged: return
            !
            WRITE( stdout, '(5X,"WARNING: ",I5, &
-                &   " eigenvalues not converged in regterg")' ) notcnv
+                &   " eigenvalues not converged in diag_davidson_qe")' ) notcnv
            !           !
            EXIT iterate
            !

@@ -34,7 +34,7 @@ SUBROUTINE init_V_ps_loc_G_interp()
   REAL(8) :: shiftx, shifty, shiftz
   INTEGER :: iknot
   INTEGER :: idx, idy, idz, iloy, iloz, inbvx, inbvy, inbvz
-  REAL(8) :: val, dx, dy, dz, dr
+  REAL(8) :: val, dx, dy, dz
   
   WRITE(*,*)
   WRITE(*,*) 'Initializing V_ps_loc via G-space: ( + interpolation)'
@@ -128,7 +128,6 @@ SUBROUTINE init_V_ps_loc_G_interp()
           dx = abs( lingrid(1,ip) - atpos(1,ia) )
           dy = abs( lingrid(2,ip) - atpos(2,ia) )
           dz = abs( lingrid(3,ip) - atpos(3,ia) )
-          dr = sqrt(dx**2 + dy**2 + dx**2)
           CALL db3val( dx, dy, dz, idx,idy,idz, tx,ty,tz, Nx+1,Ny+1,Nz+1,kx,ky,kz, interp_V,&
                  val, iflag, inbvx, inbvy, inbvz, iloy, iloz )
           V_ps_loc(ip) = V_ps_loc(ip) + val

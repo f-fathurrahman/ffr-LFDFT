@@ -11,7 +11,7 @@ SUBROUTINE init_strfact()
   IMPLICIT NONE
   !
   INTEGER :: ia, isp, ig
-  REAL(8) :: GX, shiftx, shifty, shiftz
+  REAL(8) :: GX
 
   WRITE(*,*)
   WRITE(*,*) 'Calculating structure factor'
