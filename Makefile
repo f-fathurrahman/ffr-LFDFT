@@ -47,6 +47,9 @@ Poisson_solve_pcg.f90 \
 Poisson_solve_fft.f90 \
 Poisson_solve_fft_MT.f90 \
 op_H.f90 \
+op_V_ps_NL.f90 \
+init_betaNL.f90 \
+calc_betaNL_psi.f90 \
 diag_davidson_qe.f90 \
 rdiaghg.f90 \
 alloc_hamiltonian.f90 \

@@ -8,4 +8,13 @@ MODULE m_PsPot
 
   TYPE(Ps_HGH_Params_T), ALLOCATABLE :: Ps_HGH_Params(:)
 
+  INTEGER :: NbetaNL
+  REAL(8), ALLOCATABLE :: betaNL(:,:) ! (Npoints,NbetaNL)
+  REAL(8), ALLOCATABLE :: betaNL_psi(:,:,:) ! Natoms, Nbeta, Nstates 
+
+  INTEGER :: NprojTotMax
+  REAL(8), ALLOCATABLE :: w_NL(:,:) ! Nspecies,0:3
+
 END MODULE 
+
+

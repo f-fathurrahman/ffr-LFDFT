@@ -20,13 +20,15 @@ SUBROUTINE calc_energies( psi )
                      dVol => LF3d_dVol
   USE m_states, ONLY : Nstates, Focc
   USE m_hamiltonian, ONLY : V_ps_loc, V_Hartree, Rhoe
+  USE m_atoms, ONLY : atm2species, Natoms
+  USE m_PsPot, ONLY : w_NL, betaNL_psi, NbetaNL
   USE m_energies
   IMPLICIT NONE
   !
   REAL(8) :: psi(Npoints, Nstates)
   !
   REAL(8), ALLOCATABLE  :: nabla2_psi(:)
-  INTEGER :: ist
+  INTEGER :: ist, ia, isp, ibeta
   REAL(8), ALLOCATABLE :: epsxc(:)
   !
   REAL(8) :: ddot
@@ -52,6 +54,18 @@ SUBROUTINE calc_energies( psi )
 
   CALL excVWN( Npoints, Rhoe, epsxc )
   E_xc = sum( Rhoe(:) * epsxc(:) )*dVol
+
+  !
+  E_ps_NL = 0.d0
+  DO ist = 1,Nstates
+    DO ia = 1,Natoms
+      isp = atm2species(ia)
+      DO ibeta = 1,NbetaNL
+        E_ps_NL = E_ps_NL + w_NL(1,1)*betaNL_psi(1,ist,1)*betaNL_psi(1,ist,1)
+      ENDDO
+    ENDDO 
+    E_ps_NL = E_ps_NL + Focc(ist)*E_ps_NL
+  ENDDO 
 
   E_total = E_kinetic + E_ps_loc + E_Hartree + E_xc + E_nn
 
