@@ -1,0 +1,4365 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass extarticle
+\begin_preamble
+\usepackage{xcolor}
+\usepackage{braket}
+\usepackage{bigints}
+\usepackage{minted}
+\newminted{fortran}{breaklines,fontsize=\small,mathescape=true,autogobble}
+\newminted{python}{breaklines,fontsize=\small,mathescape=true}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman utopia
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement p
+\paperfontsize 10
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\listings_params "backgroundcolor={\color{gray!10}},basicstyle={\footnotesize\ttfamily},breaklines=true,showstringspaces=false,tabsize=2"
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Solving Schrodinger Equation using Lagrange Basis Set
+\end_layout
+
+\begin_layout Author
+Fadjar Fathurrahman
+\end_layout
+
+\begin_layout Abstract
+Some useful formulas for solving Schrodinger equation numerically using
+ periodic cardinals basis functions, a special case of Lagrange basis functions.
+\end_layout
+
+\begin_layout Part
+Formalism
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+In this worknote, a numerical solution to the Schrodinger equation
+\begin_inset Formula 
+\begin{equation}
+\left(\frac{\hbar^{2}}{2m}\nabla^{2}+V(\mathbf{r})\right)\psi(\mathbf{r})=E\psi(\mathbf{r})
+\end{equation}
+
+\end_inset
+
+will be described using Lagrange basis function.
+\end_layout
+
+\begin_layout Standard
+Advantages:
+\end_layout
+
+\begin_layout Itemize
+relatively simple implementation
+\end_layout
+
+\begin_layout Itemize
+systematic basis set
+\end_layout
+
+\begin_layout Itemize
+fast convergence with respect to number of basis set
+\end_layout
+
+\begin_layout Itemize
+does not requires FFT, has potential for easy parallel implementation
+\end_layout
+
+\begin_layout Standard
+Previous implementation ....
+\end_layout
+
+\begin_layout Standard
+Orthogonality:
+\begin_inset Formula 
+\[
+\int L_{i}(x)L_{j}(x)\ \mathrm{d}x=\delta_{ij}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Periodic boundary condition
+\end_layout
+
+\begin_layout Subsection
+Periodic Lagrange function in 1d
+\end_layout
+
+\begin_layout Standard
+For a given interval 
+\begin_inset Formula $[0,L]$
+\end_inset
+
+, with 
+\begin_inset Formula $L>0$
+\end_inset
+
+, the grid points 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ appropriate for periodic Lagrange function are given by:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+x_{i}=\frac{L}{2}\frac{2i-1}{N}
+\end{equation}
+
+\end_inset
+
+with 
+\begin_inset Formula $i=1,\ldots,N$
+\end_inset
+
+.
+ Number of points 
+\begin_inset Formula $N$
+\end_inset
+
+ should be an odd number.
+\end_layout
+
+\begin_layout Standard
+The periodic cardinal functions 
+\begin_inset Formula $L_{i}^{\mathrm{per}}(x)$
+\end_inset
+
+, defined at grid point 
+\begin_inset Formula $i$
+\end_inset
+
+ are given by:
+\begin_inset Formula 
+\begin{equation}
+L_{i}^{\mathrm{per}}(x)=\frac{1}{\sqrt{NL}}\sum_{n=1}^{N}\cos\left(\frac{\pi}{L}(2n-N-1)(x-x_{i})\right).
+\end{equation}
+
+\end_inset
+
+The expansion of periodic function in terms of Lagrange functions:
+\begin_inset Formula 
+\begin{equation}
+f(x)=\sum_{i=1}^{N}c_{i}L_{i}^{\mathrm{per}}(x)
+\end{equation}
+
+\end_inset
+
+with expansion coefficients 
+\begin_inset Formula $c_{i}=\sqrt{L/N}f(x_{i})$
+\end_inset
+
+.
+ When doing variational calculation, the cofficients 
+\begin_inset Formula $c_{i}$
+\end_inset
+
+ are the variational parameters.
+ The actual function values 
+\begin_inset Formula $f(x_{i}$
+\end_inset
+
+) at grid points 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ is obtained by 
+\begin_inset Formula $f(x_{i})=\sqrt{N/L}c_{i}$
+\end_inset
+
+.
+ The prefactor is sometimes abbreviated by 
+\begin_inset Formula $h=L/N$
+\end_inset
+
+ and is also referred to as scaling factor.
+\end_layout
+
+\begin_layout Subsection
+Periodic potential in 1D
+\end_layout
+
+\begin_layout Standard
+Periodic potential:
+\begin_inset Formula 
+\begin{equation}
+V(x+L)=V(x).
+\end{equation}
+
+\end_inset
+
+Floquet-Bloch theorem states that the wave function solution for periodic
+ potentials can be written in the form:
+\begin_inset Formula 
+\begin{equation}
+\psi_{k}(x)=e^{\imath kx}\phi_{k}(x)
+\end{equation}
+
+\end_inset
+
+where function 
+\begin_inset Formula $\phi_{k}(x)$
+\end_inset
+
+ and its first derivative 
+\begin_inset Formula $\phi_{k}'(x)$
+\end_inset
+
+ have the same periodicity as 
+\begin_inset Formula $V(x)$
+\end_inset
+
+ and 
+\begin_inset Formula $k$
+\end_inset
+
+ is a constant called the crystal momentum.
+ Substituting this expression to Schrodinger equation we obtain:
+\begin_inset Formula 
+\begin{equation}
+\left[-\frac{\hbar^{2}}{2m}\left(\frac{\mathrm{d}^{2}}{\mathrm{d}x^{2}}+2\imath k\frac{\mathrm{d}}{\mathrm{d}x}-k^{2}\right)+V(x)\right]\phi_{k}(x)=E\phi_{k}(k).
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+An alternative way of enforcing periodicity of the wave function is to require
+ that:
+\begin_inset Formula 
+\begin{equation}
+\psi_{k}(x+L)=e^{\imath kL}\psi_{k}(x).
+\end{equation}
+
+\end_inset
+
+This condition follows from:
+\begin_inset Formula 
+\begin{eqnarray*}
+\psi_{k}(x+L) & = & e^{\imath k(x+L)}\phi_{k}(x+L)\\
+ & = & e^{\imath k(x+L)}\phi_{k}(x)\\
+ & = & e^{\imath kL}e^{\imath kx}\phi_{k}(x)\\
+ & = & e^{\imath kL}\psi_{k}(x)
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Using periodic cardinal the Schrodinger equation for periodic potential
+ can be written as:
+\begin_inset Formula 
+\begin{equation}
+\sum_{j=1}^{N}\left[-\frac{\hbar^{2}}{2m}\left(D_{jl}^{(2)}+2\imath kD_{jl}^{(1)}-k^{2}\delta_{jl}\right)+V(j)\delta_{jl}\right]\phi(j)=E\phi(l)
+\end{equation}
+
+\end_inset
+
+with 
+\begin_inset Formula $l=1,\ldots,N$
+\end_inset
+
+.
+ 
+\begin_inset Formula $D_{jl}^{(1)}$
+\end_inset
+
+ are matrix elements of the first derivatives:
+\begin_inset Formula 
+\begin{equation}
+D_{jl}^{(1)}=\begin{cases}
+0 & j=l\\
+-\dfrac{2\pi}{L}(-1)^{j-l}\left(2\sin\dfrac{\pi(j-l)}{N}\right)^{-1} & j\neq l
+\end{cases}
+\end{equation}
+
+\end_inset
+
+and 
+\begin_inset Formula $D_{jl}^{(2)}$
+\end_inset
+
+ are matrix elements of the second derivatives, 
+\begin_inset Formula $N'=(N-1)/2$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{equation}
+D_{jl}^{(2)}=\begin{cases}
+-\left(\dfrac{2\pi}{L}\right)^{2}\dfrac{N'(N'+1)}{3} & j=l\\
+-\left(\dfrac{2\pi}{L}\right)^{2}(-1)^{j-l}\dfrac{\cos\left(\pi(j-l)/N\right)}{2\sin^{2}\left[\pi(j-l)/N\right]} & j\neq l
+\end{cases}
+\end{equation}
+
+\end_inset
+
+Note that, 
+\begin_inset Formula $D_{jl}^{(1)}$
+\end_inset
+
+ is not symmetric, but 
+\begin_inset Formula $D_{jl}^{(1)}=-D_{lj}^{(1)}$
+\end_inset
+
+.
+ Meanwhile, the second derivative matrix 
+\begin_inset Formula $D_{jl}^{(2)}$
+\end_inset
+
+ is symetric, i.e.
+ 
+\begin_inset Formula $D_{jl}^{(2)}=D_{lj}^{(2)}$
+\end_inset
+
+.
+ With the above expressions, first and second derivative of periodic cardinals
+ can be expressed as
+\begin_inset Formula 
+\begin{eqnarray}
+\frac{\mathrm{d}}{\mathrm{d}x}L_{i}^{\mathrm{per}}(x) & = & \sum_{j=1}^{N}D_{ji}^{(1)}L_{j}^{\mathrm{per}}(x)\\
+\frac{\mathrm{d}^{2}}{\mathrm{d}x^{2}}L_{i}^{\mathrm{per}}(x) & = & \sum_{j=1}^{N}D_{ji}^{(2)}L_{j}^{\mathrm{per}}(x)
+\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+3D periodic potential
+\end_layout
+
+\begin_layout Standard
+Periodic potential
+\begin_inset Formula 
+\[
+V(\mathbf{r})=V(x,y,z)=V\left(x+L_{x},y+L_{y},z+L_{z}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Schrodinger equation:
+\begin_inset Formula 
+\begin{equation}
+\left[-\dfrac{\hbar^{2}}{2m}\left(\nabla^{2}+2\imath\mathbf{k}\cdot\nabla-\mathbf{k}^{2}\right)+V(\mathbf{r})\right]\phi_{\mathbf{k}}(\mathbf{r})=E\ \phi_{\mathbf{k}}(\mathbf{r})
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Isolated boundary condition
+\end_layout
+
+\begin_layout Subsection
+Cluster Lagrange function in 1d
+\end_layout
+
+\begin_layout Standard
+For a given interval 
+\begin_inset Formula $[A,B]$
+\end_inset
+
+, with 
+\begin_inset Formula $B>A$
+\end_inset
+
+, the grid points 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ appropriate for cluster Lagrange function are given by:
+\begin_inset Formula 
+\[
+x_{i}=A+\frac{B-A}{N+1}i
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $i=1,\ldots,N$
+\end_inset
+
+.
+ Number of points 
+\begin_inset Formula $N$
+\end_inset
+
+ can be either odd or even number.
+\end_layout
+
+\begin_layout Standard
+The cluster Lagrange functions 
+\begin_inset Formula $L_{i}^{\mathrm{clu}}(x)$
+\end_inset
+
+, defined at grid point 
+\begin_inset Formula $i$
+\end_inset
+
+ are given by:
+\begin_inset Formula 
+\begin{equation}
+L_{i}^{\mathrm{clu}}(x)=\frac{2}{\sqrt{(N+1)(B-A)}}\sum_{n=1}^{N}\sin\left(k_{n}(x_{i}-A)\right)\sin\left(k_{n}(x-A)\right).
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $k_{n}=\pi n/(B-A)$
+\end_inset
+
+.
+ The expansion of a function 
+\begin_inset Formula $f(x)$
+\end_inset
+
+ in terms of cluster Lagrange functions:
+\begin_inset Formula 
+\begin{equation}
+f(x)=\sum_{i=1}^{N}c_{i}L_{i}^{\mathrm{clu}}(x)
+\end{equation}
+
+\end_inset
+
+with expansion coefficients 
+\begin_inset Formula $c_{i}=\sqrt{(B-A)/(N+1)}f(x_{i})$
+\end_inset
+
+.
+ When doing variational calculation, the cofficients 
+\begin_inset Formula $c_{i}$
+\end_inset
+
+ are the variational parameters.
+ The actual function values 
+\begin_inset Formula $f(x_{i}$
+\end_inset
+
+) at grid points 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ is obtained by 
+\begin_inset Formula $f(x_{i})=\sqrt{(N+1)/(B-A)}c_{i}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Matrix elements 
+\begin_inset Formula $D_{jl}^{(2)}$
+\end_inset
+
+ of the second derivatives for cluster Lagrange functions are
+\begin_inset Formula 
+\begin{equation}
+D_{jl}^{(2)}=\begin{cases}
+-\dfrac{1}{2}\left(\dfrac{\pi}{B-A}\right)^{2}\dfrac{2(N+1)^{2}+1}{3}-\dfrac{1}{\sin^{2}\left[\pi j/(N+1)\right]} & j=l\\
+-\dfrac{1}{2}\left(\dfrac{\pi}{B-A}\right)^{2}(-1)^{j-l}\left[\dfrac{1}{\sin^{2}\left[\dfrac{\pi(j-l)}{2(N+1)}\right]}-\dfrac{1}{\sin^{2}\left[\dfrac{\pi(j+l)}{2(N+1)}\right]}\right] & j\neq l
+\end{cases}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For free or cluster boundary condition, we don't need 
+\begin_inset Formula $D_{jl}^{(1)}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Part
+Implementation and Tests
+\end_layout
+
+\begin_layout Standard
+Most of the implementation is done using Fortran.
+ Various post processing tasks is done using Python.
+\end_layout
+
+\begin_layout Section
+Basic module for one-dimensional Lagrange functions
+\end_layout
+
+\begin_layout Standard
+One-dimensional LF, both for periodic and cluster LFs, are implemented in
+ file 
+\family typewriter
+m_LF1d.f90
+\family default
+.
+\end_layout
+
+\begin_layout Standard
+Here is the basis data structure for LF, which applies to both periodic
+ and cluster LFs.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{fortrancode}
+\end_layout
+
+\begin_layout Plain Layout
+
+TYPE LF1d_t
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER :: N
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8) :: L
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8) :: A, B
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8) :: h
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8), ALLOCATABLE :: grid(:)
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8), ALLOCATABLE :: D1jl(:,:), D2jl(:,:)
+\end_layout
+
+\begin_layout Plain Layout
+
+END TYPE
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{fortrancode}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here is the subroutine to initialize periodic LF:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{fortrancode}
+\end_layout
+
+\begin_layout Plain Layout
+
+SUBROUTINE init_LF1d_p( LF, N, L )
+\end_layout
+
+\begin_layout Plain Layout
+
+  IMPLICIT NONE
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! Arguments
+\end_layout
+
+\begin_layout Plain Layout
+
+  TYPE(LF1d_t), INTENT(INOUT) :: LF
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER :: N
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8) :: L
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! Local
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER :: ii
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  IF( mod(N,2)==0 ) THEN
+\end_layout
+
+\begin_layout Plain Layout
+
+    WRITE(*,*) 'N should be odd number, this N=', N
+\end_layout
+
+\begin_layout Plain Layout
+
+    STOP
+\end_layout
+
+\begin_layout Plain Layout
+
+  ENDIF
+\end_layout
+
+\begin_layout Plain Layout
+
+  LF%N = N
+\end_layout
+
+\begin_layout Plain Layout
+
+  LF%L = L
+\end_layout
+
+\begin_layout Plain Layout
+
+  LF%A = 0.d0
+\end_layout
+
+\begin_layout Plain Layout
+
+  LF%B = L
+\end_layout
+
+\begin_layout Plain Layout
+
+  LF%h = L/N
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( LF%grid(N) )
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  DO ii=1,N
+\end_layout
+
+\begin_layout Plain Layout
+
+    LF%grid(ii) = 0.5d0*L*(2*ii-1)/N
+\end_layout
+
+\begin_layout Plain Layout
+
+  ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( LF%D1jl(N,N), LF%D2jl(N,N) )
+\end_layout
+
+\begin_layout Plain Layout
+
+  CALL init_deriv_matrix_p( LF%D1jl, LF%D2jl, LF )
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  WRITE(*,*) 'Allocated: periodic 1d LBF grid, h = ', LF%h
+\end_layout
+
+\begin_layout Plain Layout
+
+END SUBROUTINE
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{fortrancode}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here is the subroutine to initialize cluster LF:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{fortrancode}
+\end_layout
+
+\begin_layout Plain Layout
+
+SUBROUTINE init_LF1d_c( LF, N, A, B )
+\end_layout
+
+\begin_layout Plain Layout
+
+  IMPLICIT NONE
+\end_layout
+
+\begin_layout Plain Layout
+
+  TYPE(LF1d_t) :: LF
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER :: N
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8) :: A, B
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER :: ii
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  LF%N = N
+\end_layout
+
+\begin_layout Plain Layout
+
+  LF%A = A
+\end_layout
+
+\begin_layout Plain Layout
+
+  LF%B = B
+\end_layout
+
+\begin_layout Plain Layout
+
+  LF%L = B - A
+\end_layout
+
+\begin_layout Plain Layout
+
+  LF%h = (B-A)/(N+1) ! Note that this is different from the periodic LF
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( LF%grid(N) )
+\end_layout
+
+\begin_layout Plain Layout
+
+  DO ii=1,N
+\end_layout
+
+\begin_layout Plain Layout
+
+    LF%grid(ii) = A + ii*(B-A)/(N+1)
+\end_layout
+
+\begin_layout Plain Layout
+
+  ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! FIXME: Currently only D2jl matrix is initialized
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( LF%D2jl(N,N) )
+\end_layout
+
+\begin_layout Plain Layout
+
+  CALL init_deriv_matrix_c( LF%D2jl, LF )
+\end_layout
+
+\begin_layout Plain Layout
+
+  WRITE(*,*) 'Allocated: cluster 1d LBF grid, h = ', LF%h
+\end_layout
+
+\begin_layout Plain Layout
+
+END SUBROUTINE
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{fortrancode}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Various tests for one-dimensional Lagrange functions
+\end_layout
+
+\begin_layout Standard
+Expanding function, calculating first and second derivatives, approximating
+ integrals
+\end_layout
+
+\begin_layout Standard
+Solving 1d Schrodinger equation
+\end_layout
+
+\begin_layout Standard
+eigenvectors obtained from diagonalization of Hamiltonian are already in
+ function space.
+\end_layout
+
+\begin_layout Subsection
+Plotting
+\end_layout
+
+\begin_layout Standard
+Given expansion coefficients 
+\begin_inset Formula $c_{i}$
+\end_inset
+
+ of a function 
+\begin_inset Formula $f$
+\end_inset
+
+, we can evaluate the value of 
+\begin_inset Formula $f$
+\end_inset
+
+ at any
+\begin_inset Formula $x$
+\end_inset
+
+ (for plotting purpose, for example) using the following code
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{fortrancode}
+\end_layout
+
+\begin_layout Plain Layout
+
+DO ii=1,NPTS_PLOT
+\end_layout
+
+\begin_layout Plain Layout
+
+  xx = A + (ii-1)*L/(NPTS_PLOT-1) ! we include both end points in the plot
+\end_layout
+
+\begin_layout Plain Layout
+
+  yy = 0.d0
+\end_layout
+
+\begin_layout Plain Layout
+
+  DO jj=1,N
+\end_layout
+
+\begin_layout Plain Layout
+
+    yy = yy + eval_LF1d_c( LF, jj, xx )*coefs(jj)
+\end_layout
+
+\begin_layout Plain Layout
+
+  ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+  WRITE(12,*) xx, yy  ! write to a file for plotting
+\end_layout
+
+\begin_layout Plain Layout
+
+ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{fortrancode}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Plotting the Lagrange functions (periodic case)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename images/LF_N_5_p.pdf
+	display false
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Plot of periodic Lagrange functions for 
+\begin_inset Formula $N=5$
+\end_inset
+
+, 
+\begin_inset Formula $A=0$
+\end_inset
+
+, and 
+\begin_inset Formula $B=2$
+\end_inset
+
+.
+ In this case, the grid points 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ are 0.200, 0.600, 1.000, 1.400 and 1.800.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Plotting the Lagrange functions (cluster case)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename images/LF_N_5_c.pdf
+	display false
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Plot of cluster Lagrange functions for 
+\begin_inset Formula $N=5$
+\end_inset
+
+, 
+\begin_inset Formula $A=0$
+\end_inset
+
+, and 
+\begin_inset Formula $B=2$
+\end_inset
+
+.
+ In this case, the grid points 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ are 0.333, 0.667, 1.000, 1.333 and 1.667.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Expanding function
+\end_layout
+
+\begin_layout Standard
+Given analytic expression of a function 
+\begin_inset Formula $f$
+\end_inset
+
+, the expansion coefficients 
+\begin_inset Formula $c_{i}$
+\end_inset
+
+ are given by 
+\begin_inset Formula $c_{i}=\sqrt{h}f(x_{i})$
+\end_inset
+
+.
+ For example, we want to expand a Gaussian function 
+\begin_inset Formula $f(x)=\exp\left[-(\frac{x-\mu}{\sigma})^{2}/2\right]/\left(\sigma\sqrt{2\pi}\right)$
+\end_inset
+
+, then we may use the following code:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{fortrancode}
+\end_layout
+
+\begin_layout Plain Layout
+
+FUNCTION gaussian( sigma, mu, x )
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8) :: gaussian
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8) ::sigma, mu, x
+\end_layout
+
+\begin_layout Plain Layout
+
+  gaussian = 1.d0/(sigma*sqrt(2.d0*PI))*exp( -0.5d0*( (x-mu)/sigma )**2 )
+\end_layout
+
+\begin_layout Plain Layout
+
+END FUNCTION
+\end_layout
+
+\begin_layout Plain Layout
+
+...
+\end_layout
+
+\begin_layout Plain Layout
+
+DO ii=1,N
+\end_layout
+
+\begin_layout Plain Layout
+
+  coefs(ii) =  sqrt(h)*( gaussian( sigma, mu, LF%grid(ii) ) + &
+\end_layout
+
+\begin_layout Plain Layout
+
+     gaussian( sigma, mu2, LF%grid(ii) ) )
+\end_layout
+
+\begin_layout Plain Layout
+
+ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{fortrancode}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Integrating function
+\end_layout
+
+\begin_layout Standard
+Suppose that we have analytic expression of a function 
+\begin_inset Formula $f$
+\end_inset
+
+ and we can calculate the expansion coefficients 
+\begin_inset Formula $c_{i}=\sqrt{h}f(x_{i})$
+\end_inset
+
+.
+ The integral of 
+\begin_inset Formula $f(x)$
+\end_inset
+
+ can be approximated by
+\begin_inset Formula 
+\[
+\int_{A}^{B}f(x)\ \mathrm{d}x\approx h\sum_{i=1}^{N}f(x_{i})
+\]
+
+\end_inset
+
+If we have the expansion coefficients 
+\begin_inset Formula $c_{i}$
+\end_inset
+
+ of 
+\begin_inset Formula $f(x)$
+\end_inset
+
+ we need to convert this to 
+\begin_inset Formula $f(x_{i})=c_{i}/\sqrt{h}$
+\end_inset
+
+.
+ The following code demonstrates this:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{fortrancode}
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! calculate coefficient of expansion for a function that consists
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! of two normalized gaussians
+\end_layout
+
+\begin_layout Plain Layout
+
+  DO ii=1,N
+\end_layout
+
+\begin_layout Plain Layout
+
+    coefs(ii) =  sqrt(h)*( gaussian( sigma, mu, LF%grid(ii) ) + &
+\end_layout
+
+\begin_layout Plain Layout
+
+       gaussian( sigma, mu2, LF%grid(ii) ) )
+\end_layout
+
+\begin_layout Plain Layout
+
+  ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+  WRITE(*,*) 'N, integration test: ', N, sum( coefs(:)/sqrt(h) )*h
+\end_layout
+
+\begin_layout Plain Layout
+
+  WRITE(*,*) 'N, error: ', N, abs( 2.d0 - sum(coefs(:)/sqrt(h))*h )
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{fortrancode}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Solution of eigenvalue equation
+\end_layout
+
+\begin_layout Standard
+For the case of 1D Schrodinger equation, cluster LF:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{fortrancode}
+\end_layout
+
+\begin_layout Plain Layout
+
+  Hamiltonian(:,:) = -0.5d0*LF%D2jl(:,:)
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! Potential, diagonal
+\end_layout
+
+\begin_layout Plain Layout
+
+  DO ii=1,N
+\end_layout
+
+\begin_layout Plain Layout
+
+    Hamiltonian(ii,ii) = Hamiltonian(ii,ii) + Vpot(ii)
+\end_layout
+
+\begin_layout Plain Layout
+
+  ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+  evecs = Hamiltonian  ! eig_dsyev will replace input matrix with its eigenvecto
+rs
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( eval(N) )
+\end_layout
+
+\begin_layout Plain Layout
+
+  CALL eig_dsyev( evecs, eval, N )
+\end_layout
+
+\begin_layout Plain Layout
+
+  DO ii=1,4  ! Nstates is 4
+\end_layout
+
+\begin_layout Plain Layout
+
+    DO ip=1,N
+\end_layout
+
+\begin_layout Plain Layout
+
+      WRITE(100+ii,*) LF%grid(ip), evecs(ip,ii)
+\end_layout
+
+\begin_layout Plain Layout
+
+    ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+  ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{fortrancode}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Normalization integral for an eigenstate (dropping the band/state index):
+ 
+\begin_inset Formula 
+\begin{eqnarray*}
+\int\psi^{*}(x)\psi(x)\ \mathrm{d}x & = & \int\sum_{i}c_{i}^{*}L_{i}(x)\sum_{j}c_{j}L_{j}(x)\ \mathrm{d}x\\
+ & = & h\sum_{i}\sum_{j}c_{i}^{*}c_{j}\delta_{ij}\\
+ & = & h\sum_{i}c_{i}^{*}c_{i}\\
+ & = & h\sum_{i}\frac{\psi^{*}(x_{i})}{\sqrt{h}}\frac{\psi(x_{i})}{\sqrt{h}}\\
+ & = & \sum_{i}\psi^{*}(x_{i})\psi(x_{i})
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Because the eigenvectors resulting from LAPACK call are already normalized,
+ we can take it to be the value of eigenvectors at grid points.
+ The calculation of number of electron:
+\begin_inset Formula 
+\begin{eqnarray*}
+N_{\mathrm{elec}} & = & \int\sum_{n}\psi_{n}^{*}(x)\psi_{n}(x)\ \mathrm{d}x\\
+ & = & \sum_{n}\sum_{i}\psi_{n}^{*}(x_{i})\psi_{n}(x_{i})
+\end{eqnarray*}
+
+\end_inset
+
+can simply proceed as follows
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{fortrancode}
+\end_layout
+
+\begin_layout Plain Layout
+
+DO ist = 1, Nstates
+\end_layout
+
+\begin_layout Plain Layout
+
+  DO ip = 1, Npoints
+\end_layout
+
+\begin_layout Plain Layout
+
+    Nelec_integ = Nelec_integ + evecs(ip,ist)
+\end_layout
+
+\begin_layout Plain Layout
+
+  ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{fortrancode}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Three-dimensional grid
+\end_layout
+
+\begin_layout Standard
+Data structure:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{fortrancode}
+\end_layout
+
+\begin_layout Plain Layout
+
+  TYPE LF3d_t
+\end_layout
+
+\begin_layout Plain Layout
+
+    TYPE(LF1d_t) :: LFx, LFy, LFz
+\end_layout
+
+\begin_layout Plain Layout
+
+    INTEGER :: Nx, Ny, Nz, N
+\end_layout
+
+\begin_layout Plain Layout
+
+    REAL(8) :: Lx, Ly, Lz
+\end_layout
+
+\begin_layout Plain Layout
+
+    REAL(8), ALLOCATABLE :: lingrid(:,:)
+\end_layout
+
+\begin_layout Plain Layout
+
+    INTEGER, ALLOCATABLE :: xyz2lin(:,:,:)
+\end_layout
+
+\begin_layout Plain Layout
+
+    INTEGER, ALLOCATABLE :: lin2xyz(:,:)
+\end_layout
+
+\begin_layout Plain Layout
+
+  END TYPE
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{fortrancode}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Initialization:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{fortrancode}
+\end_layout
+
+\begin_layout Plain Layout
+
+  SUBROUTINE init_LF3d_c( LF3d, N, A, B )
+\end_layout
+
+\begin_layout Plain Layout
+
+    IMPLICIT NONE
+\end_layout
+
+\begin_layout Plain Layout
+
+    !
+\end_layout
+
+\begin_layout Plain Layout
+
+    TYPE(LF3d_t) :: LF3d
+\end_layout
+
+\begin_layout Plain Layout
+
+    INTEGER :: N(3)
+\end_layout
+
+\begin_layout Plain Layout
+
+    REAL(8) :: A(3), B(3)
+\end_layout
+
+\begin_layout Plain Layout
+
+    INTEGER :: Nx, Ny, Nz
+\end_layout
+
+\begin_layout Plain Layout
+
+    REAL(8) :: Lx, Ly, Lz
+\end_layout
+
+\begin_layout Plain Layout
+
+    INTEGER :: i, j, k, ip
+\end_layout
+
+\begin_layout Plain Layout
+
+    !
+\end_layout
+
+\begin_layout Plain Layout
+
+    Nx = N(1)
+\end_layout
+
+\begin_layout Plain Layout
+
+    Ny = N(2)
+\end_layout
+
+\begin_layout Plain Layout
+
+    Nz = N(3)
+\end_layout
+
+\begin_layout Plain Layout
+
+    !
+\end_layout
+
+\begin_layout Plain Layout
+
+    Lx = B(1) - A(1)
+\end_layout
+
+\begin_layout Plain Layout
+
+    Ly = B(2) - A(2)
+\end_layout
+
+\begin_layout Plain Layout
+
+    Lz = B(3) - A(3)
+\end_layout
+
+\begin_layout Plain Layout
+
+    !
+\end_layout
+
+\begin_layout Plain Layout
+
+    CALL init_LF1d_c( LF3d%LFx, Nx, A(1), B(1) )
+\end_layout
+
+\begin_layout Plain Layout
+
+    CALL init_LF1d_c( LF3d%LFy, Ny, A(2), B(2) )
+\end_layout
+
+\begin_layout Plain Layout
+
+    CALL init_LF1d_c( LF3d%LFz, Nz, A(3), B(3) )
+\end_layout
+
+\begin_layout Plain Layout
+
+    !
+\end_layout
+
+\begin_layout Plain Layout
+
+    LF3d%Nx = Nx
+\end_layout
+
+\begin_layout Plain Layout
+
+    LF3d%Ny = Ny
+\end_layout
+
+\begin_layout Plain Layout
+
+    LF3d%Nz = Nz
+\end_layout
+
+\begin_layout Plain Layout
+
+    LF3d%N  = Nx*Ny*Nz
+\end_layout
+
+\begin_layout Plain Layout
+
+    !
+\end_layout
+
+\begin_layout Plain Layout
+
+    LF3d%Lx = Lx
+\end_layout
+
+\begin_layout Plain Layout
+
+    LF3d%Ly = Ly
+\end_layout
+
+\begin_layout Plain Layout
+
+    LF3d%Lz = Lz
+\end_layout
+
+\begin_layout Plain Layout
+
+    !
+\end_layout
+
+\begin_layout Plain Layout
+
+    ALLOCATE( LF3d%lingrid( 3, Nx*Ny*Nz ) )
+\end_layout
+
+\begin_layout Plain Layout
+
+    ALLOCATE( LF3d%xyz2lin( Nx, Ny, Nz ) )
+\end_layout
+
+\begin_layout Plain Layout
+
+    ALLOCATE( LF3d%lin2xyz( 3, Nx*Ny*Nz ) )
+\end_layout
+
+\begin_layout Plain Layout
+
+    ip = 0
+\end_layout
+
+\begin_layout Plain Layout
+
+    DO k = 1, Nz
+\end_layout
+
+\begin_layout Plain Layout
+
+      DO j = 1, Ny
+\end_layout
+
+\begin_layout Plain Layout
+
+        DO i = 1, Nx
+\end_layout
+
+\begin_layout Plain Layout
+
+          ip = ip + 1
+\end_layout
+
+\begin_layout Plain Layout
+
+          LF3d%lingrid( 1, ip ) = LF3d%LFx%grid(i)
+\end_layout
+
+\begin_layout Plain Layout
+
+          LF3d%lingrid( 2, ip ) = LF3d%LFy%grid(j)
+\end_layout
+
+\begin_layout Plain Layout
+
+          LF3d%lingrid( 3, ip ) = LF3d%LFz%grid(k)
+\end_layout
+
+\begin_layout Plain Layout
+
+          !
+\end_layout
+
+\begin_layout Plain Layout
+
+          LF3d%xyz2lin( i, j, k ) = ip
+\end_layout
+
+\begin_layout Plain Layout
+
+          LF3d%lin2xyz( 1:3, ip ) = (/ i, j, k /)
+\end_layout
+
+\begin_layout Plain Layout
+
+        ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+      ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+    ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+  END SUBROUTINE init_LF3d_c
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{fortrancode}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Non-local pseudopotential integration
+\end_layout
+
+\begin_layout Standard
+Three dimensional Lagrange function:
+\begin_inset Formula 
+\[
+\psi_{n}(\mathbf{r})=\sum_{\alpha\beta\gamma}C_{\alpha\beta\gamma}^{n}L_{\alpha\beta\gamma}(\mathbf{r})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The integral have form:
+\begin_inset Formula 
+\begin{eqnarray*}
+\int\psi_{n}(\mathbf{r})\ F_{Jlm}\left(\mathbf{r}-\mathbf{R}_{I(J)}\right)\ \mathrm{d}\mathbf{r} & = & \int\sum_{\alpha\beta\gamma}\sqrt{h_{\alpha}h_{\beta}h_{\gamma}}\psi_{n}\left(r_{\alpha\beta\gamma}\right)L_{\alpha\beta\gamma}(\mathbf{r})\ \sqrt{h_{\alpha}h_{\beta}h_{\gamma}}\sum_{\alpha'\beta'\gamma'}F_{Jlm}\left(\mathbf{r}_{\alpha'\beta'\gamma'}-\mathbf{R}_{I(J)}\right)L_{\alpha'\beta'\gamma'}(\mathbf{r})\ \mathrm{d}\mathbf{r}\\
+ & = & h_{\alpha}h_{\beta}h_{\gamma}\sum_{\alpha\beta\gamma}\psi_{n}\left(\mathbf{r}_{\alpha\beta\gamma}\right)\ F_{Jlm}\left(\mathbf{r}_{\alpha\beta\gamma}-\mathbf{R}_{I(J)}\right)\\
+ & = & \sqrt{h_{\alpha}h_{\beta}h_{\gamma}}\sum_{\alpha\beta\gamma}C_{\alpha\beta\gamma}^{n}\, F_{Jlm}\left(\mathbf{r}_{\alpha\beta\gamma}-\mathbf{R}_{I(J)}\right)
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The last line is the working equation.
+ We usually works with expansion coefficients 
+\begin_inset Formula $C_{\alpha\beta\gamma}^{n}$
+\end_inset
+
+ while in some cases, analytic form of 
+\begin_inset Formula $F_{Jlm}\left(\mathbf{r}_{\alpha\beta\gamma}-\mathbf{R}_{I(J)}\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Part
+Numerical methods
+\end_layout
+
+\begin_layout Section
+Orthogonalization (Gram-Schmidt)
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{fortrancode}
+\end_layout
+
+\begin_layout Plain Layout
+
+SUBROUTINE ortho_gram_schmidt(v, ldv, nrow, ncol)
+\end_layout
+
+\begin_layout Plain Layout
+
+  IMPLICIT NONE
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER :: ldv, nrow, ncol, ii, jj
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8) :: v(ldv,ncol), zz, puv
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8) :: ddot
+\end_layout
+
+\begin_layout Plain Layout
+
+  DO ii = 1, ncol
+\end_layout
+
+\begin_layout Plain Layout
+
+    zz = ddot( nrow, v(1:nrow,ii),1, v(1:nrow,ii),1 )
+\end_layout
+
+\begin_layout Plain Layout
+
+    v(1:nrow,ii) = v(1:nrow,ii)/sqrt( zz )
+\end_layout
+
+\begin_layout Plain Layout
+
+    DO jj = ii+1, ncol
+\end_layout
+
+\begin_layout Plain Layout
+
+      puv = prj( nrow, v(1:nrow,ii), v(1:nrow,jj) )
+\end_layout
+
+\begin_layout Plain Layout
+
+      v(1:nrow,jj) = v(1:nrow,jj) - puv*v(1:nrow,ii)
+\end_layout
+
+\begin_layout Plain Layout
+
+    ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+  ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  CONTAINS
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! compute prj = <v|u>/<u|u>
+\end_layout
+
+\begin_layout Plain Layout
+
+    FUNCTION prj(N,u,v)
+\end_layout
+
+\begin_layout Plain Layout
+
+      IMPLICIT NONE
+\end_layout
+
+\begin_layout Plain Layout
+
+      REAL(8) :: prj, u(N), v(N), vu, uu
+\end_layout
+
+\begin_layout Plain Layout
+
+      INTEGER :: N
+\end_layout
+
+\begin_layout Plain Layout
+
+      REAL(8) :: ddot
+\end_layout
+
+\begin_layout Plain Layout
+
+      vu = ddot( N, u,1, v,1 )
+\end_layout
+
+\begin_layout Plain Layout
+
+      uu = ddot( N, u,1, u,1 )
+\end_layout
+
+\begin_layout Plain Layout
+
+      prj = vu/uu
+\end_layout
+
+\begin_layout Plain Layout
+
+    END FUNCTION
+\end_layout
+
+\begin_layout Plain Layout
+
+END SUBROUTINE
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{fortrancode}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Conjugate gradient for solving linear systems
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{fortrancode}
+\end_layout
+
+\begin_layout Plain Layout
+
+SUBROUTINE solve_cg( Ncol, alpha_t, Niter, restart )
+\end_layout
+
+\begin_layout Plain Layout
+
+  USE m_globals, ONLY : N
+\end_layout
+
+\begin_layout Plain Layout
+
+  IMPLICIT NONE
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER :: Ncol, Niter
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8) :: alpha_t  ! step size
+\end_layout
+
+\begin_layout Plain Layout
+
+  LOGICAL :: restart
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8), ALLOCATABLE :: v(:,:), grad(:,:), grad_old(:,:), grad_t(:,:)
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8), ALLOCATABLE :: dir(:,:), dir_old(:,:)
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8) :: Etot, Ekin, Epot, Etot_old, norm_grad, alpha(Ncol), beta(Ncol)
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER :: ic, iter
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(8) :: ddot
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( v(N**3,Ncol), grad(N**3,Ncol), grad_old(N**3,Ncol), grad_t(N**3,Ncol
+) )
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( dir(N**3,Ncol), dir_old(N**3,Ncol) )
+\end_layout
+
+\begin_layout Plain Layout
+
+  IF( .NOT.
+ restart ) THEN
+\end_layout
+
+\begin_layout Plain Layout
+
+    DO ic = 1, Ncol
+\end_layout
+
+\begin_layout Plain Layout
+
+      CALL r8_rand_vec( N**3, v(:,ic) )
+\end_layout
+
+\begin_layout Plain Layout
+
+    ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+    CALL ortho_gram_schmidt( v, N**3, N**3, Ncol )
+\end_layout
+
+\begin_layout Plain Layout
+
+  ELSE
+\end_layout
+
+\begin_layout Plain Layout
+
+    READ(112) v
+\end_layout
+
+\begin_layout Plain Layout
+
+  ENDIF
+\end_layout
+
+\begin_layout Plain Layout
+
+  CALL get_Etot( Ncol, v, Ekin, Epot, Etot)
+\end_layout
+
+\begin_layout Plain Layout
+
+  Etot_old = Etot
+\end_layout
+
+\begin_layout Plain Layout
+
+  DO iter = 1, Niter
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! Evaluate gradient at current trial vectors
+\end_layout
+
+\begin_layout Plain Layout
+
+    CALL get_grad( Ncol, v, grad, .FALSE.
+ )
+\end_layout
+
+\begin_layout Plain Layout
+
+    norm_grad = 0.d0
+\end_layout
+
+\begin_layout Plain Layout
+
+    DO ic = 1, Ncol
+\end_layout
+
+\begin_layout Plain Layout
+
+      norm_grad = norm_grad + norm2( grad(:,ic) )
+\end_layout
+
+\begin_layout Plain Layout
+
+    ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+    norm_grad = norm_grad/Ncol
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! set search direction
+\end_layout
+
+\begin_layout Plain Layout
+
+    IF( iter == 1 ) THEN
+\end_layout
+
+\begin_layout Plain Layout
+
+      dir(:,:) = -grad(:,:)
+\end_layout
+
+\begin_layout Plain Layout
+
+    ELSE
+\end_layout
+
+\begin_layout Plain Layout
+
+      DO ic=1,Ncol
+\end_layout
+
+\begin_layout Plain Layout
+
+        beta(ic) = ddot( N**3, grad(:,ic),1, grad(:,ic),1 ) / &
+\end_layout
+
+\begin_layout Plain Layout
+
+                   ddot( N**3, grad_old(:,ic),1, grad_old(:,ic),1 )
+\end_layout
+
+\begin_layout Plain Layout
+
+        dir(:,ic) = -grad(:,ic) + beta(ic)*dir_old(:,ic)
+\end_layout
+
+\begin_layout Plain Layout
+
+      ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+    ENDIF
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! Evaluate gradient at trial step
+\end_layout
+
+\begin_layout Plain Layout
+
+    CALL get_grad( Ncol, v + alpha_t*dir, grad_t, .TRUE.
+ )
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! Compute estimate of best step and update current trial vectors
+\end_layout
+
+\begin_layout Plain Layout
+
+    DO ic = 1, Ncol
+\end_layout
+
+\begin_layout Plain Layout
+
+      alpha(ic) = alpha_t*ddot( N**3, grad(:,ic),1, dir(:,ic),1 )/&
+\end_layout
+
+\begin_layout Plain Layout
+
+            ddot( N**3, grad(:,ic)-grad_t(:,ic),1, dir(:,ic), 1 )
+\end_layout
+
+\begin_layout Plain Layout
+
+      v(:,ic) = v(:,ic) + alpha(ic)*dir(:,ic)
+\end_layout
+
+\begin_layout Plain Layout
+
+    ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+    CALL ortho_gram_schmidt( v, N**3, N**3, Ncol )
+\end_layout
+
+\begin_layout Plain Layout
+
+    CALL get_Etot( Ncol, v, Ekin, Epot, Etot )
+\end_layout
+
+\begin_layout Plain Layout
+
+    WRITE(*,'(1x,A,I5,2F18.10)') 'iter, conv, ||grad||: ', iter, abs(Etot-Etot_ol
+d), norm_grad
+\end_layout
+
+\begin_layout Plain Layout
+
+    WRITE(*,'(1x,A,3F18.10)') 'Ekin, Epot, Etot: ', Ekin, Epot, Etot
+\end_layout
+
+\begin_layout Plain Layout
+
+    IF( abs(Etot - Etot_old) < 1.d-7 ) THEN
+\end_layout
+
+\begin_layout Plain Layout
+
+      WRITE(*,*) 'CG converged in iter', iter
+\end_layout
+
+\begin_layout Plain Layout
+
+      EXIT
+\end_layout
+
+\begin_layout Plain Layout
+
+    ENDIF
+\end_layout
+
+\begin_layout Plain Layout
+
+    Etot_old = Etot
+\end_layout
+
+\begin_layout Plain Layout
+
+    grad_old(:,:) = grad(:,:)
+\end_layout
+
+\begin_layout Plain Layout
+
+    dir_old(:,:) = dir(:,:)
+\end_layout
+
+\begin_layout Plain Layout
+
+  ENDDO
+\end_layout
+
+\begin_layout Plain Layout
+
+  WRITE(111) v
+\end_layout
+
+\begin_layout Plain Layout
+
+  DEALLOCATE( v, grad, grad_old, grad_t, dir, dir_old )
+\end_layout
+
+\begin_layout Plain Layout
+
+END SUBROUTINE
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{fortrancode}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Block Davidson method
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{fortrancode}
+\end_layout
+
+\begin_layout Plain Layout
+
+SUBROUTINE regterg( npw, npwx, nvec, nvecx, evc, ethr, &
+\end_layout
+
+\begin_layout Plain Layout
+
+                    gstart, e, btype, notcnv, lrot, dav_iter )
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ iterative solution of the eigenvalue problem:
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ ( H - e S ) * evc = 0
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ where H is an hermitean operator, e is a real scalar,
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ S is an uspp matrix, evc is a complex vector
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ (real wavefunctions with only half plane waves stored)
+\end_layout
+
+\begin_layout Plain Layout
+
+  IMPLICIT NONE
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER, PARAMETER :: DP=8
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER, PARAMETER :: stdout=6
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(DP), PARAMETER :: ZERO=0.d0
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER, INTENT(IN) :: npw, npwx, nvec, nvecx, gstart
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! dimension of the matrix to be diagonalized
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! leading dimension of matrix evc, as declared in the calling pgm unit
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! integer number of searched low-lying roots
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! maximum dimension of the reduced basis set
+\end_layout
+
+\begin_layout Plain Layout
+
+    !    (the basis set is refreshed when its dimension would exceed nvecx)
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(DP), INTENT(INOUT) :: evc(npwx,nvec)
+\end_layout
+
+\begin_layout Plain Layout
+
+    !  evc   contains the  refined estimates of the eigenvectors
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(DP), INTENT(IN) :: ethr
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! energy threshold for convergence: root improvement is stopped,
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! when two consecutive estimates of the root differ by less than ethr.
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER, INTENT(IN) :: btype(nvec)
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! band type ( 1 = occupied, 0 = empty )
+\end_layout
+
+\begin_layout Plain Layout
+
+  LOGICAL, INTENT(IN) :: lrot
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! .TRUE.
+ if the wfc have already been rotated
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(DP), INTENT(OUT) :: e(nvec)
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! contains the estimated roots.
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER, INTENT(OUT) :: dav_iter, notcnv
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! integer  number of iterations performed
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! number of unconverged roots
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ LOCAL variables
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER, PARAMETER :: maxter = 500 ! maximum number of iterations
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER :: kter, nbase, np, n, m, nb1, ibnd
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! counter on iterations
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! dimension of the reduced basis
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! counter on the reduced basis vectors
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! do-loop counters
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! counter on the bands
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER :: ierr
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(DP), ALLOCATABLE :: hr(:,:), sr(:,:), vr(:,:), ew(:)
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! Hamiltonian on the reduced basis
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! S matrix on the reduced basis
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! eigenvectors of the Hamiltonian
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! eigenvalues of the reduced hamiltonian
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(DP), ALLOCATABLE :: psi(:,:), hpsi(:,:)
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! work space, contains psi
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! the product of H and psi
+\end_layout
+
+\begin_layout Plain Layout
+
+  LOGICAL, ALLOCATABLE :: conv(:) ! true if the root is converged
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(DP) :: empty_ethr ! threshold for empty bands
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER :: npw2, npwx2
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(DP), EXTERNAL :: ddot
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER :: i,j
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! EXTERNAL  h_psi, g_psi
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! h_psi(npwx,npw,nvec,psi,hpsi)
+\end_layout
+
+\begin_layout Plain Layout
+
+    !     calculates H|psi> 
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! g_psi(npwx,npw,notcnv,psi,e)
+\end_layout
+
+\begin_layout Plain Layout
+
+    !    calculates (diag(h)-e)^-1 * psi, diagonal approx.
+ to (h-e)^-1*psi
+\end_layout
+
+\begin_layout Plain Layout
+
+    !    the first nvec columns contain the trial eigenvectors
+\end_layout
+
+\begin_layout Plain Layout
+
+  IF ( nvec > nvecx / 2 ) THEN
+\end_layout
+
+\begin_layout Plain Layout
+
+    WRITE(*,*) 'Error in regterg: nvec is too small'
+\end_layout
+
+\begin_layout Plain Layout
+
+    STOP
+\end_layout
+
+\begin_layout Plain Layout
+
+  ENDIF
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ threshold for empty bands
+\end_layout
+
+\begin_layout Plain Layout
+
+  empty_ethr = MAX( ( ethr * 5.D0 ), 1.D-5 )
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( psi(  npwx, nvecx ), STAT=ierr )
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( hpsi( npwx, nvecx ), STAT=ierr )
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( sr( nvecx, nvecx ), STAT=ierr )
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( hr( nvecx, nvecx ), STAT=ierr )
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( vr( nvecx, nvecx ), STAT=ierr )
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( ew( nvecx ), STAT=ierr )
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( conv( nvec ), STAT=ierr )
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  npw2  = npw
+\end_layout
+
+\begin_layout Plain Layout
+
+  npwx2  = npwx
+\end_layout
+
+\begin_layout Plain Layout
+
+  notcnv = nvec
+\end_layout
+
+\begin_layout Plain Layout
+
+  nbase  = nvec
+\end_layout
+
+\begin_layout Plain Layout
+
+  conv   = .FALSE.
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  hpsi = ZERO
+\end_layout
+
+\begin_layout Plain Layout
+
+  psi  = ZERO
+\end_layout
+
+\begin_layout Plain Layout
+
+  psi(:,1:nvec) = evc(:,1:nvec)
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ hpsi contains h times the basis vectors
+\end_layout
+
+\begin_layout Plain Layout
+
+  CALL h_psi( npwx, npw, nvec, psi, hpsi )
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ hr contains the projection of the hamiltonian onto the reduced
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ space vr contains the eigenvectors of hr
+\end_layout
+
+\begin_layout Plain Layout
+
+  hr(:,:) = 0.D0
+\end_layout
+
+\begin_layout Plain Layout
+
+  sr(:,:) = 0.D0
+\end_layout
+
+\begin_layout Plain Layout
+
+  vr(:,:) = 0.D0
+\end_layout
+
+\begin_layout Plain Layout
+
+  CALL DGEMM( 'T', 'N', nbase, nbase, npw, 2.D0 , &
+\end_layout
+
+\begin_layout Plain Layout
+
+              psi, npwx, hpsi, npwx, 0.D0, hr, nvecx )
+\end_layout
+
+\begin_layout Plain Layout
+
+  IF ( gstart == 2 ) CALL DGER( nbase, nbase, -1.D0, psi, npwx, hpsi, npwx,
+ hr, nvecx ) 
+\end_layout
+
+\begin_layout Plain Layout
+
+  CALL DGEMM( 'T', 'N', nbase, nbase, npw, 2.D0, &
+\end_layout
+
+\begin_layout Plain Layout
+
+              psi, npwx, psi, npwx, 0.D0, sr, nvecx )
+\end_layout
+
+\begin_layout Plain Layout
+
+  IF ( gstart == 2 ) CALL DGER( nbase, nbase, -1.D0, psi, npwx, psi, npwx,
+ sr, nvecx )
+\end_layout
+
+\begin_layout Plain Layout
+
+  IF ( lrot ) THEN
+\end_layout
+
+\begin_layout Plain Layout
+
+     DO n = 1, nbase
+\end_layout
+
+\begin_layout Plain Layout
+
+        e(n) = hr(n,n)
+\end_layout
+
+\begin_layout Plain Layout
+
+        vr(n,n) = 1.D0
+\end_layout
+
+\begin_layout Plain Layout
+
+     END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+  ELSE
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ diagonalize the reduced hamiltonian
+\end_layout
+
+\begin_layout Plain Layout
+
+     CALL rdiaghg( nbase, nvec, hr, sr, nvecx, ew, vr )
+\end_layout
+
+\begin_layout Plain Layout
+
+     e(1:nvec) = ew(1:nvec)
+\end_layout
+
+\begin_layout Plain Layout
+
+  END IF
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ iterate
+\end_layout
+
+\begin_layout Plain Layout
+
+  iterate: DO kter = 1, maxter
+\end_layout
+
+\begin_layout Plain Layout
+
+     dav_iter = kter
+\end_layout
+
+\begin_layout Plain Layout
+
+     np = 0
+\end_layout
+
+\begin_layout Plain Layout
+
+     DO n = 1, nvec
+\end_layout
+
+\begin_layout Plain Layout
+
+        IF ( .NOT.
+ conv(n) ) THEN
+\end_layout
+
+\begin_layout Plain Layout
+
+           ! ...
+ this root not yet converged ...
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+           np = np + 1
+\end_layout
+
+\begin_layout Plain Layout
+
+           ! ...
+ reorder eigenvectors so that coefficients for unconverged
+\end_layout
+
+\begin_layout Plain Layout
+
+           ! ...
+ roots come first.
+ This allows to use quick matrix-matrix 
+\end_layout
+
+\begin_layout Plain Layout
+
+           ! ...
+ multiplications to set a new basis vector (see below)
+\end_layout
+
+\begin_layout Plain Layout
+
+           IF ( np /= n ) vr(:,np) = vr(:,n)
+\end_layout
+
+\begin_layout Plain Layout
+
+           ! ...
+ for use in g_psi
+\end_layout
+
+\begin_layout Plain Layout
+
+           ew(nbase+np) = e(n)
+\end_layout
+
+\begin_layout Plain Layout
+
+        END IF
+\end_layout
+
+\begin_layout Plain Layout
+
+     END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+     nb1 = nbase + 1
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ expand the basis set with new basis vectors ( H - e*S )|psi> ...
+\end_layout
+
+\begin_layout Plain Layout
+
+     CALL DGEMM( 'N', 'N', npw2, notcnv, nbase, 1.D0, &
+\end_layout
+
+\begin_layout Plain Layout
+
+                  psi, npwx2, vr, nvecx, 0.D0, psi(1,nb1), npwx2 )
+\end_layout
+
+\begin_layout Plain Layout
+
+     DO np = 1, notcnv
+\end_layout
+
+\begin_layout Plain Layout
+
+        psi(:,nbase+np) = - ew(nbase+np) * psi(:,nbase+np)
+\end_layout
+
+\begin_layout Plain Layout
+
+     END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+     CALL DGEMM( 'N', 'N', npw2, notcnv, nbase, 1.D0, &
+\end_layout
+
+\begin_layout Plain Layout
+
+                 hpsi, npwx2, vr, nvecx, 1.D0, psi(1,nb1), npwx2 )
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ approximate inverse iteration
+\end_layout
+
+\begin_layout Plain Layout
+
+     !CALL g_psi( npwx, npw, notcnv, psi(1,nb1), ew(nb1) )
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ "normalize" correction vectors psi(:,nb1:nbase+notcnv) in 
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ order to improve numerical stability of subspace diagonalization 
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ (rdiaghg) ew is used as work array :
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+         ew = <psi_i|psi_i>,  i = nbase + 1, nbase + notcnv
+\end_layout
+
+\begin_layout Plain Layout
+
+     DO n = 1, notcnv
+\end_layout
+
+\begin_layout Plain Layout
+
+        ew(n) = 2.D0 * ddot( npw2, psi(1,nbase+n), 1, psi(1,nbase+n), 1 )
+\end_layout
+
+\begin_layout Plain Layout
+
+        IF ( gstart == 2 ) ew(n) = ew(n) - psi(1,nbase+n) * psi(1,nbase+n)
+\end_layout
+
+\begin_layout Plain Layout
+
+     END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     DO n = 1, notcnv
+\end_layout
+
+\begin_layout Plain Layout
+
+        psi(:,nbase+n) = psi(:,nbase+n) / SQRT( ew(n) )
+\end_layout
+
+\begin_layout Plain Layout
+
+     END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ here compute the hpsi of the new functions
+\end_layout
+
+\begin_layout Plain Layout
+
+     CALL h_psi( npwx, npw, notcnv, psi(1,nb1), hpsi(1,nb1) )
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ update the reduced hamiltonian
+\end_layout
+
+\begin_layout Plain Layout
+
+     CALL DGEMM( 'T', 'N', nbase+notcnv, notcnv, npw2, 2.D0, psi, &
+\end_layout
+
+\begin_layout Plain Layout
+
+                 npwx2, hpsi(1,nb1), npwx2, 0.D0, hr(1,nb1), nvecx )
+\end_layout
+
+\begin_layout Plain Layout
+
+     IF ( gstart == 2 ) CALL DGER( nbase+notcnv, notcnv, -1.D0, psi, &
+\end_layout
+
+\begin_layout Plain Layout
+
+                 npwx2, hpsi(1,nb1), npwx2, hr(1,nb1), nvecx )
+\end_layout
+
+\begin_layout Plain Layout
+
+     CALL DGEMM( 'T', 'N', nbase+notcnv, notcnv, npw2, 2.D0, psi, &
+\end_layout
+
+\begin_layout Plain Layout
+
+                 npwx2, psi(1,nb1), npwx2, 0.D0, sr(1,nb1) , nvecx )
+\end_layout
+
+\begin_layout Plain Layout
+
+     IF ( gstart == 2 ) CALL DGER( nbase+notcnv, notcnv, -1.D0, psi, &
+\end_layout
+
+\begin_layout Plain Layout
+
+                 npwx2, psi(1,nb1), npwx2, sr(1,nb1), nvecx )    
+\end_layout
+
+\begin_layout Plain Layout
+
+     nbase = nbase + notcnv
+\end_layout
+
+\begin_layout Plain Layout
+
+     DO n = 1, nbase
+\end_layout
+
+\begin_layout Plain Layout
+
+        DO m = n + 1, nbase
+\end_layout
+
+\begin_layout Plain Layout
+
+           hr(m,n) = hr(n,m)
+\end_layout
+
+\begin_layout Plain Layout
+
+           sr(m,n) = sr(n,m)
+\end_layout
+
+\begin_layout Plain Layout
+
+        END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+     END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ diagonalize the reduced hamiltonian
+\end_layout
+
+\begin_layout Plain Layout
+
+     CALL rdiaghg( nbase, nvec, hr, sr, nvecx, ew, vr )
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ test for convergence     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     WHERE( btype(1:nvec) == 1 )
+\end_layout
+
+\begin_layout Plain Layout
+
+        conv(1:nvec) = ( ( ABS( ew(1:nvec) - e(1:nvec) ) < ethr ) )
+\end_layout
+
+\begin_layout Plain Layout
+
+     ELSEWHERE
+\end_layout
+
+\begin_layout Plain Layout
+
+        conv(1:nvec) = ( ( ABS( ew(1:nvec) - e(1:nvec) ) < empty_ethr )
+ )
+\end_layout
+
+\begin_layout Plain Layout
+
+     END WHERE
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     notcnv = COUNT( .NOT.
+ conv(:) )
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     e(1:nvec) = ew(1:nvec)
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ if overall convergence has been achieved, or the dimension of
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ the reduced basis set is becoming too large, or in any case if
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ we are at the last iteration refresh the basis set.
+ i.e.
+ replace
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ the first nvec elements with the current estimate of the
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ eigenvectors;  set the basis dimension to nvec.
+\end_layout
+
+\begin_layout Plain Layout
+
+     IF ( notcnv == 0 .OR.
+ nbase+notcnv > nvecx .OR.
+ dav_iter == maxter ) THEN
+\end_layout
+
+\begin_layout Plain Layout
+
+        CALL DGEMM( 'N', 'N', npw2, nvec, nbase, 1.D0, &
+\end_layout
+
+\begin_layout Plain Layout
+
+                    psi, npwx2, vr, nvecx, 0.D0, evc, npwx2 )
+\end_layout
+
+\begin_layout Plain Layout
+
+        IF ( notcnv == 0 ) THEN
+\end_layout
+
+\begin_layout Plain Layout
+
+           ! ...
+ all roots converged: return
+\end_layout
+
+\begin_layout Plain Layout
+
+           WRITE(*,*) 'All root converged ...'
+\end_layout
+
+\begin_layout Plain Layout
+
+           EXIT iterate
+\end_layout
+
+\begin_layout Plain Layout
+
+        ELSE IF ( dav_iter == maxter ) THEN
+\end_layout
+
+\begin_layout Plain Layout
+
+           ! ...
+ last iteration, some roots not converged: return
+\end_layout
+
+\begin_layout Plain Layout
+
+           WRITE( stdout, '(5X,"WARNING: ",I5, &
+\end_layout
+
+\begin_layout Plain Layout
+
+                &   " eigenvalues not converged in regterg")' ) notcnv
+\end_layout
+
+\begin_layout Plain Layout
+
+           EXIT iterate
+\end_layout
+
+\begin_layout Plain Layout
+
+        END IF
+\end_layout
+
+\begin_layout Plain Layout
+
+        ! ...
+ refresh psi, H*psi and S*psi
+\end_layout
+
+\begin_layout Plain Layout
+
+        psi(:,1:nvec) = evc(:,1:nvec)
+\end_layout
+
+\begin_layout Plain Layout
+
+        CALL DGEMM( 'N', 'N', npw2, nvec, nbase, 1.D0, hpsi, &
+\end_layout
+
+\begin_layout Plain Layout
+
+                    npwx2, vr, nvecx, 0.D0, psi(1,nvec+1), npwx2 )
+\end_layout
+
+\begin_layout Plain Layout
+
+        !
+\end_layout
+
+\begin_layout Plain Layout
+
+        hpsi(:,1:nvec) = psi(:,nvec+1:nvec+nvec)
+\end_layout
+
+\begin_layout Plain Layout
+
+        ! ...
+ refresh the reduced hamiltonian
+\end_layout
+
+\begin_layout Plain Layout
+
+        nbase = nvec
+\end_layout
+
+\begin_layout Plain Layout
+
+        !
+\end_layout
+
+\begin_layout Plain Layout
+
+        hr(:,1:nbase) = 0.D0
+\end_layout
+
+\begin_layout Plain Layout
+
+        sr(:,1:nbase) = 0.D0
+\end_layout
+
+\begin_layout Plain Layout
+
+        vr(:,1:nbase) = 0.D0
+\end_layout
+
+\begin_layout Plain Layout
+
+        !
+\end_layout
+
+\begin_layout Plain Layout
+
+        DO n = 1, nbase
+\end_layout
+
+\begin_layout Plain Layout
+
+           hr(n,n) = e(n)
+\end_layout
+
+\begin_layout Plain Layout
+
+           sr(n,n) = 1.D0
+\end_layout
+
+\begin_layout Plain Layout
+
+           vr(n,n) = 1.D0
+\end_layout
+
+\begin_layout Plain Layout
+
+        END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+        !
+\end_layout
+
+\begin_layout Plain Layout
+
+     END IF
+\end_layout
+
+\begin_layout Plain Layout
+
+  END DO iterate
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  DEALLOCATE( conv )
+\end_layout
+
+\begin_layout Plain Layout
+
+  DEALLOCATE( ew )
+\end_layout
+
+\begin_layout Plain Layout
+
+  DEALLOCATE( vr )
+\end_layout
+
+\begin_layout Plain Layout
+
+  DEALLOCATE( hr )
+\end_layout
+
+\begin_layout Plain Layout
+
+  DEALLOCATE( sr )
+\end_layout
+
+\begin_layout Plain Layout
+
+  DEALLOCATE( hpsi )
+\end_layout
+
+\begin_layout Plain Layout
+
+  DEALLOCATE( psi )  
+\end_layout
+
+\begin_layout Plain Layout
+
+  RETURN
+\end_layout
+
+\begin_layout Plain Layout
+
+END SUBROUTINE regterg
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{fortrancode}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Subroutine to solve generalized eigenvalue equation:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{fortrancode}
+\end_layout
+
+\begin_layout Plain Layout
+
+SUBROUTINE rdiaghg( n, m, h, s, ldh, e, v )
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ calculates eigenvalues and eigenvectors of the generalized problem
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ Hv=eSv, with H symmetric matrix, S overlap matrix.
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ On output both matrix are unchanged
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ LAPACK version - uses both DSYGV and DSYGVX
+\end_layout
+
+\begin_layout Plain Layout
+
+  IMPLICIT NONE
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER, PARAMETER :: DP=8
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER, INTENT(IN) :: n, m, ldh
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! dimension of the matrix to be diagonalized
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! number of eigenstates to be calculated
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! leading dimension of h, as declared in the calling pgm unit
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(DP), INTENT(INOUT) :: h(ldh,n), s(ldh,n)
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! matrix to be diagonalized
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! overlap matrix
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(DP), INTENT(OUT) :: e(n) ! eigenvalues
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(DP), INTENT(OUT) :: v(ldh,m) ! eigenvectors (column-wise)
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER  :: i, j, lwork, nb, mm, info
+\end_layout
+
+\begin_layout Plain Layout
+
+    ! mm = number of calculated eigenvectors
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(DP)              :: abstol
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(DP), PARAMETER   :: one = 1_DP
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(DP), PARAMETER   :: zero = 0_DP
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER,  ALLOCATABLE :: iwork(:), ifail(:)
+\end_layout
+
+\begin_layout Plain Layout
+
+  REAL(DP), ALLOCATABLE :: work(:), sdiag(:), hdiag(:)
+\end_layout
+
+\begin_layout Plain Layout
+
+  LOGICAL               :: all_eigenvalues
+\end_layout
+
+\begin_layout Plain Layout
+
+  INTEGER,  EXTERNAL    :: ILAENV
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ILAENV returns optimal block size "nb"
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ save the diagonal of input S (it will be overwritten)
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( sdiag( n ) )
+\end_layout
+
+\begin_layout Plain Layout
+
+  DO i = 1, n
+\end_layout
+
+\begin_layout Plain Layout
+
+     sdiag(i) = s(i,i)
+\end_layout
+
+\begin_layout Plain Layout
+
+  END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  all_eigenvalues = ( m == n )
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ check for optimal block size
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  nb = ILAENV( 1, 'DSYTRD', 'U', n, -1, -1, -1 )
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  IF ( nb < 5 .OR.
+ nb >= n ) THEN
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     lwork = 8*n
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+  ELSE
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     lwork = ( nb + 3 )*n
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+  END IF
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  ALLOCATE( work( lwork ) )
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  IF ( all_eigenvalues ) THEN
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ calculate all eigenvalues
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     v(:,:) = h(:,:)
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+#if defined (__ESSL)
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ there is a name conflict between essl and lapack ...
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     CALL DSYGV( 1, v, ldh, s, ldh, e, v, ldh, n, work, lwork )
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     info = 0
+\end_layout
+
+\begin_layout Plain Layout
+
+#else
+\end_layout
+
+\begin_layout Plain Layout
+
+     CALL DSYGV( 1, 'V', 'U', n, v, ldh, s, ldh, e, work, lwork, info )
+\end_layout
+
+\begin_layout Plain Layout
+
+#endif
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+  ELSE
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ calculate only m lowest eigenvalues
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     ALLOCATE( iwork( 5*n ) )
+\end_layout
+
+\begin_layout Plain Layout
+
+     ALLOCATE( ifail( n ) )
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ save the diagonal of input H (it will be overwritten)
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     ALLOCATE( hdiag( n ) )
+\end_layout
+
+\begin_layout Plain Layout
+
+     DO i = 1, n
+\end_layout
+
+\begin_layout Plain Layout
+
+        hdiag(i) = h(i,i)
+\end_layout
+
+\begin_layout Plain Layout
+
+     END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     abstol = 0.D0
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! abstol = 2.D0*DLAMCH( 'S' )
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     CALL DSYGVX( 1, 'V', 'I', 'U', n, h, ldh, s, ldh, &
+\end_layout
+
+\begin_layout Plain Layout
+
+                  0.D0, 0.D0, 1, m, abstol, mm, e, v, ldh, &
+\end_layout
+
+\begin_layout Plain Layout
+
+                  work, lwork, iwork, ifail, info )
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     DEALLOCATE( ifail )
+\end_layout
+
+\begin_layout Plain Layout
+
+     DEALLOCATE( iwork )
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     ! ...
+ restore input H matrix from saved diagonal and lower triangle
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     DO i = 1, n
+\end_layout
+
+\begin_layout Plain Layout
+
+        h(i,i) = hdiag(i)
+\end_layout
+
+\begin_layout Plain Layout
+
+        DO j = i + 1, n
+\end_layout
+
+\begin_layout Plain Layout
+
+           h(i,j) = h(j,i)
+\end_layout
+
+\begin_layout Plain Layout
+
+        END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+        DO j = n + 1, ldh
+\end_layout
+
+\begin_layout Plain Layout
+
+           h(j,i) = 0.0_DP
+\end_layout
+
+\begin_layout Plain Layout
+
+        END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+     END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+     DEALLOCATE( hdiag )
+\end_layout
+
+\begin_layout Plain Layout
+
+     !
+\end_layout
+
+\begin_layout Plain Layout
+
+  END IF
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  DEALLOCATE( work )
+\end_layout
+
+\begin_layout Plain Layout
+
+  !
+\end_layout
+
+\begin_layout Plain Layout
+
+  IF ( info > n ) WRITE(*,*) 'rdiaghg: S matrix not positive definite',
+ ABS( info )
+\end_layout
+
+\begin_layout Plain Layout
+
+  IF ( info > 0 ) WRITE(*,*) 'rdiaghg: eigenvectors failed to converge',
+ ABS( info )
+\end_layout
+
+\begin_layout Plain Layout
+
+  IF ( info < 0 ) WRITE(*,*) 'rdiaghg: incorrect call to DSYGV*', ABS( info
+ )
+\end_layout
+
+\begin_layout Plain Layout
+
+  ! ...
+ restore input S matrix from saved diagonal and lower triangle
+\end_layout
+
+\begin_layout Plain Layout
+
+  DO i = 1, n
+\end_layout
+
+\begin_layout Plain Layout
+
+     s(i,i) = sdiag(i)
+\end_layout
+
+\begin_layout Plain Layout
+
+     DO j = i + 1, n
+\end_layout
+
+\begin_layout Plain Layout
+
+        s(i,j) = s(j,i)
+\end_layout
+
+\begin_layout Plain Layout
+
+     END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+     DO j = n + 1, ldh
+\end_layout
+
+\begin_layout Plain Layout
+
+        s(j,i) = 0.0_DP
+\end_layout
+
+\begin_layout Plain Layout
+
+     END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+  END DO
+\end_layout
+
+\begin_layout Plain Layout
+
+  DEALLOCATE( sdiag )
+\end_layout
+
+\begin_layout Plain Layout
+
+  RETURN
+\end_layout
+
+\begin_layout Plain Layout
+
+END SUBROUTINE rdiaghg
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{fortrancode}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
