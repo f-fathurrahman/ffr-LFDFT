@@ -1,4 +1,5 @@
 SUBROUTINE init_betaNL()
+
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      lingrid => LF3d_lingrid, &
                      LL => LF3d_LL
@@ -33,5 +34,16 @@ SUBROUTINE init_betaNL()
   ENDDO 
   WRITE(*,*) 'Np_beta = ', Np_beta
   WRITE(*,*) 'sum(betaNL) = ', sum(betaNL)
+
+  ibeta = 0
+  DO ia = 1,Natoms
+    isp = atm2species(ia)
+    DO l = 0:3
+      DO m = -l,l
+        DO ip = 1,Npoints
+        ENDDO 
+      ENDDO
+    ENDDO 
+  ENDDO 
 END SUBROUTINE 
 

@@ -10,7 +10,7 @@ MODULE m_PsPot
 
   INTEGER :: NbetaNL
   REAL(8), ALLOCATABLE :: betaNL(:,:) ! (Npoints,NbetaNL)
-  REAL(8), ALLOCATABLE :: betaNL_psi(:,:,:) ! Natoms, Nbeta, Nstates 
+  REAL(8), ALLOCATABLE :: betaNL_psi(:,:,:) ! Natoms, NbetaNL, Nstates 
 
   INTEGER :: NprojTotMax
   REAL(8), ALLOCATABLE :: w_NL(:,:) ! Nspecies,0:3
