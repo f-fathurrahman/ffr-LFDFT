@@ -7,6 +7,7 @@ SUBROUTINE dealloc_PsPot()
   IF( allocated(Ps_HGH_Params) ) DEALLOCATE(Ps_HGH_Params)
 
   IF( allocated(w_NL) ) DEALLOCATE(w_NL)
+  IF( allocated(betaNL) ) DEALLOCATE(betaNL)
 
 END SUBROUTINE 
 
