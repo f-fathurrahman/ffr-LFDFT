@@ -1,12 +1,17 @@
 SUBROUTINE calc_betaNL_psi( Nstates, psi )
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
-  USE m_PsPot
+  USE m_PsPot, ONLY : betaNL_psi, NbetaNL, betaNL
   IMPLICIT NONE 
   INTEGER :: Nstates
   REAL(8) :: psi(Npoints,Nstates)
   INTEGER :: ist, ibeta, ia
   REAL(8) :: ddot
+
+  ! immediate return if no projectors are available
+  IF( NbetaNL <= 0 ) THEN
+    RETURN 
+  ENDIF 
 
   betaNL_psi(:,:,:) = 0.d0
 

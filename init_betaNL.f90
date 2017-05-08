@@ -14,23 +14,6 @@ SUBROUTINE init_betaNL()
   REAL(8) :: dr
   REAL(8) :: Ylm_real
   
-  !!! SPECIAL CASE !!!!
-  !ia = 1
-  !isp = 1
-  !l = 0
-  !m = 0
-  !iprj = 1
-  !betaNL(:,:) = 0.d0
-  !Np_beta = 0
-
-!  DO ip = 1,Npoints
-!    CALL calc_dr_periodic_1pnt( LL, atpos(:,ia), lingrid(:,ip), dr_vec )
-!    dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
-!    IF( dr <= Ps(isp)%rcut_NL(l) ) THEN 
-!      Np_beta = Np_beta + 1
-!      betaNL(ip,ibeta) = hgh_eval_proj_R( Ps(isp), l, iprj, dr ) * Ylm_real( l, m, dr_vec )
-!    ENDIF 
-!  ENDDO 
 
   ALLOCATE( betaNL(Npoints,NbetaNL) )
 
@@ -57,5 +40,6 @@ SUBROUTINE init_betaNL()
   ENDDO 
 
   WRITE(*,*) 'sum(betaNL) = ', sum(betaNL)
+
 END SUBROUTINE 
 

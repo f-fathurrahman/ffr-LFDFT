@@ -61,6 +61,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
 
   CALL calc_rhoe( v, Focc )
   CALL update_potentials()
+  CALL calc_betaNL_psi( Nstates, v )
   CALL calc_energies( v )
 
   Etot_old = Etot
@@ -112,6 +113,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
     CALL orthonormalize( Nstates, tv )
     CALL calc_rhoe( tv, Focc )
     CALL update_potentials()  ! Now global vars on m_hamiltonian are changed
+    CALL calc_betaNL_psi( Nstates, tv )
     CALL calc_grad( Nstates, tv, g_t )
     !
     ! Compute estimate of best step and update current trial vectors
@@ -127,10 +129,10 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
     CALL orthonormalize( Nstates, v )
     CALL calc_rhoe( v, Focc )
     CALL update_potentials()
-
+    CALL calc_betaNL_psi( Nstates, v )
     CALL calc_energies( v )
     !
-    WRITE(*,'(1x,I5,F18.10,ES18.10)') iter, Etot, abs(Etot-Etot_old)
+    WRITE(*,'(1x,I5,F18.10,ES18.10)') iter, Etot, Etot-Etot_old
     !
     IF( abs(Etot - Etot_old) < 1.d-7 ) THEN
       WRITE(*,*) 'KS_solve_Emin_pcg converged in iter', iter

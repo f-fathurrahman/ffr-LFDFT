@@ -30,6 +30,7 @@ SUBROUTINE calc_energies( psi )
   REAL(8), ALLOCATABLE  :: nabla2_psi(:)
   INTEGER :: ist, ia, isp, ibeta
   REAL(8), ALLOCATABLE :: epsxc(:)
+  REAL(8) :: enl1
   !
   REAL(8) :: ddot
 
@@ -58,16 +59,17 @@ SUBROUTINE calc_energies( psi )
   !
   E_ps_NL = 0.d0
   DO ist = 1,Nstates
+    enl1 = 0.d0
     DO ia = 1,Natoms
       isp = atm2species(ia)
       DO ibeta = 1,NbetaNL
-        E_ps_NL = E_ps_NL + w_NL(1,1)*betaNL_psi(1,ist,1)*betaNL_psi(1,ist,1)
+        enl1 = enl1 + w_NL(1,1)*betaNL_psi(ia,ist,ibeta)*betaNL_psi(ia,ist,ibeta)
       ENDDO
     ENDDO 
-    E_ps_NL = E_ps_NL + Focc(ist)*E_ps_NL
+    E_ps_NL = E_ps_NL + Focc(ist)*enl1
   ENDDO 
 
-  E_total = E_kinetic + E_ps_loc + E_Hartree + E_xc + E_nn
+  E_total = E_kinetic + E_ps_loc + E_Hartree + E_xc + E_nn + E_ps_NL
 
   DEALLOCATE( epsxc )
   DEALLOCATE( nabla2_psi )

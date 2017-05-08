@@ -45,6 +45,8 @@ PROGRAM do_Emin_pcg
   CALL info_PsPot()
   CALL info_LF3d()
 
+  CALL init_betaNL()
+
   ! Initialize occupation numbers
   CALL init_states()
 
@@ -80,7 +82,7 @@ PROGRAM do_Emin_pcg
   ENDDO
   CALL orthonormalize( Nstates, evecs )
 
-  CALL KS_solve_Emin_pcg( 3.d-5, 1000, .FALSE. )
+  CALL KS_solve_Emin_pcg( 3.d-5, 100, .FALSE. )
   !CALL KS_solve_Emin_pcg( 3.d-5, 1000, .TRUE. )
 
   CALL info_energies()

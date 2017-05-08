@@ -29,7 +29,7 @@ SUBROUTINE calc_grad( Ncols, v, grad )
   ALLOCATE( Hv(Npoints) )
 
   DO ic = 1, Ncols
-    CALL op_H_1col( v(:,ic), Hv(:) )
+    CALL op_H_1col( ic, v(:,ic), Hv(:) )
     grad(:,ic) = Hv(:)
     DO icc = 1, Ncols
       grad(:,ic) = grad(:,ic) - ddot( Npoints, v(:,icc),1, Hv(:),1 )*v(:,icc)*dVol
