@@ -25,6 +25,7 @@ SUBROUTINE op_V_ps_NL( Nstates, Vpsi )
       ENDDO 
     ENDDO 
     Vpsi(:,ist) = 2.d0*Focc(ist)*Vpsi(:,ist) 
+    !Vpsi(:,ist) = Focc(ist)*Vpsi(:,ist) 
   ENDDO 
 
 END SUBROUTINE 
@@ -53,10 +54,11 @@ SUBROUTINE op_V_ps_NL_1col( ist, Vpsi )
     DO ibeta = 1,NbetaNL
       ! iprjl = beta2prjl(ibeta,ia)
       iprjl = 1
-      Vpsi(:) = w_NL(1,1)*betaNL(:,ibeta)*betaNL_psi(ia,ist,ibeta)*dVol
+      Vpsi(:) = w_NL(1,1)*betaNL(:,ibeta)*betaNL_psi(ia,ist,ibeta) !*dVol
     ENDDO 
   ENDDO 
   Vpsi(:) = 2.d0*Focc(ist)*Vpsi(:) 
+  !Vpsi(:) = Focc(ist)*Vpsi(:) 
 
 END SUBROUTINE 
 

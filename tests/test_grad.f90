@@ -87,7 +87,8 @@ PROGRAM test_grad
   E0 = E_total
   CALL calc_grad( Nstates, psi0, g0 )
 
-  WRITE(*,*) 'E0 = ', E0
+  WRITE(*,*) 'sum(g0) = ', sum(g0)
+  WRITE(*,*) 'E0      = ', E0
 
   ! random direction
   DO ist = 1, Nstates
@@ -104,8 +105,8 @@ PROGRAM test_grad
     WRITE(*,'(1x,A,ES18.10)') 'delta = ', delta
 
     dE = sum( g0 * delta * dW )*dVol*sum(Focc)
-    psi = psi0 + delta*dW
 
+    psi = psi0 + delta*dW
     CALL orthonormalize( Nstates, psi )
     CALL calc_rhoe( psi, Focc )
     CALL update_potentials()
