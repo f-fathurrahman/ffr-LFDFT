@@ -132,7 +132,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
     CALL calc_betaNL_psi( Nstates, v )
     CALL calc_energies( v )
     !
-    WRITE(*,'(1x,I5,F18.10,ES18.10)') iter, Etot, Etot-Etot_old
+    WRITE(*,'(1x,I5,F18.10,ES18.10)') iter, Etot, Etot_old-Etot
     !
     IF( abs(Etot - Etot_old) < 1.d-7 ) THEN
       WRITE(*,*) 'KS_solve_Emin_pcg converged in iter', iter
