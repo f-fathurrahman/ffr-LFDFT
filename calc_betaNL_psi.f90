@@ -3,6 +3,7 @@ SUBROUTINE calc_betaNL_psi( Nstates, psi )
                      dVol => LF3d_dVol
   USE m_PsPot, ONLY : NbetaNL, betaNL
   USE m_hamiltonian, ONLY : betaNL_psi
+  USE m_atoms, ONLY : Natoms
   IMPLICIT NONE 
   INTEGER :: Nstates
   REAL(8) :: psi(Npoints,Nstates)
@@ -16,10 +17,13 @@ SUBROUTINE calc_betaNL_psi( Nstates, psi )
 
   betaNL_psi(:,:,:) = 0.d0
 
-  ibeta = 1
-  ia = 1
-  DO ist = 1,Nstates
-    betaNL_psi(ia,ist,ibeta) = ddot( Npoints, betaNL(:,ibeta),1, psi(:,ist),1 ) * dVol
+  DO ia = 1,Natoms
+    DO ist = 1,Nstates
+      DO ibeta = 1,NbetaNL
+        betaNL_psi(ia,ist,ibeta) = ddot( Npoints, betaNL(:,ibeta),1, psi(:,ist),1 ) * dVol
+!        WRITE(*,*) 'betaNL_psi: ', ist, ibeta, betaNL_psi(ia,ist,ibeta)
+      ENDDO 
+    ENDDO 
   ENDDO 
 
 END SUBROUTINE 

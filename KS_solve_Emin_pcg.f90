@@ -111,6 +111,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
     ! Evaluate gradient at trial step
     tv(:,:) = v(:,:) + alpha_t * d(:,:)
     CALL orthonormalize( Nstates, tv )
+
     CALL calc_rhoe( tv, Focc )
     CALL update_potentials()  ! Now global vars on m_hamiltonian are changed
     CALL calc_betaNL_psi( Nstates, tv )
@@ -127,6 +128,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
 
     v(:,:) = v(:,:) + alpha * d(:,:)
     CALL orthonormalize( Nstates, v )
+
     CALL calc_rhoe( v, Focc )
     CALL update_potentials()
     CALL calc_betaNL_psi( Nstates, v )

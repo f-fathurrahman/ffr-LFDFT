@@ -34,7 +34,7 @@ SUBROUTINE init_betaNL()
             dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
             IF( dr <= Ps(isp)%rcut_NL(l) ) THEN 
               Np_beta = Np_beta + 1
-              betaNL(ip,ibeta) = hgh_eval_proj_R( Ps(isp), l, iprj, dr ) * Ylm_real( l, m, dr_vec )
+              betaNL(ip,ibeta) = hgh_eval_proj_R( Ps(isp), l, iprj, dr ) * Ylm_real( l, m, dr_vec )!*(-1.d0)**m
             ENDIF 
           ENDDO 
           nrm = sum(betaNL(:,ibeta)**2)*dVol

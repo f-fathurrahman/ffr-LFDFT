@@ -71,6 +71,8 @@ SUBROUTINE calc_energies( psi )
 
   E_total = E_kinetic + E_ps_loc + E_Hartree + E_xc + E_nn + E_ps_NL
 
+!  CALL info_energies()
+
   DEALLOCATE( epsxc )
   DEALLOCATE( nabla2_psi )
 END SUBROUTINE

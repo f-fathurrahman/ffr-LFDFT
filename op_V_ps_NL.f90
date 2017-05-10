@@ -29,7 +29,7 @@ END SUBROUTINE
 
 
 SUBROUTINE op_V_ps_NL_1col( ist, Vpsi )
-  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints, dVol => LF3d_dVol
   USE m_PsPot, ONLY : NbetaNL, betaNL, w_NL
   USE m_atoms, ONLY : Natoms
   USE m_states, ONLY : Focc
@@ -45,12 +45,19 @@ SUBROUTINE op_V_ps_NL_1col( ist, Vpsi )
 
   Vpsi(:) = 0.d0
 
+!  WRITE(*,*) 'ist = ', ist
   DO ia = 1,Natoms
     DO ibeta = 1,NbetaNL
-      Vpsi(:) = w_NL(ibeta)*betaNL(:,ibeta)*betaNL_psi(ia,ist,ibeta) !*dVol
+!      WRITE(*,*) 'ibeta = ', ibeta
+!      WRITE(*,*) 'betaNL = ', sum(abs(betaNL(:,ibeta)))
+!      WRITE(*,*) 'betaNL_psi = ', betaNL_psi(ia,ist,ibeta)
+!      WRITE(*,*) 'w_NL = ', w_NL(ibeta)
+      Vpsi(:) = Vpsi(:) + w_NL(ibeta)*betaNL(:,ibeta)*betaNL_psi(ia,ist,ibeta)  !*sqrt(dVol)
     ENDDO 
   ENDDO 
-  Vpsi(:) = 2.d0*Focc(ist)*Vpsi(:) 
+!  WRITE(*,*) 'betaNL_psi = ', betaNL_psi
+  Vpsi(:) = 2.d0*Focc(ist)*Vpsi(:) !*dVol
+!  WRITE(*,*) 'sum(Vpsi) = ', sum(abs(Vpsi))
 
 END SUBROUTINE 
 
