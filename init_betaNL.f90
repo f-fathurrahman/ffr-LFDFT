@@ -4,7 +4,7 @@ SUBROUTINE init_betaNL()
                      lingrid => LF3d_lingrid, &
                      LL => LF3d_LL, &
                      dVol => LF3d_dVol
-  USE m_PsPot, ONLY : betaNL, NbetaNL, &
+  USE m_PsPot, ONLY : betaNL, NbetaNL, w_NL, &
                       Ps => Ps_HGH_Params
   USE m_atoms, ONLY : atpos => AtomicCoords, Natoms, atm2species
   USE m_Ps_HGH, ONLY : hgh_eval_proj_R
@@ -17,6 +17,9 @@ SUBROUTINE init_betaNL()
   REAL(8) :: nrm
 
   ALLOCATE( betaNL(Npoints,NbetaNL) )
+
+  WRITE(*,*)
+  WRITE(*,*) 'Initializing betaNL functions'
 
   ibeta = 0
   DO ia = 1,Natoms
@@ -34,8 +37,8 @@ SUBROUTINE init_betaNL()
               betaNL(ip,ibeta) = hgh_eval_proj_R( Ps(isp), l, iprj, dr ) * Ylm_real( l, m, dr_vec )
             ENDIF 
           ENDDO 
-          WRITE(*,'(1x,A,I5,I8,F18.10)') 'ibeta, Np_beta, integ = ', &
-                                         ibeta, Np_beta, sum(betaNL(:,ibeta)**2)*dVol
+          nrm = sum(betaNL(:,ibeta)**2)*dVol
+WRITE(*,'(1x,A,I5,I8,2F18.10)') 'ibeta, Np_beta, w_NL, integ = ', ibeta, Np_beta, w_NL(ibeta), nrm
         ENDDO ! m
       ENDDO ! iprj
     ENDDO ! l

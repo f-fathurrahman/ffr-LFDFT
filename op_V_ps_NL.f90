@@ -1,9 +1,10 @@
 SUBROUTINE op_V_ps_NL( Nstates, Vpsi )
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
-  USE m_PsPot, ONLY : betaNL_psi, NbetaNL, betaNL, w_NL
+  USE m_PsPot, ONLY : NbetaNL, betaNL, w_NL
   USE m_atoms, ONLY : atm2species, Natoms
   USE m_states, ONLY : Focc
+  USE m_hamiltonian, ONLY : betaNL_psi
   IMPLICIT NONE 
   INTEGER :: Nstates
   REAL(8) :: Vpsi(Npoints,Nstates)
@@ -19,13 +20,10 @@ SUBROUTINE op_V_ps_NL( Nstates, Vpsi )
     DO ia = 1,Natoms
       isp = atm2species(ia)
       DO ibeta = 1,NbetaNL
-        ! iprjl = beta2prjl(ibeta,ia)
-        iprjl = 1
-        Vpsi(:,ist) = w_NL(1,1)*betaNL(:,ibeta)*betaNL_psi(ia,ist,ibeta)*dVol
+        Vpsi(:,ist) = w_NL(ibeta)*betaNL(:,ibeta)*betaNL_psi(ia,ist,ibeta) !*dVol
       ENDDO 
     ENDDO 
     Vpsi(:,ist) = 2.d0*Focc(ist)*Vpsi(:,ist) 
-    !Vpsi(:,ist) = Focc(ist)*Vpsi(:,ist) 
   ENDDO 
 
 END SUBROUTINE 
@@ -35,9 +33,10 @@ END SUBROUTINE
 SUBROUTINE op_V_ps_NL_1col( ist, Vpsi )
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
-  USE m_PsPot, ONLY : betaNL_psi, NbetaNL, betaNL, w_NL
+  USE m_PsPot, ONLY : NbetaNL, betaNL, w_NL
   USE m_atoms, ONLY : atm2species, Natoms
   USE m_states, ONLY : Focc
+  USE m_hamiltonian, ONLY : betaNL_psi
   IMPLICIT NONE 
   INTEGER :: ist
   REAL(8) :: Vpsi(Npoints)
@@ -53,8 +52,8 @@ SUBROUTINE op_V_ps_NL_1col( ist, Vpsi )
     isp = atm2species(ia)
     DO ibeta = 1,NbetaNL
       ! iprjl = beta2prjl(ibeta,ia)
-      iprjl = 1
-      Vpsi(:) = w_NL(1,1)*betaNL(:,ibeta)*betaNL_psi(ia,ist,ibeta) !*dVol
+      !iprjl = 1
+      Vpsi(:) = w_NL(ibeta)*betaNL(:,ibeta)*betaNL_psi(ia,ist,ibeta) !*dVol
     ENDDO 
   ENDDO 
   Vpsi(:) = 2.d0*Focc(ist)*Vpsi(:) 

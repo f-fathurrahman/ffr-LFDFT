@@ -8,5 +8,7 @@ MODULE m_hamiltonian
 
   REAL(8), ALLOCATABLE :: Rhoe(:)
 
+  REAL(8), ALLOCATABLE :: betaNL_psi(:,:,:) ! Natoms, NbetaNL, Nstates 
+
 END MODULE 
 

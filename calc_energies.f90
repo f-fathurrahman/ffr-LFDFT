@@ -19,9 +19,9 @@ SUBROUTINE calc_energies( psi )
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
   USE m_states, ONLY : Nstates, Focc
-  USE m_hamiltonian, ONLY : V_ps_loc, V_Hartree, Rhoe
+  USE m_hamiltonian, ONLY : V_ps_loc, V_Hartree, Rhoe, betaNL_psi
   USE m_atoms, ONLY : atm2species, Natoms
-  USE m_PsPot, ONLY : w_NL, betaNL_psi, NbetaNL
+  USE m_PsPot, ONLY : w_NL, NbetaNL
   USE m_energies
   IMPLICIT NONE
   !
@@ -63,7 +63,7 @@ SUBROUTINE calc_energies( psi )
     DO ia = 1,Natoms
       isp = atm2species(ia)
       DO ibeta = 1,NbetaNL
-        enl1 = enl1 + w_NL(1,1)*betaNL_psi(ia,ist,ibeta)*betaNL_psi(ia,ist,ibeta)
+        enl1 = enl1 + w_NL(ibeta)*betaNL_psi(ia,ist,ibeta)*betaNL_psi(ia,ist,ibeta)
       ENDDO
     ENDDO 
     E_ps_NL = E_ps_NL + Focc(ist)*enl1

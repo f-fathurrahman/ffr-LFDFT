@@ -8,9 +8,9 @@
 !!   Fadjar Fathurrahman
 
 SUBROUTINE alloc_hamiltonian()
-  USE m_hamiltonian, ONLY : V_ps_loc, V_Hartree, V_xc, Rhoe
+  USE m_hamiltonian, ONLY : V_ps_loc, V_Hartree, V_xc, Rhoe, betaNL_psi
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
-  USE m_PsPot, ONLY : betaNL_psi, NbetaNL
+  USE m_PsPot, ONLY : NbetaNL
   USE m_atoms, ONLY : Natoms
   USE m_states, ONLY : Nstates
   IMPLICIT NONE
