@@ -4,12 +4,13 @@ import matplotlib.pyplot as plt
 import sys
 
 #tree = ET.parse('C.pw-mt_fhi.UPF')
+filename = sys.argv[1]
 tree = ET.parse(sys.argv[1])
 root = tree.getroot()
 
-IDX_MESH = -1
+IDX_MESH  = -1
 IDX_V_LOC = -1
-IDX_NL = -1
+IDX_NL    = -1
 IDX_PSWFC = -1
 
 Nchild = len(root)
@@ -38,7 +39,7 @@ print('')
 #print(root[0].text)
 
 # Setup radial grid
-print(root[IDX_MESH][0].items())
+#print(root[IDX_MESH][0].items())
 Nradial = int( root[IDX_MESH][0].items()[IDX_MESH][1] )
 r = np.zeros(Nradial)
 rab = np.zeros(Nradial)
@@ -78,6 +79,7 @@ plt.clf()
 plt.plot( r, V_loc, marker='o' )
 plt.grid()
 plt.xlim(0,10.0)
+plt.title(filename)
 plt.savefig('V_loc.png', dpi=300)
 
 plt.clf()
@@ -86,6 +88,7 @@ for ibeta in range(Nbeta):
 plt.xlim(0, np.max(beta_r_cut) )
 plt.grid()
 plt.legend()
+plt.title(filename)
 plt.savefig('beta_NL.png')
 
 plt.clf()
@@ -94,4 +97,5 @@ for iwfc in range(Npswfc):
 plt.xlim(0, 5.0 )
 plt.grid()
 plt.legend()
+plt.title(filename)
 plt.savefig('pswfc.png')
