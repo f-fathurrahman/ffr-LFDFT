@@ -39,6 +39,7 @@ SUBROUTINE init_betaNL()
           ENDDO 
           nrm = sum(betaNL(:,ibeta)**2)*dVol
 WRITE(*,'(1x,A,I5,I8,2F18.10)') 'ibeta, Np_beta, w_NL, integ = ', ibeta, Np_beta, w_NL(ibeta), nrm
+          !betaNL(:,ibeta) = betaNL(:,ibeta)**2
         ENDDO ! m
       ENDDO ! iprj
     ENDDO ! l

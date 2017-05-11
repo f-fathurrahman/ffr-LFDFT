@@ -55,6 +55,8 @@ PROGRAM test_scf
 
   CALL info_LF3d()
 
+  CALL init_betaNL()
+
   CALL init_states()
 
   CALL init_strfact_shifted()
@@ -64,7 +66,7 @@ PROGRAM test_scf
   CALL alloc_hamiltonian()
 
   CALL init_V_ps_loc_G( )
-
+  
   CALL init_nabla2_sparse()
   CALL init_ilu0_prec()
 
@@ -80,6 +82,7 @@ PROGRAM test_scf
 
   CALL calc_rhoe( evecs, Focc )
   CALL update_potentials()
+  CALL calc_betaNL_psi( Nstates, evecs )
 
   integRho = sum(Rhoe)*dVol
   WRITE(*,*)
@@ -137,7 +140,7 @@ PROGRAM test_scf
     ENDIF 
 
     CALL update_potentials()
-
+    CALL calc_betaNL_psi( Nstates, evecs )
     CALL calc_energies( evecs ) ! update the potentials or not ?
 
     dEtot = abs(Etot - Etot_old)

@@ -56,6 +56,7 @@ SUBROUTINE op_V_ps_NL_1col( ist, Vpsi )
     ENDDO 
   ENDDO 
 !  WRITE(*,*) 'betaNL_psi = ', betaNL_psi
+  !Vpsi(:) = 2.d0*Focc(ist)*Vpsi(:) !*dVol
   Vpsi(:) = 2.d0*Focc(ist)*Vpsi(:) !*dVol
 !  WRITE(*,*) 'sum(Vpsi) = ', sum(abs(Vpsi))
 
