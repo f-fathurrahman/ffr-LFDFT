@@ -59,7 +59,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
     READ(112) v   ! FIXME Need to use file name
   ENDIF
 
-  CALL calc_rhoe( v, Focc )
+  CALL calc_Rhoe( Focc, v )
   CALL update_potentials()
   CALL calc_betaNL_psi( Nstates, v )
   CALL calc_energies( v )
@@ -112,7 +112,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
     tv(:,:) = v(:,:) + alpha_t * d(:,:)
     CALL orthonormalize( Nstates, tv )
 
-    CALL calc_rhoe( tv, Focc )
+    CALL calc_Rhoe( Focc, tv )
     CALL update_potentials()  ! Now global vars on m_hamiltonian are changed
     CALL calc_betaNL_psi( Nstates, tv )
     CALL calc_grad( Nstates, tv, g_t )
@@ -129,7 +129,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
     v(:,:) = v(:,:) + alpha * d(:,:)
     CALL orthonormalize( Nstates, v )
 
-    CALL calc_rhoe( v, Focc )
+    CALL calc_Rhoe( Focc, v )
     CALL update_potentials()
     CALL calc_betaNL_psi( Nstates, v )
     CALL calc_energies( v )

@@ -60,7 +60,7 @@ orthonormalize.f90 \
 ortho_check.f90 \
 Sch_solve_diag.f90 \
 calc_energies.f90 \
-calc_rhoe.f90 \
+calc_Rhoe.f90 \
 update_potentials.f90 \
 KS_solve_Emin_cg.f90 \
 calc_grad.f90 \

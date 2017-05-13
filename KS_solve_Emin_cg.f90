@@ -57,10 +57,9 @@ SUBROUTINE KS_solve_Emin_cg( alpha_t, NiterMax, restart )
     READ(112) v   ! FIXME Need to use file name
   ENDIF
 
-  CALL calc_rhoe( v, Focc )
+  CALL calc_Rhoe( Focc, v )
   CALL update_potentials()
   CALL calc_energies( v )
-  WRITE(*,*) 'Initial Etot = ', Etot
 
   Etot_old = Etot
 
@@ -87,7 +86,7 @@ SUBROUTINE KS_solve_Emin_cg( alpha_t, NiterMax, restart )
     ! Evaluate gradient at trial step
     tv(:,:) = v(:,:) + alpha_t * d(:,:)
     CALL orthonormalize( Nstates, tv )
-    CALL calc_rhoe( tv, Focc )
+    CALL calc_Rhoe( Focc, tv )
     CALL update_potentials()  ! Now global vars on m_hamiltonian are changed
     CALL calc_grad( Nstates, tv, g_t )
     !
@@ -102,7 +101,7 @@ SUBROUTINE KS_solve_Emin_cg( alpha_t, NiterMax, restart )
 
     v(:,:) = v(:,:) + alpha * d(:,:)
     CALL orthonormalize( Nstates, v )
-    CALL calc_rhoe( v, Focc )
+    CALL calc_Rhoe( Focc, v )
     CALL update_potentials()
 
     CALL calc_energies( v )

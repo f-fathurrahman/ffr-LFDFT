@@ -80,7 +80,7 @@ PROGRAM test_grad
   ENDDO
   CALL orthonormalize( Nstates, psi0 )
 
-  CALL calc_rhoe( psi0, Focc )
+  CALL calc_rhoe( Focc, psi0 )
   CALL update_potentials()
   CALL calc_betaNL_psi( Nstates, psi0 )
   CALL calc_energies( psi0 )
@@ -108,7 +108,7 @@ PROGRAM test_grad
 
     psi = psi0 + delta*dW
     CALL orthonormalize( Nstates, psi )
-    CALL calc_rhoe( psi, Focc )
+    CALL calc_rhoe( Focc, psi )
     CALL update_potentials()
     CALL calc_betaNL_psi( Nstates, psi )
 

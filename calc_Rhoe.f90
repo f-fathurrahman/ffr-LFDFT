@@ -12,7 +12,7 @@
 !!
 !!   Global variable `rhoe`
 !!
-SUBROUTINE calc_rhoe( psi, Focc )
+SUBROUTINE calc_rhoe( Focc, psi )
 
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates

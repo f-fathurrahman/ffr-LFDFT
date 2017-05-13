@@ -80,7 +80,7 @@ PROGRAM test_scf
   CALL orthonormalize( Nstates, evecs )
   CALL ortho_check( Npoints, Nstates, dVol, evecs )
 
-  CALL calc_rhoe( evecs, Focc )
+  CALL calc_rhoe( Focc, evecs )
   CALL update_potentials()
   CALL calc_betaNL_psi( Nstates, evecs )
 
@@ -119,7 +119,7 @@ PROGRAM test_scf
 
     CALL Sch_solve_diag()
 
-    CALL calc_rhoe( evecs, Focc )
+    CALL calc_rhoe( Focc, evecs )
 
     !CALL mixerifc( iterSCF, 1, Npoints, Rhoe, dr2, Npoints, Rhoe_old )
     CALL mixlinear( iterSCF, 0.5d0, Npoints, Rhoe, Rhoe_old, dr2 )
