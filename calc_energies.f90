@@ -66,7 +66,6 @@ SUBROUTINE calc_energies( psi )
         enl1 = enl1 + w_NL(ibeta)*betaNL_psi(ia,ist,ibeta)*betaNL_psi(ia,ist,ibeta)
       ENDDO
     ENDDO 
-    WRITE(*,*) 'ist, enl1 = ', ist, enl1
     E_ps_NL = E_ps_NL + Focc(ist)*enl1
   ENDDO 
 

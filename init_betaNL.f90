@@ -34,12 +34,12 @@ SUBROUTINE init_betaNL()
             dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
             IF( dr <= Ps(isp)%rcut_NL(l) ) THEN 
               Np_beta = Np_beta + 1
-              betaNL(ip,ibeta) = hgh_eval_proj_R( Ps(isp), l, iprj, dr ) * Ylm_real( l, m, dr_vec )!*(-1.d0)**m
-            ENDIF 
+              betaNL(ip,ibeta) = hgh_eval_proj_R( Ps(isp), l, iprj, dr ) * Ylm_real( l, m, dr_vec )
+            ENDIF
           ENDDO 
           nrm = sum(betaNL(:,ibeta)**2)*dVol
-WRITE(*,'(1x,A,I5,I8,2F18.10)') 'ibeta, Np_beta, w_NL, integ = ', ibeta, Np_beta, w_NL(ibeta), nrm
-          !betaNL(:,ibeta) = betaNL(:,ibeta)**2
+          WRITE(*,'(1x,A,I5,I8,2F18.10)') &
+               'ibeta, Np_beta, w_NL, integ = ', ibeta, Np_beta, w_NL(ibeta), nrm
         ENDDO ! m
       ENDDO ! iprj
     ENDDO ! l

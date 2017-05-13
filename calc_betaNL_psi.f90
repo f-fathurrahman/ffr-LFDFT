@@ -21,7 +21,6 @@ SUBROUTINE calc_betaNL_psi( Nstates, psi )
     DO ist = 1,Nstates
       DO ibeta = 1,NbetaNL
         betaNL_psi(ia,ist,ibeta) = ddot( Npoints, betaNL(:,ibeta),1, psi(:,ist),1 ) * dVol
-!        WRITE(*,*) 'betaNL_psi: ', ist, ibeta, betaNL_psi(ia,ist,ibeta)
       ENDDO 
     ENDDO 
   ENDDO 

@@ -46,16 +46,11 @@ SUBROUTINE op_V_ps_NL_1col( ist, Vpsi )
 
   Vpsi(:) = 0.d0
 
-!  WRITE(*,*) 'ist = ', ist
   DO ia = 1,Natoms
     DO ibeta = 1,NbetaNL
-      Vpsi(:) = Vpsi(:) + w_NL(ibeta)*betaNL(:,ibeta)*betaNL_psi(ia,ist,ibeta)  !*sqrt(dVol)
+      Vpsi(:) = Vpsi(:) + w_NL(ibeta)*betaNL(:,ibeta)*betaNL_psi(ia,ist,ibeta)
     ENDDO 
   ENDDO 
-!  WRITE(*,*) 'betaNL_psi = ', betaNL_psi
-!  Vpsi(:) = 2.d0*Focc(ist)*Vpsi(:) !*dVol
-  Vpsi(:) = 2.d0*Vpsi(:)
-!  WRITE(*,*) 'sum(Vpsi) = ', sum(abs(Vpsi))
 
 END SUBROUTINE 
 

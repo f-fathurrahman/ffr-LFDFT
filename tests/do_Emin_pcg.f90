@@ -15,6 +15,8 @@ PROGRAM do_Emin_pcg
   INTEGER :: ip, ist, N_in
   INTEGER :: iargc  ! pgf90 
 
+  FREE_NABLA2 = .TRUE.
+
   Narg = iargc()
   IF( Narg /= 2 ) THEN 
     WRITE(*,*) 'ERROR: exactly two arguments must be given:'
