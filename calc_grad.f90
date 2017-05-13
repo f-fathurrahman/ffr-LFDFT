@@ -14,6 +14,7 @@
 SUBROUTINE calc_grad( Ncols, v, grad )
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
+  USE m_states, ONLY : Focc
   IMPLICIT NONE
   !
   INTEGER :: Ncols
@@ -34,6 +35,7 @@ SUBROUTINE calc_grad( Ncols, v, grad )
     DO icc = 1, Ncols
       grad(:,ic) = grad(:,ic) - ddot( Npoints, v(:,icc),1, Hv(:),1 )*v(:,icc)*dVol
     ENDDO
+    grad(:,ic) = Focc(ic)*grad(:,ic)
   ENDDO
 
   DEALLOCATE( Hv )
