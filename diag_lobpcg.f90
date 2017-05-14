@@ -1,17 +1,17 @@
 ! eFeFeR
 
 !------------------------------------------------
-SUBROUTINE diag_lobpcg( Nstates, LAMBDA, X )
+SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
 !------------------------------------------------
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
+  USE m_states, ONLY : Nstates
   IMPLICIT NONE 
   ! arguments
-  INTEGER :: Nstates
   REAL(8) :: lambda(Nstates)
   REAL(8) :: X(Npoints,Nstates)
+  REAL(8) :: tolerance
   ! Local variables
   INTEGER, PARAMETER :: maxIter=100
-  REAL(8), PARAMETER :: tolerance=5.d-5
   REAL(8), PARAMETER :: tfudge=1.d10
   ! Allocatable arrays
   REAL(8), ALLOCATABLE :: Q(:,:), HQ(:,:)
@@ -91,16 +91,16 @@ SUBROUTINE diag_lobpcg( Nstates, LAMBDA, X )
     IF(resnrm(i) < tolerance/TFUDGE) nlock = nlock + 1
   ENDDO
 
+  IF(nlock > 0) THEN
+    WRITE(*,*) 'WARNING: nlock=',nlock
+  ENDIF
+
   IF(nconv >= Nstates) GOTO 10
 
   ! Apply preconditioner
   DO i=1,Nstates
     CALL prec_ilu0_inplace( Q(:,Nstates+i) )
   ENDDO
-  
-  IF(nlock > 0) THEN
-    WRITE(*,*) 'WARNING: nlock=',nlock
-  ENDIF
   
 !
 ! Apply Hamiltonian
@@ -180,7 +180,7 @@ SUBROUTINE diag_lobpcg( Nstates, LAMBDA, X )
     ENDDO
     WRITE(*,*) 'LOBPCG iter = ', iter, 'nconv = ', nconv
   
-    IF(nconv >= Nstates-3) GOTO 10
+    IF(nconv >= Nstates) GOTO 10
 
     ! Apply preconditioner
     DO i=1,Nstates

@@ -46,7 +46,7 @@ SUBROUTINE Sch_solve_diag()
   ELSEIF( IALG_DIAG == 2 ) THEN 
     CALL diag_davidson( evals, evecs, ethr )
   ELSEIF( IALG_DIAG == 3 ) THEN 
-    CALL diag_lobpcg( Nstates, evals, evecs )
+    CALL diag_lobpcg( evals, evecs, ethr )
   ENDIF 
     
   !WRITE(*,'(1x,A,ES18.10,A,I4)') 'Davidson_QE: ethr = ', ethr, ' dav_iter = ', dav_iter
