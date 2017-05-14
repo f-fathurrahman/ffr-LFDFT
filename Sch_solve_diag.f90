@@ -23,7 +23,7 @@ SUBROUTINE Sch_solve_diag()
   USE m_states, ONLY : Nstates, Focc, &
                        evecs => KS_evecs, &
                        evals => KS_evals
-  USE m_options, ONLY : ethr => DIAG_DAVIDSON_QE_ETHR
+  USE m_options, ONLY : ethr => DIAG_DAVIDSON_QE_ETHR, IALG_DIAG
   IMPLICIT NONE 
   INTEGER, ALLOCATABLE :: btype(:)
   INTEGER :: dav_iter
@@ -39,22 +39,25 @@ SUBROUTINE Sch_solve_diag()
   !WRITE(*,*)
   !WRITE(*,*) 'Solving Schrodinger equation with Davidson iterative diagonalization'
   !WRITE(*,*)
-    
-  CALL diag_davidson_qe( Npoints, Nstates, 3*Nstates, evecs, ethr, &
-                         evals, btype, notcnv, dav_iter )
-  
-  !CALL diag_davidson( evals, evecs, ethr )
-
-  !CALL diag_lobpcg( Nstates, evals, evecs )
+ 
+  IF( IALG_DIAG == 1 ) THEN 
+    CALL diag_davidson_qe( Npoints, Nstates, 3*Nstates, evecs, ethr, &
+                           evals, btype, notcnv, dav_iter )
+  ELSEIF( IALG_DIAG == 2 ) THEN 
+    CALL diag_davidson( evals, evecs, ethr )
+  ELSEIF( IALG_DIAG == 3 ) THEN 
+    CALL diag_lobpcg( Nstates, evals, evecs )
+  ENDIF 
     
   !WRITE(*,'(1x,A,ES18.10,A,I4)') 'Davidson_QE: ethr = ', ethr, ' dav_iter = ', dav_iter
 
-  !WRITE(*,*)
-  !WRITE(*,*) 'Eigenvalues:'
-  !WRITE(*,*)
-  !DO ist = 1, Nstates
-  !  WRITE(*,'(1x,I4,F18.10)') ist, evals(ist)
-  !ENDDO
+  WRITE(*,*)
+  WRITE(*,*) 'Eigenvalues:'
+  WRITE(*,*)
+  DO ist = 1, Nstates
+    WRITE(*,'(1x,I4,F18.10)') ist, evals(ist)
+  ENDDO
+  WRITE(*,*)
 
   ! normalize evecs properly
   evecs(:,:) = evecs(:,:)/sqrt(dVol)

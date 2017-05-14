@@ -73,11 +73,8 @@ SUBROUTINE op_H_1col( ist, v, Hv )
   ! add non-local contrib if any
   IF( NbetaNL > 0 ) THEN 
     ALLOCATE( V_ps_NL_psi(Npoints) )
-!    WRITE(*,*) 'ist, local    = ', ist, sum(abs(Hv(:)))
     CALL op_V_ps_NL_1col( ist, V_ps_NL_psi(:) )
     Hv(:) = Hv(:) + V_ps_NL_psi(:)
-!    WRITE(*,*) 'ist, local+NL = ', ist, sum(abs(Hv(:))), sum(abs(V_ps_NL_psi(:)))
-
     DEALLOCATE( V_ps_NL_psi )
   ENDIF 
 

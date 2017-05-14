@@ -13,6 +13,10 @@ MODULE m_options
   LOGICAL :: FREE_NABLA2 = .FALSE.
 
   REAL(8) :: DIAG_DAVIDSON_QE_ETHR = 1.0d-5
+  INTEGER :: IALG_DIAG = 1
+  ! 1 => Davidson v1 (from PWSCF)
+  ! 2 => Davidson v2
+  ! 3 => LOBPCG
 
   ! type of mixing to use for the potential
   integer :: mixtype

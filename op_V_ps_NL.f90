@@ -18,11 +18,9 @@ SUBROUTINE op_V_ps_NL( Nstates, Vpsi )
   DO ist = 1,Nstates
     DO ia = 1,Natoms
       DO ibeta = 1,NbetaNL
-        Vpsi(:,ist) = w_NL(ibeta)*betaNL(:,ibeta)*betaNL_psi(ia,ist,ibeta) !*dVol
+        Vpsi(:,ist) = w_NL(ibeta)*betaNL(:,ibeta)*betaNL_psi(ia,ist,ibeta)
       ENDDO 
     ENDDO 
-    Vpsi(:,ist) = 2.d0*Focc(ist)*Vpsi(:,ist) 
-!    Vpsi(:,ist) = 2.d0*Vpsi(:,ist) 
   ENDDO 
 
 END SUBROUTINE 
