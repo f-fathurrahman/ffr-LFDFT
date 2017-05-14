@@ -60,7 +60,10 @@ SUBROUTINE Sch_solve_diag()
   WRITE(*,*)
 
   ! normalize evecs properly
-  evecs(:,:) = evecs(:,:)/sqrt(dVol)
+  !evecs(:,:) = evecs(:,:)/sqrt(dVol)
+  
+  CALL ortho_check( Npoints, Nstates, dVol, evecs )
+  STOP 
 
   DEALLOCATE( btype )
 END SUBROUTINE 

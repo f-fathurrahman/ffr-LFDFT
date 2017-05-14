@@ -79,11 +79,10 @@ PROGRAM test_scf
   ENDDO
   CALL orthonormalize( Nstates, evecs )
   !CALL ortho_gram_schmidt( evecs, Npoints, Npoints, Nstates )
-  CALL ortho_check( Npoints, Nstates, 1.d0, evecs )
+  CALL ortho_check( Npoints, Nstates, dVol, evecs )
 
   CALL calc_rhoe( Focc, evecs )
   CALL update_potentials()
-  CALL calc_betaNL_psi( Nstates, evecs )
 
   integRho = sum(Rhoe)*dVol
   WRITE(*,*)
@@ -110,7 +109,7 @@ PROGRAM test_scf
   DO iterSCF = 1, 100
 
     IF( iterSCF==1 ) THEN
-      ethr = 1.d-1
+      ethr = 1.d-8
     ELSE 
       IF( iterSCF == 2 ) ethr = 1.d-2
       !ethr = min( ethr, 1.d-2*dEtot / max(1.d0,Nelectrons) )

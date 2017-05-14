@@ -7,9 +7,9 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
   USE m_states, ONLY : Nstates
   IMPLICIT NONE 
   ! arguments
-  REAL(8) :: lambda(Nstates)
-  REAL(8) :: X(Npoints,Nstates)
-  REAL(8) :: tolerance
+  REAL(8), intent(inout) :: lambda(Nstates)
+  REAL(8), intent(inout) :: X(Npoints,Nstates)
+  REAL(8), intent(in) :: tolerance
   ! Local variables
   INTEGER, PARAMETER :: maxIter=100
   REAL(8), PARAMETER :: tfudge=1.d10
@@ -64,6 +64,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
 !
 ! Apply Hamiltonian
 !
+  CALL calc_betaNL_psi( Nstates, Q(:,1:Nstates) )
   CALL op_H( Nstates, Q(:,1:Nstates), HQ(:,1:Nstates) )
 
 !-----------------------------------------
@@ -111,6 +112,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
 !
 ! Apply Hamiltonian
 !
+  CALL calc_betaNL_psi( Nstates, Q(:,Nstates+1:Nstates2) )
   CALL op_H( Nstates, Q(:,Nstates+1:Nstates2), HQ(:,Nstates+1:Nstates2) )
 
   ! C <-- W* W
@@ -205,6 +207,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
 !
 ! Apply Hamiltonian
 !
+    CALL calc_betaNL_psi( Nstates, Q(:,Nstates+1:Nstates2) )
     CALL op_H( Nstates, Q(:,Nstates+1:Nstates2), HQ(:,Nstates+1:Nstates2) )
 
     ! C <-- W* W
@@ -281,20 +284,33 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
 10 CONTINUE
 
   ! XHX = X* HX
-  !call dgemm('T','N',Nstates,Nstates,Npoints,ONE,X,Npoints,HX,Npoints,ZERO,XHX_temp,Nstates)
+  !call dgemm('T','N',Nstates,Nstates,Npoints,1.d0,Q,Npoints,HQ,Npoints,0.d0,temp1,Nstates)
+  
   ! XHX = (XHX + XHX*)/2
   !call mkl_zomatadd('Col','N','T',Nstates,Nstates,HALF,XHX_temp,Nstates,&
   !    HALF,XHX_temp,Nstates, XHX,Nstates)
+  
   ! Calculate the eigenvalues and eigenvectors
-  !call eig_zheev(XHX,lambda,Nstates)
-  !W = X ! save X to W, W must not be used again ...
-  !call dgemm('N','N',Npoints,Nstates,Nstates, ONE,W,Npoints, XHX,Npoints, ZERO,X,Npoints)
+  !call eig_zheev(temp1,lambda,Nstates)
+  !CALL rdiaghg( Nstates, Nstates, temp1, IMat, Nstates, lambda, temp1 )
+
+  !Q(1:Npoints,1:Nstates) = X ! save X to W, W must not be used again ...
+  !tempX = X
+  !call dgemm('N','N',Npoints,Nstates,Nstates, 1.d0,tempX,Npoints, temp1,Npoints, 0.d0,X,Npoints)
+
+  ! renormalize
+!  X(:,:) = X(:,:)*sqrt(dVol)
 
 !  WRITE(*,*) 'Number of converged eigenvalues:', nconv
   
-!  DO i=1,Nstates
-!    WRITE(*,'(1x,I6,F18.10,ES18.10)') i, lambda(i), resnrm(i)
-!  ENDDO
+  !DO i=1,Nstates
+  !  WRITE(*,'(1x,I6,F18.10,ES18.10)') i, lambda(i), resnrm(i)
+  !ENDDO
+
+  X = Q(1:Npoints,1:Nstates)/sqrt(dVol)
+
+  WRITE(*,*) 'Check ortho at the end of diag_lobpcg:'
+  CALL ortho_check( Npoints, Nstates, dVol, X )
 
   DEALLOCATE(lambda_old)
   DEALLOCATE(Q)
