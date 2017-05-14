@@ -109,7 +109,7 @@ PROGRAM test_scf
   DO iterSCF = 1, 100
 
     IF( iterSCF==1 ) THEN
-      ethr = 1.d-8
+      ethr = 1.d-1
     ELSE 
       IF( iterSCF == 2 ) ethr = 1.d-2
       !ethr = min( ethr, 1.d-2*dEtot / max(1.d0,Nelectrons) )

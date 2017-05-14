@@ -59,11 +59,10 @@ SUBROUTINE Sch_solve_diag()
   ENDDO
   WRITE(*,*)
 
-  ! normalize evecs properly
+  ! normalize evecs properly: this should be done in the each diagonalization routine
   !evecs(:,:) = evecs(:,:)/sqrt(dVol)
   
   CALL ortho_check( Npoints, Nstates, dVol, evecs )
-  STOP 
 
   DEALLOCATE( btype )
 END SUBROUTINE 
