@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rm -vf *.x
+rm -vf *.x *.o

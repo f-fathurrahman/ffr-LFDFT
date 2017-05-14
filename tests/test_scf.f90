@@ -78,7 +78,8 @@ PROGRAM test_scf
     ENDDO
   ENDDO
   CALL orthonormalize( Nstates, evecs )
-  CALL ortho_check( Npoints, Nstates, dVol, evecs )
+  !CALL ortho_gram_schmidt( evecs, Npoints, Npoints, Nstates )
+  CALL ortho_check( Npoints, Nstates, 1.d0, evecs )
 
   CALL calc_rhoe( Focc, evecs )
   CALL update_potentials()

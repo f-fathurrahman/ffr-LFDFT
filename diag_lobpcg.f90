@@ -3,7 +3,7 @@
 !------------------------------------------------
 SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
 !------------------------------------------------
-  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints, dVol => LF3d_dVol
   USE m_states, ONLY : Nstates
   IMPLICIT NONE 
   ! arguments
@@ -18,6 +18,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
   REAL(8), ALLOCATABLE :: temp1(:,:), T(:,:), G(:,:), tempX(:,:), U(:,:)
   REAL(8), ALLOCATABLE :: resnrm(:)
   REAL(8), ALLOCATABLE :: evals_T(:)
+  REAL(8), ALLOCATABLE :: lambda_old(:)
   !
   INTEGER :: iter
   INTEGER :: Nstates2,Nstates3
@@ -49,6 +50,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
   ALLOCATE(tempX(Npoints,Nstates)); tempX(:,:) = 0.d0
   ALLOCATE(U(Nstates3,Nstates3)); U(:,:) = 0.d0
   ALLOCATE(resnrm(Nstates)); resnrm(:) = 0.d0
+  ALLOCATE(lambda_old(Nstates)); lambda_old(:) = 0.d0
 
   ALLOCATE( evals_T(Nstates3) ); evals_T(:) = 0.d0
 
@@ -57,7 +59,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
   WRITE(*,*) 'Allocated dynamic memory in LOBPCG = ', mem/1024.d0/1024.d0
 
   ! Initial wavefunction
-  Q(1:Npoints,1:Nstates) = X(:,:)
+  Q(1:Npoints,1:Nstates) = X(:,:)*sqrt(dVol)
 
 !
 ! Apply Hamiltonian
@@ -76,6 +78,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
   CALL dgemm('N','N',Npoints,Nstates,Nstates,-1.d0,Q,Npoints,temp1,Nstates, &
             1.d0,Q(1,Nstates+1),Npoints)
   ! Diagonalize
+  lambda_old(:) = lambda(:)
   CALL rdiaghg( Nstates, Nstates, temp1, IMat, Nstates, lambda, temp1 )
   
 !
@@ -83,9 +86,12 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
 !
   nconv = 0 ! Reset nconv
   nlock = 0
+  WRITE(*,*)
+  WRITE(*,*) 'Eigenvalue convergence:'
   DO i=1,Nstates
     ! TODO: use BLAS
-    resnrm(i) = sqrt( ddot(Npoints, Q(1,Nstates+i),1, Q(1,Nstates+i),1) )
+    !resnrm(i) = sqrt( ddot(Npoints, Q(1,Nstates+i),1, Q(1,Nstates+i),1) )
+    resnrm(i) = abs(lambda(i)-lambda_old(i))
     WRITE(*,*) i, lambda(i), resnrm(i)
     IF(resnrm(i) < tolerance) nconv = nconv + 1
     IF(resnrm(i) < tolerance/TFUDGE) nlock = nlock + 1
@@ -168,13 +174,18 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
       1.d0,Q(1,Nstates+1),Npoints)
 
     !call eig_zheevd_f90(temp1,Nstates,lambda,Nstates)
+    lambda_old(:) = lambda(:)
     CALL rdiaghg( Nstates, Nstates, temp1, IMat, Nstates, lambda, temp1 )
        
     ! Check convergence
     nconv = 0 ! reset nconv
     nlock = 0
+    WRITE(*,*)
+    WRITE(*,*) 'Eigenvalues convergence:'
     DO i=1,Nstates
-      resnrm(i) = sqrt( ddot(Npoints, Q(1,Nstates+i),1, Q(1,Nstates+i),1) )
+      !resnrm(i) = sqrt( ddot(Npoints, Q(1,Nstates+i),1, Q(1,Nstates+i),1) )
+      resnrm(i) = abs(lambda(i)-lambda_old(i))
+      WRITE(*,*) i, lambda(i), resnrm(i)
       IF(resnrm(i) < tolerance) nconv = nconv + 1
       IF(resnrm(i) < tolerance/TFUDGE) ilock = ilock + 1
     ENDDO
@@ -279,12 +290,13 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
   !W = X ! save X to W, W must not be used again ...
   !call dgemm('N','N',Npoints,Nstates,Nstates, ONE,W,Npoints, XHX,Npoints, ZERO,X,Npoints)
 
-  WRITE(*,*) 'Number of converged eigenvalues:', nconv
+!  WRITE(*,*) 'Number of converged eigenvalues:', nconv
   
-  DO i=1,Nstates
-    WRITE(*,'(1x,I6,F18.10,ES18.10)') i, lambda(i), resnrm(i)
-  ENDDO
+!  DO i=1,Nstates
+!    WRITE(*,'(1x,I6,F18.10,ES18.10)') i, lambda(i), resnrm(i)
+!  ENDDO
 
+  DEALLOCATE(lambda_old)
   DEALLOCATE(Q)
   DEALLOCATE(HQ)
   DEALLOCATE(temp1)
