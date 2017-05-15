@@ -91,7 +91,8 @@ calc_dr_periodic_1pnt.f90 \
 eval_LF1d_c.f90 \
 eval_LF1d_p.f90 \
 eval_LF1d_sinc.f90 \
-KS_solve_SCF.f90
+KS_solve_SCF.f90 \
+calc_evals.f90
 
 SPARSKIT_SRC = \
 formats.f \

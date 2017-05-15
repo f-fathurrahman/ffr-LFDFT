@@ -1,5 +1,6 @@
 PROGRAM do_Emin_pcg
 
+  USE m_constants, ONLY : Ry2eV
   USE m_options, ONLY : FREE_NABLA2
   USE m_PsPot, ONLY : PsPot_Dir
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
@@ -14,8 +15,6 @@ PROGRAM do_Emin_pcg
   CHARACTER(64) :: filexyz, arg_N
   INTEGER :: ip, ist, N_in
   INTEGER :: iargc  ! pgf90 
-
-  FREE_NABLA2 = .TRUE.
 
   Narg = iargc()
   IF( Narg /= 2 ) THEN 
@@ -88,6 +87,14 @@ PROGRAM do_Emin_pcg
   !CALL KS_solve_Emin_pcg( 3.d-5, 1000, .TRUE. )
 
   CALL info_energies()
+
+  CALL calc_evals( Nstates, Focc, evecs, evals )
+  WRITE(*,*)
+  WRITE(*,*) 'Final eigenvalues (Ha and eV)'
+  WRITE(*,*)
+  DO ist = 1,Nstates
+    WRITE(*,'(1x,I8,2F18.10)') ist, evals(ist), evals(ist)*2.d0*Ry2eV
+  ENDDO 
 
   !
   DEALLOCATE( evecs, evals )
