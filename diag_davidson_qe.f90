@@ -78,6 +78,7 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
   !
   ! ... hpsi contains h times the basis vectors
   !
+  CALL calc_betaNL_psi( nvec, psi )
   CALL op_H( nvec, psi, hpsi )
   !
   !
@@ -184,6 +185,7 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
      !
      ! ... here compute the hpsi and spsi of the new functions
      !
+     CALL calc_betaNL_psi( notcnv, psi(:,nb1) )  ! ????? POTENTIALLY PROBLEMS in calc_betaNL_psi ???
      CALL op_H( notcnv, psi(1,nb1), hpsi(1,nb1) )
      !
      ! ... update the reduced hamiltonian
