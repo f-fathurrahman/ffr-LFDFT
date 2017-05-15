@@ -23,7 +23,7 @@ SUBROUTINE Sch_solve_diag()
   USE m_states, ONLY : Nstates, Focc, &
                        evecs => KS_evecs, &
                        evals => KS_evals
-  USE m_options, ONLY : ethr => DIAG_DAVIDSON_QE_ETHR, IALG_DIAG
+  USE m_options, ONLY : ethr => ETHR_EVALS, IALG_DIAG
   IMPLICIT NONE 
   INTEGER, ALLOCATABLE :: btype(:)
   INTEGER :: dav_iter
@@ -36,10 +36,8 @@ SUBROUTINE Sch_solve_diag()
     IF( Focc(ist) <= 1d-13 ) btype(ist) = 0
   ENDDO 
 
-  !WRITE(*,*)
-  !WRITE(*,*) 'Solving Schrodinger equation with Davidson iterative diagonalization'
-  !WRITE(*,*)
- 
+  evecs = evecs(:,:)*sqrt(dVol)  ! normalize
+
   IF( IALG_DIAG == 1 ) THEN 
     CALL diag_davidson_qe( Npoints, Nstates, 3*Nstates, evecs, ethr, &
                            evals, btype, notcnv, dav_iter )
@@ -59,8 +57,8 @@ SUBROUTINE Sch_solve_diag()
   ENDDO
   WRITE(*,*)
 
-  ! normalize evecs properly: this should be done in the each diagonalization routine
-  !evecs(:,:) = evecs(:,:)/sqrt(dVol)
+  ! normalize evecs properly
+  evecs(:,:) = evecs(:,:)/sqrt(dVol)
   
   CALL ortho_check( Npoints, Nstates, dVol, evecs )
 

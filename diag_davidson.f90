@@ -35,7 +35,7 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
   ALLOCATE( xtemp(Npoints,Nstates) )
 
   !CALL ortho_gram_schmidt( V, Npoints, Npoints, Nstates )
-  V(:,:) = sqrt(dVol)*V(:,:)
+!  V(:,:) = sqrt(dVol)*V(:,:)
 
   ! Apply Hamiltonian
   CALL op_H( Nstates, V, HV ) 

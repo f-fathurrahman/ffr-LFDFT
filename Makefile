@@ -1,6 +1,6 @@
-include platform/make.inc.ifort
+#include platform/make.inc.ifort
 #include platform/make.inc.gfortran
-#include platform/make.inc.g95
+include platform/make.inc.g95
 #include platform/make.inc.pgi
 
 SRC = \
@@ -90,8 +90,8 @@ xsf.f90 \
 calc_dr_periodic_1pnt.f90 \
 eval_LF1d_c.f90 \
 eval_LF1d_p.f90 \
-eval_LF1d_sinc.f90
-
+eval_LF1d_sinc.f90 \
+KS_solve_SCF.f90
 
 SPARSKIT_SRC = \
 formats.f \

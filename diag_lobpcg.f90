@@ -59,7 +59,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
   WRITE(*,*) 'Allocated dynamic memory in LOBPCG = ', mem/1024.d0/1024.d0
 
   ! Initial wavefunction
-  Q(1:Npoints,1:Nstates) = X(:,:)*sqrt(dVol)
+  Q(1:Npoints,1:Nstates) = X(:,:) !*sqrt(dVol)
 
 !
 ! Apply Hamiltonian
@@ -93,7 +93,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
     ! TODO: use BLAS
     !resnrm(i) = sqrt( ddot(Npoints, Q(1,Nstates+i),1, Q(1,Nstates+i),1) )
     resnrm(i) = abs(lambda(i)-lambda_old(i))
-    WRITE(*,*) i, lambda(i), resnrm(i)
+    WRITE(*,'(I8,F18.10,ES18.10)') i, lambda(i), resnrm(i)
     IF(resnrm(i) < tolerance) nconv = nconv + 1
     IF(resnrm(i) < tolerance/TFUDGE) nlock = nlock + 1
   ENDDO
@@ -187,7 +187,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
     DO i=1,Nstates
       !resnrm(i) = sqrt( ddot(Npoints, Q(1,Nstates+i),1, Q(1,Nstates+i),1) )
       resnrm(i) = abs(lambda(i)-lambda_old(i))
-      WRITE(*,*) i, lambda(i), resnrm(i)
+      WRITE(*,'(I8,F18.10,ES18.10)') i, lambda(i), resnrm(i)
       IF(resnrm(i) < tolerance) nconv = nconv + 1
       IF(resnrm(i) < tolerance/TFUDGE) ilock = ilock + 1
     ENDDO
@@ -307,10 +307,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
   !  WRITE(*,'(1x,I6,F18.10,ES18.10)') i, lambda(i), resnrm(i)
   !ENDDO
 
-  X = Q(1:Npoints,1:Nstates)/sqrt(dVol)
-
-  WRITE(*,*) 'Check ortho at the end of diag_lobpcg:'
-  CALL ortho_check( Npoints, Nstates, dVol, X )
+  X = Q(1:Npoints,1:Nstates) !/sqrt(dVol)
 
   DEALLOCATE(lambda_old)
   DEALLOCATE(Q)

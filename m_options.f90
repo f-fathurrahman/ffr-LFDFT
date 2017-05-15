@@ -12,8 +12,9 @@ MODULE m_options
   ! whether free nabla2 after constructing matrix or not
   LOGICAL :: FREE_NABLA2 = .FALSE.
 
-  REAL(8) :: DIAG_DAVIDSON_QE_ETHR = 1.0d-5
-  INTEGER :: IALG_DIAG = 3
+  REAL(8) :: ETHR_EVALS = 1.d-3
+  REAL(8) :: ETHR_EVALS_LAST = 1.0d-13
+  INTEGER :: IALG_DIAG = 1
   ! 1 => Davidson v1 (from PWSCF)
   ! 2 => Davidson v2
   ! 3 => LOBPCG
