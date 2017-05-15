@@ -1,6 +1,6 @@
 SUBROUTINE diag_davidson( evals, v, TOLERANCE )
   
-  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints , dVol => LF3d_dVol
   USE m_states, ONLY : Nstates
   IMPLICIT NONE
   ! Arguments
@@ -34,17 +34,18 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
   ALLOCATE( xtemp(Npoints,Nstates) )
 
   ! Apply Hamiltonian
+  CALL calc_betaNL_psi( Nstates, V )
   CALL op_H( Nstates, V, HV ) 
 
   ! Calculate Rayleigh quotient
   DO ist=1,Nstates
-    evals(ist) = ddot(Npoints, V(:,ist),1, HV(:,ist),1)
+    evals(ist) = ddot(Npoints, V(:,ist),1, HV(:,ist),1)*dVol
   ENDDO
 
   ! Calculate matrix of residual vector
   DO ist=1,Nstates
     R(:,ist) = evals(ist)*V(:,ist) - HV(:,ist)
-    RES_TOL(ist) = SQRT( ddot(Npoints, R(:,ist),1, R(:,ist),1) )
+    RES_TOL(ist) = SQRT( ddot(Npoints, R(:,ist),1, R(:,ist),1)*dVol )
   ENDDO
 
   istep = 1
@@ -88,26 +89,27 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
 !| *******   <r|H|r>  | 
 !|__|
 
+    CALL calc_betaNL_psi( Nstates, R )
     CALL op_H( Nstates, R, HR )
 
     IF(istep == 1) THEN
       CALL DGEMM('T','N',Nstates,Nstates,Npoints, 1.d0, V, Npoints, HV,Npoints, 0.d0,cmat,Nstates)
-      H_MAT(1:Nstates,1:Nstates) = cmat
+      H_MAT(1:Nstates,1:Nstates) = cmat*dVol
     ELSE
       H_MAT(1:Nstates,1:Nstates) = 0.d0
       DO ist = 1,Nstates
-        H_MAT(ist,ist) = evals(ist)
+        H_MAT(ist,ist) = evals(ist)  ! times dVol ??
       ENDDO
     ENDIF
 
     ! <v|H|r> --> cmat
     CALL DGEMM('T','N',Nstates,Nstates,Npoints, 1.d0,V,Npoints, HR,Npoints, 0.d0,cmat,Nstates)
-    H_MAT(1:Nstates,Nstates+1:2*Nstates) = cmat
+    H_MAT(1:Nstates,Nstates+1:2*Nstates) = cmat*dVol
     CALL DGEMM('T','N',Nstates,Nstates,Npoints, 1.d0,HR,Npoints, V,Npoints, 0.d0,cmat,Nstates)
-    H_MAT(Nstates+1:2*Nstates,1:Nstates) = cmat
+    H_MAT(Nstates+1:2*Nstates,1:Nstates) = cmat*dVol
     ! <r|H|r> --> cmat
     CALL DGEMM('T','N',Nstates,Nstates,Npoints, 1.d0,R,Npoints, HR,Npoints, 0.d0,cmat,Nstates)
-    H_MAT(Nstates+1:2*Nstates,Nstates+1:2*Nstates) = cmat
+    H_MAT(Nstates+1:2*Nstates,Nstates+1:2*Nstates) = cmat*dVol
 
 
 ! Construct the reduced overlap matrix which has dimenstions 2nb x 2nb
@@ -125,12 +127,12 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
     END DO
     ! <v|r> --> cmat
     CALL DGEMM('T','N',Nstates,Nstates,Npoints, 1.d0,V,Npoints, R,Npoints, 0.d0,cmat,Nstates)
-    O_MAT(1:Nstates,Nstates+1:2*Nstates) = cmat
+    O_MAT(1:Nstates,Nstates+1:2*Nstates) = cmat*dVol
     CALL DGEMM('T','N',Nstates,Nstates,Npoints, 1.d0,R,Npoints, V,Npoints, 0.d0,cmat,Nstates)
-    O_MAT(Nstates+1:2*Nstates,1:Nstates) = cmat
+    O_MAT(Nstates+1:2*Nstates,1:Nstates) = cmat*dVol
     ! <r|r> --> cmat
     CALL DGEMM('T','N',Nstates,Nstates,Npoints, 1.d0,R,Npoints, R,Npoints, 0.d0,cmat,Nstates)
-    O_MAT(Nstates+1:2*Nstates,Nstates+1:2*Nstates) = cmat
+    O_MAT(Nstates+1:2*Nstates,Nstates+1:2*Nstates) = cmat*dVol
 
     CALL rdiaghg( 2*Nstates, 2*Nstates, H_MAT, O_MAT, 2*Nstates, evals_red, evecs )
 
@@ -152,7 +154,7 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
     ! Calculate matrix of residual vector
     DO ist=1,Nstates
       R(:,ist) = evals(ist)*V(:,ist) - HV(:,ist)
-      RES_TOL(ist) = SQRT( ddot(Npoints, R(:,ist),1, R(:,ist),1) )
+      RES_TOL(ist) = SQRT( ddot(Npoints, R(:,ist),1, R(:,ist),1)*dVol )
     ENDDO
 
     WRITE(*,*)

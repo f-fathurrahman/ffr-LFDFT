@@ -56,8 +56,12 @@ SUBROUTINE KS_solve_SCF()
 
     CALL calc_rhoe( Focc, evecs )
 
+    CALL update_potentials()
+    CALL calc_betaNL_psi( Nstates, evecs )
+    CALL calc_energies( evecs ) ! update the potentials or not ?
+
     !CALL mixerifc( iterSCF, 1, Npoints, Rhoe, dr2, Npoints, Rhoe_old )
-    CALL mixlinear( iterSCF, 0.5d0, Npoints, Rhoe, Rhoe_old, dr2 )
+    CALL mixlinear( iterSCF, 0.1d0, Npoints, Rhoe, Rhoe_old, dr2 )
 
     !CALL mixadapt( iterSCF, beta0, betamax, Npoints, Rhoe, Rhoe_old, beta_work, f_work, dr2 )
 
@@ -76,9 +80,9 @@ SUBROUTINE KS_solve_SCF()
       WRITE(*,*)
     ENDIF 
 
-    CALL update_potentials()
-    CALL calc_betaNL_psi( Nstates, evecs )
-    CALL calc_energies( evecs ) ! update the potentials or not ?
+!    CALL update_potentials()
+!    CALL calc_betaNL_psi( Nstates, evecs )
+!    CALL calc_energies( evecs ) ! update the potentials or not ?
 
     dEtot = abs(Etot - Etot_old)
 

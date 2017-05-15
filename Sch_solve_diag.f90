@@ -36,22 +36,31 @@ SUBROUTINE Sch_solve_diag()
     IF( Focc(ist) <= 1d-13 ) btype(ist) = 0
   ENDDO 
 
-  evecs = evecs(:,:)*sqrt(dVol)  ! normalize
+  !evecs = evecs(:,:)*sqrt(dVol)  ! normalize
 
   IF( IALG_DIAG == 1 ) THEN 
+
+    evecs = evecs(:,:)*sqrt(dVol)  ! normalize
     CALL diag_davidson_qe( Npoints, Nstates, 3*Nstates, evecs, ethr, &
                            evals, btype, notcnv, dav_iter )
+    evecs(:,:) = evecs(:,:)/sqrt(dVol)
 
   ELSEIF( IALG_DIAG == 2 ) THEN 
+ 
+!    evecs = evecs(:,:)*sqrt(dVol)  ! normalize
     CALL diag_davidson( evals, evecs, ethr )
+!    evecs(:,:) = evecs(:,:)/sqrt(dVol)
 
   ELSEIF( IALG_DIAG == 3 ) THEN 
+
+    evecs = evecs(:,:)*sqrt(dVol)  ! normalize
     CALL diag_lobpcg( evals, evecs, ethr )
+    evecs(:,:) = evecs(:,:)/sqrt(dVol)
 
   ENDIF 
   
   ! normalize
-  evecs(:,:) = evecs(:,:)/sqrt(dVol)
+  !evecs(:,:) = evecs(:,:)/sqrt(dVol)
 
   WRITE(*,*)
   WRITE(*,*) 'Eigenvalues:'
