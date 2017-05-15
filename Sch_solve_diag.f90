@@ -41,13 +41,17 @@ SUBROUTINE Sch_solve_diag()
   IF( IALG_DIAG == 1 ) THEN 
     CALL diag_davidson_qe( Npoints, Nstates, 3*Nstates, evecs, ethr, &
                            evals, btype, notcnv, dav_iter )
+
   ELSEIF( IALG_DIAG == 2 ) THEN 
     CALL diag_davidson( evals, evecs, ethr )
+
   ELSEIF( IALG_DIAG == 3 ) THEN 
     CALL diag_lobpcg( evals, evecs, ethr )
+
   ENDIF 
-    
-  !WRITE(*,'(1x,A,ES18.10,A,I4)') 'Davidson_QE: ethr = ', ethr, ' dav_iter = ', dav_iter
+  
+  ! normalize
+  evecs(:,:) = evecs(:,:)/sqrt(dVol)
 
   WRITE(*,*)
   WRITE(*,*) 'Eigenvalues:'
@@ -57,11 +61,9 @@ SUBROUTINE Sch_solve_diag()
   ENDDO
   WRITE(*,*)
 
-  ! normalize evecs properly
-  evecs(:,:) = evecs(:,:)/sqrt(dVol)
-  
   CALL ortho_check( Npoints, Nstates, dVol, evecs )
 
   DEALLOCATE( btype )
+
 END SUBROUTINE 
 

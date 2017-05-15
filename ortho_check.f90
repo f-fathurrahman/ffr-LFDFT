@@ -26,5 +26,6 @@ SUBROUTINE ortho_check( Npoints, Ncols, dVol, v )
     nrm = ddot( Npoints, v(:,ic), 1, v(:,1),1 ) * dVol
     WRITE(*,'(1x,I8,F18.10)') ic, nrm
   ENDDO
+  WRITE(*,*)
 
 END SUBROUTINE 

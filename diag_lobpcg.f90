@@ -3,7 +3,7 @@
 !------------------------------------------------
 SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
 !------------------------------------------------
-  USE m_LF3d, ONLY : Npoints => LF3d_Npoints, dVol => LF3d_dVol
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates
   IMPLICIT NONE 
   ! arguments
@@ -59,7 +59,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
   WRITE(*,*) 'Allocated dynamic memory in LOBPCG = ', mem/1024.d0/1024.d0
 
   ! Initial wavefunction
-  Q(1:Npoints,1:Nstates) = X(:,:) !*sqrt(dVol)
+  Q(1:Npoints,1:Nstates) = X(:,:)
 
 !
 ! Apply Hamiltonian
@@ -283,31 +283,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
 
 10 CONTINUE
 
-  ! XHX = X* HX
-  !call dgemm('T','N',Nstates,Nstates,Npoints,1.d0,Q,Npoints,HQ,Npoints,0.d0,temp1,Nstates)
-  
-  ! XHX = (XHX + XHX*)/2
-  !call mkl_zomatadd('Col','N','T',Nstates,Nstates,HALF,XHX_temp,Nstates,&
-  !    HALF,XHX_temp,Nstates, XHX,Nstates)
-  
-  ! Calculate the eigenvalues and eigenvectors
-  !call eig_zheev(temp1,lambda,Nstates)
-  !CALL rdiaghg( Nstates, Nstates, temp1, IMat, Nstates, lambda, temp1 )
-
-  !Q(1:Npoints,1:Nstates) = X ! save X to W, W must not be used again ...
-  !tempX = X
-  !call dgemm('N','N',Npoints,Nstates,Nstates, 1.d0,tempX,Npoints, temp1,Npoints, 0.d0,X,Npoints)
-
-  ! renormalize
-!  X(:,:) = X(:,:)*sqrt(dVol)
-
-!  WRITE(*,*) 'Number of converged eigenvalues:', nconv
-  
-  !DO i=1,Nstates
-  !  WRITE(*,'(1x,I6,F18.10,ES18.10)') i, lambda(i), resnrm(i)
-  !ENDDO
-
-  X = Q(1:Npoints,1:Nstates) !/sqrt(dVol)
+  X = Q(1:Npoints,1:Nstates)
 
   DEALLOCATE(lambda_old)
   DEALLOCATE(Q)

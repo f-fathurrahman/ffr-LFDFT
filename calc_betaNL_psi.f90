@@ -1,4 +1,5 @@
 SUBROUTINE calc_betaNL_psi( Nstates, psi )
+
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
   USE m_PsPot, ONLY : NbetaNL, betaNL

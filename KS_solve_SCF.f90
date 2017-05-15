@@ -68,10 +68,12 @@ SUBROUTINE KS_solve_SCF()
     integRho = sum(Rhoe)*dVol
     !WRITE(*,'(1x,A,F18.10)') 'After mix: integRho = ', integRho
     IF( abs(integRho - Nelectrons) > 1.0d-6 ) THEN
+      WRITE(*,'(1x,A,ES18.10)') 'WARNING: diff after mix rho = ', abs(integRho-Nelectrons)
       WRITE(*,*) 'Rescaling Rho'
       Rhoe(:) = Nelectrons/integRho * Rhoe(:)
       integRho = sum(Rhoe)*dVol
       WRITE(*,'(1x,A,F18.10)') 'After rescaling: integRho = ', integRho
+      WRITE(*,*)
     ENDIF 
 
     CALL update_potentials()

@@ -1,7 +1,6 @@
 SUBROUTINE diag_davidson( evals, v, TOLERANCE )
   
-  USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
-                     dVol => LF3d_dVol
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates
   IMPLICIT NONE
   ! Arguments
@@ -33,9 +32,6 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
   ALLOCATE( R(Npoints,Nstates) )
   ALLOCATE( HR(Npoints,Nstates) )
   ALLOCATE( xtemp(Npoints,Nstates) )
-
-  !CALL ortho_gram_schmidt( V, Npoints, Npoints, Nstates )
-!  V(:,:) = sqrt(dVol)*V(:,:)
 
   ! Apply Hamiltonian
   CALL op_H( Nstates, V, HV ) 

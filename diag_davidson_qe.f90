@@ -111,8 +111,8 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
   ! ... iterate
   !
   iterate: DO kter = 1, maxter
-     !WRITE(*,*)
-     !WRITE(*,*) 'dav_iter = ', kter
+     WRITE(*,*)
+     WRITE(*,*) 'dav_iter = ', kter
      !
      dav_iter = kter
      !     !
@@ -186,7 +186,7 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
      ! ... here compute the hpsi and spsi of the new functions
      !
      CALL calc_betaNL_psi( notcnv, psi(:,nb1) )  ! ????? POTENTIALLY PROBLEMS in calc_betaNL_psi ???
-     CALL op_H( notcnv, psi(1,nb1), hpsi(1,nb1) )
+     CALL op_H( notcnv, psi(:,nb1), hpsi(:,nb1) )
      !
      ! ... update the reduced hamiltonian
      !
@@ -231,11 +231,11 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
         conv(1:nvec) = ( ( ABS( ew(1:nvec) - e(1:nvec) ) < empty_ethr ) )
         !
      END WHERE
-     !WRITE(*,*)
-     !WRITE(*,*) 'Error estimates:'
-     !DO n = 1,nvec
-     !  WRITE(*,'(1x,I8,ES18.10)') n, ABS( ew(n) - e(n) )
-     !ENDDO
+     WRITE(*,*)
+     WRITE(*,*) 'Eigenvalues convergence:'
+     DO n = 1,nvec
+       WRITE(*,'(1x,I8,F18.10,ES18.10)') n, e(n), ABS( ew(n) - e(n) )
+     ENDDO
      !
      notcnv = COUNT( .NOT. conv(:) )
      !
