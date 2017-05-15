@@ -15,6 +15,9 @@ PROGRAM do_Emin_pcg
   CHARACTER(64) :: filexyz, arg_N
   INTEGER :: ip, ist, N_in
   INTEGER :: iargc  ! pgf90 
+  INTEGER :: tstart, counts_per_second, tstop
+
+  CALL system_clock( tstart, counts_per_second )
 
   Narg = iargc()
   IF( Narg /= 2 ) THEN 
@@ -106,6 +109,12 @@ PROGRAM do_Emin_pcg
   CALL dealloc_LF3d()
   CALL dealloc_PsPot()
   CALL dealloc_atoms()
+
+  CALL system_clock( tstop )
+
+  WRITE(*,*)
+  WRITE(*,*) 'Total elapsed time: ', dble(tstop - tstart)/counts_per_second, ' second.'
+  WRITE(*,*)
 
 END PROGRAM
 
