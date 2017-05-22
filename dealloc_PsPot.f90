@@ -8,6 +8,7 @@ SUBROUTINE dealloc_PsPot()
 
   IF( allocated(w_NL) ) DEALLOCATE(w_NL)
   IF( allocated(betaNL) ) DEALLOCATE(betaNL)
+  IF( allocated(prj2beta) ) DEALLOCATE(prj2beta)
 
 END SUBROUTINE 
 

@@ -11,6 +11,8 @@ MODULE m_PsPot
   INTEGER :: NbetaNL  ! max(NbetaNL)
   REAL(8), ALLOCATABLE :: betaNL(:,:) ! (Npoints,NbetaNL)
 
+  INTEGER, ALLOCATABLE :: prj2beta(:,:,:,:) ! (iprj,Natoms,l,m)
+
   INTEGER :: NprojTotMax
   !REAL(8), ALLOCATABLE :: w_NL(:,:) ! Nspecies,0:3
   REAL(8), ALLOCATABLE :: w_NL(:)

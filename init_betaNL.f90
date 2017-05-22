@@ -21,6 +21,8 @@ SUBROUTINE init_betaNL()
   WRITE(*,*)
   WRITE(*,*) 'Initializing betaNL functions'
 
+
+  ! loop structure must be the same as in init_PsPot
   ibeta = 0
   DO ia = 1,Natoms
     isp = atm2species(ia)
@@ -40,8 +42,8 @@ SUBROUTINE init_betaNL()
           nrm = sum(betaNL(:,ibeta)**2)*dVol
           WRITE(*,'(1x,A,I5,I8,2F18.10)') &
                'ibeta, Np_beta, w_NL, integ = ', ibeta, Np_beta, w_NL(ibeta), nrm
-        ENDDO ! m
-      ENDDO ! iprj
+        ENDDO ! iprj
+      ENDDO ! m
     ENDDO ! l
   ENDDO 
 

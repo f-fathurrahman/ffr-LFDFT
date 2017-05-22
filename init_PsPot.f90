@@ -3,11 +3,11 @@ SUBROUTINE init_PsPot()
   USE m_atoms, ONLY : SpeciesSymbols, Nspecies, AtomicValences, &
                       atm2species, Natoms
   USE m_PsPot, ONLY : Ps_HGH_Params, PsPot_FilePath, w_NL, PsPot_Dir, &
-                      NprojTotMax, NbetaNL
+                      NbetaNL, prj2beta
   USE m_Ps_HGH, ONLY : init_Ps_HGH_Params
 
   IMPLICIT NONE 
-  INTEGER :: isp, NprojTot, iprj, ii, l, ia, m, ibeta
+  INTEGER :: isp, iprj, l, ia, m, ibeta
 
   ! Use default
   ALLOCATE( PsPot_FilePath(Nspecies) )
@@ -22,12 +22,20 @@ SUBROUTINE init_PsPot()
 
   ENDDO 
 
+
+  ALLOCATE( prj2beta(1:3,1:Natoms,0:3,-3:3) )
+  prj2beta(:,:,:,:) = -1
+  NbetaNL = 0
   DO ia = 1,Natoms
     isp = atm2species(ia)
     DO l = 0,Ps_HGH_Params(isp)%lmax
+      WRITE(*,*)
       DO iprj = 1,Ps_HGH_Params(isp)%Nproj_l(l)
         DO m = -l,l
           NbetaNL = NbetaNL + 1
+          prj2beta(iprj,ia,l,m) = NbetaNL
+          WRITE(*,*) NbetaNL, ia, '(',l, ',', m, ')', iprj, &
+                     prj2beta(iprj,ia,l,m), Ps_HGH_Params(isp)%h(l,iprj,iprj)                     
         ENDDO ! m
       ENDDO ! iprj
     ENDDO ! l
@@ -48,7 +56,7 @@ SUBROUTINE init_PsPot()
       ENDDO ! iprj
     ENDDO ! l
   ENDDO 
-  WRITE(*,*) 'w_NL = ', w_NL
+!  WRITE(*,*) 'w_NL = ', w_NL
 
 END SUBROUTINE 
 

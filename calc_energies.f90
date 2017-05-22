@@ -21,16 +21,17 @@ SUBROUTINE calc_energies( psi )
   USE m_states, ONLY : Nstates, Focc
   USE m_hamiltonian, ONLY : V_ps_loc, V_Hartree, Rhoe, betaNL_psi
   USE m_atoms, ONLY : atm2species, Natoms
-  USE m_PsPot, ONLY : w_NL, NbetaNL
+  USE m_PsPot, ONLY : prj2beta, Ps => Ps_HGH_Params
   USE m_energies
   IMPLICIT NONE
   !
   REAL(8) :: psi(Npoints, Nstates)
   !
   REAL(8), ALLOCATABLE  :: nabla2_psi(:)
-  INTEGER :: ist, ia, isp, ibeta
+  INTEGER :: ist, ia, isp
+  INTEGER :: l, m, iprj, jprj, ibeta, jbeta
   REAL(8), ALLOCATABLE :: epsxc(:)
-  REAL(8) :: enl1
+  REAL(8) :: enl1, hij
   !
   REAL(8) :: ddot
 
@@ -62,9 +63,18 @@ SUBROUTINE calc_energies( psi )
     enl1 = 0.d0
     DO ia = 1,Natoms
       isp = atm2species(ia)
-      DO ibeta = 1,NbetaNL
-        enl1 = enl1 + w_NL(ibeta)*betaNL_psi(ia,ist,ibeta)*betaNL_psi(ia,ist,ibeta)
-      ENDDO
+      DO l = 0,Ps(isp)%lmax
+      DO m = -l,l
+        DO iprj = 1,Ps(isp)%Nproj_l(l)
+        DO jprj = 1,Ps(isp)%Nproj_l(l)
+          ibeta = prj2beta(iprj,ia,l,m)
+          jbeta = prj2beta(jprj,ia,l,m)
+          hij = Ps(isp)%h(l,iprj,jprj)
+          enl1 = enl1 + hij*betaNL_psi(ia,ist,ibeta)*betaNL_psi(ia,ist,jbeta)
+        ENDDO ! jprj
+        ENDDO ! iprj
+      ENDDO ! m
+      ENDDO ! l
     ENDDO 
     E_ps_NL = E_ps_NL + Focc(ist)*enl1
   ENDDO 
