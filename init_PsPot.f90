@@ -29,18 +29,18 @@ SUBROUTINE init_PsPot()
   DO ia = 1,Natoms
     isp = atm2species(ia)
     DO l = 0,Ps_HGH_Params(isp)%lmax
-      WRITE(*,*)
+!      WRITE(*,*)
       DO iprj = 1,Ps_HGH_Params(isp)%Nproj_l(l)
         DO m = -l,l
           NbetaNL = NbetaNL + 1
           prj2beta(iprj,ia,l,m) = NbetaNL
-          WRITE(*,*) NbetaNL, ia, '(',l, ',', m, ')', iprj, &
-                     prj2beta(iprj,ia,l,m), Ps_HGH_Params(isp)%h(l,iprj,iprj)                     
+!          WRITE(*,*) NbetaNL, ia, '(',l, ',', m, ')', iprj, &
+!                     prj2beta(iprj,ia,l,m), Ps_HGH_Params(isp)%h(l,iprj,iprj)                     
         ENDDO ! m
       ENDDO ! iprj
     ENDDO ! l
   ENDDO 
-  WRITE(*,*) 'NbetaNL = ', NbetaNL
+  !WRITE(*,*) 'NbetaNL = ', NbetaNL
 
   ALLOCATE( w_NL(NbetaNL) )
 
