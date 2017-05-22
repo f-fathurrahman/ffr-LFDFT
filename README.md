@@ -8,6 +8,7 @@ Tested compilers:
 - g95
 - ifort
 - pgi
+- sunf95
 
 Dependencies
 - BLAS and LAPACK

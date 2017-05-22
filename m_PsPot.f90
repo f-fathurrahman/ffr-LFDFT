@@ -8,7 +8,7 @@ MODULE m_PsPot
 
   TYPE(Ps_HGH_Params_T), ALLOCATABLE :: Ps_HGH_Params(:)
 
-  INTEGER :: NbetaNL
+  INTEGER :: NbetaNL  ! max(NbetaNL)
   REAL(8), ALLOCATABLE :: betaNL(:,:) ! (Npoints,NbetaNL)
 
   INTEGER :: NprojTotMax
