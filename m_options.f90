@@ -14,8 +14,8 @@ MODULE m_options
   LOGICAL :: FREE_NABLA2 = .TRUE.
 
   REAL(8) :: ETHR_EVALS = 1.d-3
-  REAL(8) :: ETHR_EVALS_LAST = 1.0d-13
-  INTEGER :: IALG_DIAG = 2
+  REAL(8) :: ETHR_EVALS_LAST = 1.0d-10
+  INTEGER :: IALG_DIAG = 1
   ! 1 => Davidson v1 (from PWSCF)
   ! 2 => Davidson v2
   ! 3 => LOBPCG

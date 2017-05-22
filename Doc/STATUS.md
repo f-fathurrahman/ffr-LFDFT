@@ -1,3 +1,19 @@
+# Status as of 22 May 2017
+
+- Calculation with GTH nonlocal pseudopotential is now functional.
+  However, the total energy does not exactly coincide with result
+  from QE, the difference stems from Ewald energy calculation.
+  the electronic energy, however, is quite close.
+
+- There are five supported compilers now: ifort, gfortran, g95,
+  pgf90, and sunf5.
+
+- There is still some problem with QE's Davidson subroutine for some
+  systems.
+
+- Several systems are quite difficult to converge, although it usually
+  will converge eventually.
+
 # Status as of 24 April 2017
 
 - QE's Davidson routine is now working with ILU0 preconditioner.
