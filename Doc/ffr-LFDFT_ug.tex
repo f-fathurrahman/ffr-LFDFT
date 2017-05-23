@@ -1,4 +1,4 @@
-\documentclass[a4paper,11pt]{extarticle}
+\documentclass[a4paper,11pt,fleqn]{extarticle}
 \usepackage[a4paper]{geometry}
 \geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
 
@@ -18,7 +18,7 @@
 
 \usepackage{minted}
 %\newminted{julia}{breaklines,fontsize=\footnotesize}
-\newminted{fortran}{breaklines}
+\newminted{fortran}{breaklines,fontsize=\small}
 
 \definecolor{mintedbg}{rgb}{0.95,0.95,0.95}
 \usepackage{mdframed}
@@ -43,19 +43,8 @@ Welcome to {\tt ffr-LFDFT} documentation.
 to carry out electronic structure calculations based on density functional theory
 and Lagrange basis set.
 
-\section{Kohn-Sham equations}
-
+\input{KS_eq}
 \input{LF_basis}
-
-\section{Implementation}
-
-Description of unit cell and atomic structures
-
-\begin{fortrancode}
-PROGRAM testprog
-  IMPLICIT NONE
-END PROGRAM
-\end{fortrancode}
-
+\input{Implementation}
 
 \end{document}

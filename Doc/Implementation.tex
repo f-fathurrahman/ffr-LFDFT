@@ -1,0 +1,104 @@
+\section{Implementation}
+
+\subsection{Description of LF basis set}
+
+Description of LF basis set in 3d is given in module
+{\tt m\_LF3d}. All global variables in this module is given
+prefix {\tt LF3d}.
+
+\begin{fortrancode}
+MODULE m_LF3d
+  IMPLICIT NONE
+  INTEGER, PARAMETER :: LF3d_PERIODIC = 1
+  INTEGER, PARAMETER :: LF3d_CLUSTER  = 2
+  INTEGER, PARAMETER :: LF3d_SINC     = 3
+  INTEGER :: LF3d_TYPE
+  INTEGER, DIMENSION(3) :: LF3d_NN
+  REAL(8), DIMENSION(3) :: LF3d_LL
+  REAL(8), DIMENSION(3) :: LF3d_AA, LF3d_BB
+  REAL(8), DIMENSION(3) :: LF3d_hh
+  INTEGER :: LF3d_Npoints
+  REAL(8) :: LF3d_dVol
+  REAL(8), ALLOCATABLE :: LF3d_grid_x(:)
+  REAL(8), ALLOCATABLE :: LF3d_grid_y(:)
+  REAL(8), ALLOCATABLE :: LF3d_grid_z(:)
+  REAL(8), ALLOCATABLE :: LF3d_D1jl_x(:,:)
+  REAL(8), ALLOCATABLE :: LF3d_D1jl_y(:,:)
+  REAL(8), ALLOCATABLE :: LF3d_D1jl_z(:,:)
+  REAL(8), ALLOCATABLE :: LF3d_D2jl_x(:,:)
+  REAL(8), ALLOCATABLE :: LF3d_D2jl_y(:,:)
+  REAL(8), ALLOCATABLE :: LF3d_D2jl_z(:,:)
+  REAL(8), ALLOCATABLE :: LF3d_lingrid(:,:)
+  INTEGER, ALLOCATABLE :: LF3d_xyz2lin(:,:,:)
+  INTEGER, ALLOCATABLE :: LF3d_lin2xyz(:,:)
+  REAL(8), ALLOCATABLE :: LF3d_G2(:)
+  REAL(8), ALLOCATABLE :: LF3d_Gv(:,:)
+END MODULE
+\end{fortrancode}
+
+Variables in {\tt m\_LF3d} is initialized by calling the subroutine
+{\tt init\_LF3d\_XX()}, where {\tt XX} may be one of:
+\begin{itemize}
+\item {\tt p}: periodic LFF
+\item {\tt c}: cluster LF
+\item {\tt sinc}: sinc L
+\end{itemize}
+
+\begin{fortrancode}
+SUBROUTINE init_LF3d_p( NN, AA, BB )
+SUBROUTINE init_LF3d_c( NN, AA, BB )
+SUBROUTINE init_LF3d_sinc( NN, hh )
+\end{fortrancode}
+
+In the above subroutines:
+\begin{itemize}
+\item {\tt NN}: an array of 3 integers, specifying sampling points in $x$,
+$y$ and $z$ direction.
+\item {\tt AA}: an array of 3 floats, specifying left ends of unit cell.
+\item {\tt BB}: an array of 3 floats, specifying right ends of unit cell.
+\item {\tt hh}: an array of 3 floats, specifying spacing between adjacent sampling points.
+\end{itemize}
+
+Note that for periodic and cluster LF we have to specify {\tt NN}, {\tt AA}, and {\tt BB}
+while for sinc LF we have to specify {\tt NN} and {\tt hh}.
+Note that for periodic LF {\tt NN} must be odd numbers.
+
+Example:
+\begin{fortrancode}
+NN = (/ 35, 35, 35 /)
+AA = (/ 0.d0, 0.d0, 0.d0 /)
+BB = (/ 6.d0, 6.d0, 6.d0 /)
+CALL init_LF3d_p( NN, AA, BB )
+\end{fortrancode}
+
+
+
+\subsection{Description of molecular or crystalline structure}
+
+Description of molecular or crystalline structure is given in module {\tt m\_atoms}.
+Note that, unit cell for crystalline structure (currently only orthorombic structure is
+possible) is specified by {\tt AA} and {\tt BB} in call to {\tt init\_LF3d\_p()}
+
+\begin{fortrancode}
+MODULE m_atoms
+  IMPLICIT NONE 
+  INTEGER :: Natoms
+  INTEGER :: Nspecies
+  REAL(8), ALLOCATABLE :: AtomicCoords(:,:)
+  INTEGER, ALLOCATABLE :: atm2species(:)
+  CHARACTER(5), ALLOCATABLE :: SpeciesSymbols(:)
+  REAL(8), ALLOCATABLE :: AtomicValences(:)
+  COMPLEX(8), ALLOCATABLE :: StructureFactor(:,:)
+END MODULE 
+\end{fortrancode}
+
+Currently, variables in module {\tt m\_atoms} are initialized by
+subroutine {\tt init\_atoms\_xyz()}.
+\begin{fortrancode}
+SUBROUTINE init_atoms_xyz( fil_xyz )
+\end{fortrancode}
+This subroutine takes one argument {\tt fil\_xyz} which is the path
+to XYZ file describing the molecular structure or crystalline structure.
+
+
+
