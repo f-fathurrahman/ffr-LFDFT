@@ -1,6 +1,7 @@
-PROGRAM do_Emin_scf
+PROGRAM ffr_LFDFT
 
-  USE m_options, ONLY : FREE_NABLA2
+  USE m_constants, ONLY : Ry2eV
+  USE m_options, ONLY : FREE_NABLA2, KSSolveMethod
   USE m_PsPot, ONLY : PsPot_Dir
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates, Focc, &
@@ -14,8 +15,9 @@ PROGRAM do_Emin_scf
   CHARACTER(64) :: filexyz, arg_N
   INTEGER :: ip, ist, N_in
   INTEGER :: iargc  ! pgf90 
+  INTEGER :: tstart, counts_per_second, tstop
 
-  FREE_NABLA2 = .TRUE.
+  CALL system_clock( tstart, counts_per_second )
 
   Narg = iargc()
   IF( Narg /= 2 ) THEN 
@@ -31,8 +33,6 @@ PROGRAM do_Emin_scf
 
   CALL init_atoms_xyz(filexyz)
 
-  ! Override PsPot_Dir
-  PsPot_Dir = '../HGH/'
   CALL init_PsPot()
 
   !
@@ -84,13 +84,27 @@ PROGRAM do_Emin_scf
   ENDDO
   CALL orthonormalize( Nstates, evecs )
 
-  ! Initial Rhoe and potentials
-  CALL calc_rhoe( Focc, evecs )
-  CALL update_potentials()
 
-  CALL KS_solve_SCF()
+  IF( KSSolveMethod == 1 ) THEN 
 
-  CALL info_energies()
+    CALL KS_solve_Emin_pcg( 3.d-5, 1000, .FALSE. )
+    !CALL KS_solve_Emin_pcg( 3.d-5, 1000, .TRUE. )
+    CALL info_energies()
+    CALL calc_evals( Nstates, Focc, evecs, evals )
+    WRITE(*,*)
+    WRITE(*,*) 'Final eigenvalues (Ha and eV)'
+    WRITE(*,*)
+    DO ist = 1,Nstates
+      WRITE(*,'(1x,I8,2F18.10)') ist, evals(ist), evals(ist)*2.d0*Ry2eV
+    ENDDO
+
+  ELSEIF( KSSolveMethod == 2 ) THEN 
+    ! Initial Rhoe and potentials
+    CALL calc_rhoe( Focc, evecs )
+    CALL update_potentials()
+    CALL KS_solve_SCF()
+
+  ENDIF 
 
   !
   DEALLOCATE( evecs, evals )
@@ -102,6 +116,12 @@ PROGRAM do_Emin_scf
   CALL dealloc_LF3d()
   CALL dealloc_PsPot()
   CALL dealloc_atoms()
+
+  CALL system_clock( tstop )
+
+  WRITE(*,*)
+  WRITE(*,*) 'Total elapsed time: ', dble(tstop - tstart)/counts_per_second, ' second.'
+  WRITE(*,*)
 
 END PROGRAM
 

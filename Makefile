@@ -1,8 +1,8 @@
 #include platform/make.inc.ifort
 #include platform/make.inc.gfortran
 #include platform/make.inc.g95
-#include platform/make.inc.pgi
-include platform/make.inc.sun
+include platform/make.inc.pgi
+#include platform/make.inc.sun
 
 SRC = \
 m_constants.f90 \
@@ -131,7 +131,12 @@ OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) $(SPARSKIT_SRC:.f=.o)
 lib: $(OBJ)
 	ar rcs libmain.a *.o
 
+# Targets
+main: lib ffr_LFDFT.f90
+	$(F90) $(F90_OPTS) ffr_LFDFT.f90 -o $(EXE_MAIN) libmain.a $(LIBS)
+
+# does not delete *.x files
 clean:
-	rm -rf *.o *.mod libmain.a *.x
+	rm -rf *.o *.mod libmain.a
 
 

@@ -1,3 +1,4 @@
+EXE_MAIN = ffr_LFDFT_pgi.x
 MAKE = make
 AR = ar
 F77 = pgf90
