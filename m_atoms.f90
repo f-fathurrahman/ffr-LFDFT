@@ -8,6 +8,7 @@ MODULE m_atoms
   INTEGER, ALLOCATABLE :: atm2species(:)
   CHARACTER(5), ALLOCATABLE :: SpeciesSymbols(:)  ! Nspecies
   REAL(8), ALLOCATABLE :: AtomicValences(:)
+  REAL(8), ALLOCATABLE :: AtomicMasses(:)
 
   COMPLEX(8), ALLOCATABLE :: StructureFactor(:,:)
 

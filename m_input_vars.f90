@@ -25,7 +25,7 @@ MODULE m_input_vars
 
   ! ATOMIC_SPECIES
   CHARACTER(5), ALLOCATABLE :: species(:)
-  REAL(8), ALLOCATABLE :: Masses(:)
+  REAL(8), ALLOCATABLE :: masses(:)
   CHARACTER(128), ALLOCATABLE :: pp_name(:)
 
   ! ATOMIC_POSITIONS

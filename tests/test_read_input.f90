@@ -8,7 +8,7 @@ PROGRAM test_read_input
   CALL read_atomic_species('INPUT')
   CALL read_atomic_positions('INPUT')
 
-  WRITE(*,*) 'Pass here ...'
+  WRITE(*,*) 'End of test_read_input'
 
 END PROGRAM 
 

@@ -1,7 +1,7 @@
 #include platform/make.inc.ifort
 #include platform/make.inc.gfortran
-#include platform/make.inc.g95
-include platform/make.inc.pgi
+include platform/make.inc.g95
+#include platform/make.inc.pgi
 #include platform/make.inc.sun
 
 SRC = \
@@ -99,7 +99,11 @@ read_control.f90 \
 read_system.f90 \
 read_electrons.f90 \
 read_atomic_species.f90 \
-read_atomic_positions.f90
+read_atomic_positions.f90 \
+read_input.f90 \
+setup_atoms.f90 \
+setup_LF3d.f90 \
+setup_from_input.f90
 
 SPARSKIT_SRC = \
 formats.f \
@@ -144,5 +148,10 @@ main: lib ffr_LFDFT.f90
 # does not delete *.x files
 clean:
 	rm -rf *.o *.mod libmain.a
+
+# also delete *.x files
+cleanx:
+	rm -rf *.o *.mod libmain.a *.x
+
 
 
