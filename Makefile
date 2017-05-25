@@ -93,7 +93,12 @@ eval_LF1d_c.f90 \
 eval_LF1d_p.f90 \
 eval_LF1d_sinc.f90 \
 KS_solve_SCF.f90 \
-calc_evals.f90
+calc_evals.f90 \
+m_input_vars.f90 \
+read_control.f90 \
+read_system.f90 \
+read_atomic_species.f90 \
+read_atomic_positions.f90
 
 SPARSKIT_SRC = \
 formats.f \
