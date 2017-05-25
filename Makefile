@@ -1,8 +1,8 @@
 #include platform/make.inc.ifort
 #include platform/make.inc.gfortran
-include platform/make.inc.g95
+#include platform/make.inc.g95
 #include platform/make.inc.pgi
-#include platform/make.inc.sun
+include platform/make.inc.sun
 
 SRC = \
 m_constants.f90 \
@@ -102,6 +102,7 @@ read_atomic_species.f90 \
 read_atomic_positions.f90 \
 read_input.f90 \
 setup_atoms.f90 \
+setup_PsPot.f90 \
 setup_LF3d.f90 \
 setup_from_input.f90
 

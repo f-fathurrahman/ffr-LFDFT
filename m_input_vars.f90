@@ -19,7 +19,7 @@ MODULE m_input_vars
   CHARACTER(56) :: KS_Solve_Method
   INTEGER :: icg_beta
   INTEGER :: electron_maxstep
-  INTEGER :: mixing_beta
+  REAL(8) :: mixing_beta
   CHARACTER(56) :: diagonalization
   NAMELIST /ELECTRONS/ KS_Solve_Method, icg_beta, electron_maxstep, mixing_beta, diagonalization
 

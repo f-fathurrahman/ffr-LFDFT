@@ -2,7 +2,6 @@ PROGRAM ffr_LFDFT
 
   USE m_constants, ONLY : Ry2eV
   USE m_options, ONLY : FREE_NABLA2, KS_Solve_Method
-  USE m_PsPot, ONLY : PsPot_Dir
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates, Focc, &
                        evals => KS_evals, &
@@ -10,43 +9,29 @@ PROGRAM ffr_LFDFT
 
   IMPLICIT NONE 
   INTEGER :: Narg
-  INTEGER :: NN(3)
-  REAL(8) :: AA(3), BB(3)
-  CHARACTER(64) :: filexyz, arg_N
-  INTEGER :: ip, ist, N_in
+  CHARACTER(64) :: filein
+  INTEGER :: ip, ist
   INTEGER :: iargc  ! pgf90 
   INTEGER :: tstart, counts_per_second, tstop
 
   CALL system_clock( tstart, counts_per_second )
 
   Narg = iargc()
-  IF( Narg /= 2 ) THEN 
-    WRITE(*,*) 'ERROR: exactly two arguments must be given:'
-    WRITE(*,*) '       N and path to structure file'
+  IF( Narg /= 1 ) THEN 
+    WRITE(*,*) 'ERROR: exactly one arguments must be given: input file path'
     STOP 
   ENDIF 
 
-  CALL getarg( 1, arg_N )
-  READ(arg_N, *) N_in
+  CALL getarg( 1, filein )
 
-  CALL getarg( 2, filexyz )
+  CALL read_input( filein )
 
-  CALL init_atoms_xyz(filexyz)
-
-  CALL init_PsPot()
-
-  !
-  NN = (/ N_in, N_in, N_in /)
-  AA = (/ 0.d0, 0.d0, 0.d0 /)
-  BB = (/ 16.d0, 16.d0, 16.d0 /)
-  !AA = (/ -8.d0, -8.d0, -8.d0 /)
-  !BB = (/  8.d0,  8.d0,  8.d0 /)
-  CALL init_LF3d_p( NN, AA, BB )
+  CALL setup_from_input()
 
   CALL info_atoms()
   CALL info_PsPot()
   CALL info_LF3d()
-
+  
   CALL init_betaNL()
 
   ! Initialize occupation numbers
