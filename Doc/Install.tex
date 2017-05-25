@@ -2,4 +2,26 @@
 
 Compiling and linking
 
+A {\tt Makefile} is provided. At the topmost part of the
+{\tt Makefile} you need to specify which {\tt make.inc} file you
+want to use. You need to decide which compiler to use if there
+are more than one compiler in you system.
+In the directory {\tt platform} there are several {\tt make.inc} files.
+Currently, {\tt ffr-LFDFT} is tested using the following compilers
+on Linux system:
+\begin{itemize}
+\item GNU Fortran compiler
+\item G95 Fortran compiler
+\item Intel Fortran compiler
+\item PGI Fortran compiler
+\item Sun (now part of Oracle) Fortran compiler
+\end{itemize}
+For typical Linux system, {\tt make.inc.gfortran} is sufficient.
+You can manually edit the compiler options in the corresponding {\tt make.inc}
+files.
+
+
+Command {\tt make} will build the library {\tt libmain.a} and
+command {\tt make main} will build the main executable {\tt ffr\_LFDFT.x}.
+
 
