@@ -97,6 +97,7 @@ calc_evals.f90 \
 m_input_vars.f90 \
 read_control.f90 \
 read_system.f90 \
+read_electrons.f90 \
 read_atomic_species.f90 \
 read_atomic_positions.f90
 

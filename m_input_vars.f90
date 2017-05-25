@@ -15,6 +15,14 @@ MODULE m_input_vars
   INTEGER :: ibrav
   NAMELIST /SYSTEM/ A, B, C, nr1, nr2, nr3, nat, ntyp, ibrav
 
+  ! ELECTRONS
+  CHARACTER(56) :: KS_Solve_Method
+  INTEGER :: icg_beta
+  INTEGER :: electron_maxstep
+  INTEGER :: mixing_beta
+  CHARACTER(56) :: diagonalization
+  NAMELIST /ELECTRONS/ KS_Solve_Method, icg_beta, electron_maxstep, mixing_beta, diagonalization
+
   ! ATOMIC_SPECIES
   CHARACTER(5), ALLOCATABLE :: species(:)
   REAL(8), ALLOCATABLE :: Masses(:)
@@ -23,6 +31,7 @@ MODULE m_input_vars
   ! ATOMIC_POSITIONS
   CHARACTER(5), ALLOCATABLE :: in_atmsymb(:)
   REAL(8), ALLOCATABLE :: in_pos(:,:)
+
 
 END MODULE 
 

@@ -2,7 +2,7 @@ MODULE m_options
 
   IMPLICIT NONE 
 
-  INTEGER :: KSSolveMethod = 1
+  INTEGER :: KS_Solve_Method = 1
   ! 1 => KS_solve_Emin_pcg
   ! 2 => SCF
 

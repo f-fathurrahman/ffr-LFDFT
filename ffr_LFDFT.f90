@@ -1,7 +1,7 @@
 PROGRAM ffr_LFDFT
 
   USE m_constants, ONLY : Ry2eV
-  USE m_options, ONLY : FREE_NABLA2, KSSolveMethod
+  USE m_options, ONLY : FREE_NABLA2, KS_Solve_Method
   USE m_PsPot, ONLY : PsPot_Dir
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates, Focc, &
@@ -85,7 +85,7 @@ PROGRAM ffr_LFDFT
   CALL orthonormalize( Nstates, evecs )
 
 
-  IF( KSSolveMethod == 1 ) THEN 
+  IF( KS_Solve_Method == 1 ) THEN 
 
     CALL KS_solve_Emin_pcg( 3.d-5, 1000, .FALSE. )
     !CALL KS_solve_Emin_pcg( 3.d-5, 1000, .TRUE. )
@@ -98,7 +98,7 @@ PROGRAM ffr_LFDFT
       WRITE(*,'(1x,I8,2F18.10)') ist, evals(ist), evals(ist)*2.d0*Ry2eV
     ENDDO
 
-  ELSEIF( KSSolveMethod == 2 ) THEN 
+  ELSEIF( KS_Solve_Method == 2 ) THEN 
     ! Initial Rhoe and potentials
     CALL calc_rhoe( Focc, evecs )
     CALL update_potentials()

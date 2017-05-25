@@ -17,7 +17,7 @@
 
 &ELECTRONS
   KS_Solve_Method = 'Emin_pcg'
-  cg_beta = 1
+  icg_beta = 1
   electron_maxstep = 150
   mixing_beta = 0.1d0
   diagonalization = 'davidson_qe'
