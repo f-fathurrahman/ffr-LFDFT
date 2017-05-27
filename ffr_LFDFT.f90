@@ -90,6 +90,8 @@ PROGRAM ffr_LFDFT
     CALL calc_rhoe( Focc, evecs )
     CALL update_potentials()
     CALL KS_solve_SCF()
+    !
+    CALL info_energies()
 
   ENDIF 
 
