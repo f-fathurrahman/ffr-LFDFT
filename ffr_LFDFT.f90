@@ -105,7 +105,7 @@ PROGRAM ffr_LFDFT
   CALL system_clock( tstop )
 
   WRITE(*,*)
-  WRITE(*,*) 'Total elapsed time: ', dble(tstop - tstart)/counts_per_second, ' second.'
+  WRITE(*,*) 'Total elapsed time: ', dble(tstop - tstart)/counts_per_second, ' seconds.'
   WRITE(*,*)
 
 END PROGRAM

@@ -12,13 +12,14 @@ SUBROUTINE read_atomic_species(filein)
     READ(IU,*) line
     IF( trim(line) == 'ATOMIC_SPECIES') GOTO 2909
   ENDDO 
+
   999 CONTINUE 
   WRITE(*,*)
   WRITE(*,*) 'ERROR: no ATOMIC_SPECIES is found in the input file:'
   STOP 
 
   2909 CONTINUE 
-  WRITE(*,*) 'ATOMIC_SPECIES is read!'
+  !WRITE(*,*) 'ATOMIC_SPECIES is read!'
   !
   ALLOCATE( species(ntyp) )
   ALLOCATE( masses(ntyp) )
@@ -26,8 +27,7 @@ SUBROUTINE read_atomic_species(filein)
   !
   DO isp = 1, ntyp
     READ(IU,*) species(isp), masses(isp), pp_name(isp)
-    WRITE(*,'(1x,A,F10.3,3x,A)') trim(species(isp)), masses(isp), trim(pp_name(isp))
-!    WRITE(*,*) trim(species(isp)), masses(isp), trim(pp_name(isp))
+    !WRITE(*,'(1x,A,F10.3,3x,A)') trim(species(isp)), masses(isp), trim(pp_name(isp))
   ENDDO 
 
   CLOSE(IU)

@@ -11,8 +11,8 @@ SUBROUTINE read_control(filein)
   READ(IU,nml=CONTROL)
   CLOSE(IU)
 
-  WRITE(*,*) 'pseudo_dir = ', trim(pseudo_dir)
-  WRITE(*,'(1x,A,ES18.10)') 'etot_conv_thr = ', etot_conv_thr
+  !WRITE(*,*) 'pseudo_dir = ', trim(pseudo_dir)
+  !WRITE(*,'(1x,A,ES18.10)') 'etot_conv_thr = ', etot_conv_thr
 
 END SUBROUTINE 
 

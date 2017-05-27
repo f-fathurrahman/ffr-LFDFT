@@ -23,13 +23,13 @@ SUBROUTINE read_system(filein)
     STOP 
   ENDIF 
 
-  WRITE(*,*) 'ibrav = ', ibrav
-  WRITE(*,*) 'nat = ', nat
-  WRITE(*,*) 'ntyp = ', ntyp
-  WRITE(*,'(1x,A,F18.10)') 'A = ', A
-  WRITE(*,'(1x,A,F18.10)') 'B = ', B
-  WRITE(*,'(1x,A,F18.10)') 'C = ', C
-  WRITE(*,'(1x,A,3I8)') 'nr1, nr2, n3 = ', nr1, nr2, nr3
+  !WRITE(*,*) 'ibrav = ', ibrav
+  !WRITE(*,*) 'nat = ', nat
+  !WRITE(*,*) 'ntyp = ', ntyp
+  !WRITE(*,'(1x,A,F18.10)') 'A = ', A
+  !WRITE(*,'(1x,A,F18.10)') 'B = ', B
+  !WRITE(*,'(1x,A,F18.10)') 'C = ', C
+  !WRITE(*,'(1x,A,3I8)') 'nr1, nr2, n3 = ', nr1, nr2, nr3
   
 END SUBROUTINE 
 

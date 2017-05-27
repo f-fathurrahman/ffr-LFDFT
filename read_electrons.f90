@@ -7,11 +7,11 @@ SUBROUTINE read_electrons(filein)
   READ(IU,nml=ELECTRONS)
   CLOSE(IU)
 
-  WRITE(*,*) KS_Solve_Method
-  WRITE(*,*) icg_beta
-  WRITE(*,*) electron_maxstep
-  WRITE(*,*) mixing_beta
-  WRITE(*,*) diagonalization
+  !WRITE(*,*) KS_Solve_Method
+  !WRITE(*,*) icg_beta
+  !WRITE(*,*) electron_maxstep
+  !WRITE(*,*) mixing_beta
+  !WRITE(*,*) diagonalization
 
 END SUBROUTINE 
 
