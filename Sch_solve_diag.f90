@@ -23,7 +23,7 @@ SUBROUTINE Sch_solve_diag()
   USE m_states, ONLY : Nstates, Focc, &
                        evecs => KS_evecs, &
                        evals => KS_evals
-  USE m_options, ONLY : ethr => ETHR_EVALS, IALG_DIAG
+  USE m_options, ONLY : ethr => ETHR_EVALS, I_ALG_DIAG
   IMPLICIT NONE 
   INTEGER, ALLOCATABLE :: btype(:)
   INTEGER :: dav_iter
@@ -38,20 +38,20 @@ SUBROUTINE Sch_solve_diag()
 
   !evecs = evecs(:,:)*sqrt(dVol)  ! normalize
 
-  IF( IALG_DIAG == 1 ) THEN 
+  IF( I_ALG_DIAG == 1 ) THEN 
 
     evecs = evecs(:,:)*sqrt(dVol)  ! normalize
     CALL diag_davidson_qe( Npoints, Nstates, 3*Nstates, evecs, ethr, &
                            evals, btype, notcnv, dav_iter )
     evecs(:,:) = evecs(:,:)/sqrt(dVol)
 
-  ELSEIF( IALG_DIAG == 2 ) THEN 
+  ELSEIF( I_ALG_DIAG == 2 ) THEN 
  
 !    evecs = evecs(:,:)*sqrt(dVol)  ! normalize
     CALL diag_davidson( evals, evecs, ethr )
 !    evecs(:,:) = evecs(:,:)/sqrt(dVol)
 
-  ELSEIF( IALG_DIAG == 3 ) THEN 
+  ELSEIF( I_ALG_DIAG == 3 ) THEN 
 
     evecs = evecs(:,:)*sqrt(dVol)  ! normalize
     CALL diag_lobpcg( evals, evecs, ethr )

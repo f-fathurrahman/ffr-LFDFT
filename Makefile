@@ -104,7 +104,8 @@ read_input.f90 \
 setup_atoms.f90 \
 setup_PsPot.f90 \
 setup_LF3d.f90 \
-setup_from_input.f90
+setup_from_input.f90 \
+setup_options.f90
 
 SPARSKIT_SRC = \
 formats.f \

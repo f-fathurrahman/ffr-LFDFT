@@ -2,12 +2,12 @@ MODULE m_options
 
   IMPLICIT NONE 
 
-  INTEGER :: KS_Solve_Method = 1
+  INTEGER :: I_KS_SOLVE = 1
   ! 1 => KS_solve_Emin_pcg
   ! 2 => SCF
 
   ! Options for controlling how beta is calculated
-  INTEGER :: CG_BETA = 2
+  INTEGER :: I_CG_BETA = 2
   ! 1 => Fletcher-Reeves
   ! 2 => Polak-Ribiere
   ! 3 => Hestenes-Stiefel
@@ -20,15 +20,20 @@ MODULE m_options
   REAL(8) :: ETHR_EVALS = 1.d-3
   REAL(8) :: ETHR_EVALS_LAST = 1.0d-10
 
-  INTEGER :: IALG_DIAG = 1
+  INTEGER :: I_ALG_DIAG = 1
   ! 1 => Davidson v1 (from PWSCF)
   ! 2 => Davidson v2
   ! 3 => LOBPCG
 
+  INTEGER :: Emin_NiterMax = 500
+  INTEGER :: SCF_NiterMax = 100
+
+  ! mixing beta
+  REAL(8) :: SCF_betamix = 0.2d0
   ! type of mixing to use for the potential
-  integer :: mixtype
+  INTEGER :: mixtype
   ! mixing type description
-  character(256) :: mixdescr
+  CHARACTER(256) :: mixdescr
   ! adaptive mixing parameter
   REAL(8) :: beta0
   REAL(8) :: betamax

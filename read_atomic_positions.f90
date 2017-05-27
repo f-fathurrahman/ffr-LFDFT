@@ -12,7 +12,6 @@ SUBROUTINE read_atomic_positions(filein)
     IF( line(1:16) == 'ATOMIC_POSITIONS' ) GOTO 2909
   ENDDO 
 
-  999 CONTINUE 
   WRITE(*,*)
   WRITE(*,*) 'ERROR: no ATOMIC_POSITIONS is found in the input file:'
   STOP 

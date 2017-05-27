@@ -25,7 +25,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
                        v => KS_evecs
   USE m_energies, ONLY : Etot => E_total
   
-  USE m_options, ONLY : CG_BETA
+  USE m_options, ONLY : I_CG_BETA
 
   IMPLICIT NONE
   !
@@ -87,7 +87,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
     !
     ! set search direction
     IF( iter /= 1 ) THEN
-      SELECT CASE ( CG_BETA )
+      SELECT CASE ( I_CG_BETA )
       CASE(1)
         ! Fletcher-Reeves
         beta = sum( g * Kg ) / sum( g_old * Kg_old )
@@ -154,7 +154,7 @@ END SUBROUTINE
 
 
 SUBROUTINE info_KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
-  USE m_options, ONLY : CG_BETA
+  USE m_options, ONLY : I_CG_BETA
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates
   IMPLICIT NONE 
@@ -174,16 +174,16 @@ SUBROUTINE info_KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
   WRITE(*,*) 'alpha_t  = ', alpha_t
   WRITE(*,*) 'restart  = ', restart
   WRITE(*,*)
-  IF( CG_BETA == 1 ) THEN
+  IF( I_CG_BETA == 1 ) THEN
     WRITE(*,*) 'Using Fletcher-Reeves formula'
-  ELSEIF( CG_BETA == 2 ) THEN 
+  ELSEIF( I_CG_BETA == 2 ) THEN 
     WRITE(*,*) 'Using Polak-Ribiere formula'
-  ELSEIF( CG_BETA == 3 ) THEN 
+  ELSEIF( I_CG_BETA == 3 ) THEN 
     WRITE(*,*) 'Using Hestenes-Stiefel formula'
-  ELSEIF( CG_BETA == 4 ) THEN 
+  ELSEIF( I_CG_BETA == 4 ) THEN 
     WRITE(*,*) 'Using Dai-Yuan formula'
   ELSE 
-    WRITE(*,*) 'XXXXX WARNING: Unknow CG_BETA: ', CG_BETA
+    WRITE(*,*) 'XXXXX WARNING: Unknown I_CG_BETA: ', I_CG_BETA
   ENDIF 
   WRITE(*,*)
   WRITE(*,*) 'KS_solve_Emin_pcg: memGB = ', memGB
