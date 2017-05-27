@@ -60,8 +60,8 @@ SUBROUTINE KS_solve_SCF()
     CALL calc_betaNL_psi( Nstates, evecs )
     CALL calc_energies( evecs ) ! update the potentials or not ?
 
-    CALL mixerifc( iterSCF, 0, Npoints, Rhoe, dr2, Npoints, Rhoe_old )
-    !CALL mixlinear( iterSCF, SCF_betamix, Npoints, Rhoe, Rhoe_old, dr2 )
+    !CALL mixerifc( iterSCF, 0, Npoints, Rhoe, dr2, Npoints, Rhoe_old )
+    CALL mixlinear( iterSCF, SCF_betamix, Npoints, Rhoe, Rhoe_old, dr2 )
 
     !CALL mixadapt( iterSCF, beta0, betamax, Npoints, Rhoe, Rhoe_old, beta_work, f_work, dr2 )
 

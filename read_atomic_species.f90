@@ -13,7 +13,6 @@ SUBROUTINE read_atomic_species(filein)
     IF( trim(line) == 'ATOMIC_SPECIES') GOTO 2909
   ENDDO 
 
-  999 CONTINUE 
   WRITE(*,*)
   WRITE(*,*) 'ERROR: no ATOMIC_SPECIES is found in the input file:'
   STOP 

@@ -3,8 +3,7 @@ SUBROUTINE read_electrons(filein)
   IMPLICIT NONE 
   CHARACTER(*) :: filein
   
-  ! Default values
-  ! Most of them are not sensible inputs.
+  ! Initial/default values. Most of them are not sensible inputs.
   ! This is used as mechanism to check whether user inputted the values or not.
   KS_Solve = 'undefined'
   cg_beta = 'undefined'
