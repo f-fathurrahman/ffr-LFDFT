@@ -11,6 +11,7 @@ SUBROUTINE read_electrons(filein)
   electron_maxstep = -1
   mixing_beta = -1.d0
   diagonalization = 'undefined'
+  conv_thr = -1.d0
 
   OPEN(unit=IU,file=filein,status='old')
   READ(IU,nml=ELECTRONS)

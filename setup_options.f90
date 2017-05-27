@@ -11,9 +11,9 @@ SUBROUTINE setup_options()
 
   !
   SELECT CASE( KS_Solve )
-  CASE( 'Emin_PCG' )
+  CASE( 'Emin_PCG', 'Emin_pcg', 'Emin-PCG', 'Emin-pcg' )
     I_KS_SOLVE = 1
-  CASE( 'SCF' )
+  CASE( 'SCF', 'scf' )
     I_KS_SOLVE = 2
   CASE DEFAULT 
     WRITE(*,*) 'Using default value for I_KS_SOLVE = ', I_KS_SOLVE
@@ -45,13 +45,21 @@ SUBROUTINE setup_options()
     WRITE(*,*) 'Using default values for I_ALG_DIAG = ', I_ALG_DIAG
   END SELECT 
 
+  !
   IF( electron_maxstep /= -1 ) THEN 
     Emin_NiterMax = electron_maxstep
     SCF_NiterMax = electron_maxstep
   ENDIF 
 
+  !
   IF( mixing_beta > 0.d0 ) THEN 
     SCF_betamix = mixing_beta
+  ENDIF 
+
+  !
+  IF( conv_thr > 0.d0 ) THEN 
+    Emin_ETOT_CONV_THR = conv_thr
+    SCF_ETOT_CONV_THR = conv_thr
   ENDIF 
 
 END SUBROUTINE 

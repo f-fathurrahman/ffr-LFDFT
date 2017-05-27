@@ -17,7 +17,7 @@
 !!   ILU0 preconditioner from SPARSKIT is used as preconditioner.
 !!
 
-SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
+SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
 
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates, &
@@ -25,11 +25,10 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
                        v => KS_evecs
   USE m_energies, ONLY : Etot => E_total
   
-  USE m_options, ONLY : I_CG_BETA
+  USE m_options, ONLY : I_CG_BETA, Emin_NiterMax, Emin_ETOT_CONV_THR
 
   IMPLICIT NONE
   !
-  INTEGER :: NiterMax
   REAL(8) :: alpha_t  ! step size
   LOGICAL :: restart
   REAL(8), ALLOCATABLE :: g(:,:), g_old(:,:), g_t(:,:)
@@ -40,7 +39,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
   !
   INTEGER :: iter, ist
 
-  CALL info_KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
+  CALL info_KS_solve_Emin_pcg( alpha_t, restart )
 
   ALLOCATE( g(Npoints,Nstates) )
   ALLOCATE( g_old(Npoints,Nstates) )
@@ -76,7 +75,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
   Kg(:,:)    = 0.d0
   Kg_old(:,:) = 0.d0
 
-  DO iter = 1, NiterMax
+  DO iter = 1, Emin_NiterMax
     !
     ! Evaluate gradient at current trial vectors
     CALL calc_grad( Nstates, v, g )
@@ -136,7 +135,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
     !
     WRITE(*,'(1x,I5,F18.10,ES18.10)') iter, Etot, Etot_old-Etot
     !
-    IF( abs(Etot - Etot_old) < 1.d-7 ) THEN
+    IF( abs(Etot - Etot_old) < Emin_ETOT_CONV_THR ) THEN
       WRITE(*,*) 'KS_solve_Emin_pcg converged in iter', iter
       EXIT
     ENDIF
@@ -153,12 +152,11 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
 END SUBROUTINE
 
 
-SUBROUTINE info_KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
-  USE m_options, ONLY : I_CG_BETA
+SUBROUTINE info_KS_solve_Emin_pcg( alpha_t, restart )
+  USE m_options, ONLY : I_CG_BETA, Emin_NiterMax, Emin_ETOT_CONV_THR
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates
   IMPLICIT NONE 
-  INTEGER :: NiterMax
   REAL(8) :: alpha_t
   LOGICAL :: restart
   !
@@ -170,9 +168,10 @@ SUBROUTINE info_KS_solve_Emin_pcg( alpha_t, NiterMax, restart )
   WRITE(*,*) 'Minimizing KS total energy functional using PCG algorithm'
   WRITE(*,*) '---------------------------------------------------------'
   WRITE(*,*)
-  WRITE(*,*) 'NiterMax = ', NiterMax
+  WRITE(*,*) 'NiterMax = ', Emin_NiterMax
   WRITE(*,*) 'alpha_t  = ', alpha_t
   WRITE(*,*) 'restart  = ', restart
+  WRITE(*,'(1x,A,ES10.3)') 'conv_thr = ', Emin_ETOT_CONV_THR
   WRITE(*,*)
   IF( I_CG_BETA == 1 ) THEN
     WRITE(*,*) 'Using Fletcher-Reeves formula'

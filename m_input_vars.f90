@@ -21,7 +21,8 @@ MODULE m_input_vars
   INTEGER :: electron_maxstep
   REAL(8) :: mixing_beta
   CHARACTER(56) :: diagonalization
-  NAMELIST /ELECTRONS/ KS_Solve, cg_beta, electron_maxstep, mixing_beta, diagonalization
+  REAL(8) :: conv_thr
+  NAMELIST /ELECTRONS/ KS_Solve, cg_beta, electron_maxstep, mixing_beta, diagonalization, conv_thr
 
   ! ATOMIC_SPECIES
   CHARACTER(5), ALLOCATABLE :: species(:)

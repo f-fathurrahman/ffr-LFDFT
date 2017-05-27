@@ -28,6 +28,9 @@ MODULE m_options
   INTEGER :: Emin_NiterMax = 500
   INTEGER :: SCF_NiterMax = 100
 
+  REAL(8) :: Emin_ETOT_CONV_THR = 1.d-6
+  REAL(8) :: SCF_ETOT_CONV_THR = 1.d-6
+
   ! mixing beta
   REAL(8) :: SCF_betamix = 0.2d0
   ! type of mixing to use for the potential
