@@ -20,7 +20,7 @@ MODULE m_options
   REAL(8) :: ETHR_EVALS = 1.d-3
   REAL(8) :: ETHR_EVALS_LAST = 1.0d-10
 
-  INTEGER :: I_ALG_DIAG = 1
+  INTEGER :: I_ALG_DIAG = 2
   ! 1 => Davidson v1 (from PWSCF)
   ! 2 => Davidson v2
   ! 3 => LOBPCG
