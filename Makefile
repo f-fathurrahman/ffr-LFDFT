@@ -63,7 +63,6 @@ Sch_solve_diag.f90 \
 calc_energies.f90 \
 calc_Rhoe.f90 \
 update_potentials.f90 \
-KS_solve_Emin_cg.f90 \
 calc_grad.f90 \
 calc_dr_periodic.f90 \
 calc_dr.f90 \
