@@ -4,17 +4,18 @@ PROGRAM test_eggbox
   USE m_LF3d, ONLY : xyz2lin => LF3d_xyz2lin, &
                      lingrid => LF3d_lingrid, &
                      Npoints => LF3d_Npoints, &
-                     dVol => LF3d_dVol
+                     dVol => LF3d_dVol, &
+                     LL => LF3d_LL
   USE m_hamiltonian, ONLY : V_ps_loc
   USE m_atoms, ONLY : atpos => AtomicCoords
-  USE m_constants, ONLY : ANG2BOHR
+  USE m_constants, ONLY : ANG2BOHR, PI
   IMPLICIT NONE 
   INTEGER :: Narg
   INTEGER :: NN(3)
   REAL(8) :: AA(3), BB(3)
   CHARACTER(64) :: arg_N
   INTEGER :: ip, N_in, ix, iy, iz
-  REAL(8) :: integ
+  REAL(8) :: integ, scal
   REAL(8), ALLOCATABLE :: psi(:)
 
   Narg = iargc()
@@ -46,23 +47,27 @@ PROGRAM test_eggbox
 
   CALL init_V_ps_loc_G()
 
-  ix = 1
-  iz = 1
-  WRITE(*,*) 'ix iz = ', ix, iz
-  DO iy = 1,NN(2)
-    ip = xyz2lin(ix,iy,iz)
-    WRITE(N_in,'(2F22.12)') lingrid(2,ip), V_ps_loc(ip)
-  ENDDO 
-
-
   ALLOCATE( psi(Npoints) )
 
   ! constant
   DO ip = 1,Npoints
-    psi(ip) = 
+    psi(ip) = sin( lingrid(1,ip)*2.d0*PI/LL(1) ) * &
+              cos( lingrid(2,ip)*2.d0*PI/LL(2) ) * &
+              sin( lingrid(3,ip)*2.d0*PI/LL(3) )
+  ENDDO 
 
   integ = sum( V_ps_loc(:)*psi(:)**2 ) * dVol
   WRITE(*,'(1x,A,2F18.10)') 'pos, integ = ', atpos(2,1), integ
+
+  ix = 1
+  iz = 1
+  WRITE(*,*) 'ix iz = ', ix, iz
+  scal = maxval( abs(V_ps_loc) )/maxval( abs(psi) )
+  WRITE(*,*) 'scal = ', scal
+  DO iy = 1,NN(2)
+    ip = xyz2lin(ix,iy,iz)
+    WRITE(N_in,'(3F22.12)') lingrid(2,ip), V_ps_loc(ip), psi(ip)*scal*10.d0
+  ENDDO 
 
 
   DEALLOCATE( psi )

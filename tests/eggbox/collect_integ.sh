@@ -1,6 +1,8 @@
+# force to use dot for decimal separator
+export LC_NUMERIC=en_US.UTF-8
 element=$1
-center="0.0 0.5 1.0 1.5 2.0"
-Npoints="35"
+center=`seq 0.0 0.1 16.0`
+Npoints="55"
 
 
 for c in $center
