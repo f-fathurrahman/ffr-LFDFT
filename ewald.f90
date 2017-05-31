@@ -158,7 +158,7 @@ FUNCTION ewald( alat, nat, ntyp, ityp, zv, at, bg, tau, omega, g, &
     ENDDO 
   ENDIF 
   
-  ewald = 0.5d0 * e2 * (ewaldg + ewaldr)
+  ewald = 0.5d0*(ewaldg + ewaldr)
 
   RETURN 
 END FUNCTION 
