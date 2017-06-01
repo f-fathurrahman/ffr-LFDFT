@@ -1,0 +1,26 @@
+\subsection{Description of molecular or crystalline structure}
+
+Description of molecular or crystalline structure is given in module {\tt m\_atoms}.
+Note that, unit cell for crystalline structure (currently only orthorombic structure is
+possible) is specified by {\tt AA} and {\tt BB} in call to {\tt init\_LF3d\_p()}
+
+\begin{fortrancode}
+MODULE m_atoms
+  IMPLICIT NONE 
+  INTEGER :: Natoms
+  INTEGER :: Nspecies
+  REAL(8), ALLOCATABLE :: AtomicCoords(:,:)
+  INTEGER, ALLOCATABLE :: atm2species(:)
+  CHARACTER(5), ALLOCATABLE :: SpeciesSymbols(:)
+  REAL(8), ALLOCATABLE :: AtomicValences(:)
+  COMPLEX(8), ALLOCATABLE :: StructureFactor(:,:)
+END MODULE 
+\end{fortrancode}
+
+Currently, variables in module {\tt m\_atoms} are initialized by
+subroutine {\tt init\_atoms\_xyz()}.
+\begin{fortrancode}
+SUBROUTINE init_atoms_xyz( fil_xyz )
+\end{fortrancode}
+This subroutine takes one argument {\tt fil\_xyz} which is the path
+to XYZ file describing the molecular structure or crystalline structure.
