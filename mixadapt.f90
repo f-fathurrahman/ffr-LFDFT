@@ -49,6 +49,9 @@ real(8), intent(out) :: d
 ! local variables
 integer i
 real(8) t1
+
+  WRITE(*,*) 'Adaptive mixing ELK'
+ 
 if (n.le.0) return
 ! initialise mixer
 if (iscl.le.0) then

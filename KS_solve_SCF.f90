@@ -18,6 +18,8 @@ SUBROUTINE KS_solve_SCF()
 
   REAL(8) :: integRho
   REAL(8), ALLOCATABLE :: beta_work(:), f_work(:)
+  REAL(8), ALLOCATABLE :: workmix(:)
+  INTEGER :: nwork
 
   integRho = sum(Rhoe)*dVol
   WRITE(*,*)
@@ -40,6 +42,10 @@ SUBROUTINE KS_solve_SCF()
 
   !CALL mixadapt( 0, beta0, betamax, Npoints, Rhoe, Rhoe_old, beta_work, f_work, dr2 )
   
+  ! for adaptive mixing
+  nwork = 3*Npoints
+  ALLOCATE( workmix(nwork) )
+
   dr2 = 1.d0
   DO iterSCF = 1, SCF_NiterMax
 
@@ -60,8 +66,8 @@ SUBROUTINE KS_solve_SCF()
     CALL calc_betaNL_psi( Nstates, evecs )
     CALL calc_energies( evecs ) ! update the potentials or not ?
 
-    !CALL mixerifc( iterSCF, 0, Npoints, Rhoe, dr2, Npoints, Rhoe_old )
-    CALL mixlinear( iterSCF, SCF_betamix, Npoints, Rhoe, Rhoe_old, dr2 )
+    CALL mixerifc( iterSCF, 1, Npoints, Rhoe, dr2, nwork, workmix )
+    !CALL mixlinear( iterSCF, SCF_betamix, Npoints, Rhoe, Rhoe_old, dr2 )
 
     !CALL mixadapt( iterSCF, beta0, betamax, Npoints, Rhoe, Rhoe_old, beta_work, f_work, dr2 )
 
@@ -99,6 +105,7 @@ SUBROUTINE KS_solve_SCF()
     Rhoe_old(:) = Rhoe(:)
   ENDDO
 
+  DEALLOCATE( workmix )
   DEALLOCATE( Rhoe_old )
   DEALLOCATE( beta_work )
   DEALLOCATE( f_work )

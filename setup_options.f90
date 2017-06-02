@@ -39,7 +39,7 @@ SUBROUTINE setup_options()
     I_ALG_DIAG = 1
   CASE( 'davidson' )
     I_ALG_DIAG = 2
-  CASE( 'LOBPCG' )
+  CASE( 'LOBPCG', 'lobpcg' )
     I_ALG_DIAG = 3
   CASE DEFAULT
     WRITE(*,*) 'Using default values for I_ALG_DIAG = ', I_ALG_DIAG
