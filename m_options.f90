@@ -18,7 +18,7 @@ MODULE m_options
   LOGICAL :: FREE_NABLA2 = .TRUE.
 
   REAL(8) :: ETHR_EVALS = 1.d-3
-  REAL(8) :: ETHR_EVALS_LAST = 1.0d-10
+  REAL(8) :: ETHR_EVALS_LAST = 1.0d-6
 
   INTEGER :: I_ALG_DIAG = 2
   ! 1 => Davidson v1 (from PWSCF)
