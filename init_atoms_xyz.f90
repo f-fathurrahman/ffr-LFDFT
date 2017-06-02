@@ -86,5 +86,8 @@ SUBROUTINE init_atoms_xyz( fil_xyz )
   ALLOCATE( AtomicValences(Nspecies) )
   AtomicValences(:) = 0.d0  ! NOTE: They should be set by pseudopotentials or manually
 
+  ALLOCATE( AtomicMasses(Nspecies) )
+  AtomicMasses(:) = 0.d0 ! FIXME: Use internal database to set this
+
 END SUBROUTINE
 

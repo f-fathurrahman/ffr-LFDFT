@@ -41,8 +41,6 @@ PROGRAM do_Emin_pcg
   NN = (/ N_in, N_in, N_in /)
   AA = (/ 0.d0, 0.d0, 0.d0 /)
   BB = (/ 16.d0, 16.d0, 16.d0 /)
-  !AA = (/ -8.d0, -8.d0, -8.d0 /)
-  !BB = (/  8.d0,  8.d0,  8.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
 
   CALL info_atoms()

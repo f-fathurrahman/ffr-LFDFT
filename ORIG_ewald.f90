@@ -8,28 +8,22 @@
 ! modified by Fadjar Fathurrahman for ffr-LFDFT (2017)
 !
 !-----------------------------------------------------------------------
-FUNCTION ewald()
-!-----------------------------------------------------------------------
+FUNCTION ewald( alat, nat, ntyp, ityp, zv, at, bg, tau, omega, g, &
+     gg, ngm, gcutm, gstart, gamma_only, strf )
+  !-----------------------------------------------------------------------
   !
   ! Calculates Ewald energy with both G- and R-space terms.
   ! Determines optimal alpha. Should hopefully work for any structure.
   !
+  !
   USE m_constants, ONLY : tpi => TWOPI
-  USE m_atoms, ONLY : nat => Natoms, &
-                      ntyp => Nspecies, &
-                      ityp => atm2species, &
-                      zv => AtomicValences, &
-                      tau => AtomicCoords, &
-                      strf => StructureFactor
-  USE m_LF3d, ONLY : g => LF3d_Gv, &
-                     gg => LF3d_G2, &
-                     ngm => LF3d_Npoints
   IMPLICIT NONE
   INTEGER, PARAMETER :: DP=8
   !
   !   first the dummy variables
   !
-  INTEGER :: gstart
+
+  integer :: nat, ntyp, ityp(nat), ngm, gstart
   ! input: number of atoms in the unit cell
   ! input: number of different types of atoms
   ! input: the type of each atom
@@ -38,7 +32,8 @@ FUNCTION ewald()
 
   LOGICAL :: gamma_only
 
-  REAL(DP) :: at(3,3), bg(3,3), omega, alat, gcutm
+  REAL(DP) :: tau(3, nat), g(3, ngm), gg(ngm), zv(ntyp), &
+       at(3, 3), bg(3, 3), omega, alat, gcutm
   ! input: the positions of the atoms in the cell
   ! input: the coordinates of G vectors
   ! input: the square moduli of G vectors
@@ -100,8 +95,8 @@ FUNCTION ewald()
     STOP 
   ENDIF 
   !
-  ! beware of unit of gcutm
-  upperbound = 2.d0*charge**2*sqrt(2.d0*alpha/tpi) * erfc(sqrt(gcutm/4.d0/alpha))  
+  upperbound = 2.d0 * charge**2 * sqrt(2.d0 * alpha / tpi) * erfc ( &
+       sqrt( gcutm / 4.d0 / alpha ) )  ! beware of unit of gcutm
   IF(upperbound > 1.0d-7) GOTO 100
   !
   ! G-space sum here.

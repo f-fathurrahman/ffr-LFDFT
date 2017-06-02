@@ -1,49 +1,54 @@
 PROGRAM test_Ewald
   
+  USE m_PsPot, ONLY : PsPot_Dir
   USE m_atoms, ONLY : Zv => AtomicValences, &
                       Nspecies, Natoms, atm2species, &
                       atpos => AtomicCoords, &
                       strf => StructureFactor
-
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      Gv => LF3d_Gv
 
   IMPLICIT NONE 
   INTEGER :: NN(3)
   REAL(8) :: AA(3), BB(3)
+  INTEGER :: Narg, N_in
+  INTEGER :: iargc
+  CHARACTER(64) :: filexyz, arg_N
 
-  !CALL init_atoms_xyz('../structures/NH3.xyz')
-  ! Manually set Zv => AtomicValences
-  !Zv(1) = 5.d0
-  !Zv(2) = 1.d0
+  Narg = iargc()
+  IF( Narg /= 2 ) THEN 
+    WRITE(*,*) 'ERROR: exactly two arguments must be given:'
+    WRITE(*,*) '       N and path to structure file'
+    STOP 
+  ENDIF 
 
-  !CALL init_atoms_xyz('../structures/H2.xyz')
-  ! Manually set Zv => AtomicValences
-  !Zv(1) = 1.d0
+  CALL getarg( 1, arg_N )
+  READ(arg_N, *) N_in
+
+  CALL getarg( 2, filexyz )
   
-  CALL init_atoms_xyz('../structures/MoS2.xyz')
-  ! Manually set Zv => AtomicValences
-  Zv(1) = 14.d0  ! Mo
-  Zv(2) =  6.d0  ! S
+  CALL init_atoms_xyz(filexyz)
 
-  CALL info_atoms()
+  ! Override PsPot_Dir
+  PsPot_Dir = '../HGH/'
+  CALL init_PsPot()
 
-  NN = (/ 63, 63, 63 /)
+  NN = (/ N_in, N_in, N_in /)
   AA = (/ 0.d0, 0.d0, 0.d0 /)
   BB = (/ 16.d0, 16.d0, 16.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
+
   CALL info_LF3d()
+  CALL info_atoms()
 
-  !ALLOCATE( strf(Npoints, Nspecies) )
-  !CALL calc_strfact( Natoms, atpos, Nspecies, atm2species, Npoints, Gv, strf )
-
-  CALL init_strfact()
+  CALL init_strfact_shifted()
 
   CALL calc_Ewald()
 
-  DEALLOCATE( strf )
   CALL dealloc_LF3d()
   CALL dealloc_atoms()
+  CALL dealloc_LF3d()
+  CALL dealloc_PsPot()
 
 END PROGRAM 
 
