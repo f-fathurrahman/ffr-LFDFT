@@ -43,7 +43,7 @@ PROGRAM ffr_LFDFT
   CALL init_strfact_shifted()
 
   ! Ewald energy
-  CALL calc_Ewald()
+  CALL calc_Ewald_qe()
 
   ! Memory for potentials
   CALL alloc_hamiltonian()
