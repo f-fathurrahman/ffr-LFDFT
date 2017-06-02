@@ -8,22 +8,30 @@
 ! modified by Fadjar Fathurrahman for ffr-LFDFT (2017)
 !
 !-----------------------------------------------------------------------
-FUNCTION ewald( alat, nat, ntyp, ityp, zv, at, bg, tau, omega, g, &
-     gg, ngm, gcutm, gstart, gamma_only, strf )
-  !-----------------------------------------------------------------------
+SUBROUTINE calc_Ewald_qe()
+!-----------------------------------------------------------------------
   !
   ! Calculates Ewald energy with both G- and R-space terms.
   ! Determines optimal alpha. Should hopefully work for any structure.
   !
-  !
   USE m_constants, ONLY : tpi => TWOPI
+  USE m_atoms, ONLY : nat => Natoms, &
+                      ntyp => Nspecies, &
+                      ityp => atm2species, &
+                      zv => AtomicValences, &
+                      tau => AtomicCoords, &
+                      strf => StructureFactor
+  USE m_LF3d, ONLY : gg => LF3d_G2, &
+                     ngm => LF3d_Npoints, &
+                     LL => LF3d_LL, &
+                     NN => LF3d_NN
+  USE m_energies, ONLY : E_nn
   IMPLICIT NONE
   INTEGER, PARAMETER :: DP=8
   !
   !   first the dummy variables
   !
-
-  integer :: nat, ntyp, ityp(nat), ngm, gstart
+  INTEGER :: gstart
   ! input: number of atoms in the unit cell
   ! input: number of different types of atoms
   ! input: the type of each atom
@@ -32,21 +40,12 @@ FUNCTION ewald( alat, nat, ntyp, ityp, zv, at, bg, tau, omega, g, &
 
   LOGICAL :: gamma_only
 
-  REAL(DP) :: tau(3, nat), g(3, ngm), gg(ngm), zv(ntyp), &
-       at(3, 3), bg(3, 3), omega, alat, gcutm
-  ! input: the positions of the atoms in the cell
-  ! input: the coordinates of G vectors
-  ! input: the square moduli of G vectors
-  ! input: the charge of each type of atoms
+  REAL(DP) :: at(3,3), bg(3,3), omega, alat, gcutm
   ! input: the direct lattice vectors
   ! input: the reciprocal lattice vectors
   ! input: the volume of the unit cell
   ! input: lattice parameter
   ! input: cut-off of g vectors
-  COMPLEX(DP) :: strf(ngm, ntyp)
-  ! input: structure factor
-  REAL(DP) :: ewald
-  ! output: the ewald energy
   !
   !    here the local variables
   !
@@ -60,7 +59,7 @@ FUNCTION ewald( alat, nat, ntyp, ityp, zv, at, bg, tau, omega, g, &
   ! counter on atomic types
   ! number of R vectors included in r sum
 
-  REAL(DP) :: charge, tpiba2, ewaldg, ewaldr, dtau (3), alpha, &
+  REAL(DP) :: charge, ewaldg, ewaldr, dtau (3), alpha, &
        r (3, mxr), r2 (mxr), rmax, rr, upperbound, fact
   ! total ionic charge in the cell
   ! length in reciprocal space
@@ -76,7 +75,27 @@ FUNCTION ewald( alat, nat, ntyp, ityp, zv, at, bg, tau, omega, g, &
   COMPLEX(DP) :: rhon
 !  REAL(DP), EXTERNAL :: qe_erfc
 
-  !tpiba2 = (tpi / alat) **2
+  ! setup at and bg
+  at(:,:) = 0.d0
+  at(1,1) = LL(1)
+  at(2,2) = LL(2)
+  at(3,3) = LL(3)
+
+  omega = LL(1)*LL(2)*LL(3)
+
+!  WRITE(*,*) 'TPI = ', TPI
+!  WRITE(*,*)
+
+  bg(:,:) = 0.d0
+  bg(1,1) = TPI/LL(1)
+  bg(2,2) = TPI/LL(2)
+  bg(3,3) = TPI/LL(3)
+
+  gcutm = maxval( NN )*TPI  !! ???? FIXME
+
+  alat = 1.d0
+  gamma_only = .FALSE.
+  gstart = 2
 
   charge = 0.d0
   DO na = 1, nat
@@ -89,14 +108,13 @@ FUNCTION ewald( alat, nat, ntyp, ityp, zv, at, bg, tau, omega, g, &
   ! upperbound is a safe upper bound for the error in the sum over G
   !
   IF( alpha <= 0.d0) THEN 
-    CALL errore ('ewald', 'optimal alpha not found', 1)
     WRITE(*,*) 'ERROR in calculating Ewald energy:'
     WRITE(*,*) 'optimal alpha not found'
     STOP 
   ENDIF 
   !
-  upperbound = 2.d0 * charge**2 * sqrt(2.d0 * alpha / tpi) * erfc ( &
-       sqrt( gcutm / 4.d0 / alpha ) )  ! beware of unit of gcutm
+  ! beware of unit of gcutm
+  upperbound = 2.d0*charge**2*sqrt(2.d0*alpha/tpi) * erfc(sqrt(gcutm/4.d0/alpha))  
   IF(upperbound > 1.0d-7) GOTO 100
   !
   ! G-space sum here.
@@ -158,8 +176,7 @@ FUNCTION ewald( alat, nat, ntyp, ityp, zv, at, bg, tau, omega, g, &
     ENDDO 
   ENDIF 
   
-  ewald = 0.5d0*(ewaldg + ewaldr)
+  E_nn = 0.5d0*(ewaldg + ewaldr)
 
-  RETURN 
-END FUNCTION 
+END SUBROUTINE 
 

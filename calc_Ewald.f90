@@ -118,7 +118,7 @@ SUBROUTINE calc_Ewald( )
 
   E_nn = E_H - E_self
 
-  WRITE(*,'(/,1x,A,F18.10)') 'E_nn         = ', E_nn
+  !WRITE(*,'(/,1x,A,F18.10)') 'E_nn         = ', E_nn
 
   DEALLOCATE( phi )
   DEALLOCATE( ctmp )

@@ -106,7 +106,10 @@ setup_LF3d.f90 \
 setup_from_input.f90 \
 setup_options.f90 \
 interp_LF1d_p.f90 \
-interp_LF3d_p.f90
+interp_LF3d_p.f90 \
+calc_Ewald_qe.f90 \
+rgen.f90 \
+hpsort.f90
 
 
 SPARSKIT_SRC = \

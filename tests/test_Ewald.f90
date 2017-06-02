@@ -1,21 +1,13 @@
 PROGRAM test_Ewald
   
   USE m_PsPot, ONLY : PsPot_Dir
-  USE m_atoms, ONLY : Zv => AtomicValences, &
-                      Nspecies, Natoms, atm2species, &
-                      atpos => AtomicCoords, &
-                      strf => StructureFactor
-  USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
-                     Gv => LF3d_Gv
-
+  USE m_energies, ONLY : E_nn
   IMPLICIT NONE 
   INTEGER :: NN(3)
   REAL(8) :: AA(3), BB(3)
   INTEGER :: Narg, N_in
   INTEGER :: iargc
   CHARACTER(64) :: filexyz, arg_N
-  !
-  REAL(8) :: ewald
 
   Narg = iargc()
   IF( Narg /= 2 ) THEN 
@@ -46,9 +38,12 @@ PROGRAM test_Ewald
   CALL init_strfact_shifted()
 
   CALL calc_Ewald()
-
   WRITE(*,*)
-  WRITE(*,*) 'ewald = ', ewald()
+  WRITE(*,*) 'Simple version: E_nn = ', E_nn
+
+  CALL calc_Ewald_qe()
+  WRITE(*,*)
+  WRITE(*,*) 'qe version:     E_nn = ', E_nn
 
   CALL dealloc_LF3d()
   CALL dealloc_atoms()
