@@ -56,7 +56,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
 
   mem = (7.d0*Npoints*Nstates3 + Nstates*Nstates + 3.d0*Nstates3*Nstates3)*16.0
   mem = mem + Nstates*8.0
-  WRITE(*,*) 'Allocated dynamic memory in LOBPCG = ', mem/1024.d0/1024.d0
+  !WRITE(*,*) 'Allocated dynamic memory in LOBPCG = ', mem/1024.d0/1024.d0
 
   ! Initial wavefunction
   Q(1:Npoints,1:Nstates) = X(:,:)
@@ -87,13 +87,14 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
 !
   nconv = 0 ! Reset nconv
   nlock = 0
-  WRITE(*,*)
-  WRITE(*,*) 'Eigenvalue convergence:'
+  
+  !WRITE(*,*)
+  !WRITE(*,*) 'Eigenvalue convergence:'
   DO i=1,Nstates
     ! TODO: use BLAS
     !resnrm(i) = sqrt( ddot(Npoints, Q(1,Nstates+i),1, Q(1,Nstates+i),1) )
     resnrm(i) = abs(lambda(i)-lambda_old(i))
-    WRITE(*,'(I8,F18.10,ES18.10)') i, lambda(i), resnrm(i)
+    !WRITE(*,'(I8,F18.10,ES18.10)') i, lambda(i), resnrm(i)
     IF(resnrm(i) < tolerance) nconv = nconv + 1
     IF(resnrm(i) < tolerance/TFUDGE) nlock = nlock + 1
   ENDDO
@@ -182,16 +183,16 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
     ! Check convergence
     nconv = 0 ! reset nconv
     nlock = 0
-    WRITE(*,*)
-    WRITE(*,*) 'Eigenvalues convergence:'
+    !WRITE(*,*)
+    !WRITE(*,*) 'Eigenvalues convergence:'
     DO i=1,Nstates
       !resnrm(i) = sqrt( ddot(Npoints, Q(1,Nstates+i),1, Q(1,Nstates+i),1) )
       resnrm(i) = abs(lambda(i)-lambda_old(i))
-      WRITE(*,'(I8,F18.10,ES18.10)') i, lambda(i), resnrm(i)
+      !WRITE(*,'(I8,F18.10,ES18.10)') i, lambda(i), resnrm(i)
       IF(resnrm(i) < tolerance) nconv = nconv + 1
       IF(resnrm(i) < tolerance/TFUDGE) ilock = ilock + 1
     ENDDO
-    WRITE(*,*) 'LOBPCG iter = ', iter, 'nconv = ', nconv
+    !WRITE(*,*) 'LOBPCG iter = ', iter, 'nconv = ', nconv
   
     IF(nconv >= Nstates) GOTO 10
 
