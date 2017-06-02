@@ -23,7 +23,9 @@ FUNCTION ewald()
                       strf => StructureFactor
   USE m_LF3d, ONLY : g => LF3d_Gv, &
                      gg => LF3d_G2, &
-                     ngm => LF3d_Npoints
+                     ngm => LF3d_Npoints, &
+                     LL => LF3d_LL, &
+                     NN => LF3d_NN
   IMPLICIT NONE
   INTEGER, PARAMETER :: DP=8
   !
@@ -39,17 +41,11 @@ FUNCTION ewald()
   LOGICAL :: gamma_only
 
   REAL(DP) :: at(3,3), bg(3,3), omega, alat, gcutm
-  ! input: the positions of the atoms in the cell
-  ! input: the coordinates of G vectors
-  ! input: the square moduli of G vectors
-  ! input: the charge of each type of atoms
   ! input: the direct lattice vectors
   ! input: the reciprocal lattice vectors
   ! input: the volume of the unit cell
   ! input: lattice parameter
   ! input: cut-off of g vectors
-  COMPLEX(DP) :: strf(ngm, ntyp)
-  ! input: structure factor
   REAL(DP) :: ewald
   ! output: the ewald energy
   !
@@ -83,6 +79,28 @@ FUNCTION ewald()
 
   !tpiba2 = (tpi / alat) **2
 
+  ! setup at and bg
+  at(:,:) = 0.d0
+  at(1,1) = LL(1)
+  at(2,2) = LL(2)
+  at(3,3) = LL(3)
+
+  omega = LL(1)*LL(2)*LL(3)
+
+!  WRITE(*,*) 'TPI = ', TPI
+!  WRITE(*,*)
+
+  bg(:,:) = 0.d0
+  bg(1,1) = TPI/LL(1)
+  bg(2,2) = TPI/LL(2)
+  bg(3,3) = TPI/LL(3)
+
+  gcutm = maxval( NN )*TPI  !! ???? FIXME
+
+  alat = 1.d0
+  gamma_only = .FALSE.
+  gstart = 2
+
   charge = 0.d0
   DO na = 1, nat
      charge = charge + zv( ityp(na) )
@@ -94,7 +112,6 @@ FUNCTION ewald()
   ! upperbound is a safe upper bound for the error in the sum over G
   !
   IF( alpha <= 0.d0) THEN 
-    CALL errore ('ewald', 'optimal alpha not found', 1)
     WRITE(*,*) 'ERROR in calculating Ewald energy:'
     WRITE(*,*) 'optimal alpha not found'
     STOP 

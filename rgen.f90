@@ -67,7 +67,10 @@ SUBROUTINE rgen ( dtau, rmax, mxr, at, bg, r, r2, nrm )
            ENDDO
            IF (tt<=rmax**2.and.abs (tt) >1.d-10) THEN
               nrm = nrm + 1
-              IF (nrm>mxr) CALL errore ('rgen', 'too many r-vectors', nrm)
+              IF (nrm>mxr) then 
+                WRITE(*,*) 'ERROR in rgen: too many r-vectors', nrm
+                STOP 
+              ENDIF 
               DO ipol = 1, 3
                  r (ipol, nrm) = t (ipol)
               ENDDO

@@ -14,6 +14,8 @@ PROGRAM test_Ewald
   INTEGER :: Narg, N_in
   INTEGER :: iargc
   CHARACTER(64) :: filexyz, arg_N
+  !
+  REAL(8) :: ewald
 
   Narg = iargc()
   IF( Narg /= 2 ) THEN 
@@ -44,6 +46,9 @@ PROGRAM test_Ewald
   CALL init_strfact_shifted()
 
   CALL calc_Ewald()
+
+  WRITE(*,*)
+  WRITE(*,*) 'ewald = ', ewald()
 
   CALL dealloc_LF3d()
   CALL dealloc_atoms()
