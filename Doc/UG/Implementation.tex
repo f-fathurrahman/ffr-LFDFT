@@ -1,8 +1,17 @@
 \section{Implementation}
 
+{\tt ffr-LFDFT} is implemented in simple Fortran language.
+I used global variables heavily, as opposed to using user-defined type
+to contained them. Currently, only one user-defined type is
+used in {\tt ffr-LFDFT}, namely {\tt Ps\_HGH\_Params\_T}
+which is mainly used for convenience.
+I tried to make the code clear for those who are beginners
+in implemeting a density-functional calculations (such as myself).
+
+
 \input{Impl_LF}
 \input{Impl_Atoms}
-\input{Implt_PsPot}
+\input{Impl_PsPot}
 \input{Impl_NLPS_HGH}
 
 
