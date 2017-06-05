@@ -1,8 +1,12 @@
 #include "m_LF3d_supersample.f90"
 #include "init_LF3d_supersample.f90"
 #include "deallocate_LF3d_supersample.f90"
-#include "supersample.f90"
 #include "sinc.f90"
+#include "m_grid_ss_atom.f90"
+#include "init_grid_ss_atom.f90"
+#include "m_grid_atom.f90"
+#include "init_grid_atom.f90"
+#include "supersample.f90"
 
 PROGRAM test_eggbox
 
@@ -75,15 +79,18 @@ PROGRAM test_eggbox
   
   !
   ALLOCATE( V_short_ss(Npoints) )
+  
+  CALL init_grid_atom( center, 3.d0 )
+  CALL init_grid_ss_atom( center, 3.d0 )
+  !
   CALL supersample( V_short, V_short_ss )
-
 
   ix = 1
   iz = 1
   WRITE(*,*) 'ix iz = ', ix, iz
   DO iy = 1,NN(2)
     ip = xyz2lin(ix,iy,iz)
-    WRITE(N_in,'(2F22.12)') lingrid(2,ip), V_short(ip)
+    WRITE(N_in,'(3F22.12)') lingrid(2,ip), V_short(ip), V_short_ss(ip)
   ENDDO 
 
   ! Free memory
