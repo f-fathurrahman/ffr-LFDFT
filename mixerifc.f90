@@ -22,7 +22,7 @@ SUBROUTINE mixerifc( iscl, mtype, n, v, dv, nwork, work )
   ! linear mixing
     IF(nwork <= 0) THEN
       nwork = n
-      return
+      RETURN 
     ENDIF 
     call mixlinear(iscl,beta0,n,v,work,dv)
   CASE(1)
@@ -32,19 +32,19 @@ SUBROUTINE mixerifc( iscl, mtype, n, v, dv, nwork, work )
       RETURN
     ENDIF
     CALL mixadapt(iscl,beta0,betamax,n,v,work,work(n+1),work(2*n+1),dv)
-  case(3)
+  CASE(3)
   ! Broyden mixing
-    if (nwork.le.0) then
+    IF(nwork <= 0) THEN 
       nwork = (4+2*mixsdb)*n+mixsdb**2
-      return
+      RETURN 
     ENDIF
     CALL mixbroyden(iscl,n,mixsdb,broydpm(1),broydpm(2),v,work,work(2*n+1), &
                     work(4*n+1),work((4+mixsdb)*n+1),work((4+2*mixsdb)*n+1),dv)
-  CASE default
+  CASE DEFAULT 
     WRITE(*,*)
     WRITE(*,'("Error(mixerifc): mtype not defined : ",I8)') mtype
     WRITE(*,*)
-    stop
+    STOP 
   END SELECT
   RETURN 
 END SUBROUTINE 

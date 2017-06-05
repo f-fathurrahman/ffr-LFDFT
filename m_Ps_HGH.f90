@@ -22,20 +22,6 @@ MODULE m_Ps_HGH
 
 CONTAINS
 
-!  !----------------------------------------------------------------------------
-!  FUNCTION hgh_eval_proj( psp, l, i, r ) RESULT( pil )
-!  !----------------------------------------------------------------------------
-!    TYPE(Ps_HGH_Params_T) :: psp
-!    INTEGER :: l, i  ! l can be zero, i varies from 1 to 3
-!    REAL(8) :: r
-!    REAL(8) :: pil
-    !
-!    REAL(8) :: num, denum
-    !
-!    num = sqrt(2.d0)*r**(l + 2*(i-1)) * exp( -(r/psp%rc(l))**2 )
-!    denum = (psp%rc(l))**( l + (4*i-1)/2 ) * gamma( dble(l) + (4*i-1)/2.d0 )
-!    pil = num/denum
-!  END FUNCTION
 
   !----------------------------------------------------------------------------
   FUNCTION hgh_eval_Vloc_G_long(p, g) RESULT(Vloc)
@@ -97,6 +83,22 @@ CONTAINS
     ENDIF 
 
   END FUNCTION
+
+
+!  !----------------------------------------------------------------------------
+!  FUNCTION hgh_eval_proj_R( psp, l, i, r ) RESULT( pil )
+!  !----------------------------------------------------------------------------
+!    TYPE(Ps_HGH_Params_T) :: psp
+!    INTEGER :: l, i  ! l can be zero, i varies from 1 to 3
+!    REAL(8) :: r
+!    REAL(8) :: pil
+    !
+!    REAL(8) :: num, denum
+    !
+!    num = sqrt(2.d0)*r**(l + 2*(i-1)) * exp( -(r/psp%rc(l))**2 )
+!    denum = (psp%rc(l))**( l + (4*i-1)/2 ) * gamma( dble(l) + (4*i-1)/2.d0 )
+!    pil = num/denum
+!  END FUNCTION
 
 
   !----------------------------------------------------------------------------

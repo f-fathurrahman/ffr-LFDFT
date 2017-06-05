@@ -1,8 +1,6 @@
 \section{Installation}
 
-Compiling and linking
-
-A {\tt Makefile} is provided. At the topmost part of the
+A manually written {\tt Makefile} is provided. At the topmost part of the
 {\tt Makefile} you need to specify which {\tt make.inc} file you
 want to use. You need to decide which compiler to use if there
 are more than one compiler in you system.
@@ -20,8 +18,22 @@ For typical Linux system, {\tt make.inc.gfortran} is sufficient.
 You can manually edit the compiler options in the corresponding {\tt make.inc}
 files.
 
+There following external libraries are required to build \ffrLFDFT
+\begin{itemize}
+\item BLAS
+\item LAPACK
+\item FFTW3
+\end{itemize}
 
-Command {\tt make} will build the library {\tt libmain.a} and
-command {\tt make main} will build the main executable {\tt ffr\_LFDFT.x}.
+Typing the command
+\begin{minted}{text}
+make
+\end{minted}
+will build the library {\tt libmain.a} and typing
+the command
+\begin{minted}{text}
+make main
+\end{minted}
+will build the main executable {\tt ffr\_LFDFT.x}.
 
 

@@ -8,6 +8,17 @@ which is mainly used for convenience.
 I tried to make the code clear for those who are beginners
 in implemeting a density-functional calculations (such as myself).
 
+The general flow of the main program is as follows:
+\begin{itemize}
+\item Getting program argument as input file and reading the input file
+\item Initializing molecular structure, pseudopotentials, and 
+Lagrange basis functions, including grids
+\item Setting additional options if necessary based on the input file
+\item Initializing electronic states variables
+\item Setting up Hamiltonian: potential and kinetic operators.
+\item Solving the Kohn-Sham equation via direct minimization
+or self-consistent field
+\end{itemize}
 
 \input{Impl_LF}
 \input{Impl_Atoms}

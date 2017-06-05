@@ -33,7 +33,8 @@ PROGRAM ffr_LFDFT
   CALL info_atoms()
   CALL info_PsPot()
   CALL info_LF3d()
-  
+ 
+  ! needs LF3d to be initialized first
   CALL init_betaNL()
 
   ! Initialize occupation numbers

@@ -26,6 +26,10 @@
 %\BeforeBeginEnvironment{minted}{\begin{mdframed}[backgroundcolor=mintedbg]}
 %\AfterEndEnvironment{minted}{\end{mdframed}}
 
+\newcommand{\ffrLFDFT}{{\tt ffr-LFDFT}\,}
+\newcommand{\ffrmain}{{\tt ffr\_LFDFT.x}\,}
+
+
 \begin{document}
 
 \title{User Guide for {\ttfamily ffr-LFDFT}}
@@ -59,8 +63,11 @@ In LF3d periodic, only gamma-point sampling is used.
 \input{Install}
 \input{Usage}
 \input{KS_eq}
-\input{LF_basis}
 \input{Implementation}
+
+\appendix
+
+\input{LF_basis}
 
 \end{document}
 
