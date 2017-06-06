@@ -41,11 +41,7 @@ CONTAINS
       Vloc = -(4.d0*PI*p%zval/g**2) * exp( -g2/2.d0)
     ELSE 
 
-      !WRITE(*,*) 'hgh_eval_Vloc_G_long: small G = ', g
       Vloc = 2.d0*PI * p%rlocal**2 * p%zval
-      !Vloc = 0.d0
-      !WRITE(*,*) 'Vloc = ', Vloc
-
     ENDIF 
 
   END FUNCTION
@@ -74,11 +70,8 @@ CONTAINS
                 p%c(4)*(105.d0 - 105.d0*g2 + 21.d0*g4 - g6) )
     ELSE 
 
-      !WRITE(*,*) 'hgh_eval_Vloc_G: small G = ', g
       Vloc = 2.d0*PI * p%rlocal**2 * p%zval + (2.d0*PI)**(1.5d0) * p%rlocal**3 * & 
              ( p%c(1) + 3.d0*p%c(2) + 15.d0*p%c(3) + 105.d0*p%c(4) )
-      !Vloc = 0.d0
-      !WRITE(*,*) 'Vloc = ', Vloc
 
     ENDIF 
 

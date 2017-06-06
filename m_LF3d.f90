@@ -8,10 +8,10 @@ MODULE m_LF3d
 
   INTEGER :: LF3d_TYPE
 
-  INTEGER, DIMENSION(3) :: LF3d_NN
-  REAL(8), DIMENSION(3) :: LF3d_LL
-  REAL(8), DIMENSION(3) :: LF3d_AA, LF3d_BB
-  REAL(8), DIMENSION(3) :: LF3d_hh
+  INTEGER :: LF3d_NN(3)
+  REAL(8) :: LF3d_LL(3)
+  REAL(8) :: LF3d_AA(3), LF3d_BB(3)
+  REAL(8) :: LF3d_hh(3)
 
   INTEGER :: LF3d_Npoints
   REAL(8) :: LF3d_dVol

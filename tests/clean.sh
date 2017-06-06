@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rm -vf *.x *.o
+rm -vf *.x *.o *.mod
