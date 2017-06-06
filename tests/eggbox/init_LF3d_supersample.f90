@@ -9,6 +9,7 @@ SUBROUTINE init_LF3d_supersample( Nsupersample_ )
   !! Local
   INTEGER :: Nx, Ny, Nz
   INTEGER :: i, j, k, ip
+  REAL(8), ALLOCATABLE :: grid_x_ss(:), grid_y_ss(:), grid_z_ss(:)
 
   ! Shortcuts
   Nx = LF3d_NN(1)
@@ -23,13 +24,13 @@ SUBROUTINE init_LF3d_supersample( Nsupersample_ )
   LF3d_hh_ss(3) = LF3d_hh(3)/Nsupersample
 
   ! Initialize grid points
-  ALLOCATE( LF3d_grid_x_ss( Nsupersample*Nx ) )
-  ALLOCATE( LF3d_grid_y_ss( Nsupersample*Ny ) )
-  ALLOCATE( LF3d_grid_z_ss( Nsupersample*Nz ) )
+  ALLOCATE( grid_x_ss( Nsupersample*Nx ) )
+  ALLOCATE( grid_y_ss( Nsupersample*Ny ) )
+  ALLOCATE( grid_z_ss( Nsupersample*Nz ) )
   !
-  CALL init_grid_1d_p( Nsupersample*Nx, AA(1), BB(1), LF3d_grid_x_ss )
-  CALL init_grid_1d_p( Nsupersample*Ny, AA(2), BB(2), LF3d_grid_y_ss )
-  CALL init_grid_1d_p( Nsupersample*Nz, AA(3), BB(3), LF3d_grid_z_ss )
+  CALL init_grid_1d_p( Nsupersample*Nx, AA(1), BB(1), grid_x_ss )
+  CALL init_grid_1d_p( Nsupersample*Ny, AA(2), BB(2), grid_y_ss )
+  CALL init_grid_1d_p( Nsupersample*Nz, AA(3), BB(3), grid_z_ss )
 
   !
   ! 3D mapping stuffs
@@ -42,15 +43,19 @@ SUBROUTINE init_LF3d_supersample( Nsupersample_ )
     DO j = 1, Ny*Nsupersample
       DO i = 1, Nx*Nsupersample
         ip = ip + 1
-        LF3d_lingrid_ss( 1, ip ) = LF3d_grid_x_ss(i)
-        LF3d_lingrid_ss( 2, ip ) = LF3d_grid_y_ss(j)
-        LF3d_lingrid_ss( 3, ip ) = LF3d_grid_z_ss(k)
+        LF3d_lingrid_ss( 1, ip ) = grid_x_ss(i)
+        LF3d_lingrid_ss( 2, ip ) = grid_y_ss(j)
+        LF3d_lingrid_ss( 3, ip ) = grid_z_ss(k)
         !
         LF3d_xyz2lin_ss( i, j, k ) = ip
         LF3d_lin2xyz_ss( 1:3, ip ) = (/ i, j, k /)
       ENDDO
     ENDDO
   ENDDO
+
+  DEALLOCATE( grid_x_ss )
+  DEALLOCATE( grid_y_ss )
+  DEALLOCATE( grid_z_ss )
 
   WRITE(*,*) 'Supersampling info:'
   WRITE(*,*) 'Nsupersample = ', Nsupersample

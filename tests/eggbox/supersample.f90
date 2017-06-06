@@ -3,10 +3,7 @@ SUBROUTINE supersample( fin, fout )
                      lingrid => LF3d_lingrid, &
                      LL => LF3d_LL, &
                      hh => LF3d_hh
-  USE m_LF3d_supersample, ONLY : grid_x_ss => LF3d_grid_x_ss, &
-                                 grid_y_ss => LF3d_grid_y_ss, &
-                                 grid_z_ss => LF3d_grid_z_ss, &
-                                 lingrid_ss => LF3d_lingrid_ss, &
+  USE m_LF3d_supersample, ONLY : lingrid_ss => LF3d_lingrid_ss, &
                                  Npoints_ss => LF3d_Npoints_ss, &
                                  Nsupersample
   USE m_Ps_HGH, ONLY : hgh_eval_Vloc_R_short
