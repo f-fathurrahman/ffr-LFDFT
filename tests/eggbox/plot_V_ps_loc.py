@@ -6,7 +6,7 @@ def do_print(N):
     Vpot = np.loadtxt('fort.' + str(N) )
     plt.clf()
     plt.plot( Vpot[:,0], Vpot[:,1], marker='o', label='V_short' )
-    plt.plot( Vpot[:,0], Vpot[:,2]+1.0, marker='o', label='V_short ss' )
+    plt.plot( Vpot[:,0], Vpot[:,2], marker='o', label='V_short ss' )
     plt.grid()
     plt.xlim(3.0,13.0)
     plt.legend()

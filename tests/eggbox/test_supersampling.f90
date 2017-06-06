@@ -16,7 +16,7 @@ PROGRAM test_eggbox
                      Npoints => LF3d_Npoints, &
                      LL => LF3d_LL
   USE m_atoms, ONLY : atpos => AtomicCoords
-  USE m_constants, ONLY : ANG2BOHR, PI
+  USE m_constants, ONLY : ANG2BOHR, PI, EPS_SMALL
   USE m_PsPot, ONLY : Ps => Ps_HGH_Params
   USE m_Ps_HGH, ONLY : hgh_eval_Vloc_R_short
   !
@@ -74,14 +74,17 @@ PROGRAM test_eggbox
     CALL calc_dr_periodic_1pnt( LL, center, lingrid(:,ip), dr_vec )
     dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
     V_short(ip) = hgh_eval_Vloc_R_short( Ps(isp), dr ) 
+    IF( V_short(ip) > EPS_SMALL ) THEN 
+      WRITE(*,*) 'Positive value: ', ip, dr, V_short(ip)
+    ENDIF 
   ENDDO 
   WRITE(*,*) 'sum(V_short) = ', sum(V_short)
   
   !
   ALLOCATE( V_short_ss(Npoints) )
   
-  CALL init_grid_atom( center, 3.d0 )
-  CALL init_grid_ss_atom( center, 3.d0 )
+  CALL init_grid_atom( center, 1.5d0 )
+  CALL init_grid_ss_atom( center, 2.d0 )
   !
   CALL supersample( V_short, V_short_ss )
 
