@@ -22,6 +22,10 @@ SUBROUTINE update_potentials()
 
   V_xc(:) = epsxc(:) + Rhoe(:)*depsxc(:)
 
+!  WRITE(*,*) 'sum(epsxc) = ', sum(epsxc)
+!  WRITE(*,*) 'sum(V_xc) = ', sum(V_xc)
+!  WRITE(*,*) 'sum(V_Hartree) = ', sum(V_Hartree)
+
   DEALLOCATE( epsxc )
   DEALLOCATE( depsxc )
 

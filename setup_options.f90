@@ -11,7 +11,7 @@ SUBROUTINE setup_options()
 
   !
   SELECT CASE( KS_Solve )
-  CASE( 'Emin_PCG', 'Emin_pcg', 'Emin-PCG', 'Emin-pcg' )
+  CASE( 'Emin_PCG', 'Emin_pcg', 'Emin-PCG', 'Emin-pcg', 'Emin_cg' )
     I_KS_SOLVE = 1
   CASE( 'SCF', 'scf' )
     I_KS_SOLVE = 2

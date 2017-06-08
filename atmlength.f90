@@ -32,11 +32,11 @@
 !!
 !! SOURCE
 
-subroutine atmlength(densty,length,zion,znucl)
+SUBROUTINE atmlength(densty,length,zion,znucl)
 
-  implicit none
-  integer, parameter :: DP=8
-  real(8), parameter :: tol10  = 1.0d-8
+  IMPLICIT NONE
+  INTEGER, PARAMETER :: DP=8
+  REAL(8), PARAMETER :: tol10  = 1.0d-8
 
 !Arguments ------------------------------------
 !scalars
@@ -45,7 +45,7 @@ subroutine atmlength(densty,length,zion,znucl)
 
 !Local variables-------------------------------
 !scalars
- integer :: nval
+ INTEGER :: nval
  real(dp) :: coreel
 !arrays
  real(dp) :: data_length(16)
@@ -53,9 +53,10 @@ subroutine atmlength(densty,length,zion,znucl)
 ! *************************************************************************
 
 !Either use the input value, or the default value, tabulated now.
- if(abs(densty)>tol10)then
+ if(abs(densty)>tol10)THEN
+   WRITE(*,*) 'Pass here ..'
    length=densty
- else
+ ELSE
 
 !  Count the number of core electrons.
    coreel=znucl-zion
@@ -127,9 +128,9 @@ subroutine atmlength(densty,length,zion,znucl)
      length=.8_dp
      if(nval<=12)length=data_length(nval)
 
-   end if
+   ENDIF 
 
 !  End the choice between default and no-default
- end if
+ ENDIF 
 
 end subroutine atmlength

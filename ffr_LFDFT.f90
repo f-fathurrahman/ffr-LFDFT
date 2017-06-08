@@ -10,7 +10,7 @@ PROGRAM ffr_LFDFT
   IMPLICIT NONE 
   INTEGER :: Narg
   CHARACTER(64) :: filein
-  INTEGER :: ip, ist
+  INTEGER :: ist
   INTEGER :: iargc  ! pgf90 
   INTEGER :: tstart, counts_per_second, tstop
 
@@ -61,17 +61,14 @@ PROGRAM ffr_LFDFT
     CALL dealloc_nabla2_sparse()
   ENDIF 
 
+  ! Guess density
+  CALL gen_guess_rho_gaussian()
+
   ! Manually allocate KS eigenvectors and eigenvalues
   ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
 
-  ! Initialize to random wavefunction
-  DO ist = 1, Nstates
-    DO ip = 1, Npoints
-      CALL random_number( evecs(ip,ist) )
-    ENDDO
-  ENDDO
-  CALL orthonormalize( Nstates, evecs )
-
+  CALL gen_random_evecs()
+  CALL gen_gaussian_evecs()
 
   IF( I_KS_SOLVE == 1 ) THEN 
 

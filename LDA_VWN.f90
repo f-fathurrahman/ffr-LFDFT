@@ -30,6 +30,7 @@ SUBROUTINE excVWN( Npts, rho, epsxc )
   REAL(8), PARAMETER :: b = 3.72744d0
   REAL(8), PARAMETER :: c = 12.9352d0
   REAL(8) :: Q, XX0
+  INTEGER :: ip
 
   X1 = 0.75d0*(3.d0/(2.d0*PI))**(2.d0/3.d0)  ! quick fix for sunf95
 
@@ -39,7 +40,11 @@ SUBROUTINE excVWN( Npts, rho, epsxc )
   Q = sqrt(4.0*c - b*b)
   XX0 = x0*x0 + b*x0 + c
   !
-  rs = (4.0*PI/3*rho)**(-1.0/3.0) ! Added internal conversion to rs
+  !rs = (4.0*PI/3*rho)**(-1.0/3.0) ! Added internal conversion to rs
+  DO ip = 1,Npts
+    rs(ip) = (4.0*PI/3*rho(ip))**(-1.0/3.0) ! Added internal conversion to rs
+  ENDDO 
+!  WRITE(*,*) 'sum(rs) = ', sum(rs)
   x = sqrt(rs)
   XX = x*x + b*x + c
   !

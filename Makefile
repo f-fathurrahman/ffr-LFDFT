@@ -1,6 +1,6 @@
 #include platform/make.inc.ifort
-#include platform/make.inc.gfortran
-include platform/make.inc.g95
+include platform/make.inc.gfortran
+#include platform/make.inc.g95
 #include platform/make.inc.pgi
 #include platform/make.inc.sun
 
@@ -111,7 +111,10 @@ calc_Ewald_qe.f90 \
 rgen.f90 \
 hpsort.f90 \
 atmlength.f90 \
-atom_znucl.f90
+atom_znucl.f90 \
+gen_guess_rho_gaussian.f90 \
+gen_random_evecs.f90 \
+gen_gaussian_evecs.f90
 
 
 SPARSKIT_SRC = \
