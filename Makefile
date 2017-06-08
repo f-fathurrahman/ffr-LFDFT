@@ -109,7 +109,9 @@ interp_LF1d_p.f90 \
 interp_LF3d_p.f90 \
 calc_Ewald_qe.f90 \
 rgen.f90 \
-hpsort.f90
+hpsort.f90 \
+atmlength.f90 \
+atom_znucl.f90
 
 
 SPARSKIT_SRC = \
