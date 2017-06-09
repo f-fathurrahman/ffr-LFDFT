@@ -1,4 +1,4 @@
-SUBROUTINE gen_gaussian_G( center, alpha, V_gauss )
+SUBROUTINE gen_rho_G( center, length, rho_gauss )
 
   USE m_constants, ONLY : PI
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
@@ -12,11 +12,11 @@ SUBROUTINE gen_gaussian_G( center, alpha, V_gauss )
   IMPLICIT NONE 
   !
   REAL(8) :: center(3)
-  REAL(8) :: alpha
-  REAL(8) :: V_gauss(Npoints)
+  REAL(8) :: length
+  REAL(8) :: rho_gauss(Npoints)
   !
   INTEGER :: ip, Nx, Ny, Nz, ig
-  REAL(8) :: Omega
+  REAL(8) :: Omega, ff
   REAL(8) :: GX, shiftx, shifty, shiftz
   INTEGER :: Ngvec
   COMPLEX(8), ALLOCATABLE :: ctmp(:)
@@ -43,18 +43,23 @@ SUBROUTINE gen_gaussian_G( center, alpha, V_gauss )
     strf(ig) = strf(ig) + cmplx( cos(GX), -sin(GX), kind=8 )
   ENDDO 
 
-  V_gauss(:) = 0.d0
+  rho_gauss(:) = 0.d0
 
   ctmp(:) = cmplx(0.d0,0.d0,kind=8)
   DO ig = 2,Ngvec
-    ctmp(ig) = (PI/alpha)**(3.d0/2.d0) * exp(-0.25d0*G2(ig)/alpha) * strf(ig) / Omega
+    ctmp(ig) = exp(-length**2*G2(ig)) * strf(ig) / Omega
   ENDDO
 
   ! inverse FFT: G -> R
   CALL fft_fftw3( ctmp, Nx, Ny, Nz, .true. )
   ! XXX: Move this outside isp loop ?
   DO ip = 1,Npoints
-    V_gauss(ip) = real( ctmp(ip), kind=8 )
+    ff = real(ctmp(ip),kind=8)
+    IF( ff > 0.d0 ) THEN 
+      rho_gauss(ip) = ff
+    ELSE 
+      rho_gauss(ip) = 0.d0
+    ENDIF 
   ENDDO 
 
   DEALLOCATE( ctmp )

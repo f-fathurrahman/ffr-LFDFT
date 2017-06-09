@@ -46,7 +46,7 @@ PROGRAM test_gaussian_G
   BB = (/ 16.d0, 16.d0, 16.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
 
-  !
+  ! Generate Gaussian density
   ALLOCATE( V_gauss(Npoints) )
   WRITE(*,*) 'alpha = ', alpha
   CALL gen_gaussian_G( center, alpha, V_gauss )

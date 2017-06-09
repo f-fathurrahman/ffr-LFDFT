@@ -12,7 +12,7 @@ SUBROUTINE gen_guess_rho_gaussian()
   USE m_constants, ONLY : EPS_SMALL
   IMPLICIT NONE 
   INTEGER :: ip, isp, Nx, Ny, Nz, Ngvec, ig
-  REAL(8) :: Gm, Omega, ff
+  REAL(8) :: Omega, ff
   REAL(8) :: length, znucl, zion, integRho
   COMPLEX(8), ALLOCATABLE :: ctmp(:)
   REAL(8) :: atom_znucl
@@ -43,7 +43,6 @@ SUBROUTINE gen_guess_rho_gaussian()
 
     ctmp(:) = cmplx(0.d0,0.d0,kind=8)
     DO ig = 1,Ngvec
-      Gm = sqrt(G2(ig))
       ctmp(ig) = exp(-length**2*G2(ig)) * strf(ig,isp) / Omega
     ENDDO
 
