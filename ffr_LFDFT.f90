@@ -85,9 +85,9 @@ PROGRAM ffr_LFDFT
 
   ELSEIF( I_KS_SOLVE == 2 ) THEN 
     ! Initial Rhoe and potentials
-    CALL calc_rhoe( Focc, evecs )
-    CALL update_potentials()
-    CALL KS_solve_SCF()
+    !CALL calc_rhoe( Focc, evecs )
+    !CALL update_potentials()
+    CALL KS_solve_SCF_v2()
     !
     CALL info_energies()
 

@@ -16,7 +16,7 @@
 /
 
 &ELECTRONS
-  KS_Solve = 'Emin_pcg'
+  KS_Solve = 'scf'
   cg_beta = 'DY'
   electron_maxstep = 150
   mixing_beta = 0.5

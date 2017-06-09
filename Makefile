@@ -114,7 +114,8 @@ atmlength.f90 \
 atom_znucl.f90 \
 gen_guess_rho_gaussian.f90 \
 gen_random_evecs.f90 \
-gen_gaussian_evecs.f90
+gen_gaussian_evecs.f90 \
+KS_solve_SCF_v2.f90
 
 
 SPARSKIT_SRC = \
