@@ -1,0 +1,33 @@
+&CONTROL
+  pseudo_dir = '../../HGH'
+  etot_conv_thr = 1.0d-6
+/
+
+&SYSTEM
+  ibrav = 8
+  nat = 1
+  ntyp = 1
+  A = 8.4668d0
+  B = 8.4668d0
+  C = 8.4668d0
+  nr1 = 55
+  nr2 = 55
+  nr3 = 55
+/
+
+&ELECTRONS
+  KS_Solve = 'Emin_pcg'
+  cg_beta = 'DY'
+  electron_maxstep = 150
+  mixing_beta = 0.1
+  diagonalization = 'LOBPCG'
+/
+
+ATOMIC_SPECIES
+Be   4.0  Be.hgh
+
+ATOMIC_POSITIONS angstrom
+Be   0.0  0.0  0.0
+
+
+

@@ -1,0 +1,155 @@
+ Using default values for I_ALG_DIAG =  1
+
+         Atoms Information
+         -----------------
+
+ Natoms   =  1
+ Nspecies =  1
+
+ Valence information:
+ H         1.000
+
+ Atomic coordinates: (in bohr)
+
+ H          9.4486299450      9.4486299450      9.4486299450
+
+         Pseudopotential Information
+         ---------------------------
+
+ Species: H
+ Pseudopotential file: ../../HGH/H.hgh
+
+ atom_name = H
+ zval =     1
+ lmax =    -1
+
+ Local pseudopotential parameters:
+
+ rlocal =       0.2000000000
+
+ c (for local potential ) = 
+          1     -4.1802370000
+          2      0.7250750000
+          3      0.0000000000
+          4      0.0000000000
+
+         LF3d Grid Information
+         ---------------------
+
+ Type: PERIODIC
+
+ Box size            =   15.11781  15.11781  15.11781
+ Grid spacing        =    0.33595   0.33595   0.33595
+ Sampling Nx, Ny, Nz =    45   45   45
+ Number of points    =      91125
+ dVol                =    0.03792
+
+ Some grid points in x, y, and z directions:
+
+        1   0.16798       1   0.16798       1   0.16798
+        2   0.50393       2   0.50393       2   0.50393
+       ..   .......      ..   .......      ..   .......
+       44  14.61388      44  14.61388      44  14.61388
+       45  14.94983      45  14.94983      45  14.94983
+
+ Some G2 values
+
+          1   0.00000
+          2   0.17274
+        ...   .......
+      91124   1.03641
+      91125   0.51821
+
+ Initializing betaNL functions
+
+ Number of electrons =            1.00000
+ Nstates =        1
+ WARNING: Odd number of electrons =  1
+
+ Initial occupation numbers
+        1           1.00000
+
+ Calculating structure factor: shifted to Fourier grid
+
+ Calculating Ewald energy (E_nn)
+
+ Using the following parameters for Gaussian charge densities:
+ H         0.250
+ center =       7.5589039560      7.5589039560      7.5589039560
+
+ H            =       1.0001073801
+ Total intrho =       1.0001073801
+
+ E_nn         =      -0.0892882106
+
+ V_ps_loc is initialized via G-space
+
+ Initializing nabla2_sparse
+ Memory required for nabla2_sparse: 0.13578683510422707  GB
+ ip  =  12119625
+ NNZ =  12119625
+
+ ILU0 preconditioner is based on kinetic matrix
+
+ Minimizing KS total energy functional using PCG algorithm
+ ---------------------------------------------------------
+
+ NiterMax =  1000
+ alpha_t  =  0.00003
+ restart  =  F
+
+ Using Polak-Ribiere formula
+
+ KS_solve_Emin_pcg: memGB =  0.005431473255157471
+
+     1      1.8485888506  8.8866077706E+00
+ beta is smaller than zero:      -0.1882857623: setting it to zero
+     2     -0.0280800861  1.8766689368E+00
+ beta is smaller than zero:      -0.1464412856: setting it to zero
+     3     -0.1543499594  1.2626987324E-01
+     4     -0.1633863405  9.0363811234E-03
+     5     -0.1757764585  1.2390117969E-02
+     6     -0.2120455387  3.6269080254E-02
+     7     -0.2730134362  6.0967897518E-02
+ beta is smaller than zero:      -0.1616404448: setting it to zero
+     8     -0.3882025591  1.1518912286E-01
+     9     -0.4216599044  3.3457345341E-02
+    10     -0.4295258369  7.8659324715E-03
+    11     -0.4337052525  4.1794156088E-03
+    12     -0.4355430466  1.8377941352E-03
+    13     -0.4374210175  1.8779708979E-03
+    14     -0.4386601710  1.2391534072E-03
+    15     -0.4395932943  9.3312336291E-04
+    16     -0.4400589143  4.6561994577E-04
+    17     -0.4403132736  2.5435935791E-04
+    18     -0.4404117256  9.8451971078E-05
+    19     -0.4404711565  5.9430891138E-05
+    20     -0.4405046666  3.3510142061E-05
+    21     -0.4405240849  1.9418270932E-05
+    22     -0.4405351429  1.1058040922E-05
+    23     -0.4405417435  6.6005559543E-06
+    24     -0.4405452530  3.5095543140E-06
+    25     -0.4405471591  1.9060032141E-06
+    26     -0.4405480765  9.1745677921E-07
+    27     -0.4405484636  3.8708071531E-07
+    28     -0.4405486712  2.0762728287E-07
+    29     -0.4405487699  9.8661072812E-08
+ KS_solve_Emin_pcg converged in iter 29
+
+ Energy components:
+
+ Kinetic  =       0.4200831740
+ Local PS =      -0.7299116851
+ NL PS    =       0.0000000000
+ Hartree  =       0.1903767523
+ XC       =      -0.2318088005
+ NN       =      -0.0892882106
+ -----------------------------
+ Total    =      -0.4405487699
+
+ Final eigenvalues (Ha and eV)
+
+        1     -0.2312890728     -6.2937457321
+
+ Total elapsed time:  14.764  seconds.
+
