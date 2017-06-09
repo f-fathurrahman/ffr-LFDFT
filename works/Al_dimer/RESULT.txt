@@ -1,0 +1,15 @@
+ SCF converged at    20 iterations.
+ 
+ Energy components:
+ 
+ Kinetic  =       1.8483171386
+ Local PS =      -7.9606146261
+ NL PS    =       1.3086973884
+ Hartree  =       2.6405158991
+ XC       =      -1.4429124694
+ NN       =       0.0212940394
+ -----------------------------
+ Total    =      -3.5847026299
+ 
+ Total elapsed time:  22.385  seconds.
+

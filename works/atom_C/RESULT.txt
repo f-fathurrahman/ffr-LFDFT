@@ -1,0 +1,41 @@
+ SCF converged at    21 iterations.
+ 
+ Energy components:
+ 
+ Kinetic  =       3.3834160455
+ Local PS =      -9.5427868547
+ NL PS    =       0.6542069420
+ Hartree  =       3.0097699588
+ XC       =      -1.4078016031
+ NN       =      -1.4191337647
+ -----------------------------
+ Total    =      -5.3223292762
+ 
+ Total elapsed time:  13.794  seconds.
+
+-------------------------------------------------
+
+ (Dai Yuan)
+
+ KS_solve_Emin_pcg converged in iter 86
+ 
+ Energy components:
+ 
+ Kinetic  =       3.3837134871
+ Local PS =      -9.5431240490
+ NL PS    =       0.6541174970
+ Hartree  =       3.0099404943
+ XC       =      -1.4078801087
+ NN       =      -1.4191337647
+ -----------------------------
+ Total    =      -5.3223664440
+ 
+ Final eigenvalues (Ha and eV)
+ 
+        1     -0.4907311022    -13.3535784609
+        2     -0.1720208620     -4.6809628891
+ 
+ Total elapsed time:  29.633  seconds.
+
+-----------------------------------------------------
+
