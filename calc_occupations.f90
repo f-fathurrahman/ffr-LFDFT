@@ -1,10 +1,12 @@
 ! nocc --> Nelectrons
 ! nev --> Nstates
 
-SUBROUTINE calc_occupations( evals, Tbeta, efermi )
+SUBROUTINE calc_occupations( Nstates, Nelectrons, Focc, evals, Tbeta, efermi )
 
-  USE m_states, ONLY : Nstates, Focc, Nelectrons
   IMPLICIT NONE 
+  INTEGER :: Nstates
+  REAL(8) :: Nelectrons
+  REAL(8) :: Focc(Nstates)
   REAL(8) :: evals(Nstates)
   REAL(8) :: Tbeta
   REAL(8) :: efermi

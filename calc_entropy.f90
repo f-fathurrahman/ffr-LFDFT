@@ -1,7 +1,7 @@
-FUNCTION calc_entropy( Focc, Tbeta ) RESULT(e)
+FUNCTION calc_entropy( Nstates, Focc, Tbeta ) RESULT(e)
   USE m_constants, ONLY : EPS_SMALL
-  USE m_states, ONLY : Nstates
   IMPLICIT NONE 
+  INTEGER :: Nstates
   REAL(8) :: Focc(Nstates)
   REAL(8) :: Tbeta
   INTEGER :: ist
