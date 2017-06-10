@@ -73,7 +73,6 @@ PROGRAM ffr_LFDFT
   IF( I_KS_SOLVE == 1 ) THEN 
 
     CALL KS_solve_Emin_pcg( 3.d-5, .FALSE. )
-    !CALL KS_solve_Emin_pcg( 3.d-5, 1000, .TRUE. )
     CALL info_energies()
     CALL calc_evals( Nstates, Focc, evecs, evals )
     WRITE(*,*)
