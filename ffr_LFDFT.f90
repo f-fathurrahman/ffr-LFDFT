@@ -75,12 +75,6 @@ PROGRAM ffr_LFDFT
     CALL KS_solve_Emin_pcg( 3.d-5, .FALSE. )
     CALL info_energies()
     CALL calc_evals( Nstates, Focc, evecs, evals )
-    WRITE(*,*)
-    WRITE(*,*) 'Final eigenvalues (Ha and eV)'
-    WRITE(*,*)
-    DO ist = 1,Nstates
-      WRITE(*,'(1x,I8,2F18.10)') ist, evals(ist), evals(ist)*2.d0*Ry2eV
-    ENDDO
 
   ELSEIF( I_KS_SOLVE == 2 ) THEN 
     ! Initial Rhoe and potentials
@@ -91,6 +85,13 @@ PROGRAM ffr_LFDFT
     CALL info_energies()
 
   ENDIF 
+  
+  WRITE(*,*)
+  WRITE(*,*) 'Final eigenvalues (Ha and eV)'
+  WRITE(*,*)
+  DO ist = 1,Nstates
+    WRITE(*,'(1x,I8,2F18.10)') ist, evals(ist), evals(ist)*2.d0*Ry2eV
+  ENDDO
 
   !
   DEALLOCATE( evecs, evals )
