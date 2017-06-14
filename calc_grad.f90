@@ -36,6 +36,7 @@ SUBROUTINE calc_grad( Ncols, v, grad )
       grad(:,ic) = grad(:,ic) - ddot( Npoints, v(:,icc),1, Hv(:),1 )*v(:,icc)*dVol
     ENDDO
     grad(:,ic) = Focc(ic)*grad(:,ic)
+!    grad(:,ic) = grad(:,ic)
   ENDDO
 
   DEALLOCATE( Hv )

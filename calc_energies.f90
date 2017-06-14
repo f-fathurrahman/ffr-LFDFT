@@ -18,7 +18,7 @@ SUBROUTINE calc_energies( psi )
 
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
-  USE m_states, ONLY : Nstates, Focc
+  USE m_states, ONLY : Nstates, Focc, Nstates_occ
   USE m_hamiltonian, ONLY : V_ps_loc, V_Hartree, Rhoe, betaNL_psi
   USE m_atoms, ONLY : atm2species, Natoms
   USE m_PsPot, ONLY : prj2beta, Ps => Ps_HGH_Params
@@ -45,7 +45,7 @@ SUBROUTINE calc_energies( psi )
   E_xc      = 0.d0
 
   ! assume all states are occupied
-  DO ist = 1, Nstates
+  DO ist = 1, Nstates_occ
     CALL op_nabla2( psi(:,ist), nabla2_psi(:) )
     E_kinetic = E_kinetic + Focc(ist) * (-0.5d0) * ddot( Npoints, psi(:,ist),1, nabla2_psi(:),1 ) * dVol
   ENDDO
@@ -59,7 +59,7 @@ SUBROUTINE calc_energies( psi )
 
   !
   E_ps_NL = 0.d0
-  DO ist = 1,Nstates
+  DO ist = 1,Nstates_occ
     enl1 = 0.d0
     DO ia = 1,Natoms
       isp = atm2species(ia)

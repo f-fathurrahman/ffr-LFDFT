@@ -20,7 +20,7 @@ SUBROUTINE Sch_solve_diag()
 
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
-  USE m_states, ONLY : Nstates, Focc, &
+  USE m_states, ONLY : Nstates, Focc, Nstates_occ, &
                        evecs => KS_evecs, &
                        evals => KS_evals
   USE m_options, ONLY : ethr => ETHR_EVALS, I_ALG_DIAG
