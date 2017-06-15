@@ -2,6 +2,7 @@
 *.swo
 *~
 
+structures/
 olds/
 sandbox/
 compare_cg/
