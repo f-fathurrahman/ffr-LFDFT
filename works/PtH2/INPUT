@@ -5,8 +5,8 @@
 
 &SYSTEM
   ibrav = 8
-  nat = 2
-  ntyp = 1
+  nat = 3
+  ntyp = 2
   A = 8.4668d0
   B = 8.4668d0
   C = 8.4668d0
@@ -19,16 +19,15 @@
   KS_Solve = 'scf'
   cg_beta = 'DY'
   electron_maxstep = 150
-  mixing_beta = 0.1
+  mixing_beta = 0.5
   diagonalization = 'LOBPCG'
 /
 
 ATOMIC_SPECIES
+Pt   1.0  Pt.hgh
 H    1.0  H.hgh
 
 ATOMIC_POSITIONS angstrom
-H    0.0  0.0  0.0
-H    1.5  0.0  0.0
-
-
-
+Pt     4.23341768       4.79623268       4.23341768
+H      5.26791768       3.67073268       4.23341768
+H      3.19891768       3.67060268       4.23341768

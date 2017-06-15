@@ -61,8 +61,9 @@ SUBROUTINE KS_solve_SCF_v2()
 
     CALL mixerifc( iterSCF, 1, Npoints, Rhoe, dr2, nwork, workmix )
 
+    CALL normalize_rhoe( Npoints, Rhoe )  ! make sure no negative or very small rhoe
+
     integRho = sum(Rhoe)*dVol
-    !WRITE(*,'(1x,A,F18.10)') 'After mix: integRho = ', integRho
     IF( abs(integRho - Nelectrons) > 1.0d-6 ) THEN
       WRITE(*,'(1x,A,ES18.10)') 'WARNING: diff after mix rho = ', abs(integRho-Nelectrons)
       WRITE(*,*) 'Rescaling Rho'
@@ -75,7 +76,7 @@ SUBROUTINE KS_solve_SCF_v2()
     CALL update_potentials()
     CALL calc_betaNL_psi( Nstates, evecs )
     CALL calc_energies( evecs ) ! update the potentials or not ?
-
+    
     dEtot = abs(Etot - Etot_old)
 
     IF( dEtot < 1d-7) THEN 
