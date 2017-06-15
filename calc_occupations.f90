@@ -30,6 +30,7 @@ SUBROUTINE calc_occupations( Nstates, Nelectrons, Focc, evals, Tbeta, efermi )
     iub = int(Nelectrons) + 1
     lb = evals(ilb)
     ub = evals(iub)
+    WRITE(*,*) 'lb, ub = ', lb, ub
     !
     ! make sure flb < Nelectrons and fub > Nelectrons
     !
@@ -43,6 +44,8 @@ SUBROUTINE calc_occupations( Nstates, Nelectrons, Focc, evals, Tbeta, efermi )
 
       WRITE(*,*) 'calc_occupations initial bounds are off'
       WRITE(*,*) 'flb, fub, nocc = ', flb, fub, Nelectrons
+
+!      STOP 
 
       IF( flb > Nelectrons ) THEN 
         IF( ilb > 1 ) THEN 
