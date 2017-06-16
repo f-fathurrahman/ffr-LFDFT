@@ -61,7 +61,7 @@ SUBROUTINE calc_occupations( Nstates, Nelectrons, Focc, evals, Tbeta, efermi )
       ENDIF 
       
       IF( fub < Nelectrons ) THEN 
-        IF( iub < int(Nstates) ) THEN 
+        IF( iub < Nstates ) THEN 
           iub = iub + 1
           ub  = evals(iub)
           CALL fermi_dirac( Nstates, evals, ub, Tbeta, Focc_ub )
