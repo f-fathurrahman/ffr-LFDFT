@@ -12,7 +12,7 @@ SUBROUTINE calc_occupations( Nstates, Nelectrons, Focc, evals, Tbeta, efermi )
   REAL(8) :: efermi
   !
   REAL(8), PARAMETER :: TOL = 1d-15
-  INTEGER, PARAMETER :: MAXITER = 100
+  INTEGER, PARAMETER :: MAXITER = 2
   INTEGER :: ilb, ulb, iter, iub, ist
   REAL(8) :: lb, ub, flb, fub
   REAL(8), ALLOCATABLE :: Focc_ub(:), Focc_lb(:)
@@ -30,7 +30,8 @@ SUBROUTINE calc_occupations( Nstates, Nelectrons, Focc, evals, Tbeta, efermi )
     iub = int(Nelectrons) + 1
     lb = evals(ilb)
     ub = evals(iub)
-    WRITE(*,*) 'lb, ub = ', lb, ub
+    WRITE(*,*) 'lb = ', lb
+    WRITE(*,*) 'ub = ', ub
     !
     ! make sure flb < Nelectrons and fub > Nelectrons
     !
@@ -43,7 +44,8 @@ SUBROUTINE calc_occupations( Nstates, Nelectrons, Focc, evals, Tbeta, efermi )
     DO WHILE( (Nelectrons-flb)*(fub-Nelectrons) < 0.d0 )
 
       WRITE(*,*) 'calc_occupations initial bounds are off'
-      WRITE(*,*) 'flb, fub, nocc = ', flb, fub, Nelectrons
+      WRITE(*,*) 'flb = ', Nelectrons-flb
+      WRITE(*,*) 'fub = ', fub-Nelectrons
 
 !      STOP 
 
@@ -82,7 +84,7 @@ SUBROUTINE calc_occupations( Nstates, Nelectrons, Focc, evals, Tbeta, efermi )
     iter = 1
 
     DO WHILE( abs(occsum - Nelectrons) > tol .AND. iter < maxiter )
-      WRITE(*,*) 'iter, efermi, sum = ', iter, efermi, occsum
+      WRITE(*,*) 'iter, efermi, sum = ', iter, efermi, occsum-Nelectrons
       WRITE(*,*) 'lb, ub = ', lb, ub
       !
       IF( occsum < Nelectrons ) THEN 
