@@ -2,9 +2,132 @@
 
 Nonlocal HGH pseudopotential action can be defined as follows:
 \begin{equation}
-\hat{V}_{\mathrm{NL}} \psi = 
+\hat{V}_{\mathrm{NL}} \psi =
 \end{equation}
 
+Action of nonlocal pseudopotential to wavefunction:
+
+\begin{fortrancode}
+SUBROUTINE op_V_ps_NL( Nstates, Vpsi )
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
+  USE m_PsPot, ONLY : NbetaNL, betaNL, prj2beta, Ps => Ps_HGH_Params
+  USE m_atoms, ONLY : Natoms, atm2species
+  USE m_hamiltonian, ONLY : betaNL_psi
+  IMPLICIT NONE
+  INTEGER :: Nstates
+  REAL(8) :: Vpsi(Npoints,Nstates)
+  INTEGER :: ia, isp, ist, ibeta, jbeta, iprj, jprj
+  INTEGER :: l, m
+  REAL(8) :: hij
+
+  IF( NbetaNL <= 0 ) THEN
+    RETURN
+  ENDIF
+
+  Vpsi(:,:) = 0.d0
+
+  DO ist = 1,Nstates
+    DO ia = 1,Natoms
+      isp = atm2species(ia)
+      DO l = 0,Ps(isp)%lmax
+      DO m = -l,l
+        DO iprj = 1,Ps(isp)%Nproj_l(l)
+        DO jprj = 1,Ps(isp)%Nproj_l(l)
+          ibeta = prj2beta(iprj,ia,l,m)
+          jbeta = prj2beta(jprj,ia,l,m)
+          hij = Ps(isp)%h(l,iprj,jprj)
+          Vpsi(:,ist) = Vpsi(:,ist) + hij*betaNL(:,ibeta)*betaNL_psi(ia,ist,jbeta)
+        ENDDO ! jprj
+        ENDDO ! iprj
+      ENDDO ! m
+      ENDDO ! l
+    ENDDO
+  ENDDO
+
+END SUBROUTINE
+\end{fortrancode}
+
+The array {\tt betaNL} is defined initialized in subroutine {\tt init\_betaNL}:
+
+\begin{fortrancode}
+SUBROUTINE init_betaNL()
+
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
+                     lingrid => LF3d_lingrid, &
+                     LL => LF3d_LL, &
+                     dVol => LF3d_dVol
+  USE m_PsPot, ONLY : betaNL, NbetaNL, &
+                      Ps => Ps_HGH_Params
+  USE m_atoms, ONLY : atpos => AtomicCoords, Natoms, atm2species
+  USE m_Ps_HGH, ONLY : hgh_eval_proj_R
+  IMPLICIT NONE
+  INTEGER :: ia, isp, l, m, iprj
+  INTEGER :: Np_beta, ip, ibeta
+  REAL(8) :: dr_vec(3)
+  REAL(8) :: dr
+  REAL(8) :: Ylm_real
+  REAL(8) :: nrm
+
+  ALLOCATE( betaNL(Npoints,NbetaNL) )
+
+  ! loop structure must be the same as in init_PsPot
+  ibeta = 0
+  DO ia = 1,Natoms
+    isp = atm2species(ia)
+    DO l = 0,Ps(isp)%lmax
+      DO iprj = 1,Ps(isp)%Nproj_l(l)
+        DO m = -l,l
+          ibeta = ibeta + 1
+          Np_beta = 0
+          DO ip = 1,Npoints
+            CALL calc_dr_periodic_1pnt( LL, atpos(:,ia), lingrid(:,ip), dr_vec )
+            dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
+            IF( dr <= Ps(isp)%rcut_NL(l) ) THEN
+              Np_beta = Np_beta + 1
+              betaNL(ip,ibeta) = hgh_eval_proj_R( Ps(isp), l, iprj, dr ) * Ylm_real( l, m, dr_vec )
+            ENDIF
+          ENDDO
+          nrm = sum(betaNL(:,ibeta)**2)*dVol
+          WRITE(*,'(1x,A,I5,I8,F18.10)') 'ibeta, Np_beta, integ = ', ibeta, Np_beta, nrm
+        ENDDO ! iprj
+      ENDDO ! m
+    ENDDO ! l
+  ENDDO
+
+END SUBROUTINE
+\end{fortrancode}
 
 
+and {\tt betaNL\_psi} is calculated in {\tt calc\_betaNL\_psi}:
 
+\begin{fortrancode}
+SUBROUTINE calc_betaNL_psi( Nstates, psi )
+
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
+                       dVol => LF3d_dVol
+  USE m_PsPot, ONLY : NbetaNL, betaNL
+  USE m_hamiltonian, ONLY : betaNL_psi
+  USE m_atoms, ONLY : Natoms
+  IMPLICIT NONE
+  INTEGER :: Nstates
+  REAL(8) :: psi(Npoints,Nstates)
+  INTEGER :: ist, ibeta, ia
+  REAL(8) :: ddot
+
+  ! immediate return if no projectors are available
+  IF( NbetaNL <= 0 ) THEN
+    RETURN
+  ENDIF
+
+  betaNL_psi(:,:,:) = 0.d0
+
+  DO ia = 1,Natoms
+    DO ist = 1,Nstates
+      DO ibeta = 1,NbetaNL
+        betaNL_psi(ia,ist,ibeta) = ddot( Npoints, betaNL(:,ibeta),1, psi(:,ist),1 ) * dVol
+      ENDDO
+    ENDDO
+  ENDDO
+
+END SUBROUTINE
+\end{fortrancode}
