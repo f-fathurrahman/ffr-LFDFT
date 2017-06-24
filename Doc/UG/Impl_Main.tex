@@ -29,7 +29,6 @@ CALL init_V_ps_loc_G()
 CALL init_nabla2_sparse()
 CALL init_ilu0_prec()
 CALL gen_guess_rho_gaussian()
-ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
 CALL gen_random_evecs()
 CALL gen_gaussian_evecs()
 
@@ -41,4 +40,18 @@ ELSEIF( I_KS_SOLVE == 2 ) THEN
 ENDIF 
 \end{fortrancode}
 
+Subroutine {\tt setup\_from\_input()} is a wrapper to three setup calls:
+\begin{fortrancode}
+CALL setup_atoms()
+CALL setup_PsPot()
+CALL setup_LF3d()
+\end{fortrancode}
+The subroutine names is self-explanatory.
+
+Subroutine {\tt setup\_options()} converts various optional input variables
+into global variables mainly defined in {\tt m\_options}.
+
+Before going into futher details of the calculation, I will describe first
+the data structures used for describing grids, basis functions, atomic
+structure and pseudopotentials.
 

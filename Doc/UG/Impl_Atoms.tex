@@ -17,12 +17,18 @@ MODULE m_atoms
 END MODULE 
 \end{fortrancode}
 
-Currently, variables in module {\tt m\_atoms} are initialized by
+The global variables in module {\tt m\_atoms} can initialized from
+an XYZ file by calling the
 subroutine {\tt init\_atoms\_xyz()}.
 \begin{fortrancode}
 SUBROUTINE init_atoms_xyz( fil_xyz )
 \end{fortrancode}
 This subroutine takes one argument {\tt fil\_xyz} which is the path
 to XYZ file describing the molecular structure or crystalline structure.
+
+In the main program, the variables are initialized by calling the
+subroutine {\tt setup\_atoms()}. This subroutine handles conversion from
+input data read to internal global variables in
+module {\tt m\_atoms}.
 
 

@@ -35,5 +35,39 @@ TYPE Ps_HGH_Params_T
 END TYPE
 \end{fortrancode}
 
+The array {\tt betaNL} and {\tt prj2beta} are related to nonlocal
+pseudopotential calculation.
+
+Except for the array {\tt betaNL}, most variables in module {\tt m\_PsPot}
+are initialized by the call to
+subroutine {\tt init\_PsPot}.
+
+\begin{fortrancode}
+ALLOCATE( PsPot_FilePath(Nspecies) )
+ALLOCATE( Ps_HGH_Params(Nspecies) )
+DO isp = 1,Nspecies
+  PsPot_FilePath(isp) = trim(PsPot_Dir) // trim(SpeciesSymbols(isp)) // '.hgh'
+  CALL init_Ps_HGH_Params( Ps_HGH_Params(isp), PsPot_FilePath(isp) )
+  AtomicValences(isp) = Ps_HGH_Params(isp)%zval
+ENDDO 
+\end{fortrancode}
+
+Initialization of array {\tt prj2beta}
+\begin{fortrancode}
+ALLOCATE( prj2beta(1:3,1:Natoms,0:3,-3:3) )
+prj2beta(:,:,:,:) = -1
+NbetaNL = 0
+DO ia = 1,Natoms
+  isp = atm2species(ia)
+  DO l = 0,Ps_HGH_Params(isp)%lmax
+    DO iprj = 1,Ps_HGH_Params(isp)%Nproj_l(l)
+      DO m = -l,l
+        NbetaNL = NbetaNL + 1
+        prj2beta(iprj,ia,l,m) = NbetaNL
+      ENDDO ! m
+    ENDDO ! iprj
+  ENDDO ! l
+ENDDO ! ia
+\end{fortrancode}
 
 

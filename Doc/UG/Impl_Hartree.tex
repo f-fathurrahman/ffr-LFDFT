@@ -1,0 +1,88 @@
+\subsection{Hartree term: solution of Poisson equation}
+
+Hartree potential can be calculated by solving Poisson equation
+once the charge density has been calculated.
+There are several methods to solve Poisson equation.
+For periodic system, the most popular method is via FFT.
+In this method charge density is first transformed to
+reciprocal space or $\mathbf{G}$-space. In this space,
+Hartree potential can be calculated by simply dividing
+charge density with magnitude of non-zero reciprocal vectors
+$\mathbf{G}$.
+
+To implement this method we need to generate reciprocal Gectors
+$\mathbf{G}$. In the current implementation $\mathbf{G}$-vectors
+are declared in module {\tt m\_LF3d}, namely
+{\tt LF3d\_Gv} and {\tt LF3d\_Gv2} for $\mathbf{G}$-vectors and
+their magnitudes, respectively.
+The subroutine which
+is responsible to generate $\mathbf{G}$-vectors is
+{\tt init\_gvec()}.
+
+\begin{fortrancode}
+ALLOCATE( G2(Npoints) )
+ALLOCATE( Gv(3,Npoints) )
+ig = 0
+DO k = 0, NN(3)-1
+DO j = 0, NN(2)-1
+DO i = 0, NN(1)-1
+  ig = ig + 1
+  ii = mm_to_nn( i, NN(1) )
+  jj = mm_to_nn( j, NN(2) )
+  kk = mm_to_nn( k, NN(3) )
+  Gv(1,ig) = ii * 2.d0*PI/LL(1)
+  Gv(2,ig) = jj * 2.d0*PI/LL(2)
+  Gv(3,ig) = kk * 2.d0*PI/LL(3)
+  G2(ig) = Gv(1,ig)**2 + Gv(2,ig)**2 + Gv(3,ig)**2
+ENDDO
+ENDDO
+ENDDO
+\end{fortrancode}
+
+The function {\tt mm\_to\_nn} describes mapping between real space grid
+and Fourier grid.
+
+\begin{fortrancode}
+FUNCTION mm_to_nn( mm, S ) RESULT(idx)
+  IMPLICIT NONE
+  INTEGER :: idx
+  INTEGER :: mm
+  INTEGER :: S
+  IF(mm > S/2) THEN 
+    idx = mm - S
+  ELSE
+    idx = mm
+  ENDIF
+END FUNCTION 
+\end{fortrancode}
+
+Driver for solving Poisson equation via FFT is implemented
+in subroutine {\tt Poisson\_solve\_fft()}
+\begin{fortrancode}
+ALLOCATE( tmp_fft(Npoints) )
+DO ip = 1, Npoints
+  tmp_fft(ip) = cmplx( rho(ip), 0.d0, kind=8 )
+ENDDO
+! forward FFT
+CALL fft_fftw3( tmp_fft, Nx, Ny, Nz, .false. )  ! now `tmp_fft = rho(G)`
+tmp_fft(1) = (0.d0,0.d0)  ! zero-G component
+DO ip = 2, Npoints
+  tmp_fft(ip) = 4.d0*PI*tmp_fft(ip) / G2(ip)
+ENDDO  ! now `tmp_fft` = phi(G)
+! Inverse FFT
+CALL fft_fftw3( tmp_fft, Nx, Ny, Nz, .true. )
+! Transform back to real space
+DO ip = 1, Npoints
+  phi(ip) = real( tmp_fft(ip), kind=8 )
+ENDDO
+\end{fortrancode}
+
+Hartree energy is calculated according to the following equation:
+\begin{equation}
+E_{\mathrm{Ha}} = \frac{1}{2} \int
+\rho(\mathbf{r}) V_{\mathrm{Ha}}(\mathbf{r})\,\mathrm{d}\mathbf{r}
+\end{equation}
+This is done by simple summation over grid points:
+\begin{fortrancode}
+E_Hartree = 0.5d0*sum( Rhoe(:) * V_Hartree(:) )*dVol
+\end{fortrancode}
