@@ -1,0 +1,44 @@
+\subsection{Main program}
+
+Currently, the calculation flow of the main program of \ffrLFDFT is as follows:
+\begin{itemize}
+\item Getting program argument as input file and reading the input file
+\item Initializing molecular structure, pseudopotentials, and 
+Lagrange basis functions, including grids
+\item Setting additional options if necessary based on the input file
+\item Initializing electronic states variables
+\item Setting up Hamiltonian: potential and kinetic operators.
+\item Solving the Kohn-Sham equation via direct minimization
+or self-consistent field
+\end{itemize}
+
+The appropriate subroutine calls is given below.
+
+\begin{fortrancode}
+CALL getarg( 1, filein )
+CALL read_input( filein )
+CALL setup_from_input()
+CALL setup_options()
+
+CALL init_betaNL()
+CALL init_states()
+CALL init_strfact_shifted()
+CALL calc_Ewald_qe()
+CALL alloc_hamiltonian()
+CALL init_V_ps_loc_G()
+CALL init_nabla2_sparse()
+CALL init_ilu0_prec()
+CALL gen_guess_rho_gaussian()
+ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
+CALL gen_random_evecs()
+CALL gen_gaussian_evecs()
+
+IF( I_KS_SOLVE == 1 ) THEN 
+  CALL KS_solve_Emin_pcg()
+  CALL calc_evals( Nstates, Focc, evecs, evals )
+ELSEIF( I_KS_SOLVE == 2 ) THEN 
+  CALL KS_solve_SCF_v2()
+ENDIF 
+\end{fortrancode}
+
+

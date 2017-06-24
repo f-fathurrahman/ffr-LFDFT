@@ -1,18 +1,55 @@
 \section{Kohn-Sham equation}
 
-In this section a brief introduction to Kohn-Sham equation is given.
-
-Kohn-Sham equation can be written as:
+Central to the density functional theory is the so-called Kohn-Sham
+equation.
+This equation can be written as:
 \begin{equation}
 \left[
 -\frac{1}{2}\nabla^2  + V_{\mathrm{KS}}(\mathbf{r})
 \right] \psi_{i}(\mathbf{r}) =
 \epsilon_{i}\psi_{i}(\mathbf{r})
 \end{equation}
-with the so-called Kohn-Sham potential
+where $\epsilon{i}$ and $\psi_{i}(\mathbf{r})$ is known as Kohn-Sham
+eigenvalues and eigenvectors (orbitals).
+Quantity $V_{\mathrm{KS}}$ is called the Kohn-Sham potential, which can be
+written as sum of several potentials:
 \begin{equation}
-V_{\mathrm{KS}}(\mathbf{r}) = V_{\mathrm{ext}}(\mathbf{r}) + V_{\mathrm{Ha}}(\mathbf{r})
+V_{\mathrm{KS}}(\mathbf{r}) = V_{\mathrm{ion}}(\mathbf{r}) + V_{\mathrm{Ha}}(\mathbf{r})
 + V_{\mathrm{xc}}(\mathbf{r})
+\label{eq:KS-pot}
 \end{equation}
 
+$V_{\mathrm{ion}}$ denotes attractive potential between ion (or atomic nuclei)
+with electrons. This potential can be written as:
+\begin{equation}
+V_{\mathrm{ion}}(\mathrm{r}) =
+\sum_{I}^{N_{\mathrm{atoms}}}
+\frac{Z_{I}}{ \left| \mathbf{r} - \mathbf{R}_{I} \right| }
+\end{equation}
+This potential is Coulombic and has singularities
+at the ionic centers. It is generally difficult to describe this
+potential fully. It is common to replace the full Coulombic potential
+with softer potential which is known as pseudopotential.
+There are various types or flavors of pseudopotentials.
+In the current implementation, ion-electron potential, $V_{\mathrm{ion}}$
+is treated by pseudopotential. HGH-type pseudopotential is employed due to the
+the availability of analytic forms both in real and reciprocal space.
+
+$V_{\mathrm{Ha}}$ is the classical Hartree potential. It is defined as
+\begin{equation}
+V_{\mathrm{Ha}}(\mathbf{r}) = \frac{1}{2} \int
+\frac{ \rho(\mathbf{r}) \rho(\mathbf{r}')}
+{\mathbf{r} - \mathbf{r}'}\,\mathrm{d}\mathbf{r}',
+\end{equation}
+where $\rho(\mathbf{r})$ denotes electronic density:
+\begin{equation}
+\rho(\mathbf{r}) = \sum_{i}^{N_{\mathrm{occ}}}
+\psi^{*}_{i}(\mathbf{r}) \psi_{i}(\mathbf{r})
+\end{equation}
+Alternatively, Hartree potential can also be obtained via solving Poisson equation:
+\begin{equation}
+\nabla^{2} V_{\mathrm{Ha}}(\mathbf{r}) = -4\pi \rho(\mathbf{r})
+\end{equation}
+
+The last term in Equation \eqref{eq:KS-pot} is exchange-correlation potential.
 
