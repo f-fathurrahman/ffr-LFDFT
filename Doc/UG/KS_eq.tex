@@ -1,5 +1,39 @@
 \section{Kohn-Sham equation}
 
+Within LDA, Kohn-Sham energy functional can be written as:
+\begin{equation}
+E_{\mathrm{LDA}}\left[\{\psi_{i}(\mathbf{r})\}\right] = 
+E_{\mathrm{kin}} + E_{\mathrm{ion}} + E_{\mathrm{Ha}} + E_{\mathrm{xc}}
+\end{equation}
+with the following energy terms.
+
+(1) kinetic energy:
+\begin{equation}
+E_{\mathrm{kin}} = -\frac{1}{2}\sum_{i} \int
+\psi_{i}^{*}(\mathbf{r})\,\nabla^2\,\psi_{i}(\mathbf{r})
+\,\mathrm{d}\mathbf{r}
+\end{equation}
+
+(2) ion-electron interaction energy:
+\begin{equation}
+E_{\mathrm{ion}} = \int V_{\mathrm{ion}}(\mathbf{r})\, \rho(\mathbf{r})\,
+\mathrm{d}\mathbf{r}
+\end{equation}
+
+(3) Hartree (electrostatic) energy:
+\begin{equation}
+E_{\mathrm{Ha}} = \int \frac{1}{2}
+\dfrac{\rho(\mathbf{r})\rho(\mathbf{r}')}
+{\left|\mathbf{r} - \mathbf{r}'\right|}
+\mathrm{d}\mathbf{r}\mathrm{d}\mathbf{r}'
+\end{equation}
+
+(4) Exchange-correlation energy (using LDA):
+\begin{equation}
+E_{\mathrm{xc}} = \int \epsilon_{\mathrm{xc}}\left[\rho(\mathbf{r})\right]
+\rho(\mathbf{r})\,\mathrm{d}\mathbf{r}
+\end{equation}
+
 Central to the density functional theory is the so-called Kohn-Sham
 equation.
 This equation can be written as:

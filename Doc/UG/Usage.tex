@@ -35,4 +35,24 @@ Li   0.0  0.0  0.0
 H    1.0  0.0  0.0
 \end{minted}
 
+Special to \ffrLFDFT, not found in PWSCF, in {\tt ELECTRONS}
+\begin{itemize}
+\item {\tt KS\_Solve}: method to solve Kohn-Sham equation, accepted values:
+\begin{itemize}
+\item {\tt 'SCF'}: using diagonalization-based self-consistent iterations
+\item {\tt 'Emin-pcg'}: using direct minimization based on nonlinear
+conjugate gradient algorithm
+\end{itemize}
+
+\item {\tt cg\_beta}: method to calculate parameter $\beta$ in nonlinear CG minimization
+used in direct Kohn-Sham energy minimization.
+\begin{itemize}
+\item {\tt 'FR'}: using Fletcher-Reeves formula
+\item {\tt 'PR'}: using Polak-Ribiere formula
+\item {\tt 'HS'}: using Hestenes-Stiefel formula
+\item {\tt 'DY'}: using Dai-Yuan formula
+\end{itemize}
+
+\end{itemize}
+
 
