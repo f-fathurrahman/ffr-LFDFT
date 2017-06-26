@@ -2,7 +2,26 @@
 
 Using LF basis:
 \begin{equation}
-T_{\alpha,\beta,\gamma} = -\frac{1}{2}\nabla^2
+T_{\alpha,\beta,\gamma} = -\frac{1}{2} \sum_{i} f_{i}
+\Braket{ \psi_{i} | \nabla^2 | \psi{i} } =
+\sum_{i} f_{i} \sum_{\alpha\alpha'} \sum_{\beta\beta'} \sum_{\gamma\gamma'}
+C_{i,\alpha\beta\gamma} K_{\alpha\beta\gamma}^{\alpha'\beta'\gamma'}
+C_{i,\alpha'\beta'\gamma'}
 \end{equation}
 
+Kinetic operator matrix has the following form:
+\begin{equation}
+K_{\alpha\beta\gamma}^{\alpha'\beta'\gamma'} =
+t_{\alpha\alpha'}\delta_{\beta\beta'}\delta_{\gamma\gamma'} +
+t_{\beta\beta'}\delta_{\alpha\alpha'}\delta_{\gamma\gamma'} +
+t_{\gamma\gamma'}\delta_{\alpha\alpha'}\delta_{\beta\beta'}
+\end{equation}
+
+For periodic LF:
+\begin{equation}
+t_{nn'} = -\left( \frac{2\pi}{L} \right)^2 \frac{N}{6} \left( N + 1 \right) \delta_{nn'} -
+\dfrac{ \left(\dfrac{2\pi}{L}\right)^2 (-1)^{n-n'}\cos\left[\dfrac{\pi(n-n')}{2N+1}\right]}
+{4\sin^2\left[\dfrac{\pi}{2N+1}\right]}
+(1-\delta_{nn'})
+\end{equation}
 
