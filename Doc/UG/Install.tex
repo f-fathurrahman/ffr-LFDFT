@@ -1,22 +1,33 @@
 \section{Installation}
 
-A manually written {\tt Makefile} is provided. At the topmost part of the
+There is no need for installation, actually.
+What is meant by installation here is compiling the library
+{\tt libmain.a} and
+linking the main executable of {\tt ffr-LFDFT}, namely
+{\tt ffr\_LFDFT.x}
+
+A manually written {\tt Makefile} is provided. On the topmost part of the
 {\tt Makefile} you need to specify which {\tt make.inc} file you
-want to use. You need to decide which compiler to use if there
-are more than one compiler in you system.
-In the directory {\tt platform} there are several {\tt make.inc} files.
+want to use.
+This {\tt make.inc} file contains definition of compiler executable,
+compiler flags, and libraries used in the linking process.
+Several {\tt make.inc} files that I used can be found in
+the directory {\tt platform}.
+You need to decide which compiler to use if there
+are more than one compiler in your system.
+For a typical Linux system, {\tt make.inc.gfortran} is sufficient.
+You can manually edit the compiler options in the corresponding {\tt make.inc}
+files.
+
 Currently, {\tt ffr-LFDFT} is tested using the following compilers
 on Linux system:
 \begin{itemize}
-\item GNU Fortran compiler
-\item G95 Fortran compiler
-\item Intel Fortran compiler
-\item PGI Fortran compiler
-\item Sun (now part of Oracle) Fortran compiler
+\item GNU Fortran compiler, executable: {\tt gfortran}
+\item G95 Fortran compiler, executable: {\tt g95}
+\item Intel Fortran compiler, executable: {\tt ifort}
+\item PGI Fortran compiler, executable: {\tt pgf90} or {\tt pgf95}
+\item Sun (now part of Oracle) Fortran compiler: {\tt sunf95}
 \end{itemize}
-For typical Linux system, {\tt make.inc.gfortran} is sufficient.
-You can manually edit the compiler options in the corresponding {\tt make.inc}
-files.
 
 There following external libraries are required to build \ffrLFDFT
 \begin{itemize}
