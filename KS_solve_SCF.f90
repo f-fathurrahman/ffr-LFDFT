@@ -67,6 +67,8 @@ SUBROUTINE KS_solve_SCF()
     ALLOCATE( workmix(nwork) )
   ENDIF 
 
+  flush(6)
+
   dr2 = 1.d0
   DO iterSCF = 1, SCF_NiterMax
 
@@ -112,6 +114,7 @@ SUBROUTINE KS_solve_SCF()
 
     Etot_old = Etot
     Rhoe_old(:) = Rhoe(:)
+    flush(6)
   ENDDO
 
   DEALLOCATE( workmix )

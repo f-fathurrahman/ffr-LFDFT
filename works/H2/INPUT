@@ -16,11 +16,11 @@
 /
 
 &ELECTRONS
-  KS_Solve = 'scf'
+  KS_Solve = 'SCF'
   cg_beta = 'DY'
   electron_maxstep = 150
   mixing_beta = 0.5
-  mixing_mode = 'broyden-elk'
+  mixing_mode = 'default'
   diagonalization = 'LOBPCG'
 /
 

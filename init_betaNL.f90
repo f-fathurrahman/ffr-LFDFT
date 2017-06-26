@@ -46,4 +46,6 @@ SUBROUTINE init_betaNL()
     ENDDO ! l
   ENDDO
 
+  flush(6)
+
 END SUBROUTINE

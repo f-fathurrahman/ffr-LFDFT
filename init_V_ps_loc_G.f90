@@ -50,6 +50,8 @@ SUBROUTINE init_V_ps_loc_G()
 
   ENDDO 
 
+  flush(6)
+
   DEALLOCATE( ctmp )
 
 END SUBROUTINE 

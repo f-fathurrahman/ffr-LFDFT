@@ -17,4 +17,6 @@ SUBROUTINE info_PsPot()
     CALL info_Ps_HGH_Params( Ps(isp) )
   ENDDO 
 
+  flush(6)
+
 END SUBROUTINE 

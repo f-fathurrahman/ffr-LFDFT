@@ -48,5 +48,7 @@ SUBROUTINE info_LF3d()
     WRITE(*,'(1x,I10,F10.5)') N,   LF3d_G2(N)
   ENDIF 
 
+  flush(6)
+
 END SUBROUTINE
 

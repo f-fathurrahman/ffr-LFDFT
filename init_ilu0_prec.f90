@@ -18,6 +18,8 @@ SUBROUTINE init_ilu0_prec()
   WRITE(*,*)
   WRITE(*,*) 'ILU0 preconditioner is based on kinetic matrix'
 
+  flush(6)
+
   ALLOCATE( alu_ilu0(Npoints*(Nx+Ny+Nz-2)) )
   ALLOCATE( jlu_ilu0(Npoints*(Nx+Ny+Nz-2)) )
   ALLOCATE( ju_ilu0(Npoints) )

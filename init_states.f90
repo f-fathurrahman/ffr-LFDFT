@@ -40,4 +40,6 @@ SUBROUTINE init_states()
     WRITE(*,'(1x,I8,F18.5)') ist, Focc(ist)
   ENDDO 
 
+  flush(6)
+
 END SUBROUTINE 

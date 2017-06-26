@@ -39,7 +39,8 @@ SUBROUTINE gen_guess_rho_gaussian()
     znucl = atom_znucl(SpeciesSymbols(isp))
     CALL atmlength( 0.d0, length, zion, znucl )
 
-    WRITE(*,*) 'zion, znucl, length = ', trim(SpeciesSymbols(isp)), zion, znucl, length
+    WRITE(*,'(1x,A,A,3F7.3)') 'zion, znucl, length = ', &
+               trim(SpeciesSymbols(isp)), zion, znucl, length
 
     ctmp(:) = cmplx(0.d0,0.d0,kind=8)
     DO ig = 1,Ngvec
@@ -68,8 +69,9 @@ SUBROUTINE gen_guess_rho_gaussian()
   integRho = sum(Rhoe)*dVol
   WRITE(*,*) 'After scaling: integRho = ', integRho
 
-
   DEALLOCATE( ctmp )
+
+  flush(6)
 
 END SUBROUTINE 
 

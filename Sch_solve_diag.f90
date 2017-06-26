@@ -74,5 +74,7 @@ SUBROUTINE Sch_solve_diag()
 
   DEALLOCATE( btype )
 
+  flush(6)
+
 END SUBROUTINE 
 

@@ -34,5 +34,7 @@ SUBROUTINE init_strfact_shifted()
     ENDDO 
   ENDDO 
 
+  CALL flush(6)
+
 END SUBROUTINE 
 

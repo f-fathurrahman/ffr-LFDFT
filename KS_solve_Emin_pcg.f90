@@ -144,6 +144,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
     g_old(:,:) = g(:,:)
     d_old(:,:) = d(:,:)
     Kg_old(:,:) = Kg(:,:)
+    flush(6)
   ENDDO
 
   WRITE(111) v

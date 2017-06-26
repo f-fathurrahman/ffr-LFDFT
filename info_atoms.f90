@@ -25,4 +25,6 @@ SUBROUTINE info_atoms()
     WRITE(*,'(1x,A5,3F18.10)') adjustl(SpeciesSymbols(isp)), AtomicCoords(1:3,ia)
   ENDDO 
 
+  flush(6)
+
 END SUBROUTINE 

@@ -38,6 +38,7 @@ SUBROUTINE init_nabla2_sparse()
   WRITE(*,*) 'Memory required for nabla2_sparse:', &
              ( NNZ*8d0 + (NNZ + Npoints + 1)*4.d0 )/1024.d0/1024.d0/1024.d0, &
              ' GB'
+  flush(6)
 
   ! Initialize rowGbl patter for x, y, and z components
   ALLOCATE( rowGbl_x_orig(Nx) )
@@ -122,5 +123,7 @@ SUBROUTINE init_nabla2_sparse()
   ALLOCATE( iwork( nwork ) )
   CALL csort( Npoints, nzval, rowval, colptr, iwork, .TRUE. )
   DEALLOCATE( iwork )
+
+  flush(6)
 
 END SUBROUTINE 
