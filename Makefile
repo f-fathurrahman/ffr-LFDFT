@@ -1,6 +1,6 @@
 #include platform/make.inc.ifort
-#include platform/make.inc.gfortran
-include platform/make.inc.g95
+include platform/make.inc.gfortran
+#include platform/make.inc.g95
 #include platform/make.inc.pgi
 #include platform/make.inc.sun
 
@@ -115,7 +115,6 @@ atom_znucl.f90 \
 gen_guess_rho_gaussian.f90 \
 gen_random_evecs.f90 \
 gen_gaussian_evecs.f90 \
-KS_solve_SCF_v2.f90 \
 calc_occupations.f90 \
 calc_entropy.f90 \
 fermi_dirac.f90 \

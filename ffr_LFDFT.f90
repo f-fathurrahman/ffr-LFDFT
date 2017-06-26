@@ -80,7 +80,7 @@ PROGRAM ffr_LFDFT
     ! Initial Rhoe and potentials
     !CALL calc_rhoe( Focc, evecs )
     !CALL update_potentials()
-    CALL KS_solve_SCF_v2()
+    CALL KS_solve_SCF()
     !
     CALL info_energies()
 

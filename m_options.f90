@@ -34,7 +34,7 @@ MODULE m_options
   ! mixing beta
   REAL(8) :: SCF_betamix = 0.2d0
   ! type of mixing to use for the potential
-  INTEGER :: mixtype
+  INTEGER :: MIXTYPE = 1  ! 1 = ELK's adaptive linear mixing
   ! mixing type description
   CHARACTER(256) :: mixdescr
   ! adaptive mixing parameter

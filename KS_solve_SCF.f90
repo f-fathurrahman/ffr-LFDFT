@@ -40,8 +40,6 @@ SUBROUTINE KS_solve_SCF()
   Etot_old = 0.d0
   Rhoe_old(:) = Rhoe(:)
 
-  !CALL mixadapt( 0, beta0, betamax, Npoints, Rhoe, Rhoe_old, beta_work, f_work, dr2 )
-  
   ! for adaptive mixing
   nwork = 3*Npoints
   ALLOCATE( workmix(nwork) )
@@ -53,7 +51,6 @@ SUBROUTINE KS_solve_SCF()
       ethr = 1.d-1
     ELSE 
       IF( iterSCF == 2 ) ethr = 1.d-2
-      !ethr = min( ethr, 1.d-2*dEtot / max(1.d0,Nelectrons) )
       ethr = ethr/5.d0
       ethr = max( ethr, ETHR_EVALS_LAST )
     ENDIF 
@@ -62,21 +59,11 @@ SUBROUTINE KS_solve_SCF()
 
     CALL calc_rhoe( Focc, evecs )
 
-    CALL update_potentials()
-    CALL calc_betaNL_psi( Nstates, evecs )
-    CALL calc_energies( evecs ) ! update the potentials or not ?
-
     CALL mixerifc( iterSCF, 1, Npoints, Rhoe, dr2, nwork, workmix )
-    !CALL mixlinear( iterSCF, SCF_betamix, Npoints, Rhoe, Rhoe_old, dr2 )
 
-    !CALL mixadapt( iterSCF, beta0, betamax, Npoints, Rhoe, Rhoe_old, beta_work, f_work, dr2 )
-
-    !IF( iterSCF > 2 ) THEN 
-    !  dr2 = sqrt( ddot( Npoints, Rhoe(:)-Rhoe_old(:), 1, Rhoe(:)-Rhoe_old(:), 1 ) )
-    !ENDIF
+    CALL normalize_rhoe( Npoints, Rhoe )  ! make sure no negative or very small rhoe
 
     integRho = sum(Rhoe)*dVol
-    !WRITE(*,'(1x,A,F18.10)') 'After mix: integRho = ', integRho
     IF( abs(integRho - Nelectrons) > 1.0d-6 ) THEN
       WRITE(*,'(1x,A,ES18.10)') 'WARNING: diff after mix rho = ', abs(integRho-Nelectrons)
       WRITE(*,*) 'Rescaling Rho'
@@ -86,10 +73,10 @@ SUBROUTINE KS_solve_SCF()
       WRITE(*,*)
     ENDIF 
 
-!    CALL update_potentials()
-!    CALL calc_betaNL_psi( Nstates, evecs )
-!    CALL calc_energies( evecs ) ! update the potentials or not ?
-
+    CALL update_potentials()
+    CALL calc_betaNL_psi( Nstates, evecs )
+    CALL calc_energies( evecs ) ! update the potentials or not ?
+    
     dEtot = abs(Etot - Etot_old)
 
     IF( dEtot < 1d-7) THEN 
@@ -98,7 +85,6 @@ SUBROUTINE KS_solve_SCF()
       EXIT 
     ENDIF 
 
-    !WRITE(*,*)
     WRITE(*,'(1x,A,I5,F18.10,2ES18.10)') 'SCF iter', iterSCF, Etot, dEtot, dr2
 
     Etot_old = Etot
