@@ -6,6 +6,7 @@ MODULE m_input_vars
   CHARACTER(128) :: pseudo_dir
   REAL(8) :: etot_conv_thr
   INTEGER, PARAMETER :: IU = 100
+  !
   NAMELIST /CONTROL/ pseudo_dir, etot_conv_thr
 
   ! SYSTEM
@@ -13,6 +14,7 @@ MODULE m_input_vars
   INTEGER :: nr1, nr2, nr3
   INTEGER :: nat, ntyp
   INTEGER :: ibrav
+  !
   NAMELIST /SYSTEM/ A, B, C, nr1, nr2, nr3, nat, ntyp, ibrav
 
   ! ELECTRONS
@@ -22,7 +24,10 @@ MODULE m_input_vars
   REAL(8) :: mixing_beta
   CHARACTER(56) :: diagonalization
   REAL(8) :: conv_thr
-  NAMELIST /ELECTRONS/ KS_Solve, cg_beta, electron_maxstep, mixing_beta, diagonalization, conv_thr
+  CHARACTER(56) :: mixing_mode
+  !
+  NAMELIST /ELECTRONS/ KS_Solve, cg_beta, electron_maxstep, mixing_beta, &
+  diagonalization, conv_thr, mixing_mode
 
   ! ATOMIC_SPECIES
   CHARACTER(5), ALLOCATABLE :: species(:)

@@ -56,6 +56,17 @@ SUBROUTINE setup_options()
     SCF_betamix = mixing_beta
   ENDIF 
 
+  SELECT CASE( mixing_mode )
+  CASE( 'linear' )
+    MIXTYPE = 0
+  CASE( 'linear-adaptive' )
+    MIXTYPE = 1
+  CASE( 'broyden-elk' )
+    MIXTYPE = 3
+  CASE DEFAULT
+    MIXTYPE = 1
+  END SELECT 
+
   !
   IF( conv_thr > 0.d0 ) THEN 
     Emin_ETOT_CONV_THR = conv_thr

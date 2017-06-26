@@ -9,6 +9,7 @@ SUBROUTINE read_electrons(filein)
   cg_beta = 'undefined'
   electron_maxstep = -1
   mixing_beta = -1.d0
+  mixing_mode = 'default'
   diagonalization = 'undefined'
   conv_thr = -1.d0
 

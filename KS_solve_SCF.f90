@@ -4,7 +4,9 @@ SUBROUTINE KS_solve_SCF()
                      dVol => LF3d_dVol
   USE m_states, ONLY : Nstates, Focc, &
                        evecs => KS_evecs
-  USE m_options, ONLY : ETHR_EVALS_LAST, ethr => ETHR_EVALS
+  USE m_options, ONLY : ETHR_EVALS_LAST, &
+                        ethr => ETHR_EVALS, &
+                        MIXTYPE
   USE m_hamiltonian, ONLY : Rhoe
   USE m_energies, ONLY : Etot => E_total
   USE m_states, ONLY : Nelectrons
@@ -27,10 +29,10 @@ SUBROUTINE KS_solve_SCF()
 
   ALLOCATE( Rhoe_old(Npoints) )
 
-  beta0 = 0.1d0
+  beta0 = SCF_betamix
   betamax = 1.d0
   ! Broyden parameters recommended by M. Meinert
-  mixsdb = 5
+  mixsdb = 4
   broydpm(1) = 0.4d0
   broydpm(2) = 0.15d0
 
@@ -40,9 +42,30 @@ SUBROUTINE KS_solve_SCF()
   Etot_old = 0.d0
   Rhoe_old(:) = Rhoe(:)
 
-  ! for adaptive mixing
-  nwork = 3*Npoints
-  ALLOCATE( workmix(nwork) )
+  ! Allocate memory for ELK mixing subroutines
+  !
+  ! Linear mixing
+  IF( MIXTYPE == 0 ) THEN 
+    nwork = Npoints
+    ALLOCATE( workmix(nwork) )
+  !
+  ! Adaptive linear mixing
+  ELSEIF( MIXTYPE == 1 ) THEN 
+    nwork = 3*Npoints
+    ALLOCATE( workmix(nwork) )
+  !
+  ! Broyden mixing
+  ELSEIF( MIXTYPE == 3 ) THEN 
+    nwork = (4+2*mixsdb)*Npoints + mixsdb**2
+    ALLOCATE( workmix(nwork) )
+    WRITE(*,*) 'Broyden mixing nwork = ', nwork
+  ELSE 
+    WRITE(*,*) 'Unknown MIXTYPE: ', MIXTYPE
+    WRITE(*,*) 'Switching to default: adaptive linear mixing'
+    MIXTYPE = 1
+    nwork = 3*Npoints
+    ALLOCATE( workmix(nwork) )
+  ENDIF 
 
   dr2 = 1.d0
   DO iterSCF = 1, SCF_NiterMax
@@ -59,7 +82,7 @@ SUBROUTINE KS_solve_SCF()
 
     CALL calc_rhoe( Focc, evecs )
 
-    CALL mixerifc( iterSCF, 1, Npoints, Rhoe, dr2, nwork, workmix )
+    CALL mixerifc( iterSCF, MIXTYPE, Npoints, Rhoe, dr2, nwork, workmix )
 
     CALL normalize_rhoe( Npoints, Rhoe )  ! make sure no negative or very small rhoe
 

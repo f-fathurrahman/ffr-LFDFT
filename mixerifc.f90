@@ -49,24 +49,25 @@ SUBROUTINE mixerifc( iscl, mtype, n, v, dv, nwork, work )
   RETURN 
 END SUBROUTINE 
 
-subroutine getmixdata(mtype,mixdescr)
-implicit none
-! arguments
-integer, intent(in) :: mtype
-character(*), intent(out) :: mixdescr
-select case(mtype)
-case(0)
-  mixdescr='Linear mixing'
-case(1)
-  mixdescr='Adaptive linear mixing'
-case(3)
-  mixdescr='Broyden mixing, J. Phys. A: Math. Gen. 17, L317 (1984)'
-case default
-  write(*,*)
-  write(*,'("Error(getmixdata): mixtype not defined : ",I8)') mtype
-  write(*,*)
-  stop
-end select
-return
-end subroutine
+SUBROUTINE getmixdata(mtype,mixdescr)
+  IMPLICIT NONE 
+  ! arguments
+  INTEGER, INTENT(in) :: mtype
+  CHARACTER(*), INTENT(out) :: mixdescr
+
+  SELECT CASE(mtype)
+  CASE(0)
+    mixdescr = 'Linear mixing'
+  CASE(1)
+    mixdescr = 'Adaptive linear mixing'
+  CASE(3)
+    mixdescr = 'Broyden mixing, J. Phys. A: Math. Gen. 17, L317 (1984)'
+  CASE DEFAULT  
+    WRITE(*,*)
+    WRITE(*,'("Error(getmixdata): mixtype not defined : ",I8)') mtype
+    WRITE(*,*)
+    STOP
+  END SELECT 
+  RETURN 
+END SUBROUTINE 
 
