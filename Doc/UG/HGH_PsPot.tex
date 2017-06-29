@@ -1,0 +1,139 @@
+\subsection{HGH pseudopotential}
+
+\begin{equation}
+V_{\mathrm{loc}}(\mathbf{r}) = 
+-\dfrac{Z_{\mathrm{ion}}}{r}
+\mathrm{erf}\left(
+\dfrac{r}{\sqrt{2}r_{\mathrm{loc}}}
+\right)
++ \exp
+\left[ -\frac{1}{2}
+\left( \frac{r}{r_{\mathrm{loc}}}\right)^2
+\right]
+\times
+\left[
+C_{1} +
+C_{2}\left( \frac{r}{r_{\mathrm{loc}}}\right)^2 +
+C_{3}\left( \frac{r}{r_{\mathrm{loc}}}\right)^4 +
+C_{4}\left( \frac{r}{r_{\mathrm{loc}}}\right)^6
+\right]
+\end{equation}
+
+\begin{multline}
+V_{\mathrm{loc}}(\mathbf{G}) = 
+-\dfrac{1}{\Omega}
+\dfrac{4\pi Z_{\mathrm{ion}}}{G^2}
+\exp\left[
+-\dfrac{1}{2}
+\left(Gr_{\mathrm{loc}}\right)^2
+\right] + 
+\sqrt{8\pi^3}\dfrac{r_{\mathrm{loc}}}{\Omega}
+\exp\left[
+-\dfrac{1}{2}
+\left(Gr_{\mathrm{loc}}\right)^2
+\right] \times \\
+\left\{
+C_{1}
++ C_{2}\left[3-\left(Gr_{\mathrm{loc}}\right)^2\right]
++ C_{3}\left[15 - 10\left(Gr_{\mathrm{loc}}\right)^2
+  \left(Gr_{\mathrm{loc}}\right)^4 \right]
++ C_{4}\left[105 - 105\left(Gr_{\mathrm{loc}}\right)^2
+  + 21\left(Gr_{\mathrm{loc}}\right)^4
+  - \left(Gr_{\mathrm{loc}}\right)^6\right]
+\right\}
+\end{multline}
+
+
+\begin{equation}
+V_{l}(\mathbf{r},\mathbf{r}') =
+\sum_{i=1}^{3} \sum_{j=1}^{3} \sum_{m=-l}^{l}
+\beta_{ilm}(\mathbf{r})\,h^{l}_{ij}\,\beta^{*}_{jlm}(\mathbf{r}')
+\end{equation}
+
+\begin{equation}
+\beta_{ilm}(\mathbf{r}) = 
+p^{l}_{i}(r) Y_{lm}(\hat{\mathbf{r}})
+\end{equation}
+
+\begin{equation}
+p_{i}^{l}(r) = \frac{\sqrt{2} r^{l+2(i-1)}
+\exp\left( -\dfrac{r^2}{2r_{l}^2} \right) }
+{r_{l}^{l+(4i-1)/2}
+\sqrt{\Gamma\left(l + \dfrac{4i-1}{2}\right)}
+}
+\end{equation}
+
+Normalization of projector
+
+\begin{equation}
+\int_{0}^{\infty} p_{i}^{l}(r) p_{i}^{l}(r)\, r^2\,\mathrm{d}r = 1
+\end{equation}
+
+For $l = 0$
+
+\begin{equation}
+p^{l=0}_{1}(G) = \dfrac
+{4\sqrt{2r_0^3}\pi^{5/4}}
+{\sqrt{\Omega}\exp\left[(Gr_0)^2/2\right]}
+\end{equation}
+
+\begin{equation}
+p^{l=0}_{2}(G) = \dfrac
+{\sqrt{8\dfrac{2r_0^3}{15}}\pi^{5/4}
+\left( 3-(Gr_0)^2 \right)}
+{\sqrt{\Omega}\exp\left[(Gr_0)^2/2\right]}
+\end{equation}
+
+\begin{equation}
+p^{l=0}_{3}(G) = \dfrac
+{16\sqrt{\dfrac{2r_0^3}{105}}\pi^{5/4}
+\left(15 - 10(Gr_0)^2 - (Gr_0)^4 \right)}
+{3\sqrt{\Omega}\exp\left[(Gr_0)^2/2\right]}
+\end{equation}
+
+Fourier transform of projector functions for $l=1$
+
+\begin{equation}
+p^{l=1}_{1}(G) = \dfrac
+{8\sqrt{\dfrac{r_1^5}{3}}\pi^{5/4}G}
+{\sqrt{\Omega}\exp\left[(Gr_1)^2/2\right]}
+\end{equation}
+
+\begin{equation}
+p^{l=1}_{2}(G) = \dfrac
+{16\sqrt{\dfrac{r_1^5}{105}}\pi^{5/4}
+\left( 5 - (Gr_1)^2 \right)G}
+{\sqrt{\Omega}\exp\left[(Gr_1)^2/2\right]}
+\end{equation}
+
+\begin{equation}
+p^{l=1}_{3}(G) = \dfrac
+{32\sqrt{\dfrac{r_1^5}{1155}}\pi^{5/4}
+\left( 35 - 14(Gr_1)^2 + (Gr_1)^4 \right)G}
+{3\sqrt{\Omega}\exp\left[(Gr_1)^2/2\right]}
+\end{equation}
+
+Fourier transform of projector functions for $l=2$
+
+\begin{equation}
+p^{l=2}_{1}(G) = \dfrac
+{8\sqrt{\dfrac{2r_2^7}{15}}\pi^{5/4}G^2}
+{\sqrt{\Omega}\exp\left[(Gr_2)^2/2\right]}
+\end{equation}
+
+\begin{equation}
+p^{l=2}_{2}(G) = \dfrac
+{16\sqrt{\dfrac{2r_2^7}{105}}\pi^{5/4}
+\left( 7 - (Gr_2)^2 \right)G^2}
+{3\sqrt{\Omega}\exp\left[(Gr_2)^2/2\right]}
+\end{equation}
+
+Fourier transform of projector functions for $l=3$
+
+\begin{equation}
+p^{l=3}_{1}(G) = \dfrac
+{16\sqrt{\dfrac{2r_3^9}{105}}\pi^{5/4}G^3}
+{\sqrt{\Omega}\exp\left[(Gr_3)^2/2\right]}
+\end{equation}
+
+
