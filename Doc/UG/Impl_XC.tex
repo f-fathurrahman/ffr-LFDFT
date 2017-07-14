@@ -1,7 +1,21 @@
 \subsection{XC energy and potential}
 
-XC term
+Currently the only supported form of XC functional is of Volko-Wilk-Nusair
+which is implemented in the file {\tt LDA\_VWN.f90}.
+In the future version, LibXC implementation will be implemented hopefully.
 
-LDA
+XC contribution to total energy is implemented as follows.
+\begin{fortrancode}
+CALL excVWN( Npoints, Rhoe, epsxc )
+E_xc = sum( Rhoe(:) * epsxc(:) )*dVol
+\end{fortrancode}
 
+\textbf{TODO}: Equation for $V_{XC}$
+XC contribution to wavefunction gradient is treated the same way as
+local potential.
+\begin{fortrancode}
+CALL excVWN( Npoints, Rhoe, epsxc )
+CALL excpVWN( Npoints, Rhoe, depsxc )
+V_xc(:) = epsxc(:) + Rhoe(:)*depsxc(:)
+\end{fortrancode}
 
