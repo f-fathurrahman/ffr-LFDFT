@@ -23,5 +23,163 @@ t_{nn'} = -\left( \frac{2\pi}{L} \right)^2 \frac{N}{6} \left( N + 1 \right) \del
 \dfrac{ \left(\dfrac{2\pi}{L}\right)^2 (-1)^{n-n'}\cos\left[\dfrac{\pi(n-n')}{2N+1}\right]}
 {4\sin^2\left[\dfrac{\pi}{2N+1}\right]}
 (1-\delta_{nn'})
+\label{eq:kin1d_p}
 \end{equation}
+
+An implementation of the equation \eqref{eq:kin1d_p} can be found in the file
+{\tt init\_deriv\_matrix\_p}.
+\begin{fortrancode}
+! Diagonal elements
+NPRIMED = (N-1)/2
+DO jj = 1, N
+  D1jl(jj,jj) = 0d0
+  D2jl(jj,jj) = -( 2.d0*PI/L )**2.d0 * NPRIMED * (NPRIMED+1)/3.d0
+ENDDO
+! Off diagonal elements
+DO jj = 1, N
+  DO ll = jj+1, N
+    nn = jj - ll
+    tt1 = PI/L * (-1.d0)**nn
+    tt2 = sin(PI*nn/N)
+    tt3 = (2.d0*PI/L)**2d0 * (-1.d0)**nn * cos(PI*nn/N)
+    tt4 = 2.d0*sin(PI*nn/N)**2d0
+    D1jl(jj,ll) =  tt1/tt2
+    D1jl(ll,jj) = -tt1/tt2
+    D2jl(jj,ll) = -tt3/tt4
+    D2jl(ll,jj) = -tt3/tt4
+  ENDDO
+ENDDO
+\end{fortrancode}
+
+Code for calculating kinetic term contribution to total energy:
+\begin{fortrancode}
+DO ist = 1, Nstates_occ
+  CALL op_nabla2( psi(:,ist), nabla2_psi(:) )
+  E_kinetic = E_kinetic + Focc(ist) * (-0.5d0) * ddot( Npoints, psi(:,ist),1, nabla2_psi(:),1 ) * dVol
+ENDDO
+\end{fortrancode}
+
+There two ways to implement kinetic term contribution to wave function
+gradient:
+\begin{itemize}
+\item By building the matrix representation of kinetic operator in the
+sparse form
+\item Using matrix-free method
+\end{itemize}
+
+The following code build the matrix representation of kinetic operator:
+\begin{fortrancode}
+! Number of nonzeros per column
+nnzc = Nx + Ny + Nz - 2
+! Total number of nonzeros
+NNZ  = nnzc*Npoints
+! Allocate arrays for CSC format
+ALLOCATE( rowval(NNZ) )
+ALLOCATE( nzval(NNZ) )
+ALLOCATE( colptr(Npoints+1) )
+! Initialize rowGbl pattern for x, y, and z components
+ALLOCATE( rowGbl_x_orig(Nx) )
+ALLOCATE( rowGbl_y_orig(Ny) )
+ALLOCATE( rowGbl_z_orig(Nz) )
+!
+rowGbl_x_orig(1) = 1
+DO ix = 2,Nx
+  rowGbl_x_orig(ix) = rowGbl_x_orig(ix-1) + Ny*Nz
+ENDDO 
+rowGbl_y_orig(1) = 1
+DO iy = 2,Ny
+  rowGbl_y_orig(iy) = rowGbl_y_orig(iy-1) + Nz
+ENDDO 
+DO iz = 1,Nz
+  rowGbl_z_orig(iz) = iz
+ENDDO 
+ip = 0
+DO colGbl = 1,Npoints
+  ! Determine local column index for x, y, and z components
+  !
+  colLoc_x = ceiling( real(colGbl)/(Ny*Nz) )
+  !
+  yy = colGbl - (colLoc_x - 1)*Ny*Nz
+  colLoc_y = ceiling( real(yy)/Nz )
+  !
+  izz = ceiling( real(colGbl)/Nz )
+  colLoc_z = colGbl - (izz-1)*Nz
+  ! Add diagonal element (only one element in any column)
+  ip = ip + 1
+  rowval(ip) = colGbl
+  nzval(ip) = D2jl_x(colLoc_x,colLoc_x) + D2jl_y(colLoc_y,colLoc_y) + D2jl_z(colLoc_z,colLoc_z)
+  ! Add non-diagonal elements
+  DO ix = 1,Nx
+    IF ( ix /= colLoc_x ) THEN 
+      ip = ip + 1
+      rowval(ip) = rowGbl_x_orig(ix) + colGbl - 1 - (colLoc_x - 1)*Ny*Nz
+      nzval(ip) = D2jl_x(ix,colLoc_x)
+    ENDIF 
+  ENDDO 
+  DO iy = 1,Ny
+    IF ( iy /= colLoc_y ) THEN 
+      ip = ip + 1
+      rowval(ip) = rowGbl_y_orig(iy) + colGbl - 1 - (izz-1)*Nz + (colLoc_x - 1)*Ny*Nz
+      nzval(ip) = D2jl_y(iy,colLoc_y)
+    ENDIF 
+  ENDDO 
+  DO iz = 1,Nz
+    IF ( iz /= colLoc_z ) THEN 
+      ip = ip + 1
+      rowval(ip) = rowGbl_z_orig(iz) + (izz-1)*Nz
+      nzval(ip) = D2jl_z(iz,colLoc_z)
+    ENDIF 
+  ENDDO 
+ENDDO 
+! Now colptr
+colptr(1) = 1
+DO ii = 2,Npoints+1
+  colptr(ii) = colptr(ii-1) + nnzc
+ENDDO 
+! Sort using subroutine csort from SPARSKIT
+nwork = max( Npoints+1, 2*(colptr(Npoints+1)-colptr(1)) )
+ALLOCATE( iwork( nwork ) )
+CALL csort( Npoints, nzval, rowval, colptr, iwork, .TRUE. )
+\end{fortrancode}
+
+Multiplication of kinetic matrix with wave function can be done using
+SPARSKIT's sparse matrix-vector multiplication subroutine {\tt amux}:
+\begin{fortrancode}
+CALL amux( Npoints, v(:,ic), Hv(:,ic), nzval, rowval, colptr )
+\end{fortrancode}
+
+Alternatively, one can use matrix-free method (without building
+3D Laplacian matrix)
+\begin{fortrancode}
+DO ip = 1, Npoints
+  i = lin2xyz(1,ip)
+  j = lin2xyz(2,ip)
+  k = lin2xyz(3,ip)
+  Lv(ip) = 0.d0
+  DO ii = 1, Nx
+    Lv(ip) = Lv(ip) + D2jl_x(ii,i) * v( xyz2lin(ii,j,k) )
+  ENDDO
+  DO jj = 1, Ny
+    Lv(ip) = Lv(ip) + D2jl_y(jj,j) * v( xyz2lin(i,jj,k) )
+  ENDDO
+  DO kk = 1, Nz
+    Lv(ip) = Lv(ip) + D2jl_z(kk,k) * v( xyz2lin(i,j,kk) )
+  ENDDO
+ENDDO
+\end{fortrancode}
+
+ILU0 preconditioner based on kinetic matrix:
+\begin{fortrancode}
+ALLOCATE( alu_ilu0(Npoints*(Nx+Ny+Nz-2)) )
+ALLOCATE( jlu_ilu0(Npoints*(Nx+Ny+Nz-2)) )
+ALLOCATE( ju_ilu0(Npoints) )
+ALLOCATE( iw_ilu0(Npoints) )
+CALL ilu0( Npoints, -0.5d0*nzval, rowval, colptr, alu_ilu0, jlu_ilu0, ju_ilu0, iw_ilu0, ierr )
+\end{fortrancode}
+
+Apply preconditioner:
+\begin{fortrancode}
+CALL lusol( Npoints, v, Kv, alu_ilu0, jlu_ilu0, ju_ilu0 )
+\end{fortrancode}
+
 
