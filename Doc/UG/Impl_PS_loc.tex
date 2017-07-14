@@ -1,8 +1,20 @@
 \subsection{Local pseudopotential}
 
-Local pseudopotential
+Local pseudopotential term is very simple because it is diagonal
+in real space.
+This term is represented by the global array {\tt V\_ps\_loc}
+found in file {\tt m_hamiltonian}. Despite its name, it can
+however be used to represent any local external potential
+such as harmonic potential.
 
-can also be used to describe local external potential
-such as harmonic potential
+It contribution to total energy is simply sum over grid
+points:
+\begin{fortrancode}
+E_ps_loc = sum( Rhoe(:) * V_ps_loc(:) )*dVol
+\end{fortrancode}
+
+Its contribution to wave function gradient is simply obtained by
+point-wise multiplication with wave function expansion
+coefficients.
 
 
