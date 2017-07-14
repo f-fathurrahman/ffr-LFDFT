@@ -55,7 +55,8 @@ Code for calculating kinetic term contribution to total energy:
 \begin{fortrancode}
 DO ist = 1, Nstates_occ
   CALL op_nabla2( psi(:,ist), nabla2_psi(:) )
-  E_kinetic = E_kinetic + Focc(ist) * (-0.5d0) * ddot( Npoints, psi(:,ist),1, nabla2_psi(:),1 ) * dVol
+  E_kinetic = E_kinetic + Focc(ist) * &
+              (-0.5d0) * ddot( Npoints, psi(:,ist),1, nabla2_psi(:),1 ) * dVol
 ENDDO
 \end{fortrancode}
 
@@ -107,7 +108,8 @@ DO colGbl = 1,Npoints
   ! Add diagonal element (only one element in any column)
   ip = ip + 1
   rowval(ip) = colGbl
-  nzval(ip) = D2jl_x(colLoc_x,colLoc_x) + D2jl_y(colLoc_y,colLoc_y) + D2jl_z(colLoc_z,colLoc_z)
+  nzval(ip) = D2jl_x(colLoc_x,colLoc_x) + D2jl_y(colLoc_y,colLoc_y) + &
+              D2jl_z(colLoc_z,colLoc_z)
   ! Add non-diagonal elements
   DO ix = 1,Nx
     IF ( ix /= colLoc_x ) THEN 
@@ -174,7 +176,8 @@ ALLOCATE( alu_ilu0(Npoints*(Nx+Ny+Nz-2)) )
 ALLOCATE( jlu_ilu0(Npoints*(Nx+Ny+Nz-2)) )
 ALLOCATE( ju_ilu0(Npoints) )
 ALLOCATE( iw_ilu0(Npoints) )
-CALL ilu0( Npoints, -0.5d0*nzval, rowval, colptr, alu_ilu0, jlu_ilu0, ju_ilu0, iw_ilu0, ierr )
+CALL ilu0( Npoints, -0.5d0*nzval, rowval, colptr, alu_ilu0, jlu_ilu0, &
+           ju_ilu0, iw_ilu0, ierr )
 \end{fortrancode}
 
 Apply preconditioner:
