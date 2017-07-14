@@ -8,6 +8,31 @@ Nonlocal HGH pseudopotential action can be defined as follows:
 h_{i,j} \beta^{\mathrm{NL}}_{ialm}
 \end{equation}
 
+Contribution to total energy:
+\begin{fortrancode}
+E_ps_NL = 0.d0
+DO ist = 1,Nstates_occ
+  enl1 = 0.d0
+  DO ia = 1,Natoms
+    isp = atm2species(ia)
+    DO l = 0,Ps(isp)%lmax
+    DO m = -l,l
+      DO iprj = 1,Ps(isp)%Nproj_l(l)
+      DO jprj = 1,Ps(isp)%Nproj_l(l)
+        ibeta = prj2beta(iprj,ia,l,m)
+        jbeta = prj2beta(jprj,ia,l,m)
+        hij = Ps(isp)%h(l,iprj,jprj)
+        enl1 = enl1 + hij*betaNL_psi(ia,ist,ibeta)*betaNL_psi(ia,ist,jbeta)
+      ENDDO ! jprj
+      ENDDO ! iprj
+    ENDDO ! m
+    ENDDO ! l
+  ENDDO 
+  E_ps_NL = E_ps_NL + Focc(ist)*enl1
+ENDDO 
+\end{fortrancode}
+
+
 Action of nonlocal pseudopotential to wavefunction:
 
 \begin{fortrancode}
