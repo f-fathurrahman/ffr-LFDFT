@@ -100,4 +100,18 @@ DO iter = 1, Emin_NiterMax
 ENDDO
 \end{fortrancode}
 
+Calculation of gradient:
+
+\begin{fortrancode}
+ALLOCATE( Hv(Npoints) )
+DO ic = 1, Ncols
+  CALL op_H_1col( ic, v(:,ic), Hv(:) )
+  grad(:,ic) = Hv(:)
+  DO icc = 1, Ncols
+    grad(:,ic) = grad(:,ic) - ddot( Npoints, v(:,icc),1, Hv(:),1 )*v(:,icc)*dVol
+  ENDDO
+  grad(:,ic) = Focc(ic)*grad(:,ic)
+ENDDO
+\end{fortrancode}
+
 
