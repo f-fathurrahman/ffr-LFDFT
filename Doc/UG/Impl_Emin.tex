@@ -1,0 +1,103 @@
+\subsection{Energy minimization}
+
+Using nonlinear conjugate gradient algorithm:
+
+\begin{fortrancode}
+ALLOCATE( g(Npoints,Nstates) )
+ALLOCATE( g_old(Npoints,Nstates) )
+ALLOCATE( g_t(Npoints,Nstates) )
+ALLOCATE( d(Npoints,Nstates) )
+ALLOCATE( d_old(Npoints,Nstates) )
+ALLOCATE( Kg(Npoints,Nstates) )
+ALLOCATE( Kg_old(Npoints,Nstates) )
+ALLOCATE( tv(Npoints,Nstates) )
+! Read starting eigenvectors from file
+IF( restart ) THEN
+  READ(112) v   ! FIXME Need to use file name
+ENDIF
+CALL calc_Rhoe( Focc, v )
+CALL update_potentials()
+CALL calc_betaNL_psi( Nstates, v )
+CALL calc_energies( v )
+Etot_old = Etot
+alpha = 0.d0
+beta  = 0.d0
+g(:,:)     = 0.d0
+g_t(:,:)   = 0.d0
+d(:,:)     = 0.d0
+d_old(:,:) = 0.d0
+Kg(:,:)    = 0.d0
+Kg_old(:,:) = 0.d0
+!
+DO iter = 1, Emin_NiterMax
+  !
+  ! Evaluate gradient at current trial vectors
+  CALL calc_grad( Nstates, v, g )
+  ! Precondition
+  DO ist = 1, Nstates
+    CALL prec_ilu0( g(:,ist), Kg(:,ist) )
+  ENDDO
+  !
+  ! set search direction
+  IF( iter /= 1 ) THEN
+    SELECT CASE ( I_CG_BETA )
+    CASE(1)
+      ! Fletcher-Reeves
+      beta = sum( g * Kg ) / sum( g_old * Kg_old )
+    CASE(2)
+      ! Polak-Ribiere
+      beta = sum( (g-g_old)*Kg ) / sum( g_old * Kg_old )
+    CASE(3)
+      ! Hestenes-Stiefel
+      beta = sum( (g-g_old)*Kg ) / sum( (g-g_old)*d_old )
+    CASE(4)
+      ! Dai-Yuan
+      beta = sum( g * Kg ) / sum( (g-g_old)*d_old )
+    END SELECT 
+  ENDIF
+  IF( beta < 0 ) THEN 
+    WRITE(*,'(1x,A,F18.10,A)') 'beta is smaller than zero: ', beta, ': setting it to zero'
+  ENDIF 
+  beta = max( 0.d0, beta )
+  d(:,:) = -Kg(:,:) + beta*d_old(:,:)
+  !
+  ! Evaluate gradient at trial step
+  tv(:,:) = v(:,:) + alpha_t * d(:,:)
+  CALL orthonormalize( Nstates, tv )
+  CALL calc_Rhoe( Focc, tv )
+  CALL update_potentials()  ! Now global vars on m_hamiltonian are changed
+  CALL calc_betaNL_psi( Nstates, tv )
+  CALL calc_grad( Nstates, tv, g_t )
+  !
+  ! Compute estimate of best step and update current trial vectors
+  denum = sum( (g - g_t) * d )
+  IF( denum /= 0.d0 ) THEN  ! FIXME: use abs ?
+    alpha = abs( alpha_t * sum( g * d )/denum )
+  ELSE 
+    alpha = 0.d0
+  ENDIF
+  !
+  v(:,:) = v(:,:) + alpha * d(:,:)
+  CALL orthonormalize( Nstates, v )
+  !
+  CALL calc_Rhoe( Focc, v )
+  CALL update_potentials()
+  CALL calc_betaNL_psi( Nstates, v )
+  CALL calc_energies( v )
+  !
+  WRITE(*,'(1x,I5,F18.10,ES18.10)') iter, Etot, Etot_old-Etot
+  !
+  IF( abs(Etot - Etot_old) < Emin_ETOT_CONV_THR ) THEN
+    WRITE(*,*) 'KS_solve_Emin_pcg converged in iter', iter
+    EXIT
+  ENDIF
+  !
+  Etot_old = Etot
+  g_old(:,:) = g(:,:)
+  d_old(:,:) = d(:,:)
+  Kg_old(:,:) = Kg(:,:)
+  flush(6)
+ENDDO
+\end{fortrancode}
+
+
