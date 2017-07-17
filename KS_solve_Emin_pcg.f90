@@ -26,6 +26,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
   USE m_energies, ONLY : Etot => E_total
   
   USE m_options, ONLY : I_CG_BETA, Emin_NiterMax, Emin_ETOT_CONV_THR
+  USE m_options, ONLY : T_WRITE_RESTART
 
   IMPLICIT NONE
   !
@@ -147,7 +148,9 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
     flush(6)
   ENDDO
 
-  WRITE(111) v
+  IF( T_WRITE_RESTART ) THEN 
+    WRITE(111) v
+  ENDIF  
 
   DEALLOCATE( g, g_old, g_t, d, d_old, tv, Kg, Kg_old )
 END SUBROUTINE

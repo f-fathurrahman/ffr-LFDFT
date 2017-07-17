@@ -6,6 +6,8 @@ MODULE m_options
   ! 1 => KS_solve_Emin_pcg
   ! 2 => SCF
 
+  LOGICAL :: T_WRITE_RESTART = .FALSE.
+
   ! Options for controlling how beta is calculated
   INTEGER :: I_CG_BETA = 2
   ! 1 => Fletcher-Reeves
