@@ -1,9 +1,10 @@
 \section{Usage}
 
-\ffrLFDFT main executable, \ffrmain supports a subset of
-PWSCF input file.
+\ffrmain accepts input file in plain text format.
+The structure of the input files are very similar to PWSCF
+input file with minor differences.
 
-The following input file is for LiH molecule:
+As an example, the following input file is for LiH molecule:
 \begin{minted}{text}
 &CONTROL
   pseudo_dir = '../../HGH'
@@ -35,7 +36,12 @@ Li   0.0  0.0  0.0
 H    1.0  0.0  0.0
 \end{minted}
 
-Special to \ffrLFDFT, not found in PWSCF, in {\tt ELECTRONS}
+Other examples can be found under directory {\tt works}.
+
+The following input variables are special to \ffrLFDFT
+and not found in PWSCF. These variables are defined in
+the namelist {\tt ELECTRONS}.
+
 \begin{itemize}
 \item {\tt KS\_Solve}: method to solve Kohn-Sham equation, accepted values:
 \begin{itemize}
