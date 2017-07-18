@@ -1,0 +1,99 @@
+\subsection{Ion-Ion interaction}
+
+Via Ewald summation:
+Using the code included in PWSCF
+\begin{fortrancode}
+INTEGER, PARAMETER :: mxr = 50
+! setup at and bg
+at(:,:) = 0.d0
+at(1,1) = LL(1)
+at(2,2) = LL(2)
+at(3,3) = LL(3)
+omega = LL(1)*LL(2)*LL(3)
+bg(:,:) = 0.d0
+bg(1,1) = TPI/LL(1)
+bg(2,2) = TPI/LL(2)
+bg(3,3) = TPI/LL(3)
+gcutm = maxval( NN )*TPI  !! ???? FIXME
+alat = 1.d0
+gamma_only = .FALSE.
+gstart = 2
+charge = 0.d0
+DO na = 1, nat
+   charge = charge + zv( ityp(na) )
+ENDDO
+alpha = 2.9d0
+100 alpha = alpha - 0.1d0
+!
+! choose alpha in order to have convergence in the sum over G
+! upperbound is a safe upper bound for the error in the sum over G
+!
+IF( alpha <= 0.d0) THEN 
+  WRITE(*,*) 'ERROR in calculating Ewald energy:'
+  WRITE(*,*) 'optimal alpha not found'
+  STOP 
+ENDIF 
+!
+! beware of unit of gcutm
+upperbound = 2.d0*charge**2*sqrt(2.d0*alpha/tpi) * erfc(sqrt(gcutm/4.d0/alpha))  
+IF(upperbound > 1.0d-7) GOTO 100
+!
+! G-space sum here.
+! Determine if this processor contains G=0 and set the constant term
+!
+IF(gstart==2) THEN 
+  ewaldg = - charge**2 / alpha / 4.0d0
+ELSE 
+  ewaldg = 0.0d0
+ENDIF 
+! gamma_only should be .FALSE. for our case
+IF(gamma_only) THEN 
+  fact = 2.d0
+ELSE
+  fact = 1.d0
+ENDIF 
+
+DO ng = gstart, ngm
+  rhon = (0.d0, 0.d0)
+  DO nt = 1, ntyp
+    rhon = rhon + zv(nt)*CONJG(strf(ng, nt))
+  ENDDO
+  ewaldg = ewaldg + fact*abs(rhon) **2 * exp( -gg(ng)/alpha/4.d0 )/ gg(ng)
+ENDDO
+ewaldg = 2.d0 * tpi / omega * ewaldg
+!
+!  Here add the other constant term
+!
+IF (gstart==2) THEN 
+  DO na = 1, nat
+    ewaldg = ewaldg - zv(ityp(na))**2 * sqrt(8.d0/tpi*alpha)
+  ENDDO
+ENDIF 
+!
+! R-space sum here (only for the processor that contains G=0)
+!
+ewaldr = 0.d0
+IF( gstart==2 ) THEN 
+  rmax = 4.d0 / sqrt(alpha) / alat
+  !
+  ! with this choice terms up to ZiZj*erfc(4) are counted (erfc(4)=2x10^-8
+  !
+  DO na = 1, nat
+    DO nb = 1, nat
+      dtau(:) = tau(:,na) - tau(:,nb)
+      !
+      ! generates nearest-neighbors shells
+      !
+      CALL rgen( dtau, rmax, mxr, at, bg, r, r2, nrm )
+      !
+      ! and sum to the real space part
+      !
+      DO nr = 1, nrm
+        rr = sqrt (r2 (nr) ) * alat
+        ewaldr = ewaldr + zv (ityp (na) ) * zv (ityp (nb) ) * erfc( sqrt (alpha) * rr) / rr
+      ENDDO 
+    ENDDO 
+  ENDDO 
+ENDIF 
+E_nn = 0.5d0*(ewaldg + ewaldr)
+\end{fortrancode}
