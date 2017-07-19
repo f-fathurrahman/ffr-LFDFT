@@ -6,3 +6,9 @@ them are quite simple, and only require linking to libmain.a
 Several tests however require longer command
 to compile and link. The script build.sh can be used to build
 these tests.
+
+TODO:
+
+- Explanation about each test
+- Instruction to compile the tests
+- Reorganization
