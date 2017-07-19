@@ -41,7 +41,7 @@ SUBROUTINE op_K( v, Kv )
       Kv(ip) = Kv(ip) + D2jl_z(kk,k) * v( xyz2lin(i,j,kk) )
     ENDDO
 
-    Kv(ip) = -0.5*Kv(ip)
+    Kv(ip) = -0.5d0*Kv(ip)
   ENDDO
 
 END SUBROUTINE
