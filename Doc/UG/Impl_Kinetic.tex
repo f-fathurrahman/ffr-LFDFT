@@ -22,10 +22,11 @@ For periodic LF:
 \begin{equation}
 D^{(2)}_{ij} = -\left( \frac{2\pi}{L} \right)^2 \frac{N'}{3} \left( N' + 1 \right) \delta_{ij} +
 \dfrac{ \left(\dfrac{2\pi}{L}\right)^2 (-1)^{i-j}\cos\left[\dfrac{\pi(i-j)}{N}\right]}
-{2\sin^2\left[\dfrac{\pi}{N}\right]}
+{2\sin^2\left[\dfrac{\pi(i-j)}{N}\right]}
 (1-\delta_{nn'})
 \label{eq:kin1d_p}
 \end{equation}
+where $N' = (N-1)/2$.
 
 An implementation of the equation \eqref{eq:kin1d_p} can be found in the file
 {\tt init\_deriv\_matrix\_p}.
