@@ -1,0 +1,143 @@
+
+         Atoms Information
+         -----------------
+
+ Natoms   =            1
+ Nspecies =            1
+
+ Valence information:
+ H         1.000
+
+ Atomic coordinates: (in bohr)
+
+ H          1.7007533901      1.7007533901      1.7007533901
+
+         Pseudopotential Information
+         ---------------------------
+
+ Species: H
+ Pseudopotential file: ../../../HGH/H.hgh
+
+ atom_name = H
+ zval =     1
+ lmax =    -1
+
+ Local pseudopotential parameters:
+
+ rlocal =       0.2000000000
+
+ c (for local potential ) = 
+          1     -4.1802370000
+          2      0.7250750000
+          3      0.0000000000
+          4      0.0000000000
+
+         LF3d Grid Information
+         ---------------------
+
+ Type: PERIODIC
+
+ Box size            =   15.99993  15.99993  15.99993
+ Grid spacing        =    0.35555   0.35555   0.35555
+ Sampling Nx, Ny, Nz =    45   45   45
+ Number of points    =      91125
+ dVol                =    0.04495
+
+ Some grid points in x, y, and z directions:
+
+        1   0.17778       1   0.17778       1   0.17778
+        2   0.53333       2   0.53333       2   0.53333
+       ..   .......      ..   .......      ..   .......
+       44  15.46660      44  15.46660      44  15.46660
+       45  15.82215      45  15.82215      45  15.82215
+
+ Some G2 values
+
+          1   0.00000
+          2   0.15421
+        ...   .......
+      91124   0.92528
+      91125   0.46264
+
+ Initializing betaNL functions
+
+ Number of electrons =            1.00000
+ Nstates =        1
+ WARNING: Odd number of electrons =            1
+
+ Initial occupation numbers
+        1           1.00000
+
+ Calculating structure factor: shifted to Fourier grid
+
+ V_ps_loc is initialized via G-space
+
+ Initializing nabla2_sparse
+ Memory required for nabla2_sparse:  0.13578683510422707       GB
+ ip  =     12119625
+ NNZ =     12119625
+
+ ILU0 preconditioner is based on kinetic matrix
+
+ Generating guess density
+ zion, znucl, length = H  1.000  1.000  0.600
+ Initial: integRho =    1.0000000000003988     
+ After scaling: integRho =    1.0000000000000033     
+
+ Eigenvalues:
+
+    1     -0.1881213719
+
+
+ Checking orthonormalization
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+ Norms:
+        1      1.0000000000
+
+ Check wrt to vector 1
+
+
+ Minimizing KS total energy functional using PCG algorithm
+ ---------------------------------------------------------
+
+ NiterMax =          150
+ alpha_t  =    3.0000000000000001E-005
+ restart  =  F
+ conv_thr =  1.000E-06
+
+ Using Polak-Ribiere formula
+
+ KS_solve_Emin_pcg: memGB =    5.4314732551574707E-003
+
+     1     -0.4437266978  4.5906104209E-04
+     2     -0.4442561355  5.2943765855E-04
+     3     -0.4445310205  2.7488500054E-04
+     4     -0.4447601610  2.2914053881E-04
+     5     -0.4449226204  1.6245936466E-04
+     6     -0.4450174523  9.4831870977E-05
+     7     -0.4450638557  4.6403391048E-05
+     8     -0.4450842128  2.0357175068E-05
+     9     -0.4450900317  5.8188258940E-06
+    10     -0.4450927842  2.7525878976E-06
+    11     -0.4450943197  1.5354510188E-06
+    12     -0.4450951796  8.5985859011E-07
+ KS_solve_Emin_pcg converged in iter          12
+
+ Energy components:
+
+ Kinetic  =       0.4203393536
+ Local PS =      -0.7401386372
+ NL PS    =       0.0000000000
+ Hartree  =       0.1952751723
+ XC       =      -0.2318752079
+ NN       =      -0.0886958603
+ -----------------------------
+ Total    =      -0.4450951796
+
+ Final eigenvalues (Ha and eV)
+
+        1     -0.2315496306     -6.3008359287
+
+ Total elapsed time:    6.8849999999999998       seconds.
+
