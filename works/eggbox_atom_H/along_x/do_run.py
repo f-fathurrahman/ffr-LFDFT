@@ -1,7 +1,6 @@
 from __future__ import print_function
 import numpy as np
-from ase.units import Bohr
-from ase.units import Ry
+from ase.units import Bohr, Ry
 import sys
 import os
 
@@ -18,7 +17,7 @@ def read_etot(logfile):
 
 
 start_pos = 0.0
-dx = 16.0*Bohr/45/20
+dx = 16.0*Bohr/45/10
 Nmoves = 20
 
 f = open('TEMPLATE_INP', 'r')
