@@ -4,7 +4,7 @@ from ase.units import Bohr
 from read_etot import read_etot
 
 start_pos = np.array([0.0, 0.0, 0.0])
-dx = 16.0*Bohr/45/20
+dx = 16.0*Bohr/45/40
 Nmoves = 20
 
 f = open('TEMPLATE_INP', 'r')
@@ -14,6 +14,10 @@ f.close()
 pos = start_pos[:]
 x = []
 Etot = []
+
+fdat = open('ETOT.dat', 'w')
+fdat.write('# dx = %18.10f , Nmoves = %d\n' % (dx, Nmoves))
+
 for i in range(Nmoves):
     #
     infile  = 'INPUT_' + str(i+1)
@@ -29,6 +33,9 @@ for i in range(Nmoves):
     #
     x.append(i*dx)
     Etot.append(read_etot(outfile))
+    fdat.write('%18.10f %18.10f\n' % (x[-1], Etot[-1]))
+
+fdat.close()
 
 import matplotlib.pyplot as plt
 plt.clf()
