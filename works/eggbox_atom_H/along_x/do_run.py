@@ -1,8 +1,21 @@
 from __future__ import print_function
 import numpy as np
-import os
 from ase.units import Bohr
-from read_etot import read_etot
+from ase.units import Ry
+import sys
+import os
+
+def read_etot(logfile):
+    f = open(logfile, 'r')
+    while True:
+        line = f.readline()
+        if not line:
+            break
+        if 'Total    =' in line:
+            Etot = float( line.split()[2] )*Ry
+    return Etot
+    f.close()
+
 
 start_pos = 0.0
 dx = 16.0*Bohr/45/20
