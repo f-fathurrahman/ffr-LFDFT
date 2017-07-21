@@ -2,7 +2,7 @@ import numpy as np
 import os
 
 start_pos = np.array([0.0, 0.0, 0.0])
-dx = 0.02
+dx = 0.005
 Nmoves = 20
 
 f = open('TEMPLATE_INP', 'r')
@@ -21,4 +21,6 @@ for i in range(Nmoves):
     f.write('H  %18.10f %18.10f %18.10f\n' % (pos[0],pos[1],pos[2]))
     f.close()
     #
-    os.system('../../ffr_LFDFT_gfortran.x ' + infile + ' | tee ' + outfile)
+    os.system('../../../ffr_LFDFT_gfortran.x ' + infile + ' | tee ' + outfile)
+
+

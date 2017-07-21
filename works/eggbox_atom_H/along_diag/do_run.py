@@ -2,7 +2,7 @@ import numpy as np
 import os
 
 start_pos = np.array([0.0, 0.0, 0.0])
-dx = 0.02
+dx = 0.005
 Nmoves = 20
 
 f = open('TEMPLATE_INP', 'r')

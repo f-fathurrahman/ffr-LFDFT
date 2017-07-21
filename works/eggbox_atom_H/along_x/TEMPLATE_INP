@@ -1,5 +1,5 @@
 &CONTROL
-  pseudo_dir = '../../HGH'
+  pseudo_dir = '../../../HGH'
   etot_conv_thr = 1.0d-6
 /
 
