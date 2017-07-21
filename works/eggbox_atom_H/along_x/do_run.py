@@ -1,8 +1,9 @@
 import numpy as np
 import os
+from ase.units import Bohr
 
 start_pos = np.array([0.0, 0.0, 0.0])
-dx = 0.005
+dx = 16.0*Bohr/45/20
 Nmoves = 20
 
 f = open('TEMPLATE_INP', 'r')
