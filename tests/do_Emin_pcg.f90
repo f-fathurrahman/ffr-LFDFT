@@ -84,8 +84,7 @@ PROGRAM do_Emin_pcg
   ENDDO
   CALL orthonormalize( Nstates, evecs )
 
-  CALL KS_solve_Emin_pcg( 3.d-5, 1000, .FALSE. )
-  !CALL KS_solve_Emin_pcg( 3.d-5, 1000, .TRUE. )
+  CALL KS_solve_Emin_pcg( 3.d-5, .FALSE. )
 
   CALL info_energies()
 
