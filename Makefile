@@ -83,6 +83,7 @@ mixlinear.f90 \
 shift_atoms.f90 \
 bspline.f90 \
 init_V_ps_loc_G_interp.f90 \
+init_V_ps_loc_gaussian_G.f90 \
 init_V_coul_G_interp.f90 \
 init_strfact_shifted.f90 \
 Ylm_real.f90 \
