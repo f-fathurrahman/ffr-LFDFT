@@ -112,17 +112,17 @@ SUBROUTINE init_nabla2_sparse()
     colptr(ii) = colptr(ii-1) + nnzc
   ENDDO 
 
-  WRITE(*,*) 'ip  = ', ip
-  WRITE(*,*) 'NNZ = ', NNZ
-
   DEALLOCATE( rowGbl_x_orig )
   DEALLOCATE( rowGbl_y_orig )
   DEALLOCATE( rowGbl_z_orig )
 
+  ! Sort the resulting colptr, this is required for ILU preconditioning
   nwork = max( Npoints+1, 2*(colptr(Npoints+1)-colptr(1)) )
+
   ALLOCATE( iwork( nwork ) )
   CALL csort( Npoints, nzval, rowval, colptr, iwork, .TRUE. )
   DEALLOCATE( iwork )
+
   flush(6)
 
 END SUBROUTINE 
