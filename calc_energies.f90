@@ -21,7 +21,7 @@ SUBROUTINE calc_energies( psi )
   USE m_states, ONLY : Nstates, Focc, Nstates_occ
   USE m_hamiltonian, ONLY : V_ps_loc, V_Hartree, Rhoe, betaNL_psi
   USE m_atoms, ONLY : atm2species, Natoms
-  USE m_PsPot, ONLY : prj2beta, Ps => Ps_HGH_Params
+  USE m_PsPot, ONLY : prj2beta, Ps => Ps_HGH_Params, NbetaNL
   USE m_energies
   IMPLICIT NONE
   !
@@ -58,6 +58,7 @@ SUBROUTINE calc_energies( psi )
   E_xc = sum( Rhoe(:) * epsxc(:) )*dVol
 
   !
+  IF( NbetaNL > 0 ) THEN 
   E_ps_NL = 0.d0
   DO ist = 1,Nstates_occ
     enl1 = 0.d0
@@ -78,6 +79,7 @@ SUBROUTINE calc_energies( psi )
     ENDDO 
     E_ps_NL = E_ps_NL + Focc(ist)*enl1
   ENDDO 
+  ENDIF 
 
   E_total = E_kinetic + E_ps_loc + E_Hartree + E_xc + E_nn + E_ps_NL
 
@@ -85,4 +87,6 @@ SUBROUTINE calc_energies( psi )
 
   DEALLOCATE( epsxc )
   DEALLOCATE( nabla2_psi )
+
+  WRITE(*,*) 'Pass here 89'
 END SUBROUTINE
