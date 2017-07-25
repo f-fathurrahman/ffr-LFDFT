@@ -1,5 +1,5 @@
 ! Gaussian potential:
-! V(r) = sum_{i} A_{i} \exp( -\alpha r_{i}^{2} )
+! V(r) = sum_{i} A_{i} \exp( -\alpha_{i} r^{2} )
 !
 SUBROUTINE init_V_ps_loc_gaussian_G( Nparams, A, alpha )
   USE m_constants, ONLY : PI
@@ -45,7 +45,7 @@ SUBROUTINE init_V_ps_loc_gaussian_G( Nparams, A, alpha )
     ctmp(:) = cmplx(0.d0,0.d0,kind=8)
     DO ip = 1,Npoints
       Gm = sqrt(G2(ip))
-      ctmp(ip) = A(isp)*sqrt(PI/alpha(isp)) * exp(-PI**2*G2(ip)/alpha(isp)) &
+      ctmp(ip) = -A(isp)*(PI/alpha(isp))**1.5d0 * exp(-0.25d0*G2(ip)/alpha(isp)) &
                  * strf(ip,isp) / Omega
     ENDDO
 
@@ -58,6 +58,8 @@ SUBROUTINE init_V_ps_loc_gaussian_G( Nparams, A, alpha )
     ENDDO 
 
   ENDDO 
+
+  WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
 
   flush(6)
 

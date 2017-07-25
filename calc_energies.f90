@@ -88,5 +88,4 @@ SUBROUTINE calc_energies( psi )
   DEALLOCATE( epsxc )
   DEALLOCATE( nabla2_psi )
 
-  WRITE(*,*) 'Pass here 89'
 END SUBROUTINE

@@ -32,7 +32,7 @@ SUBROUTINE init_atoms_xyz( fil_xyz )
 
   ALLOCATE( AtomicCoords( 3, Natoms ) )
 
-  DO ia=1,natoms
+  DO ia=1,Natoms
     READ( unitxyz, * ) atmSymb(ia), &
                        AtomicCoords(1,ia), AtomicCoords(2,ia), AtomicCoords(3,ia)
     !WRITE(*,'(1x,A,3G18.10)') trim(atoms%atmSymb(ia)), atoms%positions(1,ia), &

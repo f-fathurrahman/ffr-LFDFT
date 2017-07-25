@@ -14,7 +14,7 @@
 !!
 SUBROUTINE calc_rhoe( Focc, psi )
 
-  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints  !, dVol => LF3d_dVol
   USE m_states, ONLY : Nstates_occ, Nstates
   USE m_hamiltonian, ONLY : Rhoe
   IMPLICIT NONE
@@ -27,9 +27,9 @@ SUBROUTINE calc_rhoe( Focc, psi )
     Rhoe(:) = Rhoe(:) + Focc(ist) * psi(:,ist) * psi(:,ist)
   ENDDO
 
-  !WRITE(*,*)
-  !WRITE(*,*) 'Calculating electron density'
-  !WRITE(*,'(1x,A,F18.10)') 'Integrated electron density:', sum( Rhoe(:) )*dVol
+!  WRITE(*,*)
+!  WRITE(*,*) 'Calculating electron density'
+!  WRITE(*,'(1x,A,F18.10)') 'Integrated electron density:', sum( Rhoe(:) )*dVol
 
 END SUBROUTINE 
 
