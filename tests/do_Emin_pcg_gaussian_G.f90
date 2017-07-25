@@ -82,6 +82,7 @@ PROGRAM do_Emin_pcg_gaussian_G
 
   ! Laplacian matrix
   CALL init_nabla2_sparse()
+
   ! ILU0 preconditioner based on kinetic matrix
   CALL init_ilu0_prec()
 
@@ -122,7 +123,7 @@ PROGRAM do_Emin_pcg_gaussian_G
   CALL dealloc_ilu0_prec()
   CALL dealloc_hamiltonian()
   CALL dealloc_LF3d()
-  CALL dealloc_atoms()
+!  CALL dealloc_atoms()
 
   CALL system_clock( tstop )
 

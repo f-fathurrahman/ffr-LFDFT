@@ -123,7 +123,6 @@ SUBROUTINE init_nabla2_sparse()
   ALLOCATE( iwork( nwork ) )
   CALL csort( Npoints, nzval, rowval, colptr, iwork, .TRUE. )
   DEALLOCATE( iwork )
-
   flush(6)
 
 END SUBROUTINE 
