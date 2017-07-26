@@ -1,7 +1,7 @@
 #include platform/make.inc.ifort
-include platform/make.inc.gfortran
+#include platform/make.inc.gfortran
 #include platform/make.inc.g95
-#include platform/make.inc.pgi
+include platform/make.inc.pgi
 #include platform/make.inc.sun
 
 SRC = \
@@ -84,6 +84,7 @@ shift_atoms.f90 \
 bspline.f90 \
 init_V_ps_loc_G_interp.f90 \
 init_V_ps_loc_gaussian_G.f90 \
+init_V_ps_loc_gaussian.f90 \
 init_V_coul_G_interp.f90 \
 init_strfact_shifted.f90 \
 Ylm_real.f90 \

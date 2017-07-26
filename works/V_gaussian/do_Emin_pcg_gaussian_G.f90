@@ -36,7 +36,7 @@ PROGRAM do_Emin_pcg_gaussian_G
   READ(arg_N, *) N_in
 
   ! Initialize states and occupation numbers MANUALLY
-  Nstates = 2
+  Nstates = 1
   Nstates_occ = Nstates
   Nelectrons = 2.d0*Nstates
   ALLOCATE( Zv(1) )
@@ -74,7 +74,8 @@ PROGRAM do_Emin_pcg_gaussian_G
   A(1) = 1.d0
   alpha(1) = 3.d0
   !
-  CALL init_V_ps_loc_gaussian_G( Nparams, A, alpha )
+  !CALL init_V_ps_loc_gaussian_G( Nparams, A, alpha )
+  CALL init_V_ps_loc_gaussian( Nparams, A, alpha )
 
   ! 
   NbetaNL = 0

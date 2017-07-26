@@ -1,4 +1,4 @@
-! Gaussian potential:
+! Gaussian potential in G-space:
 ! V(r) = sum_{i} A_{i} \exp( -\alpha_{i} r^{2} )
 !
 SUBROUTINE init_V_ps_loc_gaussian_G( Nparams, A, alpha )
