@@ -74,11 +74,15 @@ PROGRAM do_Emin_pcg_gaussian_G
   A(1) = 1.d0
   alpha(1) = 3.d0
   !
-  !CALL init_V_ps_loc_gaussian_G( Nparams, A, alpha )
-  CALL init_V_ps_loc_gaussian( Nparams, A, alpha )
+  !CALL init_V_ps_loc_gaussian_G( Nparams, A, alpha )  ! appropriate for periodic system
+  CALL init_V_ps_loc_gaussian( Nparams, A, alpha ) ! acceptable for periodic system as long as
+                                                   ! the potentials between neighboring periodic images
+                                                   ! do not overlapping
 
-  ! 
+  ! Set this explicitly in order to skip any term involving nonlocal pseudopotentials
   NbetaNL = 0
+
+  ! required anyway to get similar numerical result with OCTOPUS
   CALL calc_Ewald_qe()
 
   ! Laplacian matrix
