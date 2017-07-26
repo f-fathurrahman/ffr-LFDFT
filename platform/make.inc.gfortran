@@ -4,7 +4,7 @@ AR = ar
 F77 = gfortran
 F77_OPTS = 
 F90 = gfortran
-F90_OPTS = -cpp -Wall -O3 # -g -fbacktrace -ffpe-trap=zero,overflow,underflow
+F90_OPTS = -cpp -Wall -O3 # -fcheck=all # -g -fbacktrace -ffpe-trap=zero,overflow,underflow
 LIB_LINALG = -lblas -llapack
 LIB_FFTW3 = -lfftw3
 LIBS = $(LIB_LINALG) $(LIB_FFTW3)
