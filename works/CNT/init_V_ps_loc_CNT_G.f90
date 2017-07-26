@@ -20,9 +20,9 @@ SUBROUTINE init_V_ps_loc_CNT_G()
   COMPLEX(8), ALLOCATABLE :: ctmp(:)
 
   !
-  A(1) = 10.607d0*Ry2eV*2.d0
-  A(2) = 29.711d0*Ry2eV*2.d0
-  A(3) = -98.911d0*Ry2eV*2.d0
+  A(1) = 10.607d0/( Ry2eV*2.d0 )
+  A(2) = 29.711d0/( Ry2eV*2.d0 )
+  A(3) = -98.911d0/( Ry2eV*2.d0 )
   !
   alpha(1) = 0.12126d0
   alpha(2) = 1.9148d0
