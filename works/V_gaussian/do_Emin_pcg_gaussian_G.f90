@@ -36,13 +36,13 @@ PROGRAM do_Emin_pcg_gaussian_G
   READ(arg_N, *) N_in
 
   ! Initialize states and occupation numbers MANUALLY
-  Nstates = 1
-  Nstates_occ = 1
-  Nelectrons = 2.d0
+  Nstates = 2
+  Nstates_occ = Nstates
+  Nelectrons = 2.d0*Nstates
   ALLOCATE( Zv(1) )
   Zv(1) = Nelectrons
   ALLOCATE( Focc(Nstates) )
-  Focc(1) = 2.d0
+  Focc(:) = 2.d0
 
   ! 'Atomic' positions
   Nspecies = 1
