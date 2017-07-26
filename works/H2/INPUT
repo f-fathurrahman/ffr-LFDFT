@@ -10,13 +10,13 @@
   A = 8.4668d0
   B = 8.4668d0
   C = 8.4668d0
-  nr1 = 45
-  nr2 = 45
-  nr3 = 45
+  nr1 = 35
+  nr2 = 35
+  nr3 = 35
 /
 
 &ELECTRONS
-  KS_Solve = 'SCF'
+  KS_Solve = 'Emin-pcg'
   cg_beta = 'DY'
   electron_maxstep = 150
   mixing_beta = 0.5
@@ -29,7 +29,7 @@ H    1.0  H.hgh
 
 ATOMIC_POSITIONS angstrom
 H    0.0  0.0  0.0
-H    1.5  0.0  0.0
+H    0.793765815845  0.0  0.0
 
 
 
