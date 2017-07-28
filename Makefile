@@ -1,7 +1,7 @@
 #include platform/make.inc.ifort
-#include platform/make.inc.gfortran
+include platform/make.inc.gfortran
 #include platform/make.inc.g95
-include platform/make.inc.pgi
+#include platform/make.inc.pgi
 #include platform/make.inc.sun
 
 SRC = \
@@ -152,7 +152,7 @@ OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) $(SPARSKIT_SRC:.f=.o)
 # supress warning
 .SUFFIXES: .o .f
 .f.o:
-	$(F90) -c -O3 $<
+	$(F90) -c -O3 -fbacktrace $<
 
 
 # Targets
