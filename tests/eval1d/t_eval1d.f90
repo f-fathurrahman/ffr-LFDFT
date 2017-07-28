@@ -15,7 +15,7 @@ PROGRAM t_eval1d
   !
   REAL(8) :: eval_LF1d_p
 
-  N = 9
+  N = 5
   L = 1.d0
 
   c1 = L/2.d0
@@ -27,13 +27,14 @@ PROGRAM t_eval1d
   h = L/dble(N)  ! manually calculate h
 
   ! Write to file for plotting
-  jj = 3
-  DO ii=1,NPTS_PLOT
-    !
-    xx = (ii-1)*L/NPTS_PLOT ! plot for double periods
-    yy = eval_LF1d_p( N, L, grid_x, jj, xx )
-    WRITE(11,*) xx, yy
-  ENDDO
+  DO jj = 1,N
+    DO ii=1,NPTS_PLOT
+      !
+      xx = (ii-1)*L/NPTS_PLOT ! plot for double periods
+      yy = eval_LF1d_p( N, L, grid_x, jj, xx )
+      WRITE(10+jj,*) xx, yy
+    ENDDO
+  ENDDO 
 
   ! Free memory
   DEALLOCATE( grid_x )
