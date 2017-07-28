@@ -5,6 +5,7 @@ amssymb,
 aps,
 ]{revtex4-1}
 
+\usepackage{graphicx}
 \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
 \usepackage[utf8x]{inputenc}
 \usepackage{hyperref}
@@ -45,13 +46,11 @@ E[\rho(\mathbf{r})] =
 -\frac{1}{2}\sum_{i}f_{i}
 \int\mathrm{d}\mathbf{r}\,
 \, \psi^{*}_{i}(\mathbf{r}) \nabla^2 \psi_{i}(\mathbf{r})
-\\
 + \int\mathrm{d}\mathbf{r}\,
 \rho(\mathbf{r}) V_{\mathrm{ext}}(\mathbf{r})
 +
 \frac{1}{2}\int\mathrm{d}\mathbf{r}\,\mathrm{d}\mathbf{r}'\,
 \frac{\rho(\mathbf{r})\rho(\mathbf{r}')}{\left|\mathbf{r}-\mathbf{r}'\right|}
-\\
 + E_{\mathrm{xc}}[\rho(\mathbf{r})]
 \end{equation}
 \end{widetext}
@@ -114,6 +113,11 @@ memiliki bentuk sebagai berikut.
 \frac{\pi}{L_{\alpha}}(2n_{\alpha} - N_{\alpha} - 1)(x-x_{\alpha})
 \right]
 \end{equation}
+
+Test
+\begin{figure}
+\includegraphics[scale=0.5]{images/plotN_5.pdf}
+\end{figure}
 
 Sembarang fungsi periodic $f(x) = f(x+L_{\alpha})$ dapat diekspansi dalam fungsi basis
 Lagrange
