@@ -43,8 +43,8 @@ SUBROUTINE init_V_ps_loc_gaussian_G( Nparams, A, alpha )
   DO isp = 1,Nspecies
     WRITE(*,*)
     WRITE(*,'(1x,A,I5)') 'Gaussian potential parameter set #', isp
-    WRITE(*,'(1x,A,F18.10)') 'A         = ', A(isp)
-    WRITE(*,'(1x,A,F18.10)') 'alpha(is) = ', alpha(isp)
+    WRITE(*,'(1x,A,F18.10)') 'A     = ', A(isp)
+    WRITE(*,'(1x,A,F18.10)') 'alpha = ', alpha(isp)
     WRITE(*,*)
     ctmp(:) = cmplx(0.d0,0.d0,kind=8)
     DO ip = 1,Npoints

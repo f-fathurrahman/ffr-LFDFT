@@ -139,12 +139,13 @@ PROGRAM do_Emin_pcg_gaussian_G
   CALL dealloc_ilu0_prec()
   CALL dealloc_hamiltonian()
   CALL dealloc_LF3d()
-!  CALL dealloc_atoms()
+  CALL dealloc_atoms()
 
   CALL system_clock( tstop )
 
   WRITE(*,*)
-  WRITE(*,*) 'Total elapsed time: ', dble(tstop - tstart)/counts_per_second, ' second.'
+  WRITE(*,'(1x,A,ES18.10,A)') 'Total elapsed time: ', &
+           dble(tstop - tstart)/counts_per_second, ' second.'
   WRITE(*,*)
 
 END PROGRAM
