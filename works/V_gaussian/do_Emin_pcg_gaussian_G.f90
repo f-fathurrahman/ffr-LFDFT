@@ -14,26 +14,37 @@ PROGRAM do_Emin_pcg_gaussian_G
   INTEGER :: Narg
   INTEGER :: NN(3)
   REAL(8) :: AA(3), BB(3)
-  CHARACTER(64) :: filexyz, arg_N
+  CHARACTER(64) :: filexyz, arg_tmp
   INTEGER :: ip, ist, N_in
   !
   INTEGER :: Nparams
   REAL(8), ALLOCATABLE :: alpha(:), A(:)
+  REAL(8) :: alpha_in, A_in
   !
   INTEGER :: iargc  ! pgf90 
   INTEGER :: tstart, counts_per_second, tstop
 
-  CALL system_clock( tstart, counts_per_second )
-
   Narg = iargc()
-  IF( Narg /= 1 ) THEN 
-    WRITE(*,*) 'ERROR: exactly one arguments must be given:'
-    WRITE(*,*) '       N'
+  IF( Narg /= 3 ) THEN 
+    WRITE(*,*) 'ERROR: exactly three arguments must be given:'
+    WRITE(*,*) '       N A alpha'
+    WRITE(*,*)
+    WRITE(*,*) ' A and alpha is Gaussian parameter:'
+    WRITE(*,*) '   f(r) = A*exp( - alpha*r^2 )'
     STOP 
   ENDIF 
 
-  CALL getarg( 1, arg_N )
-  READ(arg_N, *) N_in
+  CALL getarg( 1, arg_tmp )
+  READ(arg_tmp, *) N_in
+  
+  CALL getarg( 2, arg_tmp )
+  READ(arg_tmp, *) A_in
+  
+  CALL getarg( 3, arg_tmp )
+  READ(arg_tmp, *) alpha_in
+
+  ! Start timing
+  CALL system_clock( tstart, counts_per_second )
 
   ! Initialize states and occupation numbers MANUALLY
   Nstates = 1
@@ -71,11 +82,11 @@ PROGRAM do_Emin_pcg_gaussian_G
   Nparams = Nspecies
   ALLOCATE( A(Nparams) )
   ALLOCATE( alpha(Nparams) )
-  A(1) = 1.d0
-  alpha(1) = 3.d0
+  A(1) = A_in
+  alpha(1) = alpha_in
   !
-  !CALL init_V_ps_loc_gaussian_G( Nparams, A, alpha )  ! appropriate for periodic system
-  CALL init_V_ps_loc_gaussian( Nparams, A, alpha ) ! acceptable for periodic system as long as
+  CALL init_V_ps_loc_gaussian_G( Nparams, A, alpha )  ! appropriate for periodic system
+  !CALL init_V_ps_loc_gaussian( Nparams, A, alpha ) ! acceptable for periodic system as long as
                                                    ! the potentials between neighboring periodic images
                                                    ! do not overlapping
 
@@ -83,7 +94,7 @@ PROGRAM do_Emin_pcg_gaussian_G
   NbetaNL = 0
 
   ! required anyway to get similar numerical result with OCTOPUS
-  CALL calc_Ewald_qe()
+  !CALL calc_Ewald_qe()
 
   ! Laplacian matrix
   CALL init_nabla2_sparse()
