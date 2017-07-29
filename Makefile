@@ -132,7 +132,6 @@ unary.f \
 blassm.f \
 matvec.f
 
-
 OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) $(SPARSKIT_SRC:.f=.o)
 
 #
@@ -152,8 +151,7 @@ OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) $(SPARSKIT_SRC:.f=.o)
 # supress warning
 .SUFFIXES: .o .f
 .f.o:
-	$(F90) -c -O3 -fbacktrace $<
-
+	$(F90) -c -O3 $<
 
 # Targets
 lib: $(OBJ)
