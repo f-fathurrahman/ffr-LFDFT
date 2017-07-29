@@ -1,0 +1,63 @@
+\section{Teori}
+
+\cite{Choi2015,Choi2016}, 
+
+Berdasarkan teori fungsional kerapatan,
+energi total dari sistem yang terdiri dari elektron yang berinteraksi
+dengan suatu potential eksternal $V_{\mathrm{ext}}(\mathbf{r})$
+dapat dinyatakan sebagai
+\begin{widetext}
+\begin{equation}
+E[\rho(\mathbf{r})] = 
+-\frac{1}{2}\sum_{i}f_{i}
+\int\mathrm{d}\mathbf{r}\,
+\, \psi^{*}_{i}(\mathbf{r}) \nabla^2 \psi_{i}(\mathbf{r})
++ \int\mathrm{d}\mathbf{r}\,
+\rho(\mathbf{r}) V_{\mathrm{ext}}(\mathbf{r})
++
+\frac{1}{2}\int\mathrm{d}\mathbf{r}\,\mathrm{d}\mathbf{r}'\,
+\frac{\rho(\mathbf{r})\rho(\mathbf{r}')}{\left|\mathbf{r}-\mathbf{r}'\right|}
++ E_{\mathrm{xc}}[\rho(\mathbf{r})]
+\end{equation}
+\end{widetext}
+
+LDA XC:
+\begin{equation}
+E_{\mathrm{xc}}[\rho(\mathbf{r})] =
+\int\mathrm{d}\mathbf{r}\,
+\varepsilon_{\mathrm{xc}}(\rho(\mathbf{r}))
+\rho(\mathbf{r})
+\end{equation}
+
+\begin{equation}
+V_{\mathrm{xc}}(\mathbf{r}) = \varepsilon_{\mathrm{xc}}(\rho(\mathbf{r}))
++ \rho(\mathbf{r})\frac{\mathrm{d}\varepsilon_{\mathrm{xc}}(\rho)}{\mathrm{d}\rho}
+\end{equation}
+
+Persamaan sentral pada teori fungsional kerapatan adalah persamaan
+Kohn-Sham yang dapat ditulis sebagai berikut.
+\begin{equation}
+\left[
+-\frac{1}{2}\nabla^2
++ V_{\mathrm{Ha}}(\mathbf{r})
++ V_{\mathrm{xc}}(\mathbf{r})
++ V_{\mathrm{ext}}(\mathbf{r})
+\right]\psi_{i}(\mathrm{r}) =
+\epsilon_{i} \psi_{i}(\mathrm{r})
+\label{eq:KS_eq}
+\end{equation}
+Suku potensial pertama pada persamaan $\eqref{eq:KS_eq}$,
+$V_{\mathrm{Ha}}(\mathbf{r})$ menyatakan potensial Hartree,
+\begin{equation}
+V_{\mathrm{Ha}}(\mathbf{r}) =
+\int
+\frac{\rho(\mathbf{r}')}{\left|\mathbf{r} - \mathbf{r}'\right|}
+\mathrm{d}\mathbf{r}'
+\end{equation}
+dengan $\rho(\mathbf{r})$ adalah kerapatan (muatan) elektron
+yang dapat ditulis sebagai
+\begin{equation}
+\rho(\mathbf{r}) = \sum_{i} f_{i}\, \psi^{*}_{i}(\mathbf{r}) \psi_{i}(\mathbf{r})
+\end{equation}
+Suku potensial ketida adalah $V_{\mathrm{ext}}(\mathbf{r})$
+yang menyatakan potensial eksternal yang dirasakan oleh elektron.
