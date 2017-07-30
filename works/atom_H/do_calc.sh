@@ -11,9 +11,9 @@ cat << EOF > INPUT
   ibrav = 8
   nat = 1
   ntyp = 1
-  A = 8.4668d0
-  B = 8.4668d0
-  C = 8.4668d0
+  A = 8.46683536902
+  B = 8.46683536902
+  C = 8.46683536902
   nr1 = $nn
   nr2 = $nn
   nr3 = $nn
@@ -31,7 +31,7 @@ ATOMIC_SPECIES
 H   1.0  H.hgh
 
 ATOMIC_POSITIONS angstrom
-H   0.0  0.0  0.0
+H   4.23341768       4.23341768       4.23341768
 
 EOF
 
