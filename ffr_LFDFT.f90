@@ -14,8 +14,6 @@ PROGRAM ffr_LFDFT
   INTEGER :: iargc  ! pgf90 
   INTEGER :: tstart, counts_per_second, tstop
 
-  CALL system_clock( tstart, counts_per_second )
-
   Narg = iargc()
   IF( Narg /= 1 ) THEN 
     WRITE(*,*) 'ERROR: exactly one arguments must be given: input file path'
@@ -24,10 +22,10 @@ PROGRAM ffr_LFDFT
 
   CALL getarg( 1, filein )
 
+  CALL system_clock( tstart, counts_per_second )
+
   CALL read_input( filein )
-
   CALL setup_from_input()
-
   CALL setup_options()
 
   CALL info_atoms()
@@ -107,7 +105,8 @@ PROGRAM ffr_LFDFT
   CALL system_clock( tstop )
 
   WRITE(*,*)
-  WRITE(*,*) 'Total elapsed time: ', dble(tstop - tstart)/counts_per_second, ' seconds.'
+  WRITE(*,'(1x,A,ES18.10,A)') 'Total elapsed time: ', &
+           dble(tstop - tstart)/counts_per_second, ' second.'
   WRITE(*,*)
 
 END PROGRAM
