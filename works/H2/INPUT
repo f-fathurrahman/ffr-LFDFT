@@ -7,29 +7,26 @@
   ibrav = 8
   nat = 2
   ntyp = 1
-  A = 8.4668d0
-  B = 8.4668d0
-  C = 8.4668d0
-  nr1 = 35
-  nr2 = 35
-  nr3 = 35
+  A = 8.46683536902
+  B = 8.46683536902
+  C = 8.46683536902
+  nr1 = 55
+  nr2 = 55
+  nr3 = 55
 /
 
 &ELECTRONS
-  KS_Solve = 'Emin-pcg'
-  cg_beta = 'DY'
+  KS_Solve = 'Emin_pcg'
+  cg_beta = 'PR'
   electron_maxstep = 150
   mixing_beta = 0.5
-  mixing_mode = 'default'
   diagonalization = 'LOBPCG'
 /
 
 ATOMIC_SPECIES
-H    1.0  H.hgh
+H   1.0  H.hgh
 
-ATOMIC_POSITIONS angstrom
-H    0.0  0.0  0.0
-H    0.793765815845  0.0  0.0
-
-
+ATOMIC_POSITIONS bohr
+H    -0.75  0.0  0.0
+H     0.75  0.0  0.0
 

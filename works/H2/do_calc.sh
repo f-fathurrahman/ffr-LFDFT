@@ -9,7 +9,7 @@ cat << EOF > INPUT
 
 &SYSTEM
   ibrav = 8
-  nat = 1
+  nat = 2
   ntyp = 1
   A = 8.46683536902
   B = 8.46683536902
@@ -30,8 +30,9 @@ cat << EOF > INPUT
 ATOMIC_SPECIES
 H   1.0  H.hgh
 
-ATOMIC_POSITIONS angstrom
-H   4.23341768       4.23341768       4.23341768
+ATOMIC_POSITIONS bohr
+H    -0.75  0.0  0.0
+H     0.75  0.0  0.0
 
 EOF
 

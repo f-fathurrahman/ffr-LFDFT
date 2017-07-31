@@ -38,9 +38,11 @@ SUBROUTINE read_atomic_positions(filein)
     WRITE(*,*) 'Atomic positions are given in angstrom.'
     WRITE(*,*) 'The program have converted them to bohr.'
     WRITE(*,*)
+  ELSE 
+    WRITE(*,*)
+    WRITE(*,*) 'Atomic positions are given in bohr.'
+    WRITE(*,*)
   ENDIF 
-
-  STOP 
 
 END SUBROUTINE 
 
