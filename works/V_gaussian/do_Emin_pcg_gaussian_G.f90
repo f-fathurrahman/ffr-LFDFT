@@ -59,7 +59,7 @@ PROGRAM do_Emin_pcg_gaussian_G
   Nspecies = 1
   Natoms = 1
   ALLOCATE( AtomicCoords(3,Natoms) )
-  AtomicCoords(:,1) = 0.d0
+  AtomicCoords(:,1) = (/ 8.d0, 8.d0, 8.d0 /)
   ALLOCATE( atm2species(Natoms) )
   atm2species(1) = 1
   ALLOCATE( SpeciesSymbols(Nspecies) )
@@ -67,8 +67,8 @@ PROGRAM do_Emin_pcg_gaussian_G
 
   !
   NN = (/ N_in, N_in, N_in /)
-  AA = (/ -8.d0, -8.d0, -8.d0 /)
-  BB = (/ 8.d0, 8.d0, 8.d0 /)
+  AA = (/ 0.d0, 0.d0, 0.d0 /)
+  BB = (/ 16.d0, 16.d0, 16.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
   CALL info_LF3d()
 
