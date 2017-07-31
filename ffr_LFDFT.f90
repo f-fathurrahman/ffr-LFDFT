@@ -24,6 +24,8 @@ PROGRAM ffr_LFDFT
 
   CALL system_clock( tstart, counts_per_second )
 
+  CALL welcome()
+
   CALL read_input( filein )
   CALL setup_from_input()
   CALL setup_options()
@@ -107,7 +109,8 @@ PROGRAM ffr_LFDFT
   WRITE(*,*)
   WRITE(*,'(1x,A,ES18.10,A)') 'Total elapsed time: ', &
            dble(tstop - tstart)/counts_per_second, ' second.'
-  WRITE(*,*)
+
+  CALL goodbye()
 
 END PROGRAM
 
