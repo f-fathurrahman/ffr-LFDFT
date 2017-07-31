@@ -1,14 +1,15 @@
 SUBROUTINE read_atomic_positions(filein)
+  USE m_constants, ONLY : ANG2BOHR
   USE m_input_vars
   IMPLICIT NONE 
   CHARACTER(*) :: filein
-  CHARACTER(128) :: line
+  CHARACTER(128) :: line, line_unit
   INTEGER :: ia
 
   OPEN(unit=IU,file=filein,status='old')
 
   DO WHILE(.true.)
-    READ(IU,*) line
+    READ(IU,*) line, line_unit
     IF( line(1:16) == 'ATOMIC_POSITIONS' ) GOTO 2909
   ENDDO 
 
@@ -17,7 +18,9 @@ SUBROUTINE read_atomic_positions(filein)
   STOP 
 
   2909 CONTINUE 
-  !WRITE(*,*) 'ATOMIC_POSITIONS is read!'
+!  WRITE(*,*) 'ATOMIC_POSITIONS is read!'
+!  WRITE(*,*) line_unit
+  
   !
   ALLOCATE( in_atmsymb(nat) )
   ALLOCATE( in_pos(3,nat) )
@@ -28,6 +31,16 @@ SUBROUTINE read_atomic_positions(filein)
   ENDDO 
 
   CLOSE(IU)
+
+  IF( trim(line_unit) == 'angstrom' ) THEN 
+    in_pos(:,:) = ANG2BOHR*in_pos(:,:)
+    WRITE(*,*)
+    WRITE(*,*) 'Atomic positions are given in angstrom.'
+    WRITE(*,*) 'The program have converted them to bohr.'
+    WRITE(*,*)
+  ENDIF 
+
+  STOP 
 
 END SUBROUTINE 
 

@@ -28,17 +28,18 @@ cat << EOF > INPUT
 /
 
 ATOMIC_SPECIES
-Li   3.0  Li_sc.hgh
+Li   3.0  Li.hgh
 H    1.0  H.hgh
 
 ATOMIC_POSITIONS angstrom
-Li      0.0       0.0       5.04089768
-H       0.0       0.0       3.42593768
+Li      4.23341768       4.23341768       5.04089768
+H       4.23341768       4.23341768       3.42593768
 
 EOF
 
 LOGFILE="fort.log.$nn"
-../../ffr_LFDFT_pgi.x INPUT | tee $LOGFILE
+
+#../../ffr_LFDFT_pgi.x INPUT | tee $LOGFILE
 
 str=`grep "! Electronic" $LOGFILE`
 etot=`echo $str | awk '{split($0, a); print a[4]}'`

@@ -1,5 +1,4 @@
 SUBROUTINE setup_atoms()
-  USE m_constants, ONLY : ANG2BOHR
   USE m_input_vars, ONLY : ntyp, nat, species, in_pos, masses, in_atmsymb
   USE m_atoms
   IMPLICIT NONE 
@@ -12,7 +11,7 @@ SUBROUTINE setup_atoms()
   ALLOCATE( SpeciesSymbols(Nspecies) )
   ALLOCATE( AtomicMasses(Nspecies) )
 
-  AtomicCoords(:,:) = in_pos(:,:)*ANG2BOHR
+  AtomicCoords(:,:) = in_pos(:,:)
   SpeciesSymbols(:) = species(:)
   AtomicMasses(:)   = masses(:)
 
