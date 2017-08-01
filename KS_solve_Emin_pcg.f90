@@ -172,9 +172,9 @@ SUBROUTINE info_KS_solve_Emin_pcg( alpha_t, restart )
   WRITE(*,*) 'Minimizing KS total energy functional using PCG algorithm'
   WRITE(*,*) '---------------------------------------------------------'
   WRITE(*,*)
-  WRITE(*,*) 'NiterMax = ', Emin_NiterMax
-  WRITE(*,*) 'alpha_t  = ', alpha_t
-  WRITE(*,*) 'restart  = ', restart
+  WRITE(*,'(1x,A,I8)')     'NiterMax = ', Emin_NiterMax
+  WRITE(*,'(1x,A,ES10.3)') 'alpha_t  = ', alpha_t
+  WRITE(*,*)               'restart  = ', restart
   WRITE(*,'(1x,A,ES10.3)') 'conv_thr = ', Emin_ETOT_CONV_THR
   WRITE(*,*)
   IF( I_CG_BETA == 1 ) THEN
@@ -189,7 +189,7 @@ SUBROUTINE info_KS_solve_Emin_pcg( alpha_t, restart )
     WRITE(*,*) 'XXXXX WARNING: Unknown I_CG_BETA: ', I_CG_BETA
   ENDIF 
   WRITE(*,*)
-  WRITE(*,*) 'KS_solve_Emin_pcg: memGB = ', memGB
+  WRITE(*,'(1x,A,F18.10)') 'KS_solve_Emin_pcg: memGB = ', memGB
   WRITE(*,*)
 
 END SUBROUTINE 

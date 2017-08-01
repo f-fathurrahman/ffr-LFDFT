@@ -21,6 +21,8 @@ SUBROUTINE gen_guess_rho_gaussian()
 
   WRITE(*,*)
   WRITE(*,*) 'Generating guess density'
+  WRITE(*,*) '------------------------'
+  WRITE(*,*)
 
   Nx = NN(1)
   Ny = NN(2)
@@ -63,11 +65,12 @@ SUBROUTINE gen_guess_rho_gaussian()
   ENDDO 
 
   integRho = sum(Rhoe)*dVol
-  WRITE(*,*) 'Initial: integRho = ', integRho
+  WRITE(*,*)
+  WRITE(*,'(1x,A,F18.10)') 'Initial: integRho       = ', integRho
   ! scale
   Rhoe(:) = Rhoe(:)/integRho*Nelectrons
   integRho = sum(Rhoe)*dVol
-  WRITE(*,*) 'After scaling: integRho = ', integRho
+  WRITE(*,'(1x,A,F18.10)') 'After scaling: integRho = ', integRho
 
   DEALLOCATE( ctmp )
 
