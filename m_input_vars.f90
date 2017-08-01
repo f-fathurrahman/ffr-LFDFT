@@ -25,9 +25,10 @@ MODULE m_input_vars
   CHARACTER(56) :: diagonalization
   REAL(8) :: conv_thr
   CHARACTER(56) :: mixing_mode
+  CHARACTER(56) :: startingwfc
   !
   NAMELIST /ELECTRONS/ KS_Solve, cg_beta, electron_maxstep, mixing_beta, &
-  diagonalization, conv_thr, mixing_mode
+  diagonalization, conv_thr, mixing_mode, startingwfc
 
   ! ATOMIC_SPECIES
   CHARACTER(5), ALLOCATABLE :: species(:)

@@ -12,6 +12,7 @@ SUBROUTINE read_electrons(filein)
   mixing_mode = 'default'
   diagonalization = 'undefined'
   conv_thr = -1.d0
+  startingwfc = 'atomic'
 
   OPEN(unit=IU,file=filein,status='old')
   READ(IU,nml=ELECTRONS)

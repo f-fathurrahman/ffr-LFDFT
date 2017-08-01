@@ -1,6 +1,7 @@
 PROGRAM ffr_LFDFT
 
   USE m_constants, ONLY : Ry2eV
+  USE m_input_vars, ONLY : startingwfc
   USE m_options, ONLY : FREE_NABLA2, I_KS_Solve
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates, Focc, &
@@ -62,13 +63,17 @@ PROGRAM ffr_LFDFT
   ENDIF 
 
   ! Guess density
-  CALL gen_guess_rho_gaussian()
+  IF( startingwfc /= 'random' ) THEN 
+    CALL gen_guess_rho_gaussian()
+  ENDIF 
 
   ! Manually allocate KS eigenvectors and eigenvalues
   ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
 
   CALL gen_random_evecs()
-  CALL gen_gaussian_evecs()
+  IF( startingwfc /= 'random' ) THEN 
+    CALL gen_gaussian_evecs()
+  ENDIF 
 
   IF( I_KS_SOLVE == 1 ) THEN 
 
@@ -77,11 +82,14 @@ PROGRAM ffr_LFDFT
     CALL calc_evals( Nstates, Focc, evecs, evals )
 
   ELSEIF( I_KS_SOLVE == 2 ) THEN 
-    ! Initial Rhoe and potentials
-    !CALL calc_rhoe( Focc, evecs )
-    !CALL update_potentials()
+
+    IF( startingwfc == 'random' ) THEN 
+      ! Initial Rhoe and potentials
+      CALL calc_rhoe( Focc, evecs )
+      CALL update_potentials()
+    ENDIF 
+
     CALL KS_solve_SCF()
-    !
     CALL info_energies()
 
   ENDIF 
