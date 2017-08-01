@@ -380,30 +380,30 @@ CONTAINS
     TYPE(Ps_HGH_Params_T) :: ps
     INTEGER :: i, j, l
 
-    WRITE(*,*) 'atom_name = ', trim(ps%atom_name)
-    WRITE(*,'(1x,A,I5)') 'zval = ', ps%zval
-    WRITE(*,'(1x,A,I5)') 'lmax = ', ps%lmax
+    WRITE(*,'(4x,2A)') 'atom_name = ', trim(ps%atom_name)
+    WRITE(*,'(4x,A,I5)') 'zval = ', ps%zval
+    WRITE(*,'(4x,A,I5)') 'lmax = ', ps%lmax
     WRITE(*,*)
-    WRITE(*,*) 'Local pseudopotential parameters:'
+    WRITE(*,'(4x,A)') 'Local pseudopotential parameters:'
     WRITE(*,*)
-    WRITE(*,'(1x,A,F18.10)') 'rlocal = ', ps%rlocal
+    WRITE(*,'(4x,A,F18.10)') 'rlocal = ', ps%rlocal
     !
     WRITE(*,*)
-    WRITE(*,*) 'c (for local potential ) = '
+    WRITE(*,'(4x,A)') 'c (for local potential ) = '
     DO i = 1, 4
-      WRITE(*,'(6x,I5,F18.10)') i, ps%c(i)
+      WRITE(*,'(4x,I5,F18.10)') i, ps%c(i)
     ENDDO
   
     IF( ps%lmax >= 0 ) THEN
 
       WRITE(*,*)
-      WRITE(*,*) 'Nonlocal pseudopotential parameters:'
+      WRITE(*,'(4x,A)') 'Nonlocal pseudopotential parameters:'
       DO l = 0, ps%lmax
         WRITE(*,*)
-        WRITE(*,*) 'Matrix h for l = ', l
-        WRITE(*,*) 'Nproj_l        = ', ps%Nproj_l(l)
-        WRITE(*,*) 'rc             = ', ps%rc(l)
-        WRITE(*,*) 'rcut_NL        = ', ps%rcut_NL(l)
+        WRITE(*,'(4x,A,I4)') 'Matrix h for l = ', l
+        WRITE(*,'(4x,A,I4)') 'Nproj_l        = ', ps%Nproj_l(l)
+        WRITE(*,'(4x,A,F18.10)') 'rc             = ', ps%rc(l)
+        WRITE(*,'(4x,A,F18.10)') 'rcut_NL        = ', ps%rcut_NL(l)
         DO i = 1, 3
           WRITE(*,*)
           DO j = 1, 3
