@@ -70,9 +70,14 @@ PROGRAM ffr_LFDFT
   ! Manually allocate KS eigenvectors and eigenvalues
   ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
 
-  CALL gen_random_evecs()
+  CALL gen_random_evecs()  ! also needed for initial diagonalization routine
+
   IF( startingwfc /= 'random' ) THEN 
+    ! This will call diagonalization routine
     CALL gen_gaussian_evecs()
+  ELSE
+    WRITE(*,*)
+    WRITE(*,*) 'Using random starting wavefunction'
   ENDIF 
 
   IF( I_KS_SOLVE == 1 ) THEN 

@@ -16,4 +16,6 @@ SUBROUTINE welcome()
 
   CALL timestamp('Program started at')
 
+  CALL compile_info()
+
 END SUBROUTINE

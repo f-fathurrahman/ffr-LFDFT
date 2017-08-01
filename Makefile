@@ -1,8 +1,8 @@
 #include platform/make.inc.ifort
-include platform/make.inc.gfortran
+#include platform/make.inc.gfortran
 #include platform/make.inc.g95
 #include platform/make.inc.pgi
-#include platform/make.inc.sun
+include platform/make.inc.sun
 
 SRC = \
 m_constants.f90 \
@@ -18,6 +18,7 @@ m_PsPot.f90 \
 welcome.f90 \
 goodbye.f90 \
 timestamp.f90 \
+compile_info.f90 \
 get_month_name.f90 \
 init_PsPot.f90 \
 dealloc_PsPot.f90 \

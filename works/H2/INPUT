@@ -10,17 +10,18 @@
   A = 8.46683536902
   B = 8.46683536902
   C = 8.46683536902
-  nr1 = 55
-  nr2 = 55
-  nr3 = 55
+  nr1 = 35
+  nr2 = 35
+  nr3 = 35
 /
 
 &ELECTRONS
-  KS_Solve = 'Emin_pcg'
+  KS_Solve = 'scf'
   cg_beta = 'PR'
   electron_maxstep = 150
   mixing_beta = 0.5
   diagonalization = 'LOBPCG'
+  startingwfc = 'random'
 /
 
 ATOMIC_SPECIES
