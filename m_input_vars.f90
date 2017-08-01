@@ -26,9 +26,10 @@ MODULE m_input_vars
   REAL(8) :: conv_thr
   CHARACTER(56) :: mixing_mode
   CHARACTER(56) :: startingwfc
+  LOGICAL :: ortho_check_after_diag
   !
   NAMELIST /ELECTRONS/ KS_Solve, cg_beta, electron_maxstep, mixing_beta, &
-  diagonalization, conv_thr, mixing_mode, startingwfc
+  diagonalization, conv_thr, mixing_mode, startingwfc, ortho_check_after_diag
 
   ! ATOMIC_SPECIES
   CHARACTER(5), ALLOCATABLE :: species(:)

@@ -15,6 +15,7 @@ m_states.f90 \
 m_energies.f90 \
 m_Ps_HGH.f90 \
 m_PsPot.f90 \
+m_input_vars.f90 \
 welcome.f90 \
 goodbye.f90 \
 timestamp.f90 \
@@ -100,7 +101,6 @@ eval_LF1d_p.f90 \
 eval_LF1d_sinc.f90 \
 KS_solve_SCF.f90 \
 calc_evals.f90 \
-m_input_vars.f90 \
 read_control.f90 \
 read_system.f90 \
 read_electrons.f90 \

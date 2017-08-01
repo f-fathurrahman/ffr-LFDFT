@@ -24,6 +24,7 @@ SUBROUTINE Sch_solve_diag()
                        evecs => KS_evecs, &
                        evals => KS_evals
   USE m_options, ONLY : ethr => ETHR_EVALS, I_ALG_DIAG
+  USE m_input_vars, ONLY : ortho_check_after_diag
   IMPLICIT NONE 
   INTEGER, ALLOCATABLE :: btype(:)
   INTEGER :: dav_iter
@@ -70,7 +71,9 @@ SUBROUTINE Sch_solve_diag()
   ENDDO
   WRITE(*,*)
 
-  CALL ortho_check( Npoints, Nstates, dVol, evecs )
+  IF( ortho_check_after_diag ) THEN 
+    CALL ortho_check( Npoints, Nstates, dVol, evecs )
+  ENDIF 
 
   DEALLOCATE( btype )
 

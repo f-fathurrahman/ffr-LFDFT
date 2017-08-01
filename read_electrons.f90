@@ -13,6 +13,7 @@ SUBROUTINE read_electrons(filein)
   diagonalization = 'undefined'
   conv_thr = -1.d0
   startingwfc = 'atomic'
+  ortho_check_after_diag = .FALSE.
 
   OPEN(unit=IU,file=filein,status='old')
   READ(IU,nml=ELECTRONS)
