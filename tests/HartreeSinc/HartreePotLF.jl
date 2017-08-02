@@ -26,7 +26,7 @@ function main()
 
     # First Gaussian
     ipos = 1
-    positions[1,ipos] = 0.0
+    positions[1,ipos] = 0.1
     positions[2,ipos] = 0.0
     positions[3,ipos] = 0.0
     coefs[ipos]     = 1.0
@@ -59,8 +59,6 @@ function main()
         @printf("%18.10f %18.10f\n", t_values[i], wt[i])
     end
 
-    return 
-
     grid = gen_grid(size, scaling)
 
     @printf("Grid points along x:\n")
@@ -68,20 +66,9 @@ function main()
         @printf("%18.10f\n", grid[1,j])
     end
 
-    @printf("Grid points along y:\n")
-    for j = 1:size[2]
-        @printf("%18.10f\n", grid[2,j])
-    end
-
-    @printf("Grid points along y:\n")
-    for j = 1:size[3]
-        @printf("%18.10f\n", grid[3,j])
-    end
-
     density, anal_potential =
         init_density( num_gaussian, positions, coefs, exponents, size, scaling, grid )
 
-    #for(int j=0; j<total_size; j++){
     density_norm = 0.0
     anal_energy = 0.0
     for j = 1:total_size
@@ -91,6 +78,9 @@ function main()
     density_norm *= sqrt(prod(scaling))
     anal_energy  *= sqrt(prod(scaling))
     @printf("norm of density: %18.10f\n", density_norm)
+    @printf("Analytic energy: %18.10f\n", anal_energy)
+
+    return
 
     F_xs = construct_F_debug(1, t_size, t_values, size, scaling, grid)
     F_ys = construct_F(2, t_size, t_values, size, scaling, grid)
