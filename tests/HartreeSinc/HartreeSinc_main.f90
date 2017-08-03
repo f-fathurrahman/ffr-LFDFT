@@ -30,7 +30,7 @@ PROGRAM HartreeSinc_main
   num_points2 = 60
   t_i = 0.d0
   t_l = 2.d0
-  t_f = 100000.d0
+  t_f = 10000.d0
 
   !
   num_gaussian = 1
