@@ -1,0 +1,3 @@
+integer :: MPI_SUM, MPI_COMM_WORLD
+integer :: MPI_DOUBLE_PRECISION
+integer :: MPI_MIN, MPI_MAX
