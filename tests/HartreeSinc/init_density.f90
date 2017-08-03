@@ -1,6 +1,6 @@
 SUBROUTINE init_density( num_gaussian, positions, coefs, exponents, density, potential )
 
-  USE m_constants, ONLY : PI
+  USE m_constants, ONLY : PI, EPS_SMALL
   USE m_LF3d, ONLY : hh => LF3d_hh, &
                      Npoints => LF3d_Npoints, &
                      lingrid => LF3d_lingrid
@@ -28,7 +28,11 @@ SUBROUTINE init_density( num_gaussian, positions, coefs, exponents, density, pot
       r2 = r(1)**2 + r(2)**2 + r(3)**2
       density(ip) = density(ip) + coefs(igauss)*(exponent2/pi)**1.5d0 * exp(-exponent2*r2)*sqrt(weight)
       ! the potential (analytic) due to the Gaussian density
-      potential(ip) = potential(ip) + coefs(igauss)*erf(exponents(igauss)*sqrt(r2))/sqrt(r2)
+      IF( sqrt(r2) < EPS_SMALL ) THEN 
+         potential(ip) = potential(ip) + coefs(igauss)*erf(exponents(igauss)*sqrt(EPS_SMALL))/sqrt(EPS_SMALL)
+      ELSE
+         potential(ip) = potential(ip) + coefs(igauss)*erf(exponents(igauss)*sqrt(r2))/sqrt(r2)
+      ENDIF 
     ENDDO 
   ENDDO 
 END SUBROUTINE 

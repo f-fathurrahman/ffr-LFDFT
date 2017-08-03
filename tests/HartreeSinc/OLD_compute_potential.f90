@@ -17,14 +17,15 @@ SUBROUTINE compute_potential( t_size, t_values, w_t, F_xs, F_ys, F_zs, &
   REAL(8) :: potential(Npoints)
   !
   INTEGER :: i_t, a, b, g, aa, bb, gg, ip, ipp
-  REAL(8) :: s_F_xs, s_F_ys, s_F_zs
+  REAL(8) :: s_F_xs, s_F_ys, s_F_zs, ss
 
-  DO i_t = 1, t_size
-    DO ip = 1, Npoints
-      !
-      a = lin2xyz(1,ip)
-      b = lin2xyz(2,ip)
-      g = lin2xyz(3,ip)
+  DO ip = 1, Npoints
+    a = lin2xyz(1,ip)
+    b = lin2xyz(2,ip)
+    g = lin2xyz(3,ip)
+    ss = 0.d0
+    !
+    DO i_t = 1, t_size
       !
       s_F_xs = 0.d0
       DO aa = 1,NN(1)
@@ -33,7 +34,7 @@ SUBROUTINE compute_potential( t_size, t_values, w_t, F_xs, F_ys, F_zs, &
       ENDDO 
       !
       s_F_ys = 0.d0
-      DO bb = 1,NN(1)
+      DO bb = 1,NN(2)
         ipp = xyz2lin(a,bb,g)
         s_F_ys = s_F_ys + F_ys(i_t,b,bb)*density(ipp)
       ENDDO 
@@ -44,8 +45,9 @@ SUBROUTINE compute_potential( t_size, t_values, w_t, F_xs, F_ys, F_zs, &
         s_F_zs = s_F_zs + F_zs(i_t,g,gg)*density(ipp)
       ENDDO
       !
-      potential(ip) = 2.d0*w_t(i_t)/sqrt(PI) * s_F_xs * s_F_ys * s_F_zs
+      ss = ss + 2.d0*w_t(i_t)/sqrt(PI) * s_F_xs * s_F_ys * s_F_zs
     ENDDO 
+    potential(ip) = ss
   ENDDO 
 
 END SUBROUTINE 

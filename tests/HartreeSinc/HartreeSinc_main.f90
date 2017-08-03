@@ -23,30 +23,30 @@ PROGRAM HartreeSinc_main
   INTEGER :: i, ip
 
   !----------------------- Input spec -------------------------------!
-  scaling(:) = (/0.35d0, 0.35d0, 0.35d0/)
-  NN(:) = (/ 35, 35, 35 /)
+  NN(:) = (/ 13, 13, 13 /)
+  scaling(:) = (/1.d0, 1.d0, 1.d0/)*(8.d0/(NN(1)-1))
   
-  num_points1 = 100
-  num_points2 = 50
-  t_i = 0.0
-  t_l = 2.0
-  t_f = 10000.0
+  num_points1 = 60
+  num_points2 = 60
+  t_i = 0.d0
+  t_l = 2.d0
+  t_f = 100000.d0
 
   !
-  num_gaussian = 2
+  num_gaussian = 1
   ALLOCATE( positions(3,num_gaussian) )
   ALLOCATE( coefs(num_gaussian) )
   ALLOCATE( exponents(num_gaussian) )
 
   ! First Gaussian
-  positions(:,1) = (/ 1.d0, 0.d0, 0.d0 /)
+  positions(:,1) = (/ 0.d0, 0.d0, 0.d0 /)
   coefs(1)       = 1.d0
-  exponents(1)   = 0.5d0
+  exponents(1)   = sqrt(2.d0)
 
   ! Second Gaussian
-  positions(:,2) = (/ -1.d0, 0.d0, 0.d0 /)
-  coefs(2)       = 1.d0
-  exponents(2)   = 0.5d0
+!  positions(:,2) = (/ -1.d0, 0.d0, 0.d0 /)
+!  coefs(2)       = 1.d0
+!  exponents(2)   = 1.5d0
 
   !---------------------- end of input specs ------------------------!
 
@@ -78,7 +78,6 @@ PROGRAM HartreeSinc_main
   density_norm = density_norm*sqrt(dVol)
   anal_energy  = anal_energy*sqrt(dVol)
   WRITE(*,'(1x,A,F18.10)') 'norm of density:', density_norm
-  WRITE(*,'(1x,A,F18.10)') 'Analytic energy:', anal_energy
 
   ALLOCATE( F_xs(t_size,NN(1),NN(1) ) )
   ALLOCATE( F_ys(t_size,NN(2),NN(2) ) )
@@ -88,12 +87,22 @@ PROGRAM HartreeSinc_main
   CALL construct_F( 2, t_size, t_values, F_ys )
   CALL construct_F( 3, t_size, t_values, F_zs )
 
+!  WRITE(*,*)
+!  WRITE(*,*) 'In main:'
+!  WRITE(*,*) 'sum(F_xs) = ', sum(F_xs)
+!  WRITE(*,*) 'sum(F_ys) = ', sum(F_ys)
+!  WRITE(*,*) 'sum(F_zs) = ', sum(F_zs)
+
+!  WRITE(*,*) 'maxval(F_xs) = ', maxval(F_xs)
+!  WRITE(*,*) 'minval(F_xs) = ', minval(F_xs)
+
   ALLOCATE( potential(Npoints) )
-  CALL compute_potential( t_size, t_values, w_t, F_xs, F_ys, F_zs, &
+  CALL compute_potential( t_size, w_t, F_xs, F_ys, F_zs, &
                           density, potential )
   WRITE(*,*) 'sum(anal_pot)  = ', sum(anal_pot)
   WRITE(*,*) 'sum(potential) = ', sum(potential)
-  WRITE(*,*) 'num: ', 0.5d0*sum( density(:)*potential(:) ) * sqrt(dVol)
+  WRITE(*,'(1x,A,F18.10)') 'numeric        :', 0.5d0*sum( density(:)*potential(:) ) * sqrt(dVol)
+  WRITE(*,'(1x,A,F18.10)') 'Analytic energy:', anal_energy
 
   DEALLOCATE( potential )
   DEALLOCATE( F_xs, F_ys, F_zs )
