@@ -11,7 +11,8 @@ pconv.f90 \
 pfft3d.f90 \
 PSolver_Kernel.f90 \
 scaling_function.f90 \
-smooth.f90
+smooth.f90 \
+gequad.f
 
 OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) 
 
@@ -39,8 +40,8 @@ lib: $(OBJ)
 	ar rcs libPoissonISF.a *.o
 
 # Targets
-main: lib ffr_LFDFT.f90
-	$(F90) $(F90_OPTS) ffr_LFDFT.f90 -o $(EXE_MAIN) libmain.a $(LIBS)
+main: lib MAIN.f90
+	$(F90) -I../../ $(F90_OPTS) MAIN.f90 init_density.f90 -o MAIN.x libPoissonISF.a ../../libmain.a $(LIBS)
 
 # does not delete *.x files
 clean:
