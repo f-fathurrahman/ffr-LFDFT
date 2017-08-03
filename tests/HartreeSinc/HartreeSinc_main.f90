@@ -23,7 +23,7 @@ PROGRAM HartreeSinc_main
   INTEGER :: i, ip
 
   !----------------------- Input spec -------------------------------!
-  NN(:) = (/ 13, 13, 13 /)
+  NN(:) = (/ 23, 23, 23 /)
   scaling(:) = (/1.d0, 1.d0, 1.d0/)*(8.d0/(NN(1)-1))
   
   num_points1 = 60
