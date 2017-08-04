@@ -21,9 +21,15 @@ PROGRAM HartreeSinc_main
   REAL(8), ALLOCATABLE :: F_xs(:,:,:), F_ys(:,:,:), F_zs(:,:,:)
   !
   INTEGER :: i, ip
+  CHARACTER(56) :: chars_arg
+  INTEGER :: N_in
 
   !----------------------- Input spec -------------------------------!
-  NN(:) = (/ 23, 23, 23 /)
+  CALL getarg(1, chars_arg )
+  READ( chars_arg, *) N_in
+  WRITE(*,*) 'N_in = ', N_in
+
+  NN(:) = (/ N_in, N_in, N_in /)
   scaling(:) = (/1.d0, 1.d0, 1.d0/)*(8.d0/(NN(1)-1))
   
   num_points1 = 60
