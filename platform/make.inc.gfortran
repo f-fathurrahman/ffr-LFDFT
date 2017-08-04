@@ -2,7 +2,7 @@ EXE_MAIN = ffr_LFDFT_gfortran.x
 MAKE = make
 AR = ar
 F77 = gfortran
-F77_OPTS = 
+F77_OPTS = -O3
 F90 = gfortran
 F90_OPTS = -cpp -Wall -O3 # -fcheck=all # -g -fbacktrace -ffpe-trap=zero,overflow,underflow
 LIB_LINALG = -lblas -llapack
