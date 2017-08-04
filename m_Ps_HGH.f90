@@ -141,6 +141,7 @@ CONTAINS
   !----------------------------------------------------------------------------
   FUNCTION hgh_eval_Vloc_R( psp, r ) RESULT(Vloc)
   !----------------------------------------------------------------------------
+    USE m_constants, ONLY : EPS_SMALL
     TYPE(Ps_HGH_Params_T) :: psp
     REAL(8) :: r
     !
@@ -153,7 +154,11 @@ CONTAINS
     DO i = 2, 4
       term1 = term1 + psp%c(i)*rrloc**(2*(i-1))
     ENDDO
-    Vloc = -psp%zval/r * erf( rrloc/sqrt(2.d0) ) + exp(-0.5d0*rrloc**2)*term1
+    IF ( r <= EPS_SMALL ) THEN 
+      Vloc = -psp%zval/EPS_SMALL * erf( EPS_SMALL ) + exp(-0.5d0*rrloc**2)*term1
+    ELSE 
+      Vloc = -psp%zval/r * erf( rrloc/sqrt(2.d0) ) + exp(-0.5d0*rrloc**2)*term1
+    ENDIF 
   END FUNCTION
 
 

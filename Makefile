@@ -88,6 +88,7 @@ mixerifc.f90 \
 mixlinear.f90 \
 shift_atoms.f90 \
 bspline.f90 \
+init_V_ps_loc.f90 \
 init_V_ps_loc_G_interp.f90 \
 init_V_ps_loc_gaussian_G.f90 \
 init_V_ps_loc_gaussian.f90 \

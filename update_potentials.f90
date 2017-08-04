@@ -14,7 +14,8 @@ SUBROUTINE update_potentials()
     CALL Poisson_solve_fft( Rhoe, V_Hartree )
   ELSE 
     !CALL Poisson_solve_cg( Rhoe, V_Hartree )
-    CALL Poisson_solve_fft_MT( Rhoe, V_Hartree )
+    !CALL Poisson_solve_fft_MT( Rhoe, V_Hartree )
+    CALL Poisson_solve_ISF( Rhoe, V_Hartree )  ! for Lagrange-sinc functions
   ENDIF
 
   CALL excVWN( Npoints, Rhoe, epsxc )
