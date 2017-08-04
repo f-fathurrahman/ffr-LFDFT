@@ -29,8 +29,7 @@ SUBROUTINE init_V_ps_loc_gaussian( Nparams, A, alpha )
   DO ia = 1,Natoms
     isp = atm2species(ia)
     DO ip = 1, Npoints
-      CALL calc_dr_periodic_1pnt( LL, atpos(:,ia), lingrid(:,ip), dr_vec )
-      r = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
+      CALL calc_dr_1pnt( atpos(:,ia), lingrid(:,ip), r )
       V_ps_loc(ip) = V_ps_loc(ip) + A(isp)*exp( -alpha(isp)*r**2 )
     ENDDO 
   ENDDO 

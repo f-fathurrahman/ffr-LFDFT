@@ -27,7 +27,7 @@ SUBROUTINE init_Poisson_solve_ISF()
 
   ALLOCATE( karray(n1k,n2k,n3k) )
   
-  ISF_order = 14 ! 8, 14, 16
+  ISF_order = 16 ! 8, 14, 16
   hgrid = hh(1)
   CALL Build_Kernel( NN(1), NN(2), NN(3), nfft1,nfft2,nfft3, hgrid, ISF_order, karray)
 
@@ -51,6 +51,7 @@ SUBROUTINE Poisson_solve_ISF( rho, phi )
   INTEGER :: ip, i, j, k
   REAL(8) :: hgrid
 
+  WRITE(*,*) 'Poisson_solve_ISF is called'
   DO ip = 1,Npoints
     i = lin2xyz(1,ip)
     j = lin2xyz(2,ip)

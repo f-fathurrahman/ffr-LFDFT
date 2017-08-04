@@ -15,16 +15,13 @@ PROGRAM t_poisson
   INTEGER :: ip
   REAL(8) :: Uana, Unum
 
-  NN = (/ 50, 50, 50 /)
+  NN = (/ 64, 64, 64 /)
   hh = (/ 0.3d0, 0.3d0, 0.3d0 /)
 
   CALL init_LF3d_sinc( NN, hh )
 
   CALL info_LF3d()
  
-  CALL init_nabla2_sparse()
-  CALL init_ilu0_prec()
-
   ALLOCATE( rho(Npoints) )
   ALLOCATE( phi(Npoints) )
 
@@ -49,9 +46,11 @@ PROGRAM t_poisson
   WRITE(*,*) 'Integrated rho = ', sum( rho(:) )*dVol
 
   ! Solve Poisson equation
-  CALL Poisson_solve_pcg( rho, phi )
+  !CALL Poisson_solve_pcg( rho, phi )
   !CALL solve_poisson_fft( rho, phi )
   !CALL Poisson_solve_fft_MT( rho, phi )
+  CALL init_Poisson_solve_ISF()
+  CALL Poisson_solve_ISF( rho, phi )
 
   !
   Unum = 0.5d0*sum( rho(:)*phi(:) )*dVol
