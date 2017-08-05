@@ -60,7 +60,7 @@ PROGRAM MAIN
   ! Second Gaussian
   positions(:,2) = (/ -1.d0, 0.d0, 0.d0 /)
   coefs(2)       = 1.d0
-  exponents(2)   = 10.d0
+  exponents(2)   = sqrt(2.d0)
 
   !---------------------- end of input specs ------------------------!
 
@@ -97,8 +97,8 @@ PROGRAM MAIN
   WRITE(*,*)
   WRITE(*,'(1x,A,F18.10)')  'norm of density:', density_norm
   WRITE(*,'(1x,A,F18.10)')  'analytic energy:', anal_energy
-  WRITE(*,'(1x,A,F18.10)')  'ehartree = ', ehartree
-  WRITE(*,'(1x,A,ES18.10)') 'diff     = ', abs(ehartree-anal_energy)
+  WRITE(*,'(1x,A,F18.10)')  'ehartree = ', ehartree*0.5d0
+  WRITE(*,'(1x,A,ES18.10)') 'diff     = ', abs(ehartree*0.5d0-anal_energy)
 
   ALLOCATE( potential(Npoints) )
   DO ip = 1,Npoints
@@ -111,6 +111,7 @@ PROGRAM MAIN
   WRITE(*,'(1x,A,ES18.10)') 'diff = ', abs(0.5d0*sum( density(:)*potential(:) ) *dVol-anal_energy)
 
   DEALLOCATE( density, anal_pot )
+  DEALLOCATE( kernel )
   CALL dealloc_LF3d()
 
 END PROGRAM 
