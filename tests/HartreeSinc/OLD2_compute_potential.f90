@@ -16,7 +16,8 @@ SUBROUTINE compute_potential( t_size, w_t, F_xs, F_ys, F_zs, &
   REAL(8) :: potential(Npoints)
   !
   INTEGER :: i_t, a, b, g, aa, bb, gg, ip, ipp
-  REAL(8), ALLOCATABLE :: Fd(:,:,:), FFd(:,:,:), FFFd(:,:,:)
+  REAL(8), ALLOCATABLE :: Fd(:,:,:), FFd(:,:,:), FFFd(:)
+  REAL(8) :: wFFFd
 
   ALLOCATE( Fd(NN(1),NN(2),NN(3)) )
   ALLOCATE( FFd(NN(1),NN(2),NN(3)) )

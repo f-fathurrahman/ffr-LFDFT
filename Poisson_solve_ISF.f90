@@ -19,6 +19,9 @@ SUBROUTINE init_Poisson_solve_ISF()
   REAL(8) :: hgrid
 
   CALL Dimensions_FFT( NN(1),NN(2),NN(3), nfft1, nfft2, nfft3 )
+!  nfft1 = NN(1)
+!  nfft2 = NN(2)
+!  nfft3 = NN(3)
   n1k = nfft1/2 + 1
   n2k = nfft2/2 + 1
   n3k = nfft3/2 + 1
@@ -27,7 +30,7 @@ SUBROUTINE init_Poisson_solve_ISF()
 
   ALLOCATE( karray(n1k,n2k,n3k) )
   
-  ISF_order = 8 ! 8, 14, 16
+  ISF_order = 16 ! 8, 14, 16
   hgrid = hh(1)
   CALL Build_Kernel( NN(1), NN(2), NN(3), nfft1,nfft2,nfft3, hgrid, ISF_order, karray)
 

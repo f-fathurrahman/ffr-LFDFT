@@ -16,7 +16,7 @@ PROGRAM t_poisson
   REAL(8) :: Uana, Unum
 
   NN = (/ 64, 64, 64 /)
-  hh = (/ 0.3d0, 0.3d0, 0.3d0 /)
+  hh(:) = 15.d0/(NN(1)-1)
 
   CALL init_LF3d_sinc( NN, hh )
 

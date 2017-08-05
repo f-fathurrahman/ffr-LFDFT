@@ -2,7 +2,7 @@ PROGRAM HartreeSinc_main
 
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      dVol => LF3d_dVol
-
+  USE m_constants, ONLY : PI
   IMPLICIT NONE 
   ! LF sinc parameters
   REAL(8) :: scaling(3)
@@ -23,8 +23,13 @@ PROGRAM HartreeSinc_main
   INTEGER :: i, ip
   CHARACTER(56) :: chars_arg
   INTEGER :: N_in
+  INTEGER :: iargc
 
   !----------------------- Input spec -------------------------------!
+  IF( iargc() /= 1 ) THEN 
+    WRITE(*,*) 'Exactly one argument must be given:', iargc()
+    STOP 
+  ENDIF 
   CALL getarg(1, chars_arg )
   READ( chars_arg, *) N_in
   WRITE(*,*) 'N_in = ', N_in
@@ -32,8 +37,8 @@ PROGRAM HartreeSinc_main
   NN(:) = (/ N_in, N_in, N_in /)
   scaling(:) = (/1.d0, 1.d0, 1.d0/)*(8.d0/(NN(1)-1))
   
-  num_points1 = 60
-  num_points2 = 60
+  num_points1 = 50
+  num_points2 = 50
   t_i = 0.d0
   t_l = 2.d0
   t_f = 10000.d0
@@ -109,6 +114,7 @@ PROGRAM HartreeSinc_main
   WRITE(*,*) 'sum(potential) = ', sum(potential)
   WRITE(*,'(1x,A,F18.10)') 'numeric        :', 0.5d0*sum( density(:)*potential(:) ) * sqrt(dVol)
   WRITE(*,'(1x,A,F18.10)') 'Analytic energy:', anal_energy
+  WRITE(*,'(1x,A,F18.10)') 'analytic: ', exponents(1)/sqrt(2.d0*PI)
 
   DEALLOCATE( potential )
   DEALLOCATE( F_xs, F_ys, F_zs )

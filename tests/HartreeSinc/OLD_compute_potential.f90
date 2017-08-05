@@ -1,4 +1,4 @@
-SUBROUTINE compute_potential( t_size, t_values, w_t, F_xs, F_ys, F_zs, &
+SUBROUTINE compute_potential( t_size, w_t, F_xs, F_ys, F_zs, &
                               density, potential )
   !
   USE m_constants, ONLY : PI

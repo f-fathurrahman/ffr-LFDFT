@@ -56,11 +56,11 @@ SUBROUTINE Poisson_solve_pcg( rho, phi )
     !z(:) = 2.d0*z(:)
     d = ddot( Npoints, r,1, z,1 )
     !
-    WRITE(*,'(1x,A,I8,E18.10)') 'rconv = ', iter, sqrt(d)
+    !WRITE(*,'(1x,A,I8,E18.10)') 'rconv = ', iter, sqrt(d)
     !
     IF(sqrt(d) < 1.d-10) THEN
     !IF(rsnew < 1.d-10) THEN
-      !WRITE(*,*) 'Convergence in Poisson_solve_cg: iter, sqrt(rsnew):', iter, sqrt(rsnew)
+      WRITE(*,*) 'Convergence in Poisson_solve_cg: iter', iter, sqrt(d)
       conv = .TRUE.
       EXIT
     ENDIF
