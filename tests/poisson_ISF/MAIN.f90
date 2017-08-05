@@ -3,7 +3,7 @@ PROGRAM MAIN
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      lin2xyz => LF3d_lin2xyz, &
                      dVol => LF3d_dVol
-
+  USE Poisson_Solver
   IMPLICIT NONE 
   ! LF sinc parameters
   REAL(8) :: hh(3)
@@ -21,13 +21,30 @@ PROGRAM MAIN
   REAL(8) :: hgrid
   REAL(8) :: ehartree
   !
-  REAL(8), ALLOCATABLE :: rhopot(:,:,:), karray(:,:,:)
+  REAL(8), ALLOCATABLE :: rhopot(:,:,:)
+  REAL(8), POINTER :: kernel(:)
+  REAL(8) :: fake_arr(1)
+  REAL(8) :: fake_exc
+  REAL(8) :: fake_vxc
   !
   INTEGER :: i, j, k, ip
+  INTEGER :: N_in
+  CHARACTER(56) :: chars_N
+  INTEGER :: iargc
 
   !----------------------- Input spec -------------------------------!
-  NN(:) = (/ 35, 35, 35 /)
-  hh(:) = (/1.d0, 1.d0, 1.d0/)*(8.d0/(NN(1)-1))
+
+  IF( iargc() /= 1 ) THEN 
+    WRITE(*,*) 'ERROR: exactly one argument must be given:'
+    WRITE(*,*) 'N'
+    STOP 
+  ENDIF 
+
+  CALL getarg(1,chars_N)
+  READ(chars_N,*) N_in
+
+  NN(:) = N_in
+  hh(:) = (/1.d0, 1.d0, 1.d0/)*(16.d0/(NN(1)-1))
   
   !
   num_gaussian = 2
@@ -43,13 +60,14 @@ PROGRAM MAIN
   ! Second Gaussian
   positions(:,2) = (/ -1.d0, 0.d0, 0.d0 /)
   coefs(2)       = 1.d0
-  exponents(2)   = sqrt(2.d0)
+  exponents(2)   = 10.d0
 
   !---------------------- end of input specs ------------------------!
 
 
   CALL init_LF3d_sinc( NN, hh )
-
+  CALL info_LF3d()
+ 
   !
   ALLOCATE( density(Npoints), anal_pot(Npoints) )
   CALL init_density( num_gaussian, positions, coefs, exponents, density, anal_pot )
@@ -63,18 +81,7 @@ PROGRAM MAIN
   density_norm = density_norm*dVol
   anal_energy  = anal_energy*dVol
 
-  CALL Dimensions_FFT( NN(1), NN(2), NN(3), nfft1, nfft2, nfft3 )
-  n1k = nfft1/2 + 1
-  n2k = nfft2/2 + 1
-  n3k = nfft3/2 + 1
-  WRITE(*,*) 'nfft       : ', nfft1, nfft2, nfft3
-  WRITE(*,*) 'Kernel size: ', n1k, n2k, n3k
-
-  ALLOCATE( karray(n1k,n2k,n3k) )
-  
-  itype_scf = 14 ! 8, 14, 16
-  hgrid = hh(1)
-  CALL Build_Kernel( NN(1), NN(2), NN(3), nfft1,nfft2,nfft3, hgrid, itype_scf, karray)
+  CALL createKernel( 'F', NN(1),NN(2),NN(3), hh(1),hh(2),hh(3), 14, 0, 1, kernel)
 
   ALLOCATE( rhopot(NN(1),NN(2),NN(3)) )
   DO ip = 1,Npoints
@@ -83,9 +90,10 @@ PROGRAM MAIN
     k = lin2xyz(3,ip)
     rhopot(i,j,k) = density(ip)
   ENDDO 
-  CALL PSolver_Kernel( NN(1), NN(2), NN(3), nfft1, nfft2, nfft3, hgrid, karray, &
-                       rhopot, ehartree)
   
+  call PSolver('F','G',0,1, NN(1),NN(2),NN(3),0, hh(1),hh(2),hh(3), &
+                rhopot, kernel, fake_arr, ehartree, fake_exc,fake_vxc,0.d0,.false.,1)
+
   WRITE(*,*)
   WRITE(*,'(1x,A,F18.10)')  'norm of density:', density_norm
   WRITE(*,'(1x,A,F18.10)')  'analytic energy:', anal_energy
@@ -99,10 +107,11 @@ PROGRAM MAIN
     k = lin2xyz(3,ip)
     potential(ip) = rhopot(i,j,k)
   ENDDO 
-  WRITE(*,'(1x,F18.10)') 0.5d0*sum( density(:)*potential(:) ) *dVol
+  WRITE(*,'(1x,A,F18.10)') 'Calc = ', 0.5d0*sum( density(:)*potential(:) ) *dVol
+  WRITE(*,'(1x,A,ES18.10)') 'diff = ', abs(0.5d0*sum( density(:)*potential(:) ) *dVol-anal_energy)
 
   DEALLOCATE( density, anal_pot )
-
+  CALL dealloc_LF3d()
 
 END PROGRAM 
 

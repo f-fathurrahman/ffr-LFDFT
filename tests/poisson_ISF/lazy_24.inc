@@ -39,8 +39,8 @@ cht( 0)=1.d0
 
 ! g coefficients from h coefficients
 do i=-m,m-1
-   cg(i+1)=cht(-i)*(-1)**(i+1)
-   cgt(i+1)=ch(-i)*(-1)**(i+1)
+   cg(i+1)=cht(-i)*(-1.d0)**(i+1)
+   cgt(i+1)=ch(-i)*(-1.d0)**(i+1)
 enddo
 !!***
 

@@ -1,3 +1,11 @@
+
+!! Copyright (C) 2002-2007 BigDFT group 
+!! This file is distributed under the terms of the
+!! GNU General Public License, see ~/COPYING file
+!! or http://www.gnu.org/copyleft/gpl.txt .
+!! For the list of contributors, see ~/AUTHORS 
+
+
 !!****h* BigDFT/scaling_function
 !! NAME
 !!   scaling_function
@@ -19,7 +27,7 @@ subroutine scaling_function(itype,nd,nrange,a,x)
   real(kind=8), dimension(0:nd), intent(out) :: a,x
   !Local variables
   real(kind=8), dimension(:), allocatable :: y
-  integer :: i,nt,ni
+  integer :: i,nt,ni,i_all,i_stat
   
   !Only itype=8,14,16,20,24,30,40,50,60,100
   select case(itype)
@@ -36,7 +44,8 @@ subroutine scaling_function(itype,nd,nrange,a,x)
   !from -itype to itype
   ni=2*itype
   nrange = ni
-  allocate(y(0:nd))
+  allocate(y(0:nd),stat=i_stat)
+  call memocc(i_stat,product(shape(y))*kind(y),'y','scaling_function')
   
   ! plot scaling function
   call zero(nd+1,x)
@@ -45,7 +54,7 @@ subroutine scaling_function(itype,nd,nrange,a,x)
   x(nt/2-1)=1.d0
   loop1: do
      nt=2*nt
-     !	write(6,*) 'nd,nt',nd,nt
+     ! write(6,*) 'nd,nt',nd,nt
      select case(itype)
      case(8)
         call back_trans_8(nd,nt,x,y)
@@ -76,12 +85,14 @@ subroutine scaling_function(itype,nd,nrange,a,x)
 
   !open (unit=1,file='scfunction',status='unknown')
   do i=0,nd
-     a(i) = 1.d0*i*ni/nd-(.5d0*ni-1.d0)
-     !write(1,*) 1.d0*i*ni/nd-(.5d0*ni-1.d0),x(i)
+     a(i) = real(i*ni,kind=8)/real(nd,kind=8)-(.5d0*real(ni,kind=8)-1.d0)
+     !write(1,*) a(i),x(i)
   end do
   !close(1)
 
-  deallocate(y)
+  i_all=-product(shape(y))*kind(y)
+  deallocate(y,stat=i_stat)
+  call memocc(i_stat,i_all,'y','scaling_function')
 end subroutine scaling_function
 !!***
 
@@ -106,7 +117,7 @@ subroutine wavelet_function(itype,nd,a,x)
   real(kind=8), dimension(0:nd), intent(out) :: a,x
   !Local variables
   real(kind=8), dimension(:), allocatable :: y
-  integer :: i,nt,ni
+  integer :: i,nt,ni,i_all,i_stat
 
   !Only itype=8,14,16,20,24,30,40,50,60,100
   Select case(itype)
@@ -121,7 +132,8 @@ subroutine wavelet_function(itype,nd,a,x)
   !from -itype to itype
   ni=2*itype
 
-  allocate(y(0:nd))
+  allocate(y(0:nd),stat=i_stat)
+  call memocc(i_stat,product(shape(y))*kind(y),'y','wavelet_function')
   
   ! plot wavelet 
   call zero(nd+1,x)
@@ -161,12 +173,14 @@ subroutine wavelet_function(itype,nd,a,x)
 
   !open (unit=1,file='wavelet',status='unknown')
   do i=0,nd-1
-     a(i) = 1.d0*i*ni/nd-(.5d0*ni-.5d0)
-     !write(1,*) 1.d0*i*ni/nd-(.5d0*ni-.5d0),x(i)
+     a(i) = real(i*ni,kind=8)/real(nd,kind=8)-(.5d0*real(ni,kind=8)-.5d0)
+     !write(1,*) a(i),x(i)
   end do
   !close(1)
 
-  deallocate(y)
+  i_all=-product(shape(y))*kind(y)
+  deallocate(y,stat=i_stat)
+  call memocc(i_stat,i_all,'y','wavelet_function')
  
 end subroutine wavelet_function
 !!***

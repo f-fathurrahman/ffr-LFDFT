@@ -1,6 +1,6 @@
 #include platform/make.inc.ifort
-include platform/make.inc.gfortran
-#include platform/make.inc.g95
+#include platform/make.inc.gfortran
+include platform/make.inc.g95
 #include platform/make.inc.pgi
 #include platform/make.inc.sun
 
@@ -141,7 +141,7 @@ matvec.f
 
 #pconv.f90 
 #pfft3d.f90
-POISSON_ISF_SRC = \
+#POISSON_ISF_SRC = \
 Build_Kernel.f90 \
 fft3d.f90 \
 PSolver_Kernel.f90 \
