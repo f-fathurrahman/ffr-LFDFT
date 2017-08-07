@@ -15,31 +15,43 @@ SUBROUTINE compute_potential( t_size, w_t, F_xs, F_ys, F_zs, &
   REAL(8) :: potential(Npoints)
   !
   INTEGER :: i_t, a, b, g, aa, bb, gg, ip, ipp
-  REAL(8), ALLOCATABLE :: Tmatrix(:,:,:)
+  REAL(8), ALLOCATABLE :: T_g(:,:,:), T_g2(:,:,:), T_b(:,:,:), T_b2(:,:,:)
   
-  ALLOCATE( Tmatrix(NN(1),NN(2),NN(3)) )
-  Tmatrix = 0.d0
+  ALLOCATE( T_g(NN(1),NN(2),NN(3)) )
+  ALLOCATE( T_g2(NN(1),NN(2),NN(3)) )
+  ALLOCATE( T_b(NN(1),NN(3),NN(2)) )
+  ALLOCATE( T_b2(NN(1),NN(3),NN(2)) )
+
+  T_g(:,:,:) = 0.d0
+  T_g2(:,:,:) = 0.d0
+  T_b(:,:,:) = 0.d0
+  T_b2(:,:,:) = 0.d0
 
   potential(:) = 0.d0
 
   DO i_t = 1,t_size
 
     DO gg = 1,NN(3)
-      Tmatrix(:,:,gg) = matmul( F_xs(i_t,:,:), density(:,:,gg) )
-      Tmatrix(:,:,gg) = matmul( Tmatrix(:,:,gg), F_ys(i_t,:,:) )
+      T_g(:,:,gg) = matmul( F_xs(i_t,:,:), density(:,:,gg) )
+      T_g2(:,:,gg) = matmul( T_g(:,:,gg), F_ys(i_t,:,:) )
     ENDDO 
 
-    CALL transpose_yz( NN, Tmatrix )
+    ! reorder ?
+    DO bb = 1,NN(2)
+    DO gg = 1,NN(3)
+      T_b(:,gg,bb) = T_g2(:,bb,gg)
+    ENDDO 
+    ENDDO 
 
     DO bb = 1,NN(2)
-      Tmatrix(:,:,bb) = matmul( Tmatrix(:,:,bb), F_zs(i_t,:,:) )
+      T_b2(:,:,bb) = matmul( T_b(:,:,bb), F_zs(i_t,:,:) )
     ENDDO 
 
     DO ip = 1,Npoints
       a = lin2xyz(1,ip)
       b = lin2xyz(2,ip)
       g = lin2xyz(3,ip)
-      potential(ip) = potential(ip) + w_t(i_t)*Tmatrix(a,b,g)*2.d0/sqrt(PI)
+      potential(ip) = potential(ip) + w_t(i_t)*T_b2(a,g,b)*2.d0/sqrt(PI)
     ENDDO 
 
   ENDDO 
