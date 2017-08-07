@@ -16,8 +16,8 @@ function compute_F( t::Float64, x_bar::Float64, scaling::Float64 )
 end
 
 function test_compute_F()
-     t = 0.1
-     x_bar = 0.12
+     t = 10.0
+     x_bar = 0.5
      scaling = 0.2
 
      F = compute_F(t, x_bar, scaling)
@@ -26,4 +26,3 @@ function test_compute_F()
 end
 
 test_compute_F()
-
