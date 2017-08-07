@@ -40,17 +40,29 @@ def compute_F( t, x_bar, h ):
         f = f*math.sqrt(h)
         return f
 
-t = 10.0
-xx = 0.1
+t = 0.1
 ibf1 = 0
+ibf2 = 1
+xx = xgrid[ibf2]
 x_bar = math.fabs( xx - xgrid[ibf1] )
 print('x_bar = %18.10f' % x_bar)
 print( 'F = %18.10f' % compute_F( t, x_bar, h ))
 
-"""
-t = 0.1
-f = exp(-t**2*(x-x_alpha)**2) * u
-print(f)
 
-print( Integral( f, (x,-oo,oo) ).evalf() )
-"""
+# diagonal: ibf1 = ibf2, should gives erf
+# non-diagonal: ibf1 != ibf2
+def calc_F_v1( t, ibf1, ibf2 ):
+    f = exp(-t**2*( x - xgrid[ibf1] )**2) * bfs[ibf2]
+    print(f)
+    print( 'sympy v1: %18.10f' % Integral( f, (x,-oo,oo) ).evalf() )
+
+# Lee-Tuckerman (2008)
+def calc_F_v2( t, ibf1, ibf2 ):
+    # integrand
+    beta = PI/(h*t)
+    xbar = xgrid[ibf1] - xgrid[ibf2]
+    f = exp(-x**2) * sin(beta*(x + t*xbar))/(x + t*xbar) * sqrt(h)/PI
+    print( 'sympy v2: %18.10f' % Integral( f, (x,-oo,oo) ).evalf() )
+
+#calc_F_v1( t, ibf1, ibf2 )
+calc_F_v2( t, ibf1, ibf2 )
