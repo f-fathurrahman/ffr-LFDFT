@@ -9,7 +9,7 @@ SUBROUTINE construct_F( axis, t_size, t_values, F_values )
   INTEGER :: axis
   INTEGER :: t_size
   REAL(8) :: t_values(t_size)
-  REAL(8) :: F_values(t_size,NN(axis),NN(axis))
+  REAL(8) :: F_values(NN(axis),NN(axis),t_size)
   INTEGER :: i_t, i, j
   REAL(8), ALLOCATABLE :: grid(:)
   REAL(8) :: compute_F
@@ -30,7 +30,7 @@ SUBROUTINE construct_F( axis, t_size, t_values, F_values )
   DO i_t = 1,t_size
     DO i = 1,NN(axis)
       DO j = 1,NN(axis)
-        F_values(i_t,i,j) = compute_F( t_values(i_t), abs( grid(i) - grid(j) ), hh(axis) )
+        F_values(i,j,i_t) = compute_F( t_values(i_t), abs( grid(i) - grid(j) ), hh(axis) )
       ENDDO 
     ENDDO 
   ENDDO 

@@ -8,14 +8,16 @@ SUBROUTINE compute_potential( t_size, w_t, F_xs, F_ys, F_zs, &
   IMPLICIT NONE 
   INTEGER :: t_size
   REAL(8) :: w_t(t_size)
-  REAL(8) :: F_xs(t_size,NN(1),NN(1))
-  REAL(8) :: F_ys(t_size,NN(2),NN(2))
-  REAL(8) :: F_zs(t_size,NN(3),NN(3))
+  REAL(8) :: F_xs(NN(1),NN(1),t_size)
+  REAL(8) :: F_ys(NN(2),NN(2),t_size)
+  REAL(8) :: F_zs(NN(3),NN(3),t_size)
   REAL(8) :: density(Npoints)
   REAL(8) :: potential(Npoints)
   !
   INTEGER :: i_t, a, b, g, aa, bb, gg, ip, ipp
   REAL(8) :: FFFd, wFFFd
+
+  WRITE(*,*) 'Naive loops'
 
   DO ip = 1, Npoints
     a = lin2xyz(1,ip)
@@ -28,7 +30,7 @@ SUBROUTINE compute_potential( t_size, w_t, F_xs, F_ys, F_zs, &
         aa = lin2xyz(1,ipp)
         bb = lin2xyz(2,ipp)
         gg = lin2xyz(3,ipp)
-        FFFd = FFFd + density(ipp)*F_xs(i_t,a,aa)*F_ys(i_t,b,bb)*F_zs(i_t,g,gg)
+        FFFd = FFFd + density(ipp)*F_xs(a,aa,i_t)*F_ys(b,bb,i_t)*F_zs(g,gg,i_t)
       ENDDO 
       wFFFd = wFFFd + w_t(i_t)*FFFd
     ENDDO 

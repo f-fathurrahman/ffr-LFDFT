@@ -12,7 +12,7 @@ FUNCTION compute_F( t, x_bar, h ) RESULT( f )
   IF(x_bar < EPS_SMALL) THEN 
     f = sqrt(h) * erf(PI/(2.d0*h*t))
   ELSE 
-    z = cmplx( PI/(2*h*t), t*x_bar, kind=8 )
+    z = cmplx( PI/(2.d0*h*t), t*x_bar, kind=8 )
     CALL Cwrap_faddeeva( real(z,kind=8), aimag(z), f_re, f_im )
     w_iz = cmplx( f_re, f_im, kind=8 )
     f = exp( -t*t*x_bar*x_bar )
