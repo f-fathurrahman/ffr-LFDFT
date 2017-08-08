@@ -86,8 +86,8 @@ PROGRAM HartreeSinc_main
     density_norm = density_norm + density(ip)
     anal_energy  = anal_energy + 0.5d0*anal_pot(ip)*density(ip)
   ENDDO 
-  density_norm = density_norm*sqrt(dVol)
-  anal_energy  = anal_energy*sqrt(dVol)
+  density_norm = density_norm*dVol
+  anal_energy  = anal_energy*dVol
   WRITE(*,'(1x,A,F18.10)') 'norm of density:', density_norm
 
   ALLOCATE( F_xs(NN(1),NN(1),t_size ) )
@@ -107,11 +107,11 @@ PROGRAM HartreeSinc_main
 
   WRITE(*,*) 'sum(anal_pot)  = ', sum(anal_pot)
   WRITE(*,*) 'sum(potential) = ', sum(potential)
-  WRITE(*,'(1x,A,F18.10)') 'numeric        :', 0.5d0*sum( density(:)*potential(:) ) * sqrt(dVol)
+  WRITE(*,'(1x,A,F18.10)') 'numeric        :', 0.5d0*sum( density(:)*potential(:) ) * dVol
   WRITE(*,'(1x,A,F18.10)') 'Analytic energy:', anal_energy
   WRITE(*,'(1x,A,F18.10)') 'exact: ', exponents(1)/sqrt(2.d0*PI)
   WRITE(*,'(1x,A,E18.10)') 'diff-exact: ', &
-      abs( exponents(1)/sqrt(2.d0*PI) - 0.5d0*sum( density(:)*potential(:) ) * sqrt(dVol) )
+      abs( exponents(1)/sqrt(2.d0*PI) - 0.5d0*sum( density(:)*potential(:) ) * dVol )
 
   DEALLOCATE( potential )
   DEALLOCATE( F_xs, F_ys, F_zs )

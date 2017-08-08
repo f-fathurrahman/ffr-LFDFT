@@ -1,4 +1,4 @@
-SUBROUTINE init_density( num_gaussian, positions, coefs, exponents, density, potential )
+SUBROUTINE init_density_unnormalized( num_gaussian, positions, coefs, exponents, density, potential )
 
   USE m_constants, ONLY : PI, EPS_SMALL
   USE m_LF3d, ONLY : hh => LF3d_hh, &
@@ -26,7 +26,7 @@ SUBROUTINE init_density( num_gaussian, positions, coefs, exponents, density, pot
     DO ip = 1,Npoints
       r(:) = lingrid(:,ip) - positions(:,igauss)
       r2 = r(1)**2 + r(2)**2 + r(3)**2
-      density(ip) = density(ip) + coefs(igauss)*(exponent2/pi)**1.5d0 * exp(-exponent2*r2)
+      density(ip) = density(ip) + coefs(igauss) * exp(-exponent2*r2)*sqrt(weight)
       ! the potential (analytic) due to the Gaussian density
       IF( sqrt(r2) < EPS_SMALL ) THEN 
          potential(ip) = potential(ip) + coefs(igauss)*erf(exponents(igauss)*sqrt(EPS_SMALL))/sqrt(EPS_SMALL)
