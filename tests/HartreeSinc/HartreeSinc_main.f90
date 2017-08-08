@@ -109,7 +109,9 @@ PROGRAM HartreeSinc_main
   WRITE(*,*) 'sum(potential) = ', sum(potential)
   WRITE(*,'(1x,A,F18.10)') 'numeric        :', 0.5d0*sum( density(:)*potential(:) ) * sqrt(dVol)
   WRITE(*,'(1x,A,F18.10)') 'Analytic energy:', anal_energy
-  WRITE(*,'(1x,A,F18.10)') 'analytic: ', exponents(1)/sqrt(2.d0*PI)
+  WRITE(*,'(1x,A,F18.10)') 'exact: ', exponents(1)/sqrt(2.d0*PI)
+  WRITE(*,'(1x,A,E18.10)') 'diff-exact: ', &
+      abs( exponents(1)/sqrt(2.d0*PI) - 0.5d0*sum( density(:)*potential(:) ) * sqrt(dVol) )
 
   DEALLOCATE( potential )
   DEALLOCATE( F_xs, F_ys, F_zs )
