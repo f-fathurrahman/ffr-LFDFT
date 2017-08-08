@@ -14,7 +14,7 @@ SUBROUTINE compute_potential( t_size, w_t, F_xs, F_ys, F_zs, &
   REAL(8) :: density(NN(1),NN(2),NN(3))
   REAL(8) :: potential(Npoints)
   !
-  INTEGER :: i_t, a, b, g, aa, bb, gg, ip
+  INTEGER :: i_t, a, b, g, bb, gg, ip
   REAL(8), ALLOCATABLE :: T_g(:,:,:), T_g2(:,:,:), T_b(:,:,:), T_b2(:,:,:)
   
   ALLOCATE( T_g(NN(1),NN(2),NN(3)) )
@@ -22,9 +22,9 @@ SUBROUTINE compute_potential( t_size, w_t, F_xs, F_ys, F_zs, &
   ALLOCATE( T_b(NN(1),NN(3),NN(2)) )
   ALLOCATE( T_b2(NN(1),NN(3),NN(2)) )
 
-  T_g(:,:,:) = 0.d0
+  T_g(:,:,:)  = 0.d0
   T_g2(:,:,:) = 0.d0
-  T_b(:,:,:) = 0.d0
+  T_b(:,:,:)  = 0.d0
   T_b2(:,:,:) = 0.d0
 
   potential(:) = 0.d0
@@ -61,13 +61,6 @@ SUBROUTINE compute_potential( t_size, w_t, F_xs, F_ys, F_zs, &
 
   potential(:) = potential(:)*2.d0/sqrt(PI)
 
-
- ! DO ip = 1,Npoints
- !   a = lin2xyz(1,ip)
- !   b = lin2xyz(2,ip)
- !   g = lin2xyz(3,ip)
- !   potential(ip) = T_b2(a,b,g)*2.d0/sqrt(PI)
- ! ENDDO 
 
 END SUBROUTINE 
 

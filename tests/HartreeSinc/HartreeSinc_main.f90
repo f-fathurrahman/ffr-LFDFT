@@ -37,10 +37,10 @@ PROGRAM HartreeSinc_main
   NN(:) = (/ N_in, N_in, N_in /)
   scaling(:) = (/1.d0, 1.d0, 1.d0/)*(8.d0/(NN(1)-1))
   
-  num_points1 = 10
-  num_points2 = 100
+  num_points1 = 100
+  num_points2 = 20
   t_i = 0.d0
-  t_l = 1.d0
+  t_l = 0.1d0
   t_f = 10000.d0
 
   !
@@ -70,11 +70,11 @@ PROGRAM HartreeSinc_main
   ALLOCATE( t_values(t_size), w_t(t_size) )
   CALL HartreeSinc_t_sampling( num_points1, num_points2, t_i, t_l, t_f, &
                                t_values, w_t )
-  !WRITE(*,*)
-  !WRITE(*,*) 't_sampling:'
-  !DO i = 1, t_size
-  !  WRITE(*,'(I4,1x,F18.10,1x,F18.10)') i, t_values(i), w_t(i)
-  !ENDDO 
+  WRITE(*,*)
+  WRITE(*,*) 't_sampling:'
+  DO i = 1, t_size
+    WRITE(*,'(I4,1x,F18.10,1x,F18.10)') i, t_values(i), w_t(i)
+  ENDDO 
 
   !
   ALLOCATE( density(Npoints), anal_pot(Npoints) )
@@ -98,21 +98,13 @@ PROGRAM HartreeSinc_main
   CALL construct_F( 2, t_size, t_values, F_ys )
   CALL construct_F( 3, t_size, t_values, F_zs )
 
-!  WRITE(*,*)
-!  WRITE(*,*) 'In main:'
-!  WRITE(*,*) 'sum(F_xs) = ', sum(F_xs)
-!  WRITE(*,*) 'sum(F_ys) = ', sum(F_ys)
-!  WRITE(*,*) 'sum(F_zs) = ', sum(F_zs)
-
-!  WRITE(*,*) 'maxval(F_xs) = ', maxval(F_xs)
-!  WRITE(*,*) 'minval(F_xs) = ', minval(F_xs)
-
   ALLOCATE( potential(Npoints) )
   CALL compute_potential( t_size, w_t, F_xs, F_ys, F_zs, &
                           density, potential )
 !  DO ip = 1,Npoints
 !    potential(ip) = (PI/(t_f*t_f))*density(ip) + potential(ip)
 !  ENDDO 
+
   WRITE(*,*) 'sum(anal_pot)  = ', sum(anal_pot)
   WRITE(*,*) 'sum(potential) = ', sum(potential)
   WRITE(*,'(1x,A,F18.10)') 'numeric        :', 0.5d0*sum( density(:)*potential(:) ) * sqrt(dVol)
@@ -123,7 +115,6 @@ PROGRAM HartreeSinc_main
   DEALLOCATE( F_xs, F_ys, F_zs )
   DEALLOCATE( t_values, w_t )
   DEALLOCATE( density, anal_pot )
-
 
 END PROGRAM 
 

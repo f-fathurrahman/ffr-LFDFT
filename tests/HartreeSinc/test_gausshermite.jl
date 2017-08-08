@@ -1,7 +1,7 @@
 using FastGaussQuadrature
 using SpecialFunctions
 
-const NGaussHermite = 120
+const NGaussHermite = 300
 const xw_gauss = gausshermite(NGaussHermite)
 
 function gen_grid( h, N )
@@ -60,7 +60,7 @@ function test_main()
     h = 0.2
     N = 5
     xgrid = gen_grid(h, N)
-    t = 1.0
+    t = 0.1
     ibf1 = 2
     ibf2 = 1
     println( compute_F_v1(xgrid, ibf1, ibf2, t) )
