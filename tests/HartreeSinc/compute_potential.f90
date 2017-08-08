@@ -56,11 +56,9 @@ SUBROUTINE compute_potential( t_size, w_t, F_xs, F_ys, F_zs, &
       g = lin2xyz(3,ip)
       potential(ip) = potential(ip) + w_t(i_t)*T_b2(a,b,g)
     ENDDO 
+    ! no need to multiply by 2.0/sqrt(pi), it is included already in w_t
 
   ENDDO 
-
-  potential(:) = potential(:)*2.d0/sqrt(PI)
-
 
 END SUBROUTINE 
 

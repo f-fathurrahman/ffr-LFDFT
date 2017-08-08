@@ -37,10 +37,10 @@ PROGRAM HartreeSinc_main
   NN(:) = (/ N_in, N_in, N_in /)
   scaling(:) = (/1.d0, 1.d0, 1.d0/)*(8.d0/(NN(1)-1))
   
-  num_points1 = 0
-  num_points2 = 120
+  num_points1 = 50
+  num_points2 = 100
   t_i = 0.0d0
-  t_l = 0.1d0
+  t_l = 1.0d0
   t_f = 100000.d0
 
   !
