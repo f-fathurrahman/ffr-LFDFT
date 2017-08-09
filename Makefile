@@ -146,7 +146,8 @@ Faddeeva.c
 
 #pconv.f90 
 #pfft3d.f90
-#POISSON_ISF_SRC = \
+
+POISSON_ISF_SRC = \
 Build_Kernel.f90 \
 fft3d.f90 \
 PSolver_Kernel.f90 \

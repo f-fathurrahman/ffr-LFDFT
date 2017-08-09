@@ -81,6 +81,7 @@ PROGRAM do_Emin_pcg
   CALL orthonormalize( Nstates, evecs )
 
   CALL init_Poisson_solve_ISF()
+!  CALL init_Poisson_solve_DAGE()
 
   CALL KS_solve_Emin_pcg( 3.d-5, .FALSE. )
 
