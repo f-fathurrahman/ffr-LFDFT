@@ -41,7 +41,7 @@ PROGRAM ffr_LFDFT
   ! Initialize occupation numbers
   CALL init_states()
 
-  ! needed anyway even for sinc ??
+  ! FIXME: needed anyway even for sinc ??
   ! Structure factor, shifted to FFT grid
   CALL init_strfact_shifted()
 
