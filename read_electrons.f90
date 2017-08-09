@@ -14,6 +14,7 @@ SUBROUTINE read_electrons(filein)
   conv_thr = -1.d0
   startingwfc = 'atomic'
   ortho_check_after_diag = .FALSE.
+  poisson_solver = 'ISF'
 
   OPEN(unit=IU,file=filein,status='old')
   READ(IU,nml=ELECTRONS)

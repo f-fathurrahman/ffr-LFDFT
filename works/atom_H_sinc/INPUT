@@ -1,0 +1,33 @@
+&CONTROL
+  pseudo_dir = '../../HGH'
+  etot_conv_thr = 1.0d-6
+/
+
+&SYSTEM
+  assume_isolated = 'sinc'
+  ibrav = 8
+  nat = 1
+  ntyp = 1
+  A = 8.46683536902
+  B = 8.46683536902
+  C = 8.46683536902
+  nr1 = 54
+  nr2 = 54
+  nr3 = 54
+/
+
+&ELECTRONS
+  KS_Solve = 'Emin-pcg'
+  cg_beta = 'PR'
+  electron_maxstep = 150
+  mixing_beta = 0.5
+  diagonalization = 'LOBPCG'
+  startingwfc = 'atomic'
+/
+
+ATOMIC_SPECIES
+H   1.0  H.hgh
+
+ATOMIC_POSITIONS angstrom
+H   0.0   0.0   0.0
+

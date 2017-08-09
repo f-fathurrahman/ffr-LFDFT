@@ -9,6 +9,20 @@ SUBROUTINE setup_options()
   USE m_options
   IMPLICIT NONE 
 
+  IF( assume_isolated == 'sinc' ) THEN 
+    SELECT CASE( poisson_solver)
+    CASE( 'ISF', 'isf' )
+      I_POISSON_SOLVE = 1
+    CASE( 'DAGE', 'dage' )
+      I_POISSON_SOLVE = 2
+    CASE DEFAULT
+      I_POISSON_SOLVE = 1
+    END SELECT
+  ELSE 
+    ! we are calculating periodic system, use default Poisson solver
+    I_POISSON_SOLVE = 0
+  ENDIF 
+
   !
   SELECT CASE( KS_Solve )
   CASE( 'Emin_PCG', 'Emin_pcg', 'Emin-PCG', 'Emin-pcg', 'Emin_cg' )

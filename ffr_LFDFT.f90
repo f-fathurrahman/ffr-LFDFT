@@ -1,8 +1,8 @@
 PROGRAM ffr_LFDFT
 
   USE m_constants, ONLY : Ry2eV
-  USE m_input_vars, ONLY : startingwfc
-  USE m_options, ONLY : FREE_NABLA2, I_KS_Solve
+  USE m_input_vars, ONLY : startingwfc, assume_isolated
+  USE m_options, ONLY : FREE_NABLA2, I_KS_Solve, I_POISSON_SOLVE
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates, Focc, &
                        evals => KS_evals, &
@@ -41,17 +41,26 @@ PROGRAM ffr_LFDFT
   ! Initialize occupation numbers
   CALL init_states()
 
+  ! needed anyway even for sinc ??
   ! Structure factor, shifted to FFT grid
   CALL init_strfact_shifted()
 
   ! Ewald energy
-  CALL calc_Ewald_qe()
+  IF( assume_isolated /= 'sinc' ) THEN 
+    !
+    CALL calc_Ewald_qe()
+  ENDIF 
+  ! FIXME: Need subroutine to calculation ion-ion energy
 
   ! Memory for potentials
   CALL alloc_hamiltonian()
 
   ! Local pseudopotential
-  CALL init_V_ps_loc_G()
+  IF( assume_isolated == 'sinc' ) THEN 
+    CALL init_V_ps_loc()
+  ELSE 
+    CALL init_V_ps_loc_G()
+  ENDIF 
 
   ! Laplacian matrix
   CALL init_nabla2_sparse()
@@ -60,6 +69,12 @@ PROGRAM ffr_LFDFT
 
   IF( FREE_NABLA2 ) THEN 
     CALL dealloc_nabla2_sparse()
+  ENDIF 
+
+  IF( I_POISSON_SOLVE == 1 ) THEN 
+    CALL init_Poisson_solve_ISF()
+  ELSEIF( I_POISSON_SOLVE == 2 ) THEN 
+    CALL init_Poisson_solve_DAGE()
   ENDIF 
 
   ! Guess density

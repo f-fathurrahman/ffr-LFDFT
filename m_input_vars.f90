@@ -14,8 +14,12 @@ MODULE m_input_vars
   INTEGER :: nr1, nr2, nr3
   INTEGER :: nat, ntyp
   INTEGER :: ibrav
+  ! is assume_isolated = 'sinc' use LF-sinc basis functions
+  ! other PWSCF values is not valid
+  CHARACTER(56) :: assume_isolated
   !
-  NAMELIST /SYSTEM/ A, B, C, nr1, nr2, nr3, nat, ntyp, ibrav
+  NAMELIST /SYSTEM/ A, B, C, nr1, nr2, nr3, nat, ntyp, ibrav, assume_isolated
+  
 
   ! ELECTRONS
   CHARACTER(56) :: KS_Solve
@@ -27,9 +31,11 @@ MODULE m_input_vars
   CHARACTER(56) :: mixing_mode
   CHARACTER(56) :: startingwfc
   LOGICAL :: ortho_check_after_diag
+  CHARACTER(56) :: poisson_solver
   !
   NAMELIST /ELECTRONS/ KS_Solve, cg_beta, electron_maxstep, mixing_beta, &
-  diagonalization, conv_thr, mixing_mode, startingwfc, ortho_check_after_diag
+  diagonalization, conv_thr, mixing_mode, startingwfc, ortho_check_after_diag, &
+  poisson_solver
 
   ! ATOMIC_SPECIES
   CHARACTER(5), ALLOCATABLE :: species(:)

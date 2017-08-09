@@ -1,5 +1,6 @@
 SUBROUTINE update_potentials()
-
+  
+  USE m_options, ONLY : I_POISSON_SOLVE
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      LF3d_TYPE, LF3d_PERIODIC
   USE m_hamiltonian, ONLY : Rhoe, V_Hartree, V_xc
@@ -15,8 +16,15 @@ SUBROUTINE update_potentials()
   ELSE 
     !CALL Poisson_solve_pcg( Rhoe, V_Hartree )
     !CALL Poisson_solve_fft_MT( Rhoe, V_Hartree )
-    CALL Poisson_solve_ISF( Rhoe, V_Hartree )  ! for Lagrange-sinc functions
-    !CALL Poisson_solve_DAGE( Rhoe, V_Hartree ) ! for Lagrange-sinc functions
+    IF( I_POISSON_SOLVE==1 ) THEN 
+      CALL Poisson_solve_ISF( Rhoe, V_Hartree )  ! for Lagrange-sinc functions
+    ELSEIF( I_POISSON_SOLVE == 2 ) THEN 
+      CALL Poisson_solve_DAGE( Rhoe, V_Hartree ) ! for Lagrange-sinc functions
+    ELSE 
+      WRITE(*,*)
+      WRITE(*,*) 'ERROR: Unknown I_POISSON_SOLVE = ', I_POISSON_SOLVE
+      STOP 
+    ENDIF 
   ENDIF
 
   CALL excVWN( Npoints, Rhoe, epsxc )

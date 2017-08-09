@@ -2,6 +2,11 @@ MODULE m_options
 
   IMPLICIT NONE 
 
+  INTEGER :: I_POISSON_SOLVE = 1
+  ! 0 => FFT (default for periodic)
+  ! 1 => ISF (isolated system, default)
+  ! 2 => DAGE (isolated system)
+
   INTEGER :: I_KS_SOLVE = 1
   ! 1 => KS_solve_Emin_pcg
   ! 2 => SCF
