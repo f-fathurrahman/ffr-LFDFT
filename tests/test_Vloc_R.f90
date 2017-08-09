@@ -21,11 +21,11 @@ PROGRAM test_hgh
   CALL info_Ps_HGH_Params( ps )
 
   r0 = epsilon(1.d0)
-  dr = 0.01d0
+  dr = 1d-8
   DO i = 1,10000
     r = r0 + (i-1)*dr
     VlocR = hgh_eval_Vloc_R( ps, r )
-    WRITE(222,*) r, VlocR
+    WRITE(222,'(1x,2F18.10)') r, VlocR
   ENDDO 
 
 END PROGRAM

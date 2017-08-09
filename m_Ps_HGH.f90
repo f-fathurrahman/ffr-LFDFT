@@ -141,22 +141,28 @@ CONTAINS
   !----------------------------------------------------------------------------
   FUNCTION hgh_eval_Vloc_R( psp, r ) RESULT(Vloc)
   !----------------------------------------------------------------------------
-    USE m_constants, ONLY : EPS_SMALL
     TYPE(Ps_HGH_Params_T) :: psp
     REAL(8) :: r
     !
     INTEGER :: i
     REAL(8) :: rrloc ! r/rlocal
     REAL(8) :: term1, Vloc
+    REAL(8), PARAMETER :: SMALL = 1d-10
 
-    rrloc = r/psp%rlocal
-    term1 = psp%c(1)
-    DO i = 2, 4
-      term1 = term1 + psp%c(i)*rrloc**(2*(i-1))
-    ENDDO
-    IF ( r <= EPS_SMALL ) THEN 
-      Vloc = -psp%zval/EPS_SMALL * erf( EPS_SMALL ) + exp(-0.5d0*rrloc**2)*term1
+    IF ( r <= SMALL ) THEN 
+      rrloc = SMALL/psp%rlocal
+      term1 = psp%c(1)
+      DO i = 2, 4
+        term1 = term1 + psp%c(i)*rrloc**(2*(i-1))
+      ENDDO
+      Vloc = -psp%zval/SMALL * erf( rrloc/sqrt(2.d0) ) + exp(-0.5d0*rrloc**2)*term1
+      WRITE(*,*) 'Vloc at SMALL = ', Vloc
     ELSE 
+      rrloc = r/psp%rlocal
+      term1 = psp%c(1)
+      DO i = 2, 4
+        term1 = term1 + psp%c(i)*rrloc**(2*(i-1))
+      ENDDO
       Vloc = -psp%zval/r * erf( rrloc/sqrt(2.d0) ) + exp(-0.5d0*rrloc**2)*term1
     ENDIF 
   END FUNCTION
