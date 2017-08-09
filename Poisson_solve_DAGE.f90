@@ -253,8 +253,14 @@ SUBROUTINE Poisson_solve_DAGE( density, potential )
     
     ! FIXME: use DGEMM 
     DO gg = 1,NN(3)
-      T_g(:,:,gg) = matmul( F_xs(:,:,i_t), density(:,:,gg) )
-      T_g2(:,:,gg) = matmul( T_g(:,:,gg), F_ys(:,:,i_t) )
+      !T_g(:,:,gg) = matmul( F_xs(:,:,i_t), density(:,:,gg) )
+      CALL dgemm( 'N', 'N', NN(1),NN(1),NN(1), 1.d0, F_xs(1,1,i_t),NN(1), &
+                  density(1,1,gg),NN(1), &
+                  0.d0, T_g(1,1,gg),NN(1) )
+      !T_g2(:,:,gg) = matmul( T_g(:,:,gg), F_ys(:,:,i_t) )
+      CALL dgemm( 'N', 'N', NN(1),NN(2),NN(2), 1.d0, T_g(1,1,gg),NN(1), &
+                  F_ys(1,1,i_t),NN(2), &
+                  0.d0, T_g2(1,1,gg),NN(1) )
     ENDDO 
 
     ! reorder
@@ -265,7 +271,10 @@ SUBROUTINE Poisson_solve_DAGE( density, potential )
     ENDDO 
 
     DO bb = 1,NN(2)
-      T_b2(:,:,bb) = matmul( T_b(:,:,bb), F_zs(:,:,i_t) )
+      !T_b2(:,:,bb) = matmul( T_b(:,:,bb), F_zs(:,:,i_t) )
+      CALL dgemm( 'N', 'N', NN(1),NN(3),NN(3), 1.d0, T_b(1,1,bb),NN(1), &
+                  F_zs(1,1,i_t),NN(2), &
+                  0.d0, T_b2(1,1,bb),NN(1) )
     ENDDO 
 
 
