@@ -127,7 +127,9 @@ calc_occupations.f90 \
 calc_entropy.f90 \
 fermi_dirac.f90 \
 normalize_rhoe.f90 \
-Poisson_solve_ISF.f90
+Poisson_solve_ISF.f90 \
+m_Faddeeva.f90 \
+Poisson_solve_DAGE.f90
 
 
 SPARSKIT_SRC = \
@@ -138,6 +140,9 @@ iters.f \
 unary.f \
 blassm.f \
 matvec.f
+
+C_SRC = \
+Faddeeva.c
 
 #pconv.f90 
 #pfft3d.f90
@@ -151,6 +156,7 @@ gequad.f
 
 
 OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) $(SPARSKIT_SRC:.f=.o) \
+$(C_SRC:.c=.o) \
 $(POISSON_ISF_SRC:.f=.o) $(POISSON_ISF_SRC:.f90=.o)
 
 #
@@ -171,6 +177,13 @@ $(POISSON_ISF_SRC:.f=.o) $(POISSON_ISF_SRC:.f90=.o)
 .SUFFIXES: .o .f
 .f.o:
 	$(F77) -c $(F77_OPTS) $<
+
+#
+# C source
+#
+.SUFFIXES: .o .c
+.c.o:
+	$(CC) -c $(CC_OPTS) $<
 
 # Targets
 lib: $(OBJ)

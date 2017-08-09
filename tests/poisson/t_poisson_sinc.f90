@@ -14,8 +14,9 @@ PROGRAM t_poisson
   REAL(8) :: sigma1, sigma2, dr, x0, y0, z0, dx, dy, dz
   INTEGER :: ip
   REAL(8) :: Uana, Unum
+  INTEGER :: 
 
-  NN = (/ 64, 64, 64 /)
+  NN = (/ 35, 35, 35 /)
   hh(:) = 15.d0/(NN(1)-1)
 
   CALL init_LF3d_sinc( NN, hh )
@@ -49,8 +50,12 @@ PROGRAM t_poisson
   !CALL Poisson_solve_pcg( rho, phi )
   !CALL solve_poisson_fft( rho, phi )
   !CALL Poisson_solve_fft_MT( rho, phi )
-  CALL init_Poisson_solve_ISF()
-  CALL Poisson_solve_ISF( rho, phi )
+  
+  !CALL init_Poisson_solve_ISF()
+  !CALL Poisson_solve_ISF( rho, phi )
+  
+  CALL init_Poisson_solve_DAGE()
+  CALL Poisson_solve_DAGE( rho, phi )
 
   !
   Unum = 0.5d0*sum( rho(:)*phi(:) )*dVol
