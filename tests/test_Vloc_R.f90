@@ -7,6 +7,7 @@ PROGRAM test_hgh
   CHARACTER(64) :: filename
   REAL(8) :: dr, VlocR, r, r0
   INTEGER :: i
+  INTEGER :: iargc
 
   IF( iargc() /= 1 ) THEN 
     WRITE(*,*) 'Exactly one argument is needed'
