@@ -14,10 +14,20 @@ PROGRAM t_poisson
   REAL(8) :: sigma1, sigma2, dr, x0, y0, z0, dx, dy, dz
   INTEGER :: ip
   REAL(8) :: Uana, Unum
-  INTEGER :: 
+  INTEGER :: N_in
+  CHARACTER(56) :: chars_arg
+  INTEGER :: iargc
 
-  NN = (/ 35, 35, 35 /)
-  hh(:) = 15.d0/(NN(1)-1)
+  IF( iargc() /= 1 ) THEN 
+    WRITE(*,*) 'Exactly one argument must be given:', iargc()
+    STOP 
+  ENDIF 
+  CALL getarg(1, chars_arg )
+  READ( chars_arg, *) N_in
+  WRITE(*,*) 'N_in = ', N_in
+
+  NN(:) = (/ N_in, N_in, N_in /)
+  hh(:) = 16.d0/(NN(1)-1)
 
   CALL init_LF3d_sinc( NN, hh )
 
