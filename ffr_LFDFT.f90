@@ -46,7 +46,9 @@ PROGRAM ffr_LFDFT
   CALL init_strfact_shifted()
 
   ! Ewald energy
-  IF( assume_isolated /= 'sinc' ) THEN 
+  IF( assume_isolated == 'sinc' ) THEN 
+    CALL calc_E_NN()
+  ELSE 
     CALL calc_Ewald_qe()
   ENDIF 
   ! FIXME: Need subroutine to calculation ion-ion energy

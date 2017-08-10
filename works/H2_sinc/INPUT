@@ -10,10 +10,10 @@
   A = 8.46683536902
   B = 8.46683536902
   C = 8.46683536902
-  nr1 = 33
-  nr2 = 33
-  nr3 = 33
-!  assume_isolated = 'sinc'
+  nr1 = 55
+  nr2 = 55
+  nr3 = 55
+  assume_isolated = 'sinc'
 /
 
 &ELECTRONS
