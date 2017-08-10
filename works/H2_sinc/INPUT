@@ -22,7 +22,7 @@
   electron_maxstep = 150
   mixing_beta = 0.5
   diagonalization = 'LOBPCG'
-  startingwfc = 'random'
+  startingwfc = 'atomic'
 /
 
 ATOMIC_SPECIES

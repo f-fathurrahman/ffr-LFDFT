@@ -15,8 +15,11 @@ PROGRAM ffr_LFDFT
   INTEGER :: iargc  ! pgf90 
   INTEGER :: tstart, counts_per_second, tstop
 
+  CALL welcome()
+
   Narg = iargc()
   IF( Narg /= 1 ) THEN 
+    WRITE(*,*)
     WRITE(*,*) 'ERROR: exactly one arguments must be given: input file path'
     STOP 
   ENDIF 
@@ -24,8 +27,6 @@ PROGRAM ffr_LFDFT
   CALL getarg( 1, filein )
 
   CALL system_clock( tstart, counts_per_second )
-
-  CALL welcome()
 
   CALL read_input( filein )
   CALL setup_from_input()
@@ -51,7 +52,6 @@ PROGRAM ffr_LFDFT
   ELSE 
     CALL calc_Ewald_qe()
   ENDIF 
-  ! FIXME: Need subroutine to calculation ion-ion energy
 
   ! Memory for potentials
   CALL alloc_hamiltonian()
@@ -79,6 +79,8 @@ PROGRAM ffr_LFDFT
   ENDIF 
 
   ! Guess density
+  ! FIXME: Need gen_guess_rho_gaussian for isolated system ?
+  !        thus bypassing calculation of structure factors ?
   IF( startingwfc /= 'random' ) THEN 
     CALL gen_guess_rho_gaussian()
   ENDIF 
