@@ -30,9 +30,13 @@ SUBROUTINE init_V_ps_loc_gaussian( Nparams, A, alpha )
     isp = atm2species(ia)
     DO ip = 1, Npoints
       CALL calc_dr_1pnt( atpos(:,ia), lingrid(:,ip), r )
-      V_ps_loc(ip) = V_ps_loc(ip) + A(isp)*exp( -alpha(isp)*r**2 )
+      V_ps_loc(ip) = V_ps_loc(ip) - A(isp)*exp( -alpha(isp)*r**2 )
     ENDDO 
   ENDDO 
+
+  WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
+
+  flush(6)
 
 END SUBROUTINE 
 
