@@ -4,16 +4,16 @@
 /
 
 &SYSTEM
-  assume_isolated = 'sinc'
   ibrav = 8
-  nat = 1
+  nat = 2
   ntyp = 1
   A = 8.46683536902
   B = 8.46683536902
   C = 8.46683536902
-  nr1 = 14
-  nr2 = 14
-  nr3 = 14
+  nr1 = 33
+  nr2 = 33
+  nr3 = 33
+!  assume_isolated = 'sinc'
 /
 
 &ELECTRONS
@@ -22,12 +22,13 @@
   electron_maxstep = 150
   mixing_beta = 0.5
   diagonalization = 'LOBPCG'
-  startingwfc = 'atomic'
+  startingwfc = 'random'
 /
 
 ATOMIC_SPECIES
 H   1.0  H.hgh
 
-ATOMIC_POSITIONS angstrom
-H   0.0   0.0   0.0
+ATOMIC_POSITIONS bohr
+H    -0.75  0.0  0.0
+H     0.75  0.0  0.0
 

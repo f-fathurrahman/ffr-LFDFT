@@ -180,9 +180,18 @@ SUBROUTINE init_gauss_legendre( x1, x2, N, x, w )
 END SUBROUTINE 
 
 
+SUBROUTINE dealloc_Poisson_solve_DAGE()
+  USE m_Poisson_solve_DAGE, ONLY : F_xs, F_ys, F_zs, x_t, w_t
+  IMPLICIT NONE 
+
+  DEALLOCATE( F_xs )
+  DEALLOCATE( F_ys )
+  DEALLOCATE( F_zs )
+  DEALLOCATE( x_t, w_t )
+END SUBROUTINE 
+
 !
 SUBROUTINE init_Poisson_solve_DAGE()
-!
   USE m_LF3d, ONLY : NN => LF3d_NN
   USE m_Poisson_solve_DAGE
   IMPLICIT NONE 

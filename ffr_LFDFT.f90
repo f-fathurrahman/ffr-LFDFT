@@ -47,7 +47,6 @@ PROGRAM ffr_LFDFT
 
   ! Ewald energy
   IF( assume_isolated /= 'sinc' ) THEN 
-    !
     CALL calc_Ewald_qe()
   ENDIF 
   ! FIXME: Need subroutine to calculation ion-ion energy
@@ -124,6 +123,12 @@ PROGRAM ffr_LFDFT
   !
   DEALLOCATE( evecs, evals )
   DEALLOCATE( Focc )
+
+  IF( I_POISSON_SOLVE == 1 ) THEN 
+    CALL dealloc_Poisson_solve_ISF()
+  ELSEIF( I_POISSON_SOLVE == 2 ) THEN 
+    CALL dealloc_Poisson_solve_DAGE()
+  ENDIF 
 
   CALL dealloc_nabla2_sparse()
   CALL dealloc_ilu0_prec()

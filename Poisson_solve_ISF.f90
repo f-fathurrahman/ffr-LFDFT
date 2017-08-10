@@ -9,6 +9,15 @@ MODULE m_Poisson_solve_ISF
   REAL(8) :: Ehartree
 END MODULE 
 
+
+SUBROUTINE dealloc_Poisson_solve_ISF()
+  USE m_Poisson_solve_ISF, ONLY : karray, rhopot
+
+  DEALLOCATE( karray )
+  DEALLOCATE( rhopot )
+END SUBROUTINE 
+
+
 SUBROUTINE init_Poisson_solve_ISF()
   USE m_LF3d, ONLY : NN => LF3d_NN, &
                      hh => LF3d_hh
@@ -19,9 +28,6 @@ SUBROUTINE init_Poisson_solve_ISF()
   REAL(8) :: hgrid
 
   CALL Dimensions_FFT( NN(1),NN(2),NN(3), nfft1, nfft2, nfft3 )
-!  nfft1 = NN(1)
-!  nfft2 = NN(2)
-!  nfft3 = NN(3)
   n1k = nfft1/2 + 1
   n2k = nfft2/2 + 1
   n3k = nfft3/2 + 1
