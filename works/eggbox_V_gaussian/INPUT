@@ -1,0 +1,32 @@
+&CONTROL
+  pseudo_dir = './'
+  etot_conv_thr = 1.0d-6
+/
+
+&SYSTEM
+  ibrav = 8
+  nat = 1
+  ntyp = 1
+  A = 8.46683536902
+  B = 8.46683536902
+  C = 8.46683536902
+  nr1 = 35
+  nr2 = 35
+  nr3 = 35
+/
+
+&ELECTRONS
+  KS_Solve = 'Emin-pcg'
+  cg_beta = 'PR'
+  electron_maxstep = 150
+  mixing_beta = 0.5
+  diagonalization = 'LOBPCG'
+  startingwfc = 'random'
+/
+
+ATOMIC_SPECIES
+X   1.0  Gau.hgh
+
+ATOMIC_POSITIONS angstrom
+X   4.23341768       4.23341768       4.23341768
+
