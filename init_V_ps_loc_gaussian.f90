@@ -3,8 +3,7 @@
 !
 SUBROUTINE init_V_ps_loc_gaussian( Nparams, A, alpha )
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
-                     lingrid => LF3d_lingrid, &
-                     LL => LF3d_LL
+                     lingrid => LF3d_lingrid
   USE m_hamiltonian, ONLY : V_ps_loc
   USE m_atoms, ONLY : Nspecies, atpos => AtomicCoords, Natoms, atm2species
   IMPLICIT NONE 
@@ -14,7 +13,6 @@ SUBROUTINE init_V_ps_loc_gaussian( Nparams, A, alpha )
   REAL(8) :: alpha(Nparams)
   !
   INTEGER :: ip, isp, ia
-  REAL(8) :: dr_vec(3)
   REAL(8) :: r
 
   IF( Nspecies /= Nparams ) THEN 

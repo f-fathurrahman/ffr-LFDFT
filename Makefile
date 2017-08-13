@@ -1,5 +1,5 @@
-include platform/make.inc.ifort
-#include platform/make.inc.gfortran
+#include platform/make.inc.ifort
+include platform/make.inc.gfortran
 #include platform/make.inc.g95
 #include platform/make.inc.pgi
 #include platform/make.inc.sun
@@ -145,9 +145,6 @@ matvec.f
 C_SRC = \
 Faddeeva.c
 
-#pconv.f90 
-#pfft3d.f90
-
 POISSON_ISF_SRC = \
 Build_Kernel.f90 \
 fft3d.f90 \
@@ -202,6 +199,21 @@ clean:
 # also delete *.x files
 cleanx:
 	rm -rf *.o *.mod libmain.a *.x
+
+Build_Kernel.o: Build_Kernel.f90
+	$(F90) $(F90_OPTS_NOWARN) -c -o Build_Kernel.o Build_Kernel.f90
+
+fft3d.o: fft3d.f90
+	$(F90) $(F90_OPTS_NOWARN) -c -o fft3d.o fft3d.f90
+
+PSolver_Kernel.o: PSolver_Kernel.f90
+	$(F90) $(F90_OPTS_NOWARN) -c -o PSolver_Kernel.o PSolver_Kernel.f90
+
+scaling_function.o: scaling_function.f90
+	$(F90) $(F90_OPTS_NOWARN) -c -o scaling_function.o scaling_function.f90
+
+smooth.o: smooth.f90
+	$(F90) $(F90_OPTS_NOWARN) -c -o smooth.o smooth.f90
 
 
 
