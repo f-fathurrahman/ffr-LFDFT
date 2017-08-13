@@ -10,7 +10,7 @@ pspFile.readline()
 line = pspFile.readline()
 
 Nparams = len( line.split() )
-if Nparams < 4:
+if Nparams < 3:
     raise RuntimeError('Too few parameters')
 
 symb = line.split()[0]
