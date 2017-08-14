@@ -3,7 +3,8 @@ SUBROUTINE init_betaNL()
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      lingrid => LF3d_lingrid, &
                      LL => LF3d_LL, &
-                     dVol => LF3d_dVol
+                     dVol => LF3d_dVol, &
+                     LF3d_TYPE, LF3d_PERIODIC
   USE m_PsPot, ONLY : betaNL, NbetaNL, &
                       Ps => Ps_HGH_Params
   USE m_atoms, ONLY : atpos => AtomicCoords, Natoms, atm2species
@@ -32,8 +33,15 @@ SUBROUTINE init_betaNL()
           ibeta = ibeta + 1
           Np_beta = 0
           DO ip = 1,Npoints
-            CALL calc_dr_periodic_1pnt( LL, atpos(:,ia), lingrid(:,ip), dr_vec )
-            dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
+            !
+            IF( LF3d_TYPE == LF3d_PERIODIC ) THEN 
+              CALL calc_dr_periodic_1pnt( LL, atpos(:,ia), lingrid(:,ip), dr_vec )
+              dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
+            ELSE 
+              ! Note that calc_dr_1pnt already took the square root
+              CALL calc_dr_1pnt( atpos(:,ia), lingrid(:,ip), dr )
+            ENDIF 
+            !
             IF( dr <= Ps(isp)%rcut_NL(l) ) THEN
               Np_beta = Np_beta + 1
               betaNL(ip,ibeta) = hgh_eval_proj_R( Ps(isp), l, iprj, dr ) * Ylm_real( l, m, dr_vec )
