@@ -1,0 +1,192 @@
+ 
+ ffr's program starts
+ 
+  █████       ███████████ ██████████   ███████████ ███████████
+ ░░███       ░░███░░░░░░█░░███░░░░███ ░░███░░░░░░█░█░░░███░░░█
+  ░███        ░███   █ ░  ░███   ░░███ ░███   █ ░ ░   ░███  ░ 
+  ░███        ░███████    ░███    ░███ ░███████       ░███    
+  ░███        ░███░░░█    ░███    ░███ ░███░░░█       ░███    
+  ░███      █ ░███  ░     ░███    ███  ░███  ░        ░███    
+  ███████████ █████       ██████████   █████          █████   
+ ░░░░░░░░░░░ ░░░░░       ░░░░░░░░░░   ░░░░░          ░░░░░    
+ 
+ Program started at 13:49:54 , 14 August 2017
+ 
+ Compiled using PGI Fortran compiler
+ 
+ Reading input file: INPUT
+ 
+ Atomic positions are given in bohr.
+ 
+ Finished reading input
+ 
+         Atoms Information
+         -----------------
+ 
+ Natoms   =             2
+ Nspecies =             1
+ 
+ Valence information:
+ O         6.000
+ 
+ Atomic coordinates: (in bohr)
+ 
+ O          1.1500000000      0.0000000000      0.0000000000
+ O         -1.1500000000      0.0000000000      0.0000000000
+ 
+         Pseudopotential Information
+         ---------------------------
+ 
+ Species: O
+ Pseudopotential file: ../../HGH/O.hgh
+ 
+    atom_name = O
+    zval =     6
+    lmax =     0
+ 
+    Local pseudopotential parameters:
+ 
+    rlocal =       0.2476210000
+ 
+    c (for local potential ) = 
+        1    -16.5803180000
+        2      2.3957010000
+        3      0.0000000000
+        4      0.0000000000
+ 
+    Nonlocal pseudopotential parameters:
+ 
+    Matrix h for l =    0
+    Nproj_l        =    1
+    rc             =       0.2217860000
+    rcut_NL        =       1.1817860000
+ 
+     18.2669170000     -0.0000000000      0.0000000000
+     -0.0000000000      0.0000000000     -0.0000000000
+      0.0000000000     -0.0000000000      0.0000000000
+ 
+         LF3d Grid Information
+         ---------------------
+ 
+ Type: PERIODIC
+ 
+ Box size            =   15.99993  15.99993  15.99993
+ Grid spacing        =    0.35555   0.35555   0.35555
+ Sampling Nx, Ny, Nz =    45   45   45
+ Number of points    =      91125
+ dVol                =    0.04495
+
+ Some grid points in x, y, and z directions:
+
+        1   0.17778       1   0.17778       1   0.17778
+        2   0.53333       2   0.53333       2   0.53333
+       ..   .......      ..   .......      ..   .......
+       44  15.46660      44  15.46660      44  15.46660
+       45  15.82215      45  15.82215      45  15.82215
+
+ Some G2 values
+
+          1   0.00000
+          2   0.15421
+        ...   .......
+      91124   0.92528
+      91125   0.46264
+ 
+ Initializing betaNL functions
+ ibeta, Np_beta, integ =     1     148      0.9120376554
+ ibeta, Np_beta, integ =     2     148      0.9120376554
+ 
+ Number of electrons =           12.00000
+ Nstates =        6
+ 
+ Initial occupation numbers
+        1           2.00000
+        2           2.00000
+        3           2.00000
+        4           2.00000
+        5           2.00000
+        6           2.00000
+ 
+ Calculating structure factor: shifted to Fourier grid
+ 
+ V_ps_loc is initialized via G-space
+ 
+ Initializing nabla2_sparse
+ Memory required for nabla2_sparse:   0.1357868351042271       GB
+ 
+ ILU0 preconditioner is based on kinetic matrix
+ 
+ Generating guess density
+ ------------------------
+ 
+ zion, znucl, length = O  6.000  8.000  0.500
+ 
+ Initial: integRho       =       2.0000000046
+ After scaling: integRho =      12.0000000000
+ 
+ Generating starting wavefunctions
+ ---------------------------------
+ 
+ Eigenvalues:
+ 
+    1     -0.9974943497
+    2     -0.5607031207
+    3     -0.4078844277
+    4     -0.4078735052
+    5     -0.3507150112
+    6     -0.1951499833
+ 
+ 
+ Minimizing KS total energy functional using PCG algorithm
+ ---------------------------------------------------------
+ 
+ NiterMax =      150
+ alpha_t  =  3.000E-05
+ restart  =   F
+ conv_thr =  1.000E-06
+ 
+ Using Hestenes-Stiefel formula
+ 
+ KS_solve_Emin_pcg: memGB =       0.0325888395
+ 
+     1    -32.1474395677  1.4288569470E-02
+     2    -32.1498145840  2.3750162240E-03
+     3    -32.1509357486  1.1211646174E-03
+     4    -32.1514525270  5.1677843366E-04
+     5    -32.1517289387  2.7641172339E-04
+     6    -32.1518747164  1.4577770596E-04
+     7    -32.1519445421  6.9825652375E-05
+     8    -32.1519835247  3.8982641975E-05
+     9    -32.1520077724  2.4247625518E-05
+    10    -32.1520221963  1.4423907658E-05
+    11    -32.1520297259  7.5296661279E-06
+    12    -32.1520331907  3.4648120746E-06
+    13    -32.1520347574  1.5666232045E-06
+    14    -32.1520355592  8.0188274154E-07
+ KS_solve_Emin_pcg converged in iter           14
+ 
+ Energy components:
+ 
+ Kinetic      =      26.3802453848
+ Local PS     =     -87.7932612176
+ NL PS        =       2.6785713983
+ Hartree      =      30.3097419385
+ XC           =      -6.7159507956
+ ---------------------------------
+ ! Electronic =     -35.1406532916
+ NN           =       2.9886177323
+ ---------------------------------
+ ! Total      =     -32.1520355592
+ 
+ Final eigenvalues (Ha and eV)
+ 
+        1     -1.1441924701    -31.1353078196
+        2     -0.6326789435    -17.2162063402
+        3     -0.5216799493    -14.1957461072
+        4     -0.4835420176    -13.1579519659
+        5     -0.4258250151    -11.5873799811
+        6     -0.2527746553     -6.8784028093
+ 
+ Total elapsed time:   2.7778357000E+01 second.
+ 
+ Program stopped at 13:50:21 , 14 August 2017

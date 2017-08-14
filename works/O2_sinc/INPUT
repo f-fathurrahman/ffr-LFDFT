@@ -10,9 +10,10 @@
   A = 8.4668d0
   B = 8.4668d0
   C = 8.4668d0
-  nr1 = 45
-  nr2 = 45
-  nr3 = 45
+  nr1 = 54
+  nr2 = 54
+  nr3 = 54
+  assume_isolated = 'sinc'
 /
 
 &ELECTRONS
@@ -27,7 +28,6 @@ ATOMIC_SPECIES
 O    1.0  O.hgh
 
 ATOMIC_POSITIONS bohr
-O       1.15    0.0    0.0
-O      -1.15    0.0    0.0
-
+O       1.15  0.0  0.0
+O      -1.15  0.0  0.0
 

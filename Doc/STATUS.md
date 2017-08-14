@@ -1,3 +1,13 @@
+# Status as of 14 August 2017
+
+- Calculation with Lagrange sinc basis is now functional.
+
+- Two additional Poisson solvers, for isolated systems only, are implemented:
+  ISF (Goedecker, *et al*) and DAGE (Sundholm, *et al*).
+
+- Atomic coordinate in input file can be given in both in angstrom and bohr.
+
+
 # Status as of 22 May 2017
 
 - Calculation with GTH nonlocal pseudopotential is now functional.
@@ -40,5 +50,3 @@ minimization, albeit from simple test program and simple local potential
 (in this case only harmonic potential).
 
 SCF is a bit shaky but it can converge nevertheless.
-
-

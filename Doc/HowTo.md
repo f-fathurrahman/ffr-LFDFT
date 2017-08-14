@@ -58,13 +58,13 @@ CALL orthonormalize( Nstates, evecs )
 Solve Kohn-Sham equations via direct minimization (conjugate gradient
 algorithm)
 
-```
+```fortran
 CALL KS_solve_Emin_pcg( 3.d-5, 100, .FALSE. )
 ```
 
 Free memory
 
-```
+```fortran
 CALL dealloc_hamiltonian()
 CALL dealloc_LF3d()
 ```
