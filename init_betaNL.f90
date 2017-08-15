@@ -35,6 +35,7 @@ SUBROUTINE init_betaNL()
           DO ip = 1,Npoints
             !
             IF( LF3d_TYPE == LF3d_PERIODIC ) THEN 
+              ! FIXME This will only works for atpos within the cell ??
               CALL calc_dr_periodic_1pnt( LL, atpos(:,ia), lingrid(:,ip), dr_vec )
               dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
             ELSE 
