@@ -59,7 +59,7 @@ PROGRAM do_Emin_pcg_gaussian_G
   Nspecies = 1
   Natoms = 1
   ALLOCATE( AtomicCoords(3,Natoms) )
-  AtomicCoords(:,1) = (/ 8.d0, 8.d0, 8.d0 /)
+  AtomicCoords(:,1) = (/ 0.d0, 0.d0, 0.d0 /)
   ALLOCATE( atm2species(Natoms) )
   atm2species(1) = 1
   ALLOCATE( SpeciesSymbols(Nspecies) )
@@ -67,8 +67,8 @@ PROGRAM do_Emin_pcg_gaussian_G
 
   !
   NN = (/ N_in, N_in, N_in /)
-  AA = (/ 0.d0, 0.d0, 0.d0 /)
-  BB = (/ 16.d0, 16.d0, 16.d0 /)
+  AA = (/ -8.d0, -8.d0, -8.d0 /)
+  BB = (/  8.d0,  8.d0,  8.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
   CALL info_LF3d()
 
@@ -86,15 +86,12 @@ PROGRAM do_Emin_pcg_gaussian_G
   alpha(1) = alpha_in
   !
   CALL init_V_ps_loc_gaussian_G( Nparams, A, alpha )  ! appropriate for periodic system
-  !CALL init_V_ps_loc_gaussian( Nparams, A, alpha ) ! acceptable for periodic system as long as
-                                                   ! the potentials between neighboring periodic images
-                                                   ! do not overlapping
 
   ! Set this explicitly in order to skip any term involving nonlocal pseudopotentials
   NbetaNL = 0
 
   ! required anyway to get similar numerical result with OCTOPUS
-  !CALL calc_Ewald_qe()
+  CALL calc_Ewald_qe()
 
   ! Laplacian matrix
   CALL init_nabla2_sparse()
