@@ -1,0 +1,973 @@
+ 
+ ffr's program starts
+ 
+  █████       ███████████ ██████████   ███████████ ███████████
+ ░░███       ░░███░░░░░░█░░███░░░░███ ░░███░░░░░░█░█░░░███░░░█
+  ░███        ░███   █ ░  ░███   ░░███ ░███   █ ░ ░   ░███  ░ 
+  ░███        ░███████    ░███    ░███ ░███████       ░███    
+  ░███        ░███░░░█    ░███    ░███ ░███░░░█       ░███    
+  ░███      █ ░███  ░     ░███    ███  ░███  ░        ░███    
+  ███████████ █████       ██████████   █████          █████   
+ ░░░░░░░░░░░ ░░░░░       ░░░░░░░░░░   ░░░░░          ░░░░░    
+ 
+ Program started at  1:40:10 , 17 August 2017
+ 
+ Compiled using PGI Fortran compiler
+ 
+ Reading input file: INPUT
+ 
+ Atomic positions are given in bohr.
+ 
+ Finished reading input
+ 
+         Atoms Information
+         -----------------
+ 
+ Natoms   =             2
+ Nspecies =             1
+ 
+ Valence information:
+ O         6.000
+ 
+ Atomic coordinates: (in bohr)
+ 
+ O          1.1500000000      0.0000000000      0.0000000000
+ O         -1.1500000000      0.0000000000      0.0000000000
+ 
+         Pseudopotential Information
+         ---------------------------
+ 
+ Species: O
+ Pseudopotential file: ../../HGH/O.hgh
+ 
+    atom_name = O
+    zval =     6
+    lmax =     0
+ 
+    Local pseudopotential parameters:
+ 
+    rlocal =       0.2476210000
+ 
+    c (for local potential ) = 
+        1    -16.5803180000
+        2      2.3957010000
+        3      0.0000000000
+        4      0.0000000000
+ 
+    Nonlocal pseudopotential parameters:
+ 
+    Matrix h for l =    0
+    Nproj_l        =    1
+    rc             =       0.2217860000
+    rcut_NL        =       1.1817860000
+ 
+     18.2669170000     -0.0000000000      0.0000000000
+     -0.0000000000      0.0000000000     -0.0000000000
+      0.0000000000     -0.0000000000      0.0000000000
+ 
+         LF3d Grid Information
+         ---------------------
+ 
+ Type: SINC
+ 
+ Box size            =   15.99993  15.99993  15.99993
+ Grid spacing        =    0.30189   0.30189   0.30189
+ Sampling Nx, Ny, Nz =    54   54   54
+ Number of points    =     157464
+ dVol                =    0.02751
+
+ Some grid points in x, y, and z directions:
+
+        1  -7.99997       1  -7.99997       1  -7.99997
+        2  -7.69808       2  -7.69808       2  -7.69808
+       ..   .......      ..   .......      ..   .......
+       53   7.69808      53   7.69808      53   7.69808
+       54   7.99997      54   7.99997      54   7.99997
+
+ Some G2 values
+
+          1   0.00000
+          2   0.15421
+        ...   .......
+     157463   0.92528
+     157464   0.46264
+ 
+ Initializing betaNL functions
+ ibeta, Np_beta, integ =     1     252      0.9771860871
+ ibeta, Np_beta, integ =     2     252      0.9771860871
+ 
+ Number of electrons =           12.00000
+ Nstates =        6
+ 
+ Initial occupation numbers
+        1           2.00000
+        2           2.00000
+        3           2.00000
+        4           2.00000
+        5           2.00000
+        6           2.00000
+ 
+ Calculating structure factor: shifted to Fourier grid
+ sum(V_ps_loc) =    -274683.3063250697     
+ 
+ Initializing nabla2_sparse
+ Memory required for nabla2_sparse:   0.2821541763842106       GB
+ 
+ ILU0 preconditioner is based on kinetic matrix
+ nfft       :           108          108          108
+ Kernel size:            55           55           55
+ 
+ Generating guess density
+ ------------------------
+ 
+ zion, znucl, length = O  6.000  8.000  0.500
+ 
+ Initial: integRho       =       2.1153569725
+ After scaling: integRho =      12.0000000000
+ 
+ Generating starting wavefunctions
+ ---------------------------------
+ 
+ Eigenvalues:
+ 
+    1     -7.5850736536
+    2     -6.5205106565
+    3     -6.4502627299
+    4     -6.4501248663
+    5     -6.2401862865
+    6     -6.2401556788
+ 
+ 
+ Initial guess: integRho =      12.0000000000
+ WARNING: nlock=            6
+ 
+ Eigenvalues:
+ 
+    1     -7.5850736536
+    2     -6.5205106565
+    3     -6.4502627299
+    4     -6.4501248663
+    5     -6.2401862865
+    6     -6.2401556788
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.1081034709E+01
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter    1    -24.6351830742  2.4635183074E+01  5.8433751406E-02
+ 
+ Eigenvalues:
+ 
+    1     -0.2461176520
+    2     -0.1846898608
+    3      0.0794861160
+    4      0.0810493340
+    5      0.1341075859
+    6      0.1348568191
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   9.4756270623E+00
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter    2    -40.1562267018  1.5521043628E+01  9.8564533487E-03
+ 
+ Eigenvalues:
+ 
+    1     -3.4332783793
+    2     -2.6217304532
+    3     -2.5301077236
+    4     -2.5272913990
+    5     -2.3774735924
+    6     -2.2923098612
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   7.4831749521E+00
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter    3    -17.3492080573  2.2807018644E+01  4.0783111347E-02
+ 
+ Eigenvalues:
+ 
+    1     -2.1462443475
+    2     -1.3835608992
+    3     -1.2797074186
+    4     -1.2575596867
+    5     -1.1356515330
+    6     -0.9927785474
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   5.1694058202E+00
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter    4    -27.2659823885  9.9167743311E+00  2.7608769930E-02
+ 
+ Eigenvalues:
+ 
+    1     -1.5855654522
+    2     -0.9601810605
+    3     -0.8116793373
+    4     -0.7929397494
+    5     -0.7426631935
+    6     -0.5186326432
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   3.0871991909E+00
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter    5    -30.2100597092  2.9440773207E+00  1.7683124033E-02
+ 
+ Eigenvalues:
+ 
+    1     -1.3455228356
+    2     -0.8000304067
+    3     -0.6326707632
+    4     -0.5992279116
+    5     -0.5861428760
+    6     -0.3351341117
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.5778662140E+00
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter    6    -31.2988866056  1.0888268964E+00  1.0546102938E-02
+ 
+ Eigenvalues:
+ 
+    1     -1.2327006672
+    2     -0.7366153052
+    3     -0.5575632743
+    4     -0.5196829736
+    5     -0.5131526767
+    6     -0.2886847198
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   5.1537353963E-01
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter    7    -31.7061726501  4.0728604448E-01  1.1057932668E-02
+ 
+ Eigenvalues:
+ 
+    1     -1.1831446927
+    2     -0.7100391869
+    3     -0.5121568450
+    4     -0.5007747428
+    5     -0.4815814158
+    6     -0.2310145275
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.3816132193E-01
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter    8    -31.9512362950  2.4506364487E-01  7.4045976900E-03
+ 
+ Eigenvalues:
+ 
+    1     -1.1654907966
+    2     -0.7086538768
+    3     -0.5201945596
+    4     -0.4910831801
+    5     -0.4618174804
+    6     -0.2272481974
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   2.3864343909E-01
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter    9    -31.7723569764  1.7887931863E-01  1.0869531258E-02
+ 
+ Eigenvalues:
+ 
+    1     -1.1570282542
+    2     -0.7041131981
+    3     -0.4960160647
+    4     -0.4949043429
+    5     -0.4728080161
+    6     -0.2293927318
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   2.1668007516E-01
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   10    -31.9335548420  1.6119786563E-01  7.9981637127E-03
+ 
+ Eigenvalues:
+ 
+    1     -1.1562020414
+    2     -0.6991896469
+    3     -0.5007184474
+    4     -0.4827538534
+    5     -0.4699081581
+    6     -0.2348921520
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.2461561301E-01
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   11    -32.0207106094  8.7155767389E-02  8.2751302902E-03
+ 
+ Eigenvalues:
+ 
+    1     -1.1565511320
+    2     -0.6970434801
+    3     -0.4850303524
+    4     -0.4841395619
+    5     -0.4787402151
+    6     -0.2374604789
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   4.4047370390E-02
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   12    -32.0491237256  2.8413116254E-02  5.1041373660E-03
+ 
+ Eigenvalues:
+ 
+    1     -1.1578536789
+    2     -0.6987027347
+    3     -0.4937416258
+    4     -0.4808302556
+    5     -0.4774059532
+    6     -0.2468828343
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   6.6334798346E-02
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   13    -31.9866974067  6.2426318954E-02  6.9080053300E-03
+ 
+ Eigenvalues:
+ 
+    1     -1.1570180504
+    2     -0.6991587652
+    3     -0.4866065522
+    4     -0.4849235891
+    5     -0.4808898539
+    6     -0.2401377083
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   6.5640228174E-02
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   14    -31.9786259376  8.0714690448E-03  5.1818980307E-03
+ 
+ Eigenvalues:
+ 
+    1     -1.1566841329
+    2     -0.6992851045
+    3     -0.4927211927
+    4     -0.4808215550
+    5     -0.4788441578
+    6     -0.2464059647
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   3.7473346766E-02
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   15    -31.9798084479  1.1825102167E-03  6.5760884161E-03
+ 
+ Eigenvalues:
+ 
+    1     -1.1566826695
+    2     -0.6992726228
+    3     -0.4861434742
+    4     -0.4853174145
+    5     -0.4809166232
+    6     -0.2400321235
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.5670073521E-02
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   16    -31.9782005423  1.6079056051E-03  5.0741630274E-03
+ 
+ Eigenvalues:
+ 
+    1     -1.1565828365
+    2     -0.6990829124
+    3     -0.4921893157
+    4     -0.4808005295
+    5     -0.4787968139
+    6     -0.2328176581
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   2.8067827163E-03
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   17    -31.9852407151  7.0401728024E-03  3.3696491361E-03
+ 
+ Eigenvalues:
+ 
+    1     -1.1570454309
+    2     -0.6993027031
+    3     -0.4982779347
+    4     -0.4810583407
+    5     -0.4730770372
+    6     -0.2271404996
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.6703312338E-03
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   18    -31.9783485452  6.8921699001E-03  1.9098631646E-03
+ 
+ Eigenvalues:
+ 
+    1     -1.1575309195
+    2     -0.6995845012
+    3     -0.5023522606
+    4     -0.4813412850
+    5     -0.4694864120
+    6     -0.2235601991
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.6546114551E-03
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   19    -31.9787005896  3.5204447465E-04  8.7596197586E-04
+ 
+ Eigenvalues:
+ 
+    1     -1.1586068524
+    2     -0.7004445812
+    3     -0.5050707334
+    4     -0.4821848617
+    5     -0.4684870642
+    6     -0.2225884491
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   6.4430068718E-04
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   20    -31.9694171139  9.2834757473E-03  3.2376171567E-04
+ 
+ Eigenvalues:
+ 
+    1     -1.1588604877
+    2     -0.7006976140
+    3     -0.5059475313
+    4     -0.4823996680
+    5     -0.4680622969
+    6     -0.2221738501
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   7.6837684176E-05
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   21    -31.9675986566  1.8184572737E-03  9.3261157074E-05
+ 
+ Eigenvalues:
+ 
+    1     -1.1589128725
+    2     -0.7007680064
+    3     -0.5061653253
+    4     -0.4824525001
+    5     -0.4679561628
+    6     -0.2220726905
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   2.0011338506E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   22    -31.9670862418  5.1241477646E-04  1.8001476475E-05
+ 
+ Eigenvalues:
+ 
+    1     -1.1589170769
+    2     -0.7007827963
+    3     -0.5061861712
+    4     -0.4824637585
+    5     -0.4679525238
+    6     -0.2220705797
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   3.3726802997E-05
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   23    -31.9669637563  1.2248555360E-04  4.1323691002E-06
+ 
+ Eigenvalues:
+ 
+    1     -1.1589133166
+    2     -0.7007834481
+    3     -0.5061706022
+    4     -0.4824636227
+    5     -0.4679654574
+    6     -0.2220833923
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.0804093208E-05
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   24    -31.9669945809  3.0824582090E-05  2.3888926408E-06
+ 
+ Eigenvalues:
+ 
+    1     -1.1589079769
+    2     -0.7007812222
+    3     -0.5061558743
+    4     -0.4824611127
+    5     -0.4679734699
+    6     -0.2220913516
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   4.5534202933E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   25    -31.9670615626  6.6981738307E-05  1.9439421969E-06
+ 
+ Eigenvalues:
+ 
+    1     -1.1589065776
+    2     -0.7007815860
+    3     -0.5061461295
+    4     -0.4824613376
+    5     -0.4679824409
+    6     -0.2221003420
+ 
+ Adaptive mixing ELK
+ SCF iter   26    -31.9670651692  3.6066184350E-06  1.2319036253E-06
+ 
+ Eigenvalues:
+ 
+    1     -1.1589073776
+    2     -0.7007830740
+    3     -0.5061415589
+    4     -0.4824628425
+    5     -0.4679893046
+    6     -0.2221073835
+ 
+ Adaptive mixing ELK
+ SCF iter   27    -31.9670810009  1.5831663788E-05  1.1110486951E-06
+ 
+ Eigenvalues:
+ 
+    1     -1.1589106051
+    2     -0.7007864528
+    3     -0.5061405029
+    4     -0.4824662467
+    5     -0.4679967486
+    6     -0.2221150665
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.5014698640E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   28    -31.9670649969  1.6003991583E-05  6.9644895818E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589133133
+    2     -0.7007890221
+    3     -0.5061407871
+    4     -0.4824687712
+    5     -0.4680016600
+    6     -0.2221201470
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   2.2149364209E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   29    -31.9670687483  3.7513916880E-06  8.4810780345E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589181306
+    2     -0.7007936492
+    3     -0.5061433234
+    4     -0.4824733468
+    5     -0.4680083256
+    6     -0.2221270596
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   2.6479319075E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   30    -31.9670590654  9.6829015916E-06  5.4584002519E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589203294
+    2     -0.7007957556
+    3     -0.5061443132
+    4     -0.4824753295
+    5     -0.4680116715
+    6     -0.2221305333
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.5032819611E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   31    -31.9670674988  8.4334153740E-06  7.9031884731E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589248422
+    2     -0.7007999872
+    3     -0.5061472376
+    4     -0.4824794581
+    5     -0.4680173325
+    6     -0.2221363962
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.8725897686E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   32    -31.9670628080  4.6907982991E-06  4.9872553560E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589268668
+    2     -0.7008019003
+    3     -0.5061484368
+    4     -0.4824812438
+    5     -0.4680201091
+    6     -0.2221392798
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.1409823770E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   33    -31.9670737693  1.0961336670E-05  7.6172632520E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589307591
+    2     -0.7008055690
+    3     -0.5061511908
+    4     -0.4824847875
+    5     -0.4680248215
+    6     -0.2221441713
+ 
+ Adaptive mixing ELK
+ SCF iter   34    -31.9670716365  2.1328467241E-06  4.7090602441E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589328841
+    2     -0.7008074780
+    3     -0.5061526235
+    4     -0.4824865930
+    5     -0.4680274120
+    6     -0.2221468524
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   2.7976504615E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   35    -31.9670751421  3.5056058323E-06  7.5230539154E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589366525
+    2     -0.7008109532
+    3     -0.5061554578
+    4     -0.4824899606
+    5     -0.4680317093
+    6     -0.2221513077
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.1900052943E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   36    -31.9670704872  4.6548733295E-06  4.5585153496E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589389393
+    2     -0.7008129318
+    3     -0.5061571344
+    4     -0.4824918536
+    5     -0.4680342496
+    6     -0.2221539262
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   3.4096954078E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   37    -31.9670711152  6.2801279199E-07  7.5195729430E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589422564
+    2     -0.7008159520
+    3     -0.5061596909
+    4     -0.4824947756
+    5     -0.4680379222
+    6     -0.2221577292
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.7240669408E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   38    -31.9670686280  2.4872591027E-06  4.4599874449E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589443316
+    2     -0.7008177288
+    3     -0.5061612515
+    4     -0.4824964747
+    5     -0.4680401614
+    6     -0.2221600340
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   3.4271270088E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   39    -31.9670699400  1.3119886830E-06  7.5731552390E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589471583
+    2     -0.7008202763
+    3     -0.5061634460
+    4     -0.4824989297
+    5     -0.4680432453
+    6     -0.2221632195
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.8209788664E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   40    -31.9670700619  1.2194334431E-07  4.3812878279E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589490013
+    2     -0.7008218543
+    3     -0.5061648434
+    4     -0.4825004376
+    5     -0.4680452155
+    6     -0.2221652492
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   3.1427903728E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   41    -31.9670728777  2.8158060559E-06  7.6669394897E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589513822
+    2     -0.7008239825
+    3     -0.5061666849
+    4     -0.4825024803
+    5     -0.4680477958
+    6     -0.2221679094
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.7876726588E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   42    -31.9670724361  4.4164504942E-07  4.3196953433E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589531150
+    2     -0.7008254901
+    3     -0.5061680228
+    4     -0.4825039270
+    5     -0.4680496363
+    6     -0.2221698163
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   2.6984642805E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   43    -31.9670759262  3.4900893411E-06  7.8037767488E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589551363
+    2     -0.7008272903
+    3     -0.5061695763
+    4     -0.4825056453
+    5     -0.4680518253
+    6     -0.2221720689
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.7342170811E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   44    -31.9670734555  2.4706577477E-06  4.2782031829E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589567848
+    2     -0.7008287246
+    3     -0.5061708621
+    4     -0.4825070276
+    5     -0.4680535560
+    6     -0.2221738691
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   2.2465565088E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   45    -31.9670752432  1.7877503424E-06  7.9813860410E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589585636
+    2     -0.7008302866
+    3     -0.5061722160
+    4     -0.4825085140
+    5     -0.4680554662
+    6     -0.2221758283
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.6322157492E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   46    -31.9670734491  1.7941019479E-06  4.2543007793E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589600257
+    2     -0.7008315673
+    3     -0.5061733592
+    4     -0.4825097475
+    5     -0.4680570023
+    6     -0.2221774335
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.8602613956E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   47    -31.9670743248  8.7568759000E-07  8.1639589521E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589615564
+    2     -0.7008328990
+    3     -0.5061745062
+    4     -0.4825110112
+    5     -0.4680586395
+    6     -0.2221791097
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.6145420982E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   48    -31.9670735473  7.7757334793E-07  4.2310010708E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589628082
+    2     -0.7008340069
+    3     -0.5061754828
+    4     -0.4825120749
+    5     -0.4680599668
+    6     -0.2221805037
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.6881413440E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   49    -31.9670738865  3.3925898180E-07  8.3000348783E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589641524
+    2     -0.7008351580
+    3     -0.5061764704
+    4     -0.4825131635
+    5     -0.4680613980
+    6     -0.2221819635
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.5507321969E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ SCF iter   50    -31.9670735333  3.5325335546E-07  4.1845235895E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.1589652340
+    2     -0.7008361201
+    3     -0.5061773089
+    4     -0.4825140861
+    5     -0.4680625499
+    6     -0.2221831796
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.5027197726E-06
+ Rescaling Rho
+ After rescaling: integRho =      12.0000000000
+ 
+ 
+ SCF converged at    51 iterations.
+ 
+ Energy components:
+ 
+ Kinetic      =      25.1737504782
+ Local PS     =    -111.2585205627
+ NL PS        =       2.5284652353
+ Hartree      =      42.6223100276
+ XC           =      -6.6852526037
+ ---------------------------------
+ ! Electronic =     -47.6192474252
+ NN           =      15.6521739130
+ ---------------------------------
+ ! Total      =     -31.9670735122
+ 
+ Final eigenvalues (Ha and eV)
+ 
+        1     -1.1589652340    -31.5372983626
+        2     -0.7008361201    -19.0708721667
+        3     -0.5061773089    -13.7738944593
+        4     -0.4825140861    -13.1299803066
+        5     -0.4680625499    -12.7367308837
+        6     -0.2221831796     -6.0459598088
+ 
+ Total elapsed time:   4.6377601000E+02 second.
+ 
+ Program stopped at  1:47:54 , 17 August 2017
