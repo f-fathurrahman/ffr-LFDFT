@@ -4,12 +4,17 @@ FUNCTION eval_LF1d_sinc( N, grid, ibf, x ) RESULT(ff)
   !
   INTEGER :: N
   REAL(8) :: grid(N)
-  REAL(8) :: ff, x
+  REAL(8) :: ff, x, dx
   INTEGER :: ibf
+  REAL(8), PARAMETER :: SMALL = 1.d-10
   !
   REAL(8) :: h
   
   h = grid(2) - grid(1)
-  ff = sin( PI*(x - grid(ibf))/h ) / (PI*(x-grid(ibf))) * h /sqrt(h)
+  dx = x - grid(ibf)
+  IF( abs(dx) < SMALL ) THEN 
+    dx = SMALL
+  ENDIF 
+  ff = sin( PI*dx/h ) / (PI*dx) * h /sqrt(h)
 END FUNCTION
 
