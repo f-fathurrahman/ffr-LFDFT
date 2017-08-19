@@ -1,0 +1,46 @@
+\documentclass[a4paper,12pt]{memoir}
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{Linux Libertine O}
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{xcolor}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{braket}
+
+\usepackage{minted}
+\newminted{fortran}{breaklines,fontsize=\small}
+
+\definecolor{mintedbg}{rgb}{0.95,0.95,0.95}
+\usepackage{mdframed}
+
+\newcommand{\ffrLFDFT}{{\texttt{ffr-LFDFT}}\,}
+\newcommand{\ffrmain}{{\texttt{ffr\_LFDFT.x}}\,}
+
+
+\begin{document}
+
+
+\title{Implementation Notes of \ffrLFDFT}
+\author{Fadjar Fathurrahman}
+%\date{}
+\maketitle
+
+\newpage
+
+\tableofcontents
+
+\input{Ch01}
+
+
+
+\end{document}

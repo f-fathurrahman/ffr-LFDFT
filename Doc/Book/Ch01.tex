@@ -1,0 +1,73 @@
+\chapter{Lagrange functions in one dimension}
+
+
+\section{Introduction}
+
+There are various ways to derive what will be referred to as
+Lagrange basis functions (LBFs) or Lagrange functions (LFs) below.
+In some references, they are also referred to as discrete variable
+representation (DVR) basis functions, especially in papers by Tuckerman's
+research group [references needed].
+
+In summary, this is the parameters that are needed to specify a specific
+LBFs:
+\begin{itemize}
+
+\item For periodic and cluster/box LBFs we need to specify:
+\begin{itemize}
+\item number of basis functions $N$
+\item two end points $a$ and $b$
+\end{itemize}
+
+\item For sinc LBFs, we need to specify:
+\begin{itemize}
+\item number of basis functions $N$
+\item grid spacing $h$
+\end{itemize}
+
+\end{itemize}
+
+
+\section{Implementation}
+
+Currently, there is only special module to handle global variables related
+to 1D LFs. However, there is a special module to handle 3D LFs, namely
+the module \texttt{m\_LF3d} defined in file \texttt{m\_LF3d.f90}.
+The relevant global variables for our current discussion are the following.
+\begin{fortrancode}
+INTEGER :: LF3d_NN(3)
+REAL(8) :: LF3d_LL(3)
+REAL(8) :: LF3d_AA(3), LF3d_BB(3)
+REAL(8) :: LF3d_hh(3)
+\end{fortrancode}
+Note that, these arrays are of size 3, for each $x$, $y$, and $z$ component.
+We will restrict ourself to 1D, and will take only the first element, i.e. the
+$x$ direction.
+The grid points are stored in array:
+\begin{fortrancode}
+REAL(8), ALLOCATABLE :: LF3d_grid_x(:)
+\end{fortrancode}
+
+In the actual code, if there is no name-clash (i.e. no two or more variables with the
+same name), we usually use the aliases for these global variables, e.g.:
+\begin{fortrancode}
+USE m_LF3d, ONLY : NN => LF3d_NN, hh => LF3d_hh
+\end{fortrancode}
+
+\section{Example: initializing LFs}
+
+Example code can be found in directory:
+\verb|tests/init/ex_init.f90|.
+
+
+
+\section{Example: plotting the basis functions}
+
+Code to
+
+Python
+
+\section{Example: basis function expansion}
+
+
+\section{Example: integrals}
