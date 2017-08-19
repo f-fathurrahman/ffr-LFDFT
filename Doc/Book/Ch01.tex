@@ -54,18 +54,70 @@ same name), we usually use the aliases for these global variables, e.g.:
 USE m_LF3d, ONLY : NN => LF3d_NN, hh => LF3d_hh
 \end{fortrancode}
 
-\section{Example: initializing LFs}
+The relevant subroutines to initialize the grid points for each LFs:
+\begin{itemize}
+\item \texttt{init\_grid\_1d\_p()}
+\item \texttt{init\_grid\_1d\_c()}
+\item \texttt{init\_grid\_1d\_sinc()}
+\end{itemize}
 
-Example code can be found in directory:
-\verb|tests/init/ex_init.f90|.
 
+
+\section{Example: initializing grid points for LFs}
+
+The following code fragments initializes 1D periodic LFs:
+\begin{fortrancode}
+USE m_LF3d, ONLY : grid_x => LF3d_grid_x
+IMPLICIT NONE
+INTEGER :: N, i
+REAL(8) :: L
+! Initialize the basis functions
+ALLOCATE( grid_x(N) )
+CALL init_grid_1d_p( N, -0.5d0*L, 0.5d0*L, grid_x )
+WRITE(*,'(1x,A,I5)') 'N = ', N
+WRITE(*,'(1x,A,F18.10)') 'L = ', L
+WRITE(*,'(1x,A,F18.10)') 'Grid spacing = ', grid_x(2) - grid_x(1)
+WRITE(*,*) 'Grid points for periodic LF'
+DO i = 1,N
+  WRITE(*,'(1x,I5,F18.10)') i, grid_x(i)
+ENDDO
+DEALLOCATE( grid_x )
+\end{fortrancode}
+
+A complete example code can be found in file \texttt{tests/init/ex\_init\_1d.f90}.
 
 
 \section{Example: plotting the basis functions}
 
-Code to
+\subsection{Periodic LFs}
 
-Python
+\begin{figure}[h]
+{\centering
+\includegraphics[width=0.5\textwidth]{../../tests/init/LF1d_p.pdf}
+\par}
+\caption{Periodic LF}
+\end{figure}
+
+
+\subsection{Cluster/box LFs}
+
+\begin{figure}[h]
+{\centering
+\includegraphics[width=0.5\textwidth]{../../tests/init/LF1d_c.pdf}
+\par}
+\caption{Cluster/box LF}
+\end{figure}
+
+
+\subsection{Sinc LFs}
+
+\begin{figure}[h]
+{\centering
+\includegraphics[width=0.5\textwidth]{../../tests/init/LF1d_sinc.pdf}
+\par}
+\caption{Sinc LF}
+\end{figure}
+
 
 \section{Example: basis function expansion}
 
