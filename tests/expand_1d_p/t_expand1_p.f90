@@ -1,3 +1,4 @@
+! A periodic function
 FUNCTION funcx( c1, L, x )
   USE m_constants, ONLY : PI
   IMPLICIT NONE
@@ -9,6 +10,7 @@ FUNCTION funcx( c1, L, x )
 END FUNCTION
 
 
+! Demonstrate expansion of a periodic function using periodic LFs
 !------------------------------------------------------------------------------
 PROGRAM t_expand
 !------------------------------------------------------------------------------
@@ -65,7 +67,6 @@ PROGRAM t_expand
   ! Free memory
   DEALLOCATE( grid_x )
   DEALLOCATE( coefs )
-
 
 END PROGRAM
 
