@@ -89,33 +89,61 @@ A complete example code can be found in file \texttt{tests/init/ex\_init\_1d.f90
 
 \section{Example: plotting the basis functions}
 
-\subsection{Periodic LFs}
+The relevant subroutines used for this purpose are as follows.
+\begin{itemize}
+\item \texttt{eval\_LF1d\_p()}
+\item \texttt{eval\_LF1d\_c()}
+\item \texttt{eval\_LF1d\_sinc()}
+\end{itemize}
+
+Plots of periodic, cluster/box, and sinc LFs are
+shown in Figure \ref{fig:LF1d_p_5}, \ref{fig:LF1d_c_5}, and
+\ref{fig:LF1d_sinc_5} respectively.
 
 \begin{figure}[h]
 {\centering
-\includegraphics[width=0.5\textwidth]{../../tests/init/LF1d_p.pdf}
+\includegraphics[width=0.5\textwidth]{../../tests/plot_1d/LF1d_p.pdf}
 \par}
-\caption{Periodic LF}
+\caption{Periodic LF}\label{fig:LF1d_p_5}
 \end{figure}
 
-
-\subsection{Cluster/box LFs}
+An example program which can produce plot data for these figures can be
+found in \texttt{../../tests/plot\_1d/ex\_plot\_1d.f90}.
 
 \begin{figure}[h]
 {\centering
-\includegraphics[width=0.5\textwidth]{../../tests/init/LF1d_c.pdf}
+\includegraphics[width=0.5\textwidth]{../../tests/plot_1d/LF1d_c.pdf}
 \par}
-\caption{Cluster/box LF}
+\caption{Cluster/box LF}\label{fig:LF1d_c_5}
 \end{figure}
 
-
-\subsection{Sinc LFs}
+The following Python script were used to plot the resulting data:
+\begin{pythoncode}
+import numpy as np
+import matplotlib.pyplot as plt
+import os
+from matplotlib import rc
+rc('font',**{'family':'serif', 'size':16})
+rc('text', usetex=True)
+types = ['sinc', 'c', 'p']
+NBASIS = 5
+for t in types:
+    dat1 = np.loadtxt('LF1d_' + t + '.dat')
+    plt.clf()
+    for ibf in range(1,NBASIS+1):
+        plt.plot( dat1[:,0], dat1[:,ibf] )
+    plt.xlim( dat1[-1,0], dat1[0,0] )
+    plt.grid()
+    FIPLOT = 'LF1d_' + t + '.pdf'
+    plt.savefig(FIPLOT)
+    os.system('pdfcrop ' + FIPLOT + ' ' + FIPLOT)
+\end{pythoncode}
 
 \begin{figure}[h]
 {\centering
-\includegraphics[width=0.5\textwidth]{../../tests/init/LF1d_sinc.pdf}
+\includegraphics[width=0.5\textwidth]{../../tests/plot_1d/LF1d_sinc.pdf}
 \par}
-\caption{Sinc LF}
+\caption{Sinc LF}\label{fig:LF1d_sinc_5}
 \end{figure}
 
 
