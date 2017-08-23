@@ -63,7 +63,7 @@ The relevant subroutines to initialize the grid points for each LFs:
 
 
 
-\section{Example: initializing grid points for LFs}
+\section{Initializing grid points for LFs}
 
 The following code fragments initializes 1D periodic LFs:
 \begin{fortrancode}
@@ -87,7 +87,7 @@ DEALLOCATE( grid_x )
 A complete example code can be found in file \texttt{tests/init/ex\_init\_1d.f90}.
 
 
-\section{Example: plotting the basis functions}
+\section{Plotting the basis functions}
 
 The relevant subroutines used for this purpose are as follows.
 \begin{itemize}
@@ -147,7 +147,18 @@ for t in types:
 \end{figure}
 
 
-\section{Example: basis function expansion}
+\section{Basis function expansion}
 
+We can expand any "appropriate" function $f(x)$ using LFs:
+\begin{equation}
+f(x) = \sum_{i}^{N} c_{i} \varphi_{i}(x)
+\end{equation}
+with $c_{i} = f(x_{i}) \sqrt{\Delta}$
 
-\section{Example: integrals}
+also can use notation $h = \Delta = L/N$
+
+\section{Approximating integrals}
+Integral can be approximated as
+\begin{equation}
+\int f(x)\,\mathrm{d}x \approx \Delta x \sum_{i} f(x_{i})
+\end{equation}
