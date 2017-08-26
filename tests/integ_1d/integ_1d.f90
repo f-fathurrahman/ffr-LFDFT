@@ -13,6 +13,15 @@ FUNCTION funcx( c1, L, x )
 END FUNCTION
 
 
+! non-periodic function
+FUNCTION funcx2( A, alpha, c1, x )
+  IMPLICIT NONE 
+  REAL(8) :: c1, x, funcx2, A, alpha
+
+  funcx2 = A*exp( -alpha*(x-c1)**2 )
+END FUNCTION 
+
+
 
 PROGRAM test_integral
   USE m_constants, ONLY : PI
@@ -26,7 +35,7 @@ PROGRAM test_integral
   !
   INTEGER :: ii, jj
   ! Functions
-  REAL(8) :: funcx
+  REAL(8) :: funcx, funcx2
   !
   INTEGER :: NPTS_PLOT=401
   REAL(8) :: xx, yy, h, c1
@@ -55,7 +64,7 @@ PROGRAM test_integral
 
   L = 10.d0
 
-  c1 = L*0.5d0  ! position
+  c1 = L*scal  ! position
 
   ! Initialize the basis functions
   ALLOCATE( grid_x(N) )
@@ -67,8 +76,9 @@ PROGRAM test_integral
   ALLOCATE( coefs(N) )
 
   DO ii=1,N
-    coefs(ii) = funcx( c1, L, grid_x(ii) ) 
-    WRITE(11,'(1x,2ES18.10)') grid_x(ii), coefs(ii)
+!    coefs(ii) = funcx( c1, L, grid_x(ii) ) 
+    coefs(ii) = funcx2( 1.d0, 15.d0, c1, grid_x(ii) ) 
+    WRITE(11,'(1x,2F20.10)') grid_x(ii), coefs(ii)
   ENDDO
 
   WRITE(*,'(1x,A,F18.10)') 'Integ = ', sum(coefs)*h
