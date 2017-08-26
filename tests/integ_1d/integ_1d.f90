@@ -9,7 +9,7 @@ FUNCTION funcx( c1, L, x )
   REAL(8) :: funcx
   REAL(8) :: c1, L, x
 
-  funcx = exp( 1.5*cos(2.d0*PI/L *(x - c1) ) )
+  funcx = 1.d-6*exp( 25.d0*cos(2.d0*PI/L *(x - c1) ) )
 END FUNCTION
 
 
@@ -33,20 +33,29 @@ PROGRAM test_integral
   !
   REAL(8) :: eval_LF1d_p
   !
-  CHARACTER(8) :: chars_N
+  CHARACTER(8) :: chars_args
+  REAL(8) :: scal
   INTEGER :: iargc
   
-  IF( iargc() /= 1 ) THEN 
+  IF( iargc() /= 2 ) THEN 
     WRITE(*,*) 'ERROR: exactly one argument is needed'
     STOP 
   ENDIF 
 
-  CALL getarg( 1, chars_N )
-  READ( chars_N, * ) N
+  CALL getarg( 1, chars_args )
+  READ( chars_args, * ) N
+
+  CALL getarg( 2, chars_args )
+  READ( chars_args, * ) scal
+
+  IF( scal > 1.d0 .or. scal < 0.d0 ) THEN 
+    WRITE(*,*) 'scal must be 0.0 < scal < 1.0'
+    STOP 
+  ENDIF 
 
   L = 10.d0
 
-  c1 = L/2.d0  ! position
+  c1 = L*0.5d0  ! position
 
   ! Initialize the basis functions
   ALLOCATE( grid_x(N) )
@@ -58,11 +67,11 @@ PROGRAM test_integral
   ALLOCATE( coefs(N) )
 
   DO ii=1,N
-    coefs(ii) = sqrt(h)* funcx( c1, L, grid_x(ii) ) 
-    WRITE(11,'(1x,2F18.10)') grid_x(ii), coefs(ii)/sqrt(h)
+    coefs(ii) = funcx( c1, L, grid_x(ii) ) 
+    WRITE(11,'(1x,2ES18.10)') grid_x(ii), coefs(ii)
   ENDDO
 
-  WRITE(*,*) 'Integ = ', sum(coefs)*h
+  WRITE(*,'(1x,A,F18.10)') 'Integ = ', sum(coefs)*h
   
 END PROGRAM 
 
