@@ -76,8 +76,8 @@ PROGRAM test_integral
   ALLOCATE( coefs(N) )
 
   DO ii=1,N
-!    coefs(ii) = funcx( c1, L, grid_x(ii) ) 
-    coefs(ii) = funcx2( 1.d0, 15.d0, c1, grid_x(ii) ) 
+    coefs(ii) = funcx( c1, L, grid_x(ii) ) 
+!    coefs(ii) = funcx2( 1.d0, 15.d0, c1, grid_x(ii) ) 
     WRITE(11,'(1x,2F20.10)') grid_x(ii), coefs(ii)
   ENDDO
 
