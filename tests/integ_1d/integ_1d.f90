@@ -7,9 +7,10 @@ FUNCTION funcx( c1, L, x )
   IMPLICIT NONE
   !
   REAL(8) :: funcx
-  REAL(8) :: c1, L, x
+  REAL(8) :: c1, L, x, dx
 
-  funcx = 1.d-6*exp( 25.d0*cos(2.d0*PI/L *(x - c1) ) )
+  dx = abs(x - c1)
+  funcx = 1.d-6*exp( 25.d0*cos(2.d0*PI/L*dx) )
 END FUNCTION
 
 
@@ -17,10 +18,27 @@ END FUNCTION
 FUNCTION funcx2( A, alpha, c1, x )
   IMPLICIT NONE 
   REAL(8) :: c1, x, funcx2, A, alpha
-
   funcx2 = A*exp( -alpha*(x-c1)**2 )
 END FUNCTION 
 
+
+! periodic function
+FUNCTION funcx3( A, alpha, c1, L, x )
+  IMPLICIT NONE 
+  REAL(8) :: c1, x, funcx3, A, alpha, dx1, dx2, dx3, dx, L
+  dx1 = abs( x - c1 )
+  dx2 = abs( L + x - c1 )
+  dx3 = abs( x - c1 - L )
+  IF( dx1 < dx2 ) THEN 
+    dx = dx1
+  ELSE 
+    dx = dx2
+  ENDIF 
+  IF( dx3 < dx ) THEN 
+    dx = dx3
+  ENDIF 
+  funcx3 = A*exp( -alpha*dx**2 )
+END FUNCTION 
 
 
 PROGRAM test_integral
@@ -35,7 +53,7 @@ PROGRAM test_integral
   !
   INTEGER :: ii, jj
   ! Functions
-  REAL(8) :: funcx, funcx2
+  REAL(8) :: funcx, funcx2, funcx3
   !
   INTEGER :: NPTS_PLOT=401
   REAL(8) :: xx, yy, h, c1
@@ -47,7 +65,7 @@ PROGRAM test_integral
   INTEGER :: iargc
   
   IF( iargc() /= 2 ) THEN 
-    WRITE(*,*) 'ERROR: exactly one argument is needed'
+    WRITE(*,*) 'ERROR: exactly two arguments are needed'
     STOP 
   ENDIF 
 
@@ -76,8 +94,9 @@ PROGRAM test_integral
   ALLOCATE( coefs(N) )
 
   DO ii=1,N
-    coefs(ii) = funcx( c1, L, grid_x(ii) ) 
+!    coefs(ii) = funcx( c1, L, grid_x(ii) ) 
 !    coefs(ii) = funcx2( 1.d0, 15.d0, c1, grid_x(ii) ) 
+    coefs(ii) = funcx3( 1.d0, 5.d0, c1, L, grid_x(ii) ) 
     WRITE(11,'(1x,2F20.10)') grid_x(ii), coefs(ii)
   ENDDO
 
