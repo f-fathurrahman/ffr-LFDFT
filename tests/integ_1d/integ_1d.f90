@@ -55,7 +55,7 @@ PROGRAM test_integral
   ! Functions
   REAL(8) :: funcx, funcx2, funcx3
   !
-  INTEGER :: NPTS_PLOT=401
+  REAL(8) :: A, alpha
   REAL(8) :: xx, yy, h, c1
   !
   REAL(8) :: eval_LF1d_p
@@ -64,7 +64,7 @@ PROGRAM test_integral
   REAL(8) :: scal
   INTEGER :: iargc
   
-  IF( iargc() /= 2 ) THEN 
+  IF( iargc() /= 4 ) THEN 
     WRITE(*,*) 'ERROR: exactly two arguments are needed'
     STOP 
   ENDIF 
@@ -74,6 +74,12 @@ PROGRAM test_integral
 
   CALL getarg( 2, chars_args )
   READ( chars_args, * ) scal
+
+  CALL getarg( 3, chars_args )
+  READ( chars_args, * ) A
+
+  CALL getarg( 4, chars_args )
+  READ( chars_args, * ) alpha
 
   IF( scal > 1.d0 .or. scal < 0.d0 ) THEN 
     WRITE(*,*) 'scal must be 0.0 < scal < 1.0'
@@ -96,7 +102,7 @@ PROGRAM test_integral
   DO ii=1,N
 !    coefs(ii) = funcx( c1, L, grid_x(ii) ) 
 !    coefs(ii) = funcx2( 1.d0, 15.d0, c1, grid_x(ii) ) 
-    coefs(ii) = funcx3( 1.d0, 5.d0, c1, L, grid_x(ii) ) 
+    coefs(ii) = funcx3( A, alpha, c1, L, grid_x(ii) ) 
     WRITE(11,'(1x,2F20.10)') grid_x(ii), coefs(ii)
   ENDDO
 
