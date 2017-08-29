@@ -106,7 +106,8 @@ PROGRAM test_integral
     WRITE(11,'(1x,2F20.10)') grid_x(ii), coefs(ii)
   ENDDO
 
-  WRITE(*,'(1x,A,F18.10)') 'Integ = ', sum(coefs)*h
+!  WRITE(*,'(1x,A,F18.10)') 'Integ = ', sum(coefs)*h
+  WRITE(*,'(1x,I5,4F18.10)') N, scal, A, alpha, sum(coefs)*h
   
 END PROGRAM 
 
