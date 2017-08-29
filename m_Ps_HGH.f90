@@ -156,7 +156,7 @@ CONTAINS
         term1 = term1 + psp%c(i)*rrloc**(2*(i-1))
       ENDDO
       Vloc = -psp%zval/SMALL * erf( rrloc/sqrt(2.d0) ) + exp(-0.5d0*rrloc**2)*term1
-      WRITE(*,*) 'Vloc at SMALL = ', Vloc
+!      WRITE(*,*) 'Vloc at SMALL = ', Vloc
     ELSE 
       rrloc = r/psp%rlocal
       term1 = psp%c(1)
