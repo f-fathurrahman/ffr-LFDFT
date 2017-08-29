@@ -84,7 +84,7 @@ PROGRAM test_integral
     WRITE(11,'(1x,2F20.10)') grid_x(ii), coefs(ii)
   ENDDO
 
-  WRITE(*,'(1x,I5,2F18.10)') N, scal, sum(coefs)*h
+  WRITE(*,'(1x,2F18.10)') scal, sum(coefs)*h
   
 END PROGRAM 
 
