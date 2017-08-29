@@ -65,7 +65,7 @@ PROGRAM test_integral
   INTEGER :: iargc
   
   IF( iargc() /= 4 ) THEN 
-    WRITE(*,*) 'ERROR: exactly two arguments are needed'
+    WRITE(*,*) 'ERROR: exactly four arguments are needed'
     STOP 
   ENDIF 
 
