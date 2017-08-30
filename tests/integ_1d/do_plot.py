@@ -11,12 +11,12 @@ for N in range(15,75+1,4):
     Emax = np.min(dat[:,1])
     Emid = (Emin + Emax)/2
     dat[:,1] = dat[:,1] - Emid
-    Emin = Emin - Emid
-    Emax = Emax - Emid
+    Emin = Emin - Emin - Emid
+    Emax = Emax - Emin - Emid
     plt.clf()
     plt.plot( dat[:,0], dat[:,1], marker='o' )
     plt.grid()
-    plt.ylim(Emin,Emax)
+    plt.ylim(-0.15,0.15)
     plt.savefig(filout,dpi=300)
 
 
