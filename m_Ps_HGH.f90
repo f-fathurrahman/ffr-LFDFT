@@ -39,10 +39,10 @@ CONTAINS
       g2 = g1*g1
 
       Vloc = -(4.d0*PI*p%zval/g**2) * exp( -g2/2.d0)
-    ELSE 
+    ELSE
 
       Vloc = 2.d0*PI * p%rlocal**2 * p%zval
-    ENDIF 
+    ENDIF
 
   END FUNCTION
 
@@ -68,12 +68,12 @@ CONTAINS
               sqrt(8.d0*PI**3) * p%rlocal**3 * exp( -g2/2.d0) * &
               ( p%c(1) + p%c(2)*(3.d0 - g2) + p%c(3)*(15.d0 - 10.d0*g2 + g4) + &
                 p%c(4)*(105.d0 - 105.d0*g2 + 21.d0*g4 - g6) )
-    ELSE 
+    ELSE
 
-      Vloc = 2.d0*PI * p%rlocal**2 * p%zval + (2.d0*PI)**(1.5d0) * p%rlocal**3 * & 
+      Vloc = 2.d0*PI * p%rlocal**2 * p%zval + (2.d0*PI)**(1.5d0) * p%rlocal**3 * &
              ( p%c(1) + 3.d0*p%c(2) + 15.d0*p%c(3) + 105.d0*p%c(4) )
 
-    ENDIF 
+    ENDIF
 
   END FUNCTION
 
@@ -116,9 +116,9 @@ CONTAINS
     f_prj = sqrt(2.d0) * rr * exp(-r**2/(2.d0*p%rc(l)**2)) / &
             ( p%rc(l)**(l + real(4*i-1, kind=8)/2.d0) * x )
 
-  END FUNCTION 
+  END FUNCTION
 
-  
+
   ! evaluate 4*pi*r2*Vloc(r)
   !----------------------------------------------------------------------------
   FUNCTION hgh_eval_Vloc_4pi_r2( psp, r ) RESULT(Vloc)
@@ -149,22 +149,41 @@ CONTAINS
     REAL(8) :: term1, Vloc
     REAL(8), PARAMETER :: SMALL = 1d-10
 
-    IF ( r <= SMALL ) THEN 
+    IF ( r <= SMALL ) THEN
       rrloc = SMALL/psp%rlocal
       term1 = psp%c(1)
       DO i = 2, 4
         term1 = term1 + psp%c(i)*rrloc**(2*(i-1))
       ENDDO
       Vloc = -psp%zval/SMALL * erf( rrloc/sqrt(2.d0) ) + exp(-0.5d0*rrloc**2)*term1
-!      WRITE(*,*) 'Vloc at SMALL = ', Vloc
-    ELSE 
+    ELSE
       rrloc = r/psp%rlocal
       term1 = psp%c(1)
       DO i = 2, 4
         term1 = term1 + psp%c(i)*rrloc**(2*(i-1))
       ENDDO
       Vloc = -psp%zval/r * erf( rrloc/sqrt(2.d0) ) + exp(-0.5d0*rrloc**2)*term1
-    ENDIF 
+    ENDIF
+  END FUNCTION
+
+  !----------------------------------------------------------------------------
+  FUNCTION hgh_eval_Vloc_R_long( psp, r ) RESULT(Vloc)
+  !----------------------------------------------------------------------------
+    TYPE(Ps_HGH_Params_T) :: psp
+    REAL(8) :: r
+    !
+    INTEGER :: i
+    REAL(8) :: rrloc ! r/rlocal
+    REAL(8) :: Vloc
+    REAL(8), PARAMETER :: SMALL = 1d-10
+
+    IF ( r <= SMALL ) THEN
+      rrloc = SMALL/psp%rlocal
+      Vloc = -psp%zval/SMALL * erf( rrloc/sqrt(2.d0) )
+    ELSE
+      rrloc = r/psp%rlocal
+      Vloc = -psp%zval/r * erf( rrloc/sqrt(2.d0) )
+    ENDIF
   END FUNCTION
 
 
@@ -214,16 +233,16 @@ CONTAINS
     DO l = 0,3
       DO i = 1,3
         IF( abs( psp%h(l,i,i) ) > 0.d0 ) psp%Nproj_l(l) = psp%Nproj_l(l) + 1
-      ENDDO 
+      ENDDO
       !WRITE(*,*) l, psp%Nproj_l(l)
-    ENDDO 
+    ENDDO
 
     ! Find Nproj_l based on values of rc if Nproj_l == 0
     !DO l = 0,psp%lmax
     !  IF( psp%Nproj_l(l) == 0 ) THEN
     !    IF( abs(psp%rc(l)) > 0.d0 ) psp%Nproj_l(l) = 1
     !  ENDIF
-    !ENDDO 
+    !ENDDO
 
     ! Finds out psp%lmax. The most special cases are H, He, Li_sc and Be_sc, where psp%lmax = -1.
     !psp%lmax = 0
@@ -236,7 +255,7 @@ CONTAINS
     psp%lmax = -1
     DO l = 0,3
       IF( psp%Nproj_l(l) > 0 ) psp%lmax = psp%lmax + 1
-    ENDDO 
+    ENDDO
 
     CALL find_NL_cutoff(psp)
 
@@ -372,17 +391,17 @@ CONTAINS
         DO i = 1,NRMAX
           r = psp%rc(l) + i*dr
           f_prj = hgh_eval_proj_R( psp, l, iprj, r )
-          IF( f_prj < SMALL ) THEN 
+          IF( f_prj < SMALL ) THEN
             rcut_tmp = r
             !WRITE(*,*) 'l, iprj, i, r', l, iprj, i, rcut_tmp
             EXIT
-          ENDIF 
+          ENDIF
         ENDDO
         psp%rcut_NL(l) = max( psp%rcut_NL(l), rcut_tmp )
-      ENDDO 
-    ENDDO 
+      ENDDO
+    ENDDO
 
-  END SUBROUTINE 
+  END SUBROUTINE
 
 
   !----------------------------------------------------------------------------
@@ -404,7 +423,7 @@ CONTAINS
     DO i = 1, 4
       WRITE(*,'(4x,I5,F18.10)') i, ps%c(i)
     ENDDO
-  
+
     IF( ps%lmax >= 0 ) THEN
 
       WRITE(*,*)
@@ -429,4 +448,3 @@ CONTAINS
 
 
 END MODULE
-
