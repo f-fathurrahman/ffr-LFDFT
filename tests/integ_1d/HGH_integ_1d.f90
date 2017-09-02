@@ -2,7 +2,7 @@
 
 ! periodic function
 FUNCTION funcx3( psp, c1, L, x )
-  USE m_Ps_HGH, ONLY : hgh_eval_Vloc_R, Ps_HGH_Params_T
+  USE m_Ps_HGH
   IMPLICIT NONE 
   TYPE(Ps_HGH_Params_T) :: psp
   REAL(8) :: c1, x, funcx3, dx1, dx2, dx3, dx, L
@@ -18,7 +18,7 @@ FUNCTION funcx3( psp, c1, L, x )
   IF( dx3 < dx ) THEN 
     dx = dx3
   ENDIF 
-  funcx3 = hgh_eval_Vloc_R( psp, dx )
+  funcx3 = hgh_eval_Vloc_R_short( psp, dx )
 END FUNCTION 
 
 
