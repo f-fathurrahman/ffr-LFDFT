@@ -1,3 +1,30 @@
 \chapter{HGH pseudopotential}
 
 \section{Implementation}
+
+Constructor:
+\begin{itemize}
+\item \texttt{init\_Ps\_HGH\_Params(psp, filename)}
+\end{itemize}
+
+\texttt{info\_Ps\_HGH\_Params(ps)}
+
+
+Implemented functions for local pseudopotential in $\mathbf{G}$-space
+\begin{itemize}
+\item \texttt{hgh\_eval\_Vloc\_G\_long(p, g)}
+\item \texttt{hgh\_eval\_Vloc\_G(p, g)}
+\end{itemize}
+
+Implemented functions for local pseudopotential in $\mathbf{R}$-space:
+\begin{itemize}
+\item \texttt{hgh\_eval\_Vloc\_4pi\_r2(psp, r)}
+\item \texttt{hgh\_eval\_Vloc\_R(psp, r)}
+\item \texttt{hgh\_eval\_Vloc\_R\_long(psp, r)}
+\item \texttt{hgh\_eval\_Vloc\_R\_short(psp, r)}
+\end{itemize}
+
+Implemented functions for projectors for nonlocal pseudopotential:
+\begin{itemize}
+\item \texttt{hgh\_eval\_proj\_R(p, l, i, r)}
+\end{itemize}
