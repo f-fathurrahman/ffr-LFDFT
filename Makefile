@@ -130,8 +130,8 @@ fermi_dirac.f90 \
 normalize_rhoe.f90 \
 Poisson_solve_ISF.f90 \
 m_Faddeeva.f90 \
-Poisson_solve_DAGE.f90
-
+Poisson_solve_DAGE.f90 \
+write_data.f90
 
 SPARSKIT_SRC = \
 formats.f \
