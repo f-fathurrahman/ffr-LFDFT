@@ -2,6 +2,8 @@ MODULE m_options
 
   IMPLICIT NONE 
 
+  LOGICAL :: T_PRINT_INTEG_RHO = .FALSE.
+
   INTEGER :: I_POISSON_SOLVE = 1
   ! 0 => FFT (default for periodic)
   ! 1 => ISF (isolated system, default)
