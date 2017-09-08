@@ -7,7 +7,8 @@ PROGRAM ffr_LFDFT
   USE m_states, ONLY : Nstates, Focc, &
                        evals => KS_evals, &
                        evecs => KS_evecs
-
+  USE m_io_data, ONLY : write_data3d_xsf
+  !
   IMPLICIT NONE 
   INTEGER :: Narg
   CHARACTER(64) :: filein
@@ -123,6 +124,8 @@ PROGRAM ffr_LFDFT
   DO ist = 1,Nstates
     WRITE(*,'(1x,I8,2F18.10)') ist, evals(ist), evals(ist)*2.d0*Ry2eV
   ENDDO
+
+  CALL write_data3d_xsf( evecs(:,2), 'test.xsf' )
 
   !
   DEALLOCATE( evecs, evals )
