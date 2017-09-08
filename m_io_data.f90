@@ -30,14 +30,15 @@ SUBROUTINE write_data3d_xsf( dat, filexsf )
   LatVecs(1,1) = BB(1) - AA(1)
   LatVecs(2,2) = BB(2) - AA(2)
   LatVecs(3,3) = BB(3) - AA(3)
-  ! convert to angstrom
-  LatVecs(:,:) = LatVecs(:,:)/ANG2BOHR
+  WRITE(*,*) 'LatVecs = ', LatVecs(1,1)
+  WRITE(*,*) 'LatVecs = ', LatVecs(2,2)
+  WRITE(*,*) 'LatVecs = ', LatVecs(3,3)
 
   origin(1) = 0.5d0*( grid_x(2) - grid_x(1) )
   origin(2) = 0.5d0*( grid_y(2) - grid_y(1) )
   origin(3) = 0.5d0*( grid_z(2) - grid_z(1) )
-  ! convert to angstrom
-  origin(:) = origin(:)/ANG2BOHR
+
+  ! conversion to angstrom is done in xsf_* subroutines
 
   OPEN( unit=unitxsf, file=filexsf )
   CALL xsf_struct( LatVecs, Natoms, atpos/ANG2BOHR, SpeciesSymbols, atm2species, unitxsf )
