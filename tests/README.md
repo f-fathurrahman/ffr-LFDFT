@@ -12,3 +12,16 @@ TODO:
 - Explanation about each test
 - Instruction to compile the tests
 - Reorganization
+
+List of stand-alone programs:
+
+- `Emin_cg_harm`: Kohn-Sham energy minimization of periodic system with
+   harmonic potential
+
+- `do_SCF`: Kohn-Sham energy via self-consistent field
+
+- `do_Emin_pcg`: Kohn-Sham energy minimization
+
+
+
+
