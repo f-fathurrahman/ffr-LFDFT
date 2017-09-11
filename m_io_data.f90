@@ -4,6 +4,8 @@ MODULE m_io_data
 
   IMPLICIT NONE 
 
+  INTEGER :: IU_
+
 CONTAINS 
 
 ! FIXME: only adapted for periodic grid !
@@ -47,6 +49,16 @@ SUBROUTINE write_data3d_xsf( dat, filexsf )
   CLOSE(unitxsf)
 END SUBROUTINE 
 
+SUBROUTINE read_KS_evecs(filname)
+  USE m_states, ONLY : KS_evecs
+  IMPLICIT NONE 
+  CHARACTER(*) :: filname
+  INTEGER, PARAMETER :: IU = 55
+
+  OPEN( unit=55, file=filname , action='read', form='unformatted' )
+  READ(IU) KS_evecs
+  CLOSE(IU)
+END SUBROUTINE 
 
 
 SUBROUTINE write_KS_evecs(filname)
