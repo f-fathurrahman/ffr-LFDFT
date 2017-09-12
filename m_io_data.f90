@@ -4,7 +4,7 @@ MODULE m_io_data
 
   IMPLICIT NONE 
 
-  INTEGER :: IU_
+  INTEGER, PARAMETER :: IU_WFC=101
 
 CONTAINS 
 
@@ -53,11 +53,10 @@ SUBROUTINE read_KS_evecs(filname)
   USE m_states, ONLY : KS_evecs
   IMPLICIT NONE 
   CHARACTER(*) :: filname
-  INTEGER, PARAMETER :: IU = 55
 
-  OPEN( unit=55, file=filname , action='read', form='unformatted' )
-  READ(IU) KS_evecs
-  CLOSE(IU)
+  OPEN( unit=IU_WFC, file=filname , action='read', form='unformatted' )
+  READ(IU_WFC) KS_evecs
+  CLOSE(IU_WFC)
 END SUBROUTINE 
 
 
@@ -65,11 +64,11 @@ SUBROUTINE write_KS_evecs(filname)
   USE m_states, ONLY : KS_evecs
   IMPLICIT NONE 
   CHARACTER(*) :: filname
-  INTEGER, PARAMETER :: IU = 55
+  INTEGER, PARAMETER :: IU_WFC = 55
 
-  OPEN( unit=55, file=filname , action='write', form='unformatted' )
-  WRITE(IU) KS_evecs
-  CLOSE(IU)
+  OPEN( unit=IU_WFC, file=filname , action='write', form='unformatted' )
+  WRITE(IU_WFC) KS_evecs
+  CLOSE(IU_WFC)
 END SUBROUTINE 
 
 
