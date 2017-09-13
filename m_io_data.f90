@@ -4,7 +4,8 @@ MODULE m_io_data
 
   IMPLICIT NONE 
 
-  INTEGER, PARAMETER :: IU_WFC=101
+  INTEGER, PARAMETER :: IU_EVECS=101
+  INTEGER, PARAMETER :: IU_EVALS=102
 
 CONTAINS 
 
@@ -42,7 +43,7 @@ SUBROUTINE write_data3d_xsf( dat, filexsf )
 
   ! conversion to angstrom is done in xsf_* subroutines
 
-  OPEN( unit=unitxsf, file=filexsf )
+  OPEN(unit=unitxsf, file=filexsf)
   CALL xsf_struct( LatVecs, Natoms, atpos/ANG2BOHR, SpeciesSymbols, atm2species, unitxsf )
   CALL xsf_fast_datagrid_3d( dat, NN(1), NN(2), NN(3), NN(1), NN(2), NN(3), &
             origin, LatVecs, unitxsf)
@@ -54,9 +55,9 @@ SUBROUTINE read_KS_evecs(filname)
   IMPLICIT NONE 
   CHARACTER(*) :: filname
 
-  OPEN( unit=IU_WFC, file=filname , action='read', form='unformatted' )
-  READ(IU_WFC) KS_evecs
-  CLOSE(IU_WFC)
+  OPEN(unit=IU_EVECS, file=filname , action='read', form='unformatted')
+  READ(IU_EVECS) KS_evecs
+  CLOSE(IU_EVECS)
 END SUBROUTINE 
 
 
@@ -66,9 +67,9 @@ SUBROUTINE write_KS_evecs(filname)
   CHARACTER(*) :: filname
   INTEGER, PARAMETER :: IU_WFC = 55
 
-  OPEN( unit=IU_WFC, file=filname , action='write', form='unformatted' )
-  WRITE(IU_WFC) KS_evecs
-  CLOSE(IU_WFC)
+  OPEN(unit=IU_EVECS, file=filname , action='write', form='unformatted')
+  WRITE(IU_EVECS) KS_evecs
+  CLOSE(IU_EVECS)
 END SUBROUTINE 
 
 
