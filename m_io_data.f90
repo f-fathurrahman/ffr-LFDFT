@@ -67,7 +67,7 @@ SUBROUTINE read_KS_evecs(filname)
 
   OPEN(unit=IU_EVECS, file=filname , action='read', form='unformatted')
   
-  WRITE(IU_EVECS) Npoints, Nstates
+  READ(IU_EVECS) in_Npoints, in_Nstates
   
   IF( allocated(KS_evecs) ) THEN 
     IF( size(KS_evecs,1) /= in_Npoints .OR. size(KS_evecs,2) /= in_Nstates ) THEN 
