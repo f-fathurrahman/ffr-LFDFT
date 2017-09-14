@@ -7,7 +7,7 @@ PROGRAM ffr_LFDFT
   USE m_states, ONLY : Nstates, Focc, &
                        evals => KS_evals, &
                        evecs => KS_evecs
-  USE m_io_data, ONLY : write_data3d_xsf
+  USE m_io_data, ONLY : write_KS_evecs
   !
   IMPLICIT NONE 
   INTEGER :: Narg

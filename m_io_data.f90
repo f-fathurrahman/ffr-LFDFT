@@ -67,7 +67,9 @@ SUBROUTINE read_KS_evecs(filname)
 
   OPEN(unit=IU_EVECS, file=filname , action='read', form='unformatted')
   
-  READ(IU_EVECS) in_Npoints, in_Nstates
+  READ(IU_EVECS) in_Npoints
+  READ(IU_EVECS) in_Nstates
+  WRITE(*,*) 'in_Npoints, in_Npoints = ', in_Npoints, in_Nstates
   
   IF( allocated(KS_evecs) ) THEN 
     IF( size(KS_evecs,1) /= in_Npoints .OR. size(KS_evecs,2) /= in_Nstates ) THEN 
@@ -95,7 +97,8 @@ SUBROUTINE write_KS_evecs(filname)
   INTEGER, PARAMETER :: IU_WFC = 55
 
   OPEN(unit=IU_EVECS, file=filname , action='write', form='unformatted')
-  WRITE(IU_EVECS) Npoints, Nstates
+  WRITE(IU_EVECS) Npoints
+  WRITE(IU_EVECS) Nstates
   WRITE(IU_EVECS) KS_evecs
   CLOSE(IU_EVECS)
 END SUBROUTINE 

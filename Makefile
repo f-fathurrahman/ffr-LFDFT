@@ -192,6 +192,10 @@ lib: $(OBJ)
 main: lib ffr_LFDFT.f90
 	$(F90) $(F90_OPTS) ffr_LFDFT.f90 -o $(EXE_MAIN) libmain.a $(LIBS)
 
+# Targets
+postproc: lib postproc.f90
+	$(F90) $(F90_OPTS) postproc.f90 -o postproc.x libmain.a $(LIBS)
+
 # does not delete *.x files
 clean:
 	rm -rf *.o *.mod libmain.a
