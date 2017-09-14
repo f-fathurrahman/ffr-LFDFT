@@ -6,6 +6,8 @@ MODULE m_io_data
 
   INTEGER, PARAMETER :: IU_EVECS=101
   INTEGER, PARAMETER :: IU_EVALS=102
+  INTEGER, PARAMETER :: IU_RHO=103
+  INTEGER, PARAMETER :: IU_KSPOT=104
 
 CONTAINS 
 
@@ -50,24 +52,50 @@ SUBROUTINE write_data3d_xsf( dat, filexsf )
   CLOSE(unitxsf)
 END SUBROUTINE 
 
+
+! FIXME This should be more delicate than this !
+!
+! Npoints and Nstates that are read from file should be compared
+! to input data
+!
 SUBROUTINE read_KS_evecs(filname)
-  USE m_states, ONLY : KS_evecs
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
+  USE m_states, ONLY : KS_evecs, Nstates
   IMPLICIT NONE 
   CHARACTER(*) :: filname
+  INTEGER :: in_Npoints, in_Nstates
 
   OPEN(unit=IU_EVECS, file=filname , action='read', form='unformatted')
+  
+  WRITE(IU_EVECS) Npoints, Nstates
+  
+  IF( allocated(KS_evecs) ) THEN 
+    IF( size(KS_evecs,1) /= in_Npoints .OR. size(KS_evecs,2) /= in_Nstates ) THEN 
+      WRITE(*,*)
+      WRITE(*,*) 'ERROR reading KS_evecs: size not match'
+      WRITE(*,'(1x,A,2I8)') 'Read size: ', in_Npoints, in_Nstates
+      WRITE(*,*) 'Allocated size: ', Npoints, Nstates
+    ENDIF 
+  ELSE 
+    Npoints = in_Npoints
+    Nstates = in_Nstates
+    ALLOCATE( KS_evecs(Npoints,Nstates) )
+  ENDIF 
+
   READ(IU_EVECS) KS_evecs
   CLOSE(IU_EVECS)
 END SUBROUTINE 
 
 
 SUBROUTINE write_KS_evecs(filname)
-  USE m_states, ONLY : KS_evecs
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
+  USE m_states, ONLY : KS_evecs, Nstates
   IMPLICIT NONE 
   CHARACTER(*) :: filname
   INTEGER, PARAMETER :: IU_WFC = 55
 
   OPEN(unit=IU_EVECS, file=filname , action='write', form='unformatted')
+  WRITE(IU_EVECS) Npoints, Nstates
   WRITE(IU_EVECS) KS_evecs
   CLOSE(IU_EVECS)
 END SUBROUTINE 

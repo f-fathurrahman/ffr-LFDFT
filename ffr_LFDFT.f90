@@ -125,7 +125,7 @@ PROGRAM ffr_LFDFT
     WRITE(*,'(1x,I8,2F18.10)') ist, evals(ist), evals(ist)*2.d0*Ry2eV
   ENDDO
 
-  CALL write_data3d_xsf( evecs(:,2), 'test.xsf' )
+  CALL write_KS_evecs('KS_evecs.dat')
 
   !
   DEALLOCATE( evecs, evals )
