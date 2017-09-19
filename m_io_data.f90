@@ -16,10 +16,8 @@ SUBROUTINE write_data3d_xsf( dat, filexsf )
   USE m_io_data
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      NN => LF3d_NN, &
-                     grid_x => LF3d_grid_x, &
-                     grid_y => LF3d_grid_y, &
-                     grid_z => LF3d_grid_z, &
-                     AA => LF3d_AA, BB => LF3d_BB
+                     AA => LF3d_AA, BB => LF3d_BB, &
+                     origin => LF3d_GRID_SHIFT
   USE m_atoms, ONLY : atpos => AtomicCoords, &
                       SpeciesSymbols, atm2species, Natoms
   USE m_constants, ONLY : ANG2BOHR
@@ -30,7 +28,6 @@ SUBROUTINE write_data3d_xsf( dat, filexsf )
   REAL(8) :: dat(Npoints)
   INTEGER, PARAMETER :: unitxsf = 123
   REAL(8) :: LatVecs(3,3)
-  REAL(8) :: origin(3)
 
   LatVecs(:,:) = 0.d0
   LatVecs(1,1) = BB(1) - AA(1)
@@ -40,14 +37,10 @@ SUBROUTINE write_data3d_xsf( dat, filexsf )
   WRITE(*,*) 'LatVecs = ', LatVecs(2,2)
   WRITE(*,*) 'LatVecs = ', LatVecs(3,3)
 
-  origin(1) = 0.5d0*( grid_x(2) - grid_x(1) )
-  origin(2) = 0.5d0*( grid_y(2) - grid_y(1) )
-  origin(3) = 0.5d0*( grid_z(2) - grid_z(1) )
-
   ! conversion to angstrom is done in xsf_* subroutines
 
-  OPEN(unit=unitxsf, file=filexsf)
-  CALL xsf_struct( LatVecs, Natoms, atpos/ANG2BOHR, SpeciesSymbols, atm2species, unitxsf )
+  OPEN(unit=unitxsf, file=filexsf, form='formatted')
+  CALL xsf_struct( LatVecs, Natoms, atpos, SpeciesSymbols, atm2species, unitxsf )
   CALL xsf_fast_datagrid_3d( dat, NN(1), NN(2), NN(3), NN(1), NN(2), NN(3), &
             origin, LatVecs, unitxsf)
   CLOSE(unitxsf)
@@ -79,6 +72,7 @@ SUBROUTINE read_KS_evecs(filname)
       WRITE(*,*) 'ERROR reading KS_evecs: size not match'
       WRITE(*,'(1x,A,2I8)') 'Read size: ', in_Npoints, in_Nstates
       WRITE(*,*) 'Allocated size: ', Npoints, Nstates
+      STOP 
     ENDIF 
   ELSE 
     Npoints = in_Npoints

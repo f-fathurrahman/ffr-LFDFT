@@ -5,6 +5,8 @@ PROGRAM postproc
   CALL write_KS_evecs_xsf()
 END PROGRAM 
 
+
+! wrapper to 
 SUBROUTINE write_KS_evecs_xsf()
   USE m_checkpoint
   USE m_io_data
@@ -12,10 +14,12 @@ SUBROUTINE write_KS_evecs_xsf()
   USE m_states, ONLY : KS_evecs, Nstates
   IMPLICIT NONE 
 
-  CALL
+  CALL read_checkpoint()
   CALL read_KS_evecs('KS_evecs.dat')
 
   WRITE(*,*) 'Npoints = ', Npoints
   WRITE(*,*) 'Nstates = ', Nstates
+
+  CALL write_data3d_xsf(KS_evecs(:,1), 'evecs.xsf')
 END SUBROUTINE 
 
