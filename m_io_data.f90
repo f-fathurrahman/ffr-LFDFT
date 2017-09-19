@@ -9,10 +9,11 @@ MODULE m_io_data
   INTEGER, PARAMETER :: IU_RHO=103
   INTEGER, PARAMETER :: IU_KSPOT=104
 
-CONTAINS 
+END MODULE 
 
 ! FIXME: only adapted for periodic grid !
 SUBROUTINE write_data3d_xsf( dat, filexsf )
+  USE m_io_data
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      NN => LF3d_NN, &
                      grid_x => LF3d_grid_x, &
@@ -59,6 +60,7 @@ END SUBROUTINE
 ! to input data
 !
 SUBROUTINE read_KS_evecs(filname)
+  USE m_io_data
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : KS_evecs, Nstates
   IMPLICIT NONE 
@@ -90,6 +92,7 @@ END SUBROUTINE
 
 
 SUBROUTINE write_KS_evecs(filname)
+  USE m_io_data
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : KS_evecs, Nstates
   IMPLICIT NONE 
@@ -103,6 +106,4 @@ SUBROUTINE write_KS_evecs(filname)
   CLOSE(IU_EVECS)
 END SUBROUTINE 
 
-
-END MODULE 
 
