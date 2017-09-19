@@ -55,6 +55,11 @@ SUBROUTINE init_LF3d_p( NN, AA, BB )
   CALL init_grid_1d_p( Ny, AA(2), BB(2), LF3d_grid_y )
   CALL init_grid_1d_p( Nz, AA(3), BB(3), LF3d_grid_z )
 
+  ! shifts
+  LF3d_GRID_SHIFT(1) = 0.5d0*( LF3d_grid_x(2) - LF3d_grid_x(1) )
+  LF3d_GRID_SHIFT(2) = 0.5d0*( LF3d_grid_y(2) - LF3d_grid_y(1) )
+  LF3d_GRID_SHIFT(3) = 0.5d0*( LF3d_grid_z(2) - LF3d_grid_z(1) )
+
   ! Initialize matrices D1jl and D2jl
   ALLOCATE( LF3d_D1jl_x( Nx, Nx ) )
   ALLOCATE( LF3d_D1jl_y( Ny, Ny ) )

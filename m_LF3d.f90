@@ -20,6 +20,8 @@ MODULE m_LF3d
   REAL(8), ALLOCATABLE :: LF3d_grid_y(:)
   REAL(8), ALLOCATABLE :: LF3d_grid_z(:)
 
+  REAL(8) :: LF3d_GRID_SHIFT(3) ! shifts, periodic, to match FFT grid
+
   REAL(8), ALLOCATABLE :: LF3d_D1jl_x(:,:)
   REAL(8), ALLOCATABLE :: LF3d_D1jl_y(:,:)
   REAL(8), ALLOCATABLE :: LF3d_D1jl_z(:,:)
