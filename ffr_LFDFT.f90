@@ -125,6 +125,8 @@ PROGRAM ffr_LFDFT
     WRITE(*,'(1x,I8,2F18.10)') ist, evals(ist), evals(ist)*2.d0*Ry2eV
   ENDDO
 
+  !FIXME Need tidy up
+  CALL write_checkpoint()
   CALL write_KS_evecs('KS_evecs.dat')
 
   !

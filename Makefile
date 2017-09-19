@@ -131,7 +131,8 @@ normalize_rhoe.f90 \
 Poisson_solve_ISF.f90 \
 m_Faddeeva.f90 \
 Poisson_solve_DAGE.f90 \
-m_io_data.f90
+m_io_data.f90 \
+m_checkpoint.f90
 
 SPARSKIT_SRC = \
 formats.f \
