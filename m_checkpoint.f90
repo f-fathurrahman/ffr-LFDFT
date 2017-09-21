@@ -23,6 +23,9 @@ MODULE m_checkpoint
 
   INTEGER, PARAMETER :: IU_GRID = 99
   CHARACTER(56) :: CHK_GRID_FILENAME = 'CHK_GRID.dat'
+  
+  INTEGER, PARAMETER :: IU_ATOMS = 98
+  CHARACTER(56) :: CHK_ATOMS_FILENAME = 'ATOMS.dat'
 
 END MODULE 
 
@@ -57,10 +60,9 @@ END SUBROUTINE
 
 
 SUBROUTINE write_chk_atoms()
+  USE m_checkpoint
   USE m_atoms
   IMPLICIT NONE 
-  INTEGER, PARAMETER :: IU_ATOMS = 98
-  CHARACTER(56) :: CHK_ATOMS_FILENAME = 'ATOMS.dat'
   INTEGER :: ia, isp
 
   OPEN(unit=IU_ATOMS, file=CHK_ATOMS_FILENAME, form='formatted', action='write')
