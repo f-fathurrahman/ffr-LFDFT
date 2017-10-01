@@ -1,8 +1,7 @@
-include platform/make.inc.ifort
-#include platform/make.inc.gfortran
-#include platform/make.inc.g95
-#include platform/make.inc.pgi
-#include platform/make.inc.sun
+include make.inc
+
+LIBS_EXT = $(LIBS) libsparskit.a libpoisson_ISF.a
+
 
 SRC = \
 m_constants.f90 \
@@ -134,30 +133,11 @@ Poisson_solve_DAGE.f90 \
 m_io_data.f90 \
 m_checkpoint.f90
 
-SPARSKIT_SRC = \
-formats.f \
-ilut.f \
-itaux.f \
-iters.f \
-unary.f \
-blassm.f \
-matvec.f
-
 C_SRC = \
 Faddeeva.c
 
-POISSON_ISF_SRC = \
-Build_Kernel.f90 \
-fft3d.f90 \
-PSolver_Kernel.f90 \
-scaling_function.f90 \
-smooth.f90 \
-gequad.f
 
-
-OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) $(SPARSKIT_SRC:.f=.o) \
-$(C_SRC:.c=.o) \
-$(POISSON_ISF_SRC:.f=.o) $(POISSON_ISF_SRC:.f90=.o)
+OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) $(C_SRC:.c=.o) \
 
 #
 # Suffix rule for Fortran 90
@@ -185,40 +165,44 @@ $(POISSON_ISF_SRC:.f=.o) $(POISSON_ISF_SRC:.f90=.o)
 .c.o:
 	$(CC) -c $(CC_OPTS) $<
 
-# Targets
-lib: $(OBJ)
+# Libraries
+lib: sparskit poisson_ISF $(OBJ)
 	ar rcs libmain.a *.o
 
-# Targets
-main: lib ffr_LFDFT.f90
-	$(F90) $(F90_OPTS) ffr_LFDFT.f90 -o $(EXE_MAIN) libmain.a $(LIBS)
+sparskit: 
+	cd extlibs/sparskit; $(MAKE); cd ../../
 
-# Targets
+poisson_ISF: 
+	cd extlibs/poisson_ISF; $(MAKE); cd ../../
+
+#
+# Main executable
+#
+main: lib ffr_LFDFT.f90
+	$(F90) $(F90_OPTS) ffr_LFDFT.f90 -o $(EXE_MAIN) libmain.a $(LIBS_EXT)
+
+
+#
+# Postprocesing code
+#
 postproc: lib postproc.f90
-	$(F90) $(F90_OPTS) postproc.f90 -o postproc.x libmain.a $(LIBS)
+	$(F90) $(F90_OPTS) postproc.f90 -o postproc.x libmain.a $(LIBS_EXT)
+
+
+
 
 # does not delete *.x files
 clean:
+	cd extlibs/sparskit; $(MAKE) clean
+	cd extlibs/poisson_ISF; $(MAKE) clean
 	rm -rf *.o *.mod libmain.a
 
 # also delete *.x files
 cleanx:
+	cd extlibs/sparskit; $(MAKE) clean
+	cd extlibs/poisson_ISF; $(MAKE) clean
 	rm -rf *.o *.mod libmain.a *.x
 
-Build_Kernel.o: Build_Kernel.f90
-	$(F90) $(F90_OPTS_NOWARN) -c -o Build_Kernel.o Build_Kernel.f90
-
-fft3d.o: fft3d.f90
-	$(F90) $(F90_OPTS_NOWARN) -c -o fft3d.o fft3d.f90
-
-PSolver_Kernel.o: PSolver_Kernel.f90
-	$(F90) $(F90_OPTS_NOWARN) -c -o PSolver_Kernel.o PSolver_Kernel.f90
-
-scaling_function.o: scaling_function.f90
-	$(F90) $(F90_OPTS_NOWARN) -c -o scaling_function.o scaling_function.f90
-
-smooth.o: smooth.f90
-	$(F90) $(F90_OPTS_NOWARN) -c -o smooth.o smooth.f90
 
 
 
