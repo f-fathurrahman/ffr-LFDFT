@@ -12,7 +12,7 @@ PROGRAM test_scf
   USE m_hamiltonian, ONLY : Rhoe
   USE m_energies, ONLY : Etot => E_total
   USE m_PsPot, ONLY : PsPot_Dir
-  USE m_options, ONLY : ethr => DIAG_DAVIDSON_QE_ETHR
+  USE m_options, ONLY : ethr => ETHR_EVALS
   USE m_states, ONLY : Nelectrons
   USE m_options, ONLY : beta0, betamax, mixsdb, broydpm
   IMPLICIT NONE
