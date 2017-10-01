@@ -9,8 +9,8 @@ if [ "$#" -ne 2 ]; then
   exit 1
 fi
 
-INC="-I../"
-LIB="../libmain.a ../libsparskit.a ../libpoisson_ISF.a -lblas -llapack -lfftw3"
+INC="-I../src/"
+LIB="../src/libmain.a ../src/libsparskit.a ../src/libpoisson_ISF.a -lblas -llapack -lfftw3"
 
 bas=`basename $1 .f90`
 
