@@ -37,7 +37,6 @@ SUBROUTINE calc_dr_1pnt( r0, lingrid, dr )
   REAL(8) :: lingrid(3)
   REAL(8) :: dr
   !
-  INTEGER :: ip
   REAL(8) :: dx2, dy2, dz2
 
   dx2 = abs( lingrid(1) - r0(1) )**2
@@ -46,3 +45,4 @@ SUBROUTINE calc_dr_1pnt( r0, lingrid, dr )
   dr  = sqrt( dx2 + dy2 + dz2 )
 
 END SUBROUTINE
+

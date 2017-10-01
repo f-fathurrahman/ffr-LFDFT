@@ -195,14 +195,18 @@ postproc: lib postproc.f90
 clean:
 	cd extlibs/sparskit; $(MAKE) clean
 	cd extlibs/poisson_ISF; $(MAKE) clean
-	rm -rf *.o *.mod libmain.a
+	rm -rf *.o *.mod libmain.a libpoisson_ISF.a libsparskit.a
 
 # also delete *.x files
 cleanx:
 	cd extlibs/sparskit; $(MAKE) clean
 	cd extlibs/poisson_ISF; $(MAKE) clean
-	rm -rf *.o *.mod libmain.a *.x
+	rm -rf *.o *.mod libmain.a libpoisson_ISF.a libsparskit.a *.x
 
+
+
+bspline.o: bspline.f90
+	$(F90) $(F90_OPTS_NOWARN) -c -o bspline.o bspline.f90
 
 
 
