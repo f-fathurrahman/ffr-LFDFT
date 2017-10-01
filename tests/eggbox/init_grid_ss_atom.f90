@@ -12,7 +12,7 @@ SUBROUTINE init_grid_ss_atom( center, cutoff )
   !
   INTEGER :: calc_Ngrid_ss_atom
   
-  Ngrid_ss_atom = calc_Ngrid_ss_atom(center, cutoff )
+  Ngrid_ss_atom = calc_Ngrid_ss_atom( center, cutoff )
   WRITE(*,*) 'Ngrid_ss_atom = ', Ngrid_ss_atom
 
   ALLOCATE( idx_ss(Ngrid_ss_atom) )

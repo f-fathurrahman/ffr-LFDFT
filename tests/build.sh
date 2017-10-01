@@ -22,5 +22,3 @@ $2 $INC $1 $LIB -o $bas.x
 #gfortran -Wall -O3 -ffree-form $INC $1 $LIB -o $bas.x
 echo "Test executable: $bas.x"
 
-# for
-#mpifort -free $INC $1 $LIB -o $bas.x

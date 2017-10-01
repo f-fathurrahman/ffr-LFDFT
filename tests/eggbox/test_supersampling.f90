@@ -31,6 +31,7 @@ PROGRAM test_eggbox
   REAL(8) :: dr_vec(3), center(3), dr
   INTEGER :: l, m, isp, iprj
   REAL(8) :: Ylm_real
+  INTEGER :: iargc
 
   Narg = iargc()
   IF( Narg /= 1 ) THEN 
@@ -90,7 +91,7 @@ PROGRAM test_eggbox
   WRITE(*,*) 'ix iz = ', ix, iz
   DO iy = 1,NN(2)
     ip = xyz2lin(ix,iy,iz)
-    WRITE(N_in,'(4F22.12)') lingrid(2,ip), V_short(ip), V_short_ss(ip), 
+    WRITE(N_in,'(3F22.12)') lingrid(2,ip), V_short(ip), V_short_ss(ip)
   ENDDO 
 
   ! Free memory
