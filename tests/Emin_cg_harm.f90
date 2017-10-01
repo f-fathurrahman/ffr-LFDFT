@@ -1,5 +1,4 @@
-! Do an SCF calculation using CG method to minimize
-! Kohn-Sham energy functional
+! Minimize Kohn-Sham energy functional using preconditioned CG algorithm
 ! 
 ! This will eventually be organized into one subroutine.
 PROGRAM test_Emin_cg
