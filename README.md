@@ -1,5 +1,7 @@
 # ffr-LFDFT
 
+## Introduction
+
 An experimental package to solve electronic structure based on density functional theory
 using Lagrange basis functions.
 
@@ -13,12 +15,23 @@ Tested compilers:
 Dependencies
 - BLAS and LAPACK
 - FFTW3
-- einspline
 
-Contains selected SPARSKIT files.
+Contains selected `SPARSKIT` files.
 
-Modified bspline-fortran.
+Modified `bspline-fortran`.
 
+## Building
 
-See also ffr-ElectronicStructure.
+Modify file `make.inc` to suit your needs.
+
+```
+cd src
+make           # build the library
+make main      # for main executable
+make postproc  # for post processing
+```
+
+## Examples
+
+Examples can be found in `work` directory.
 
