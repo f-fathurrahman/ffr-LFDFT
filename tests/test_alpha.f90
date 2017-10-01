@@ -10,9 +10,10 @@ PROGRAM test_alpha
   REAL(8), ALLOCATABLE :: ff_Vloc(:)
   REAL(8) :: r, dr
   INTEGER :: i
+  INTEGER :: iargc
 
   IF( iargc() /= 1 ) THEN 
-    WRITE(*,*) 'Exactly one argument is needed'
+    WRITE(*,*) 'Exactly one argument is needed: path to pseudopotential file'
     STOP 
   ENDIF 
 
