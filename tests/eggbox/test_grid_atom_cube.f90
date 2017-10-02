@@ -11,6 +11,7 @@ PROGRAM test
   USE m_constants, ONLY : ANG2BOHR, PI, EPS_SMALL
   USE m_PsPot, ONLY : Ps => Ps_HGH_Params
   USE m_Ps_HGH
+  USE m_grid_atom_cube
   !
   IMPLICIT NONE 
   !
@@ -19,7 +20,7 @@ PROGRAM test
   REAL(8) :: AA(3), BB(3)
   CHARACTER(64) :: arg_N
   INTEGER :: ip, N_in
-  REAL(8), ALLOCATABLE :: V_short(:), V_long(:)
+  REAL(8), ALLOCATABLE :: V_short(:), V_long(:), V_short_a(:)
   REAL(8) :: dr_vec(3), center(3), dr
   INTEGER :: isp
   INTEGER :: iargc
@@ -48,9 +49,23 @@ PROGRAM test
   AA = (/ 0.d0, 0.d0, 0.d0 /)
   BB = (/ 16.d0, 16.d0, 16.d0 /)
   CALL init_LF3d_p( NN, AA, BB )
-  CALL info_LF3d()
+!  CALL info_LF3d()
 
-  isp = 1  ! use the first species
+
+  isp = 1  ! use the first species for pseudopotential
+
+  
+  CALL init_grid_atom_cube( center, 2.0d0, 50 )
+
+  ALLOCATE( V_short_a(Npoints_a) )
+  DO ip = 1,Npoints_a
+    CALL calc_dr_periodic_1pnt( LL, center, grid_a(:,ip), dr_vec )
+    dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
+    V_short_a(ip) = hgh_eval_Vloc_R_short( Ps(isp), dr ) 
+!    WRITE(*,*) dr, V_short_a(ip)
+  ENDDO 
+  WRITE(*,*) sum(V_short_a)*dVol_a
+
   ALLOCATE( V_short(Npoints) )
   ALLOCATE( V_long(Npoints) )
   V_short(:) = 0.d0
@@ -60,12 +75,13 @@ PROGRAM test
     V_short(ip) = hgh_eval_Vloc_R_short( Ps(isp), dr ) 
     V_long(ip) = hgh_eval_Vloc_R_long( Ps(isp), dr ) 
   ENDDO 
-  WRITE(*,*) 'sum(V_short) = ', sum(V_short)
-  WRITE(*,*) 'sum(V_long) = ', sum(V_long)
+  WRITE(*,*) 'sum(V_short) = ', sum(V_short)*dVol
+  WRITE(*,*) 'sum(V_long) = ', sum(V_long)*dVol
 
-  WRITE(*,*) 'Integ = ', sum(V_short(:) + V_short(:))*dVol
- 
-!  CALL init_grid_atom_cube( center, 2.5d0, 3 )
+  WRITE(*,*) sum(V_short(:) + V_long(:))*dVol, sum(V_short_a)*dVol_a + sum(V_long)*dVol
+
+  WRITE(*,*) dVol_a, dVol
+
 
   ! Free memory
   DEALLOCATE( V_short )
