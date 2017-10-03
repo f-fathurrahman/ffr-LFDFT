@@ -6,3 +6,148 @@
 
 
 \section{Interpolation in 3D}
+
+Determines the parameters of a function that interpolates
+the three-dimensional gridded data
+
+$$ [x(i),y(j),z(k),\mathrm{fcn}(i,j,k)] ~\mathrm{for}~
+   i=1,..,n_x ~\mathrm{and}~ j=1,..,n_y, ~\mathrm{and}~ k=1,..,n_z $$
+
+The interpolating function and
+its derivatives may subsequently be evaluated by the function
+[[db3val]].
+
+The interpolating function is a piecewise polynomial function
+represented as a tensor product of one-dimensional b-splines. the
+form of this function is
+
+$$ s(x,y,z) = \sum_{i=1}^{n_x} \sum_{j=1}^{n_y} \sum_{k=1}^{n_z}
+              a_{ijk} u_i(x) v_j(y) w_k(z) $$
+
+where the functions \(u_i\), \(v_j\), and \(w_k\) are one-dimensional b-
+spline basis functions. the coefficients \(a_{ijk}\) are chosen so that:
+
+$$ s(x(i),y(j),z(k)) = \mathrm{fcn}(i,j,k)
+   ~\mathrm{for}~ i=1,..,n_x , j=1,..,n_y , k=1,..,n_z $$
+
+Note that for fixed values of \(y\) and \(z\) \(s(x,y,z)\) is a piecewise
+polynomial function of \(x\) alone, for fixed values of \(x\) and \(z\) \(s(x,y,z)\)
+is a piecewise polynomial function of \(y\) alone, and for fixed
+values of \(x\) and \(y\) \(s(x,y,z)\) is a function of \(z\) alone. in one
+dimension a piecewise polynomial may be created by partitioning a
+given interval into subintervals and defining a distinct polynomial
+piece on each one. the points where adjacent subintervals meet are
+called knots. each of the functions \(u_i\), \(v_j\), and \(w_k\) above is a
+piecewise polynomial.
+
+Users of [[db3ink]] choose the order (degree+1) of the polynomial
+pieces used to define the piecewise polynomial in each of the \(x\), \(y\),
+and \(z\) directions (`kx`, `ky`, and `kz`). users also may define their own
+knot sequence in \(x\), \(y\), \(z\) separately (`tx`, `ty`, and `tz`). if `iflag=0`,
+however, [[db3ink]] will choose sequences of knots that result in a
+piecewise polynomial interpolant with `kx-2` continuous partial
+derivatives in \(x\), `ky-2` continuous partial derivatives in \(y\), and `kz-2`
+continuous partial derivatives in \(z\). (`kx` knots are taken near
+each endpoint in \(x\), not-a-knot end conditions are used, and the
+remaining knots are placed at data points if `kx` is even or at
+midpoints between data points if `kx` is odd. the \(y\) and \(z\) directions
+are treated similarly.)
+After a call to [[db3ink]], all information necessary to define the
+interpolating function are contained in the parameters `nx`, `ny`, `nz`,
+`kx`, `ky`, `kz`, `tx`, `ty`, `tz`, and `bcoef`. these quantities should not be
+altered until after the last call of the evaluation routine [[db3val]].
+
+
+\begin{fortrancode}
+pure subroutine db3ink(x,nx,y,ny,z,nz,fcn,kx,ky,kz,iknot,tx,ty,tz,bcoef,iflag)
+
+  integer,intent(in) :: nx !! number of \(x\) abcissae ( $ \ge 3 $ )
+  integer,intent(in) :: ny !! number of \(y\) abcissae ( $ \ge 3 $ )
+  integer,intent(in) :: nz !! number of \(z\) abcissae ( $ \ge 3 $ )
+
+  integer,intent(in) :: kx
+  !! The order of spline pieces in \(x\) ( \( 2 \le k_x < n_x \) )
+  !! (order = polynomial degree + 1)
+
+  integer,intent(in) :: ky
+  !! The order of spline pieces in \(y\) ( \( 2 \le k_y < n_y \) )
+  !! (order = polynomial degree + 1)
+
+  integer,intent(in) :: kz
+  !! the order of spline pieces in \(z\) ( \( 2 \le k_z < n_z \) )
+  !! (order = polynomial degree + 1)
+
+  real(8),dimension(:),intent(in) :: x
+  !! `(nx)` array of $x$ abcissae. must be strictly increasing.
+
+  real(8),dimension(:),intent(in) :: y
+  !! `(ny)` array of $y$ abcissae. must be strictly increasing.
+
+  real(8),dimension(:),intent(in) :: z
+  !! `(nz)` array of $z$ abcissae. must be strictly increasing.
+
+  real(8),dimension(:,:,:),intent(in) :: fcn
+  !! `(nx,ny,nz)` matrix of function values to interpolate. `fcn(i,j,k)` should
+  !! contain the function value at the point (`x(i)`,`y(j)`,`z(k)`)
+
+  integer,intent(in) :: iknot
+  !! knot sequence flag:
+  !!
+  !! * 0 = knot sequence chosen by [[db3ink]].
+  !! * 1 = knot sequence chosen by user.
+
+  real(8),dimension(:),intent(inout) :: tx
+  !! The `(nx+kx)` knots in the \(x\) direction for the spline interpolant.
+  !!
+  !! * If `iknot=0` these are chosen by [[db3ink]].
+  !! * If `iknot=1` these are specified by the user.
+  !!
+  !! Must be non-decreasing.
+
+  real(8),dimension(:),intent(inout) :: ty
+  !! The `(ny+ky)` knots in the \(y\) direction for the spline interpolant.
+  !!
+  !! * If `iknot=0` these are chosen by [[db3ink]].
+  !! * If `iknot=1` these are specified by the user.
+  !!
+  !! Must be non-decreasing.
+
+  real(8),dimension(:),intent(inout) :: tz
+  !! The `(nz+kz)` knots in the $z$ direction for the spline interpolant.
+  !!
+  !! * If `iknot=0` these are chosen by [[db3ink]].
+  !! * If `iknot=1` these are specified by the user.
+  !!
+  !! Must be non-decreasing.
+
+  real(8),dimension(:,:,:),intent(out) :: bcoef
+  !! `(nx,ny,nz)` matrix of coefficients of the b-spline interpolant.
+
+  integer,intent(out) :: iflag
+  !! *  0 = successful execution.
+  !! *  2 = `iknot` out of range.
+  !! *  3 = `nx` out of range.
+  !! *  4 = `kx` out of range.
+  !! *  5 = `x` not strictly increasing.
+  !! *  6 = `tx` not non-decreasing.
+  !! *  7 = `ny` out of range.
+  !! *  8 = `ky` out of range.
+  !! *  9 = `y` not strictly increasing.
+  !! * 10 = `ty` not non-decreasing.
+  !! * 11 = `nz` out of range.
+  !! * 12 = `kz` out of range.
+  !! * 13 = `z` not strictly increasing.
+  !! * 14 = `ty` not non-decreasing.
+  !! * 700 = `size(x) ` $\ne$ `size(fcn,1)`
+  !! * 701 = `size(y) ` $\ne$ `size(fcn,2)`
+  !! * 702 = `size(z) ` $\ne$ `size(fcn,3)`
+  !! * 706 = `size(x) ` $\ne$ `nx`
+  !! * 707 = `size(y) ` $\ne$ `ny`
+  !! * 708 = `size(z) ` $\ne$ `nz`
+  !! * 712 = `size(tx)` $\ne$ `nx+kx`
+  !! * 713 = `size(ty)` $\ne$ `ny+ky`
+  !! * 714 = `size(tz)` $\ne$ `nz+kz`
+  !! * 800 = `size(x) ` $\ne$ `size(bcoef,1)`
+  !! * 801 = `size(y) ` $\ne$ `size(bcoef,2)`
+  !! * 802 = `size(z) ` $\ne$ `size(bcoef,3)`
+\end{fortrancode}
