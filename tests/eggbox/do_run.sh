@@ -7,7 +7,7 @@ cat << EOF > ATOM.xyz
 Be_sc  $xx 8.0 8.0
 EOF
 
-res=`./test_grid_atom_cube.x 45`
+res=`./test_grid_atom_cube.x 35 40`
 echo $xx $res
 
 done

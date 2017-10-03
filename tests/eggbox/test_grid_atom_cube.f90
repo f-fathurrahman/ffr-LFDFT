@@ -18,21 +18,24 @@ PROGRAM test
   INTEGER :: Narg
   INTEGER :: NN(3)
   REAL(8) :: AA(3), BB(3)
-  CHARACTER(64) :: arg_N
-  INTEGER :: ip, N_in
+  CHARACTER(64) :: arg_N, arg_N_a
+  INTEGER :: ip, N_in, N_a
   REAL(8), ALLOCATABLE :: V_short(:), V_long(:), V_short_a(:)
   REAL(8) :: dr_vec(3), center(3), dr
   INTEGER :: isp
   INTEGER :: iargc
 
   Narg = iargc()
-  IF( Narg /= 1 ) THEN 
-    WRITE(*,*) 'ERROR: exactly one argument must be given: N'
+  IF( Narg /= 2 ) THEN 
+    WRITE(*,*) 'ERROR: exactly two arguments must be given: N, N_a'
     STOP 
   ENDIF 
 
   CALL getarg( 1, arg_N )
   READ(arg_N, *) N_in
+
+  CALL getarg( 2, arg_N_a )
+  READ(arg_N_a, *) N_a
 
   CALL init_atoms_xyz('ATOM.xyz')
   ! so that coord given in xyz file is in bohr
@@ -55,7 +58,7 @@ PROGRAM test
   isp = 1  ! use the first species for pseudopotential
 
   
-  CALL init_grid_atom_cube( center, 2.0d0, 50 )
+  CALL init_grid_atom_cube( center, 1.5d0, N_a )
 
   ALLOCATE( V_short_a(Npoints_a) )
   DO ip = 1,Npoints_a
@@ -64,7 +67,7 @@ PROGRAM test
     V_short_a(ip) = hgh_eval_Vloc_R_short( Ps(isp), dr ) 
 !    WRITE(*,*) dr, V_short_a(ip)
   ENDDO 
-  WRITE(*,*) sum(V_short_a)*dVol_a
+!  WRITE(*,*) sum(V_short_a)*dVol_a
 
   ALLOCATE( V_short(Npoints) )
   ALLOCATE( V_long(Npoints) )
@@ -75,12 +78,12 @@ PROGRAM test
     V_short(ip) = hgh_eval_Vloc_R_short( Ps(isp), dr ) 
     V_long(ip) = hgh_eval_Vloc_R_long( Ps(isp), dr ) 
   ENDDO 
-  WRITE(*,*) 'sum(V_short) = ', sum(V_short)*dVol
-  WRITE(*,*) 'sum(V_long) = ', sum(V_long)*dVol
+!  WRITE(*,*) 'sum(V_short) = ', sum(V_short)*dVol
+!  WRITE(*,*) 'sum(V_long) = ', sum(V_long)*dVol
 
   WRITE(*,*) sum(V_short(:) + V_long(:))*dVol, sum(V_short_a)*dVol_a + sum(V_long)*dVol
 
-  WRITE(*,*) dVol_a, dVol
+!  WRITE(*,*) dVol_a, dVol
 
 
   ! Free memory
