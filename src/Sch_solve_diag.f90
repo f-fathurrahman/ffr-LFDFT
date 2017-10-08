@@ -48,9 +48,8 @@ SUBROUTINE Sch_solve_diag()
 
   ELSEIF( I_ALG_DIAG == 2 ) THEN 
  
-!    evecs = evecs(:,:)*sqrt(dVol)  ! normalize
+    ! No need to (re)normalize the eigenvectors
     CALL diag_davidson( evals, evecs, ethr )
-!    evecs(:,:) = evecs(:,:)/sqrt(dVol)
 
   ELSEIF( I_ALG_DIAG == 3 ) THEN 
 
