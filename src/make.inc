@@ -1,19 +1,15 @@
-EXE_MAIN = ffr_LFDFT_gfortran.x
-
+EXE_MAIN = ffr_LFDFT_g95.x
 MAKE = make
-AR = ar
+AR   = ar
 
-F77 = gfortran
-F77_OPTS = -O3
+F90  = g95
+F90_OPTS = -Wall -ftrace=full -O3 -fno-second-underscore -cpp
+F90_OPTS_NOWARN = -ftrace=full -O3 -fno-second-underscore -cpp
 
-F90 = gfortran
-F90_OPTS = -cpp -Wall -O3 # -fcheck=all # -g -fbacktrace -ffpe-trap=zero,overflow,underflow
-F90_OPTS_NOWARN = -cpp -O3
-
-CC = gcc
-CC_OPTS = -std=c99
+F77  = g95
+F77_OPTS = -O3 -fno-second-underscore -cpp
 
 LIB_LINALG = -lblas -llapack
-LIB_FFTW3 = -lfftw3
-LIBS = $(LIB_LINALG) $(LIB_FFTW3)
+LIB_FFTW3  = -lfftw3
+LIBS       = $(LIB_LINALG) $(LIB_FFTW3)
 

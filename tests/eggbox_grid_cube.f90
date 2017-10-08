@@ -140,9 +140,9 @@ PROGRAM eggbox_grid_cube
   ALLOCATE( Rhoe_a(Npoints_a) )
   CALL interp_Rhoe_a( Rhoe, Rhoe_a )
   WRITE(*,*)
-  WRITE(*,'(1x,F18.10)') sum(V_short_a(:)*Rhoe_a(:))*dVol_a
-  WRITE(*,'(1x,F18.10)') sum(V_ps_loc_long(:)*Rhoe(:))*dVol
-  WRITE(*,'(1x,F18.10)') sum(V_short_a(:)*Rhoe_a(:))*dVol_a + sum(V_ps_loc_long(:)*Rhoe(:))*dVol
+  WRITE(*,'(1x,A,F18.10)') 'Ps short:', sum(V_short_a(:)*Rhoe_a(:))*dVol_a
+  WRITE(*,'(1x,A,F18.10)') 'PS long :', sum(V_ps_loc_long(:)*Rhoe(:))*dVol
+  WRITE(*,'(1x,A,F18.10)') 'PS total:', sum(V_short_a(:)*Rhoe_a(:))*dVol_a + sum(V_ps_loc_long(:)*Rhoe(:))*dVol
 
 
   CALL dealloc_nabla2_sparse()
