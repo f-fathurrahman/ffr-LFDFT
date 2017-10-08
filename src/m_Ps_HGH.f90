@@ -50,7 +50,7 @@ CONTAINS
   !----------------------------------------------------------------------------
   FUNCTION hgh_eval_Vloc_G(p, g) RESULT(Vloc)
   !----------------------------------------------------------------------------
-    type(Ps_HGH_Params_T), INTENT(in) :: p
+    TYPE(Ps_HGH_Params_T), INTENT(in) :: p
     REAL(8), INTENT(in) :: g
     REAL(8) :: Vloc
     REAL(8), PARAMETER :: SMALL = 1.d-8

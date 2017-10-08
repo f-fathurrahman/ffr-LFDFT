@@ -26,7 +26,7 @@ PROGRAM eggbox_grid_cube
   INTEGER :: tstart, counts_per_second, tstop
   CHARACTER(1) :: typ
   REAL(8) :: center(3)
-  REAL(8), ALLOCATABLE :: V_short_a(:)
+  REAL(8), ALLOCATABLE :: V_short_a(:), Rhoe_a(:)
 
   CALL system_clock( tstart, counts_per_second )
 
@@ -94,7 +94,7 @@ PROGRAM eggbox_grid_cube
 
   !
   center(:) = atpos(:,1)
-  CALL init_grid_atom_cube( center, 1.5d0, 50 )
+  CALL init_grid_atom_cube( center, 1.0d0, 55 )  ! 1.0 is quite reasonable for hydrogen atom
   !
   ALLOCATE( V_short_a(Npoints_a) )
   CALL init_V_ps_loc_short( center, V_short_a )
@@ -121,7 +121,7 @@ PROGRAM eggbox_grid_cube
 
   
   ! Diagonalize
-  I_ALG_DIAG = 2
+  I_ALG_DIAG = 3
   ETHR_EVALS = 1d-5;
   CALL Sch_solve_diag()
 
@@ -135,7 +135,14 @@ PROGRAM eggbox_grid_cube
   WRITE(*,*)
   WRITE(*,'(1x,A,F18.10)') 'E_ps_loc = ', E_ps_loc
 
-  WRITE(*,'(1x,F18.10)') sum(V_short_a)*dVol_a + sum(V_ps_loc_long)*dVol
+
+  !
+  ALLOCATE( Rhoe_a(Npoints_a) )
+  CALL interp_Rhoe_a( Rhoe, Rhoe_a )
+  WRITE(*,*)
+  WRITE(*,'(1x,F18.10)') sum(V_short_a(:)*Rhoe_a(:))*dVol_a
+  WRITE(*,'(1x,F18.10)') sum(V_ps_loc_long(:)*Rhoe(:))*dVol
+  WRITE(*,'(1x,F18.10)') sum(V_short_a(:)*Rhoe_a(:))*dVol_a + sum(V_ps_loc_long(:)*Rhoe(:))*dVol
 
 
   CALL dealloc_nabla2_sparse()
@@ -175,5 +182,5 @@ SUBROUTINE init_V_ps_loc_short( center, V_short_a )
 
 END SUBROUTINE 
 
-
+#include "interp_Rhoe_a.f90"
 

@@ -42,6 +42,7 @@ info_atoms.f90 \
 mm_to_nn.f90 \
 init_gvec.f90 \
 init_V_ps_loc_G.f90 \
+init_V_ps_loc_G_long.f90 \
 init_V_coul_G.f90 \
 dealloc_LF3d.f90 \
 op_nabla2.f90 \
@@ -131,7 +132,8 @@ Poisson_solve_ISF.f90 \
 m_Faddeeva.f90 \
 Poisson_solve_DAGE.f90 \
 m_io_data.f90 \
-m_checkpoint.f90
+m_checkpoint.f90 \
+m_grid_atom_cube.f90
 
 C_SRC = \
 Faddeeva.c

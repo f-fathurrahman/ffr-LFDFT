@@ -20,9 +20,6 @@ SUBROUTINE init_grid_atom_cube( center, cutoff, N_a )
   REAL(8) :: delta_x, delta_y, delta_z
   REAL(8) :: x, y, z
 
-!  WRITE(*,*) 'center = ', center(:)
-!  WRITE(*,*) 'cutoff = ', cutoff
-
   Npoints_a = N_a**3
   ALLOCATE( grid_a(3,Npoints_a) )
 
@@ -52,6 +49,12 @@ SUBROUTINE init_grid_atom_cube( center, cutoff, N_a )
   ENDDO 
   ENDDO 
   ENDDO 
+
+  WRITE(*,*)
+  WRITE(*,*) 'Atomic grid cube:'
+  WRITE(*,*) 'center = ', center(:)
+  WRITE(*,*) 'cutoff = ', cutoff
+  WRITE(*,*) 'dVol_a = ', dVol_a
 
 END SUBROUTINE 
 
