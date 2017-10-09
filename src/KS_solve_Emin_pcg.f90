@@ -1,30 +1,32 @@
-!! PURPOSE:
-!!
-!!   This subroutine solves Kohn-Sham equations by minimizing total energy
-!!   functional using conjugate gradient algorithm.
-!!   The algorithm is based on T.A. Arias notes.
-!!
-!! AUTHOR:
-!!
-!!   Fadjar Fathurrahman
-!!
-!! MODIFIES:
-!! 
-!!   Global variables `KS_evecs` and `E_total`
-!!
-!! NOTES:
-!!
-!!   ILU0 preconditioner from SPARSKIT is used as preconditioner.
-!!
+!!> PURPOSE:
+!!>
+!!>   This subroutine solves Kohn-Sham equations by minimizing total energy
+!!>   functional using conjugate gradient algorithm.
+!!>   The algorithm is based on T.A. Arias notes.
+!!>
+!!> AUTHOR:
+!!>
+!!>   Fadjar Fathurrahman
+!!>
+!!> MODIFIES:
+!!>
+!!>   Global variables \PY{n}{KS\_evecs} and \PY{n}{E\_total}
+!!>
+!!> NOTES:
+!!>
+!!>   ILU0 preconditioner from SPARSKIT is used as preconditioner.
+!!>
 
 SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
-
+!!>
+!!> The following variables are imported.
+!!>
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates, &
                        Focc, &
                        v => KS_evecs
   USE m_energies, ONLY : Etot => E_total
-  
+
   USE m_options, ONLY : I_CG_BETA, Emin_NiterMax, Emin_ETOT_CONV_THR
   USE m_options, ONLY : T_WRITE_RESTART
 
@@ -40,21 +42,23 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
   !
   INTEGER :: iter, ist
 
+!!> Display several informations about the algorithm
   CALL info_KS_solve_Emin_pcg( alpha_t, restart )
 
-  ALLOCATE( g(Npoints,Nstates) )
-  ALLOCATE( g_old(Npoints,Nstates) )
-  ALLOCATE( g_t(Npoints,Nstates) )
-  ALLOCATE( d(Npoints,Nstates) )
-  ALLOCATE( d_old(Npoints,Nstates) )
+  ALLOCATE( g(Npoints,Nstates) )  ! gradient
+  ALLOCATE( g_old(Npoints,Nstates) ) ! old gradient
+  ALLOCATE( g_t(Npoints,Nstates) )  ! trial gradient
+  ALLOCATE( d(Npoints,Nstates) )  ! direction
+  ALLOCATE( d_old(Npoints,Nstates) )  ! old direction
 
-  ALLOCATE( Kg(Npoints,Nstates) )
-  ALLOCATE( Kg_old(Npoints,Nstates) )
+  ALLOCATE( Kg(Npoints,Nstates) )  ! preconditioned gradient
+  ALLOCATE( Kg_old(Npoints,Nstates) ) ! old preconditioned gradient
 
-  ALLOCATE( tv(Npoints,Nstates) )
+  ALLOCATE( tv(Npoints,Nstates) )  ! temporary vector for calculating trial gradient
 
 
   ! Read starting eigenvectors from file
+  ! FIXME: This is no longer relevant
   IF( restart ) THEN
     READ(112) v   ! FIXME Need to use file name
   ENDIF
@@ -100,11 +104,11 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
       CASE(4)
         ! Dai-Yuan
         beta = sum( g * Kg ) / sum( (g-g_old)*d_old )
-      END SELECT 
+      END SELECT
     ENDIF
-    IF( beta < 0 ) THEN 
+    IF( beta < 0 ) THEN
       WRITE(*,'(1x,A,F18.10,A)') 'beta is smaller than zero: ', beta, ': setting it to zero'
-    ENDIF 
+    ENDIF
     beta = max( 0.d0, beta )
     d(:,:) = -Kg(:,:) + beta*d_old(:,:)
     !
@@ -121,7 +125,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
     denum = sum( (g - g_t) * d )
     IF( denum /= 0.d0 ) THEN  ! FIXME: use abs ?
       alpha = abs( alpha_t * sum( g * d )/denum )
-    ELSE 
+    ELSE
       alpha = 0.d0
     ENDIF
     !WRITE(*,*) 'iter, alpha_t, alpha, beta', iter, alpha_t, alpha, beta
@@ -148,9 +152,9 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
     flush(6)
   ENDDO
 
-  IF( T_WRITE_RESTART ) THEN 
+  IF( T_WRITE_RESTART ) THEN
     WRITE(111) v
-  ENDIF  
+  ENDIF
 
   DEALLOCATE( g, g_old, g_t, d, d_old, tv, Kg, Kg_old )
 END SUBROUTINE
@@ -160,7 +164,7 @@ SUBROUTINE info_KS_solve_Emin_pcg( alpha_t, restart )
   USE m_options, ONLY : I_CG_BETA, Emin_NiterMax, Emin_ETOT_CONV_THR
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates
-  IMPLICIT NONE 
+  IMPLICIT NONE
   REAL(8) :: alpha_t
   LOGICAL :: restart
   !
@@ -179,18 +183,17 @@ SUBROUTINE info_KS_solve_Emin_pcg( alpha_t, restart )
   WRITE(*,*)
   IF( I_CG_BETA == 1 ) THEN
     WRITE(*,*) 'Using Fletcher-Reeves formula'
-  ELSEIF( I_CG_BETA == 2 ) THEN 
+  ELSEIF( I_CG_BETA == 2 ) THEN
     WRITE(*,*) 'Using Polak-Ribiere formula'
-  ELSEIF( I_CG_BETA == 3 ) THEN 
+  ELSEIF( I_CG_BETA == 3 ) THEN
     WRITE(*,*) 'Using Hestenes-Stiefel formula'
-  ELSEIF( I_CG_BETA == 4 ) THEN 
+  ELSEIF( I_CG_BETA == 4 ) THEN
     WRITE(*,*) 'Using Dai-Yuan formula'
-  ELSE 
+  ELSE
     WRITE(*,*) 'XXXXX WARNING: Unknown I_CG_BETA: ', I_CG_BETA
-  ENDIF 
+  ENDIF
   WRITE(*,*)
   WRITE(*,'(1x,A,F18.10)') 'KS_solve_Emin_pcg: memGB = ', memGB
   WRITE(*,*)
 
-END SUBROUTINE 
-
+END SUBROUTINE
