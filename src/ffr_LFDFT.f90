@@ -129,8 +129,7 @@ PROGRAM ffr_LFDFT
   CALL write_KS_evecs('KS_evecs.dat')
 
   !
-  DEALLOCATE( evecs, evals )
-  DEALLOCATE( Focc )
+  CALL dealloc_states()
 
   IF( I_POISSON_SOLVE == 1 ) THEN 
     CALL dealloc_Poisson_solve_ISF()
