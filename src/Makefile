@@ -133,7 +133,8 @@ m_Faddeeva.f90 \
 Poisson_solve_DAGE.f90 \
 m_io_data.f90 \
 m_checkpoint.f90 \
-m_grid_atom_cube.f90
+m_grid_atom_cube.f90 \
+dealloc_states.f90
 
 C_SRC = \
 Faddeeva.c

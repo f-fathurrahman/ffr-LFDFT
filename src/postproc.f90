@@ -3,6 +3,10 @@ PROGRAM postproc
   IMPLICIT NONE 
   
   CALL write_KS_evecs_xsf()
+
+  CALL dealloc_LF3d()
+  CALL dealloc_atoms()
+  CALL dealloc_states()
 END PROGRAM 
 
 

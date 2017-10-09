@@ -33,9 +33,6 @@ SUBROUTINE write_data3d_xsf( dat, filexsf )
   LatVecs(1,1) = BB(1) - AA(1)
   LatVecs(2,2) = BB(2) - AA(2)
   LatVecs(3,3) = BB(3) - AA(3)
-  WRITE(*,*) 'LatVecs = ', LatVecs(1,1)
-  WRITE(*,*) 'LatVecs = ', LatVecs(2,2)
-  WRITE(*,*) 'LatVecs = ', LatVecs(3,3)
 
   ! conversion to angstrom is done in xsf_* subroutines
 
@@ -64,7 +61,7 @@ SUBROUTINE read_KS_evecs(filname)
   
   READ(IU_EVECS) in_Npoints
   READ(IU_EVECS) in_Nstates
-  WRITE(*,*) 'in_Npoints, in_Npoints = ', in_Npoints, in_Nstates
+  !WRITE(*,*) 'in_Npoints, in_Npoints = ', in_Npoints, in_Nstates
   
   IF( allocated(KS_evecs) ) THEN 
     IF( size(KS_evecs,1) /= in_Npoints .OR. size(KS_evecs,2) /= in_Nstates ) THEN 
