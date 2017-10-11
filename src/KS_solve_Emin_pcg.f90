@@ -1,19 +1,22 @@
-!!> PURPOSE:
 !!>
+!!> \section{File: \texttt{KS\_solve\_Emin\_pcg}}
+!!>
+!!> PURPOSE:
+!!> \newline
 !!>   This subroutine solves Kohn-Sham equations by minimizing total energy
 !!>   functional using conjugate gradient algorithm.
 !!>   The algorithm is based on T.A. Arias notes.
 !!>
 !!> AUTHOR:
-!!>
+!!> \newline
 !!>   Fadjar Fathurrahman
 !!>
 !!> MODIFIES:
-!!>
-!!>   Global variables \PY{n}{KS\_evecs} and \PY{n}{E\_total}
+!!> \newline
+!!>   Global variables \texttt{KS\_evecs} and \texttt{E\_total}
 !!>
 !!> NOTES:
-!!>
+!!> \newline
 !!>   ILU0 preconditioner from SPARSKIT is used as preconditioner.
 !!>
 
