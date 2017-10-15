@@ -23,3 +23,30 @@ SUBROUTINE init_V_ps_loc()
 
 END SUBROUTINE 
 
+
+
+SUBROUTINE init_V_ps_loc_long()
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
+                     lingrid => LF3d_lingrid
+  USE m_hamiltonian, ONLY : V_ps_loc_long
+  USE m_PsPot, ONLY : Ps_HGH_Params
+  USE m_atoms, ONLY : atpos => AtomicCoords, atm2species, Natoms
+  USE m_Ps_HGH, ONLY : hgh_eval_Vloc_R_long
+  IMPLICIT NONE 
+  INTEGER :: ip, ia, isp
+  REAL(8) :: dr
+
+  V_ps_loc_long(:) = 0.d0
+
+  DO ia = 1,Natoms
+    isp = atm2species(ia)
+    DO ip = 1, Npoints
+      CALL calc_dr_1pnt( atpos(:,ia), lingrid(:,ip), dr )
+      V_ps_loc_long(ip) = V_ps_loc_long(ip) + hgh_eval_Vloc_R_long( Ps_HGH_Params(isp), dr )
+    ENDDO 
+  ENDDO 
+
+  WRITE(*,*) 'sum(V_ps_loc_long) = ', sum(V_ps_loc_long)
+
+END SUBROUTINE 
+

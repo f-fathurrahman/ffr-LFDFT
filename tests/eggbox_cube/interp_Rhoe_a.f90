@@ -1,3 +1,6 @@
+
+!! FIXME This is only tested for periodic case
+!! FIXME Need to be modified for non-periodic case
 SUBROUTINE interp_Rhoe_a( Rhoe, Rhoe_a)
   USE m_grid_atom_cube
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &

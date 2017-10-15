@@ -59,7 +59,7 @@ PROGRAM eggbox_grid_cube
   PsPot_Dir = '../../HGH/'
   CALL init_PsPot()
 
-  typ = 'p'
+  typ = 's'
   IF( typ == 's' ) THEN  ! sinc LF
     NN = (/ N_in, N_in, N_in /)
     hh(:) = (/1.d0, 1.d0, 1.d0/)*(16.d0/(NN(1)-1))
@@ -96,21 +96,31 @@ PROGRAM eggbox_grid_cube
   ! Local pseudopotential
   IF( typ == 'p' ) THEN 
     CALL init_V_ps_loc_G()
-  ELSE 
+  ELSEIF( typ == 's' ) THEN  
     CALL init_V_ps_loc()
+  ELSE 
+    WRITE(*,*) 'ERROR: unknown typ = ', typ
+    STOP 
   ENDIF 
 
   ! Local pseudopotential (long part)
   ! FIXME: only for periodic CASE
   ALLOCATE( V_ps_loc_long(Npoints) )
-  CALL init_V_ps_loc_G_long()
+  IF( typ=='s') THEN 
+    CALL init_V_ps_loc_long()
+  ELSEIF( typ=='p') THEN 
+    CALL init_V_ps_loc_G_long()
+  ELSE 
+    WRITE(*,*) 'ERROR: Unknown typ:', typ
+    STOP 
+  ENDIF 
 
   !
   center(:) = atpos(:,1)
   CALL init_grid_atom_cube( center, r_cut, 55 ) 
   !
   ALLOCATE( V_short_a(Npoints_a) )
-  CALL init_V_ps_loc_short( center, V_short_a )
+  CALL init_V_ps_loc_short( center, V_short_a, typ )
  
   WRITE(*,*) 'integ(V_short a) = ', sum(V_short_a)*dVol_a
   WRITE(*,*) 'integ(V_short t) = ', sum(V_ps_loc(:) - V_ps_loc_long(:))*dVol
@@ -177,7 +187,7 @@ PROGRAM eggbox_grid_cube
 
 END PROGRAM 
 
-SUBROUTINE init_V_ps_loc_short( center, V_short_a )
+SUBROUTINE init_V_ps_loc_short( center, V_short_a, typ )
   USE m_grid_atom_cube, ONLY : Npoints_a, grid_a
   USE m_LF3d, ONLY : LL => LF3d_LL
   USE m_PsPot, ONLY : Ps => Ps_HGH_Params
@@ -185,16 +195,24 @@ SUBROUTINE init_V_ps_loc_short( center, V_short_a )
   IMPLICIT NONE 
   REAL(8) :: center(3)
   REAL(8) :: V_short_a(Npoints_a)
+  CHARACTER(1) :: typ
   INTEGER :: ip, isp
   REAL(8) :: dr_vec(3)
   REAL(8) :: dr
 
   isp = 1
-  DO ip = 1,Npoints_a
-    CALL calc_dr_periodic_1pnt( LL, center, grid_a(:,ip), dr_vec )
-    dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
-    V_short_a(ip) = hgh_eval_Vloc_R_short( Ps(isp), dr ) 
-  ENDDO 
+  IF( typ == 'p' ) THEN 
+    DO ip = 1,Npoints_a
+      CALL calc_dr_periodic_1pnt( LL, center, grid_a(:,ip), dr_vec )
+      dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
+      V_short_a(ip) = hgh_eval_Vloc_R_short( Ps(isp), dr ) 
+    ENDDO 
+  ELSE 
+    DO ip = 1,Npoints_a
+      CALL calc_dr_1pnt( center, grid_a(:,ip), dr )
+      V_short_a(ip) = hgh_eval_Vloc_R_short( Ps(isp), dr ) 
+    ENDDO 
+  ENDIF 
   WRITE(*,*) 'sum(V_short_a) = ', sum(V_short_a)
 
 END SUBROUTINE 
