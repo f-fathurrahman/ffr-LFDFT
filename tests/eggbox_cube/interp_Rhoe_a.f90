@@ -99,10 +99,10 @@ SUBROUTINE interp_Rhoe_a( Rhoe, Rhoe_a)
     dz = grid_a(3,ip_a) - shiftz
     CALL db3val( dx, dy, dz, idx,idy,idz, tx,ty,tz, Nx+1,Ny+1,Nz+1,kx,ky,kz, bcoef,&
                  val, iflag, inbvx, inbvy, inbvz, iloy, iloz )
-    IF( iflag /= 0 ) THEN 
-      WRITE(*,*) 'ERROR in calling db3val: iflag = ', iflag
-      STOP 
-    ENDIF 
+    !IF( iflag /= 0 ) THEN 
+    !  WRITE(*,*) 'ERROR in calling db3val: iflag = ', iflag
+    !  STOP 
+    !ENDIF 
     Rhoe_a(ip_a) = val
   ENDDO 
 

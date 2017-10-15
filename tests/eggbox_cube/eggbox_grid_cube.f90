@@ -52,7 +52,7 @@ PROGRAM eggbox_grid_cube
   atpos(:,:) = pos
 
   ! Override PsPot_Dir
-  PsPot_Dir = '../HGH/'
+  PsPot_Dir = '../../HGH/'
   CALL init_PsPot()
 
   typ = 'p'
@@ -103,7 +103,7 @@ PROGRAM eggbox_grid_cube
 
   !
   center(:) = atpos(:,1)
-  CALL init_grid_atom_cube( center, 1.0d0, 55 )  ! 1.0 is quite reasonable for hydrogen atom
+  CALL init_grid_atom_cube( center, 1.1d0, 55 )  ! 1.0 is quite reasonable for hydrogen atom
   !
   ALLOCATE( V_short_a(Npoints_a) )
   CALL init_V_ps_loc_short( center, V_short_a )
