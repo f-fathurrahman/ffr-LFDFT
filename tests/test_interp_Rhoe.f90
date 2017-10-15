@@ -1,4 +1,4 @@
-PROGRAM eggbox_grid_cube
+PROGRAM test_interp_Rhoe
 
   USE m_constants, ONLY : Ry2eV
   USE m_options, ONLY : FREE_NABLA2
@@ -20,20 +20,20 @@ PROGRAM eggbox_grid_cube
   INTEGER :: Narg
   INTEGER :: NN(3)
   REAL(8) :: hh(3), AA(3), BB(3)
-  CHARACTER(64) :: filexyz, arg_N, arg_pos
+  CHARACTER(64) :: filexyz, arg_N
   INTEGER :: ip, ist, N_in
   INTEGER :: iargc  ! pgf90 
   INTEGER :: tstart, counts_per_second, tstop
   CHARACTER(1) :: typ
-  REAL(8) :: center(3), pos
+  REAL(8) :: center(3)
   REAL(8), ALLOCATABLE :: V_short_a(:), Rhoe_a(:)
 
   CALL system_clock( tstart, counts_per_second )
 
   Narg = iargc()
-  IF( Narg /= 3 ) THEN 
-    WRITE(*,*) 'ERROR: exactly three arguments must be given:'
-    WRITE(*,*) '       N, path to structure file, and coordinate (in bohr)'
+  IF( Narg /= 2 ) THEN 
+    WRITE(*,*) 'ERROR: exactly two arguments must be given:'
+    WRITE(*,*) '       N and path to structure file'
     STOP 
   ENDIF 
 
@@ -41,15 +41,10 @@ PROGRAM eggbox_grid_cube
   READ(arg_N, *) N_in
 
   CALL getarg( 2, filexyz )
-  
-  CALL getarg( 3, arg_pos )
-  READ(arg_pos, *) pos
 
   CALL init_atoms_xyz(filexyz)
   ! so that coord given in xyz file is in bohr
-  !atpos(:,:) = atpos(:,:)/ANG2BOHR  
-  ! 
-  atpos(:,:) = pos
+  atpos(:,:) = atpos(:,:)/ANG2BOHR  
 
   ! Override PsPot_Dir
   PsPot_Dir = '../HGH/'
@@ -96,20 +91,12 @@ PROGRAM eggbox_grid_cube
     CALL init_V_ps_loc()
   ENDIF 
 
-  ! Local pseudopotential (long part)
-  ! FIXME: only for periodic CASE
-  ALLOCATE( V_ps_loc_long(Npoints) )
-  CALL init_V_ps_loc_G_long()
-
   !
   center(:) = atpos(:,1)
   CALL init_grid_atom_cube( center, 1.0d0, 55 )  ! 1.0 is quite reasonable for hydrogen atom
   !
   ALLOCATE( V_short_a(Npoints_a) )
   CALL init_V_ps_loc_short( center, V_short_a )
- 
-  WRITE(*,*) 'integ(V_short a) = ', sum(V_short_a)*dVol_a
-  WRITE(*,*) 'integ(V_short t) = ', sum(V_ps_loc(:) - V_ps_loc_long(:))*dVol
 
   ! Laplacian matrix
   CALL init_nabla2_sparse()
@@ -141,22 +128,14 @@ PROGRAM eggbox_grid_cube
   T_PRINT_INTEG_RHO = .TRUE.
   CALL calc_rhoe( Focc, evecs )
 
-
   ! Calculate local pseudopotential energy
   E_ps_loc = sum( Rhoe(:) * V_ps_loc(:) )*dVol
   WRITE(*,*)
   WRITE(*,'(1x,A,F18.10)') 'E_ps_loc = ', E_ps_loc
 
-
   !
-  ALLOCATE( Rhoe_a(Npoints_a) )
-  CALL interp_Rhoe_a( Rhoe, Rhoe_a )
-  WRITE(*,*)
-  WRITE(*,'(1x,A,F18.10)') 'Ps short a:', sum(V_short_a(:)*Rhoe_a(:))*dVol_a
-  WRITE(*,'(1x,A,F18.10)') 'Ps short t:', sum( (V_ps_loc(:)-V_ps_loc_long(:)) *Rhoe(:))*dVol
-  WRITE(*,'(1x,A,F18.10)') 'Ps long  t:', sum(V_ps_loc_long(:)*Rhoe(:))*dVol
-  WRITE(*,'(1x,A,F18.10)') 'Ps total a:', sum(V_short_a(:)*Rhoe_a(:))*dVol_a + sum(V_ps_loc_long(:)*Rhoe(:))*dVol
-
+  ALLOCATE( Rhoe_a(Npoints) )
+  CALL interp_Rhoe( Rhoe, Rhoe_a )
 
   CALL dealloc_nabla2_sparse()
   CALL dealloc_ilu0_prec()
@@ -172,6 +151,124 @@ PROGRAM eggbox_grid_cube
   WRITE(*,*)
 
 END PROGRAM 
+
+
+SUBROUTINE interp_Rhoe( Rhoe, Rhoe_a )
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
+                     NN => LF3d_NN, &
+                     lingrid => LF3d_lingrid, &
+                     xyz2lin => LF3d_xyz2lin, &
+                     grid_x => LF3d_grid_x, &
+                     grid_y => LF3d_grid_y, &
+                     grid_z => LF3d_grid_z, &
+                     dVol => LF3d_dVol
+  USE bspline
+  IMPLICIT NONE 
+  REAL(8) :: Rhoe(Npoints)
+  REAL(8) :: Rhoe_a(Npoints)
+  !
+  INTEGER :: Nx, Ny, Nz, kx, ky, kz
+  INTEGER :: iknot
+  REAL(8), ALLOCATABLE :: x(:), y(:), z(:)
+  REAL(8), ALLOCATABLE :: tx(:), ty(:), tz(:)
+  REAL(8), ALLOCATABLE :: Rhoe_tmp(:,:,:), bcoef(:,:,:)
+  INTEGER :: iflag
+  INTEGER :: ip
+  !
+  INTEGER :: i,j,k, ii,jj,kk, ip_a
+  REAL(8) :: shiftx, shifty, shiftz
+  INTEGER :: idx, idy, idz, iloy, iloz, inbvx, inbvy, inbvz
+  REAL(8) :: val, dx, dy, dz
+
+  Nx = NN(1)
+  Ny = NN(2)
+  Nz = NN(3)
+
+  iknot = 0
+
+  kx = 4
+  ky = 4
+  kz = 4
+  ALLOCATE( tx(Nx+1+kz), ty(Ny+1+ky), tz(Nz+1+kz) )
+  ALLOCATE( x(Nx+1), y(Ny+1), z(Nz+1) )
+
+  shiftx = 0.5d0*( grid_x(2) - grid_x(1) )
+  !shiftx = 0.d0
+  DO i = 1,Nx
+    x(i) = grid_x(i) - shiftx
+  ENDDO 
+  x(Nx+1) = x(Nx) + 2*shiftx
+
+  shifty = 0.5d0*( grid_y(2) - grid_y(1) )
+  !shifty = 0.d0
+  DO j = 1,Ny
+    y(j) = grid_y(j) - shifty
+  ENDDO 
+  y(Ny+1) = y(Ny) + 2*shifty
+
+  shiftz = 0.5d0*( grid_z(2) - grid_z(1) )
+  !shiftz = 0.d0
+  DO k = 1,Nz
+    z(k) = grid_z(k) - shiftz
+  ENDDO 
+  z(Nz+1) = z(Nz) + 2*shiftz
+
+  Rhoe_a(:) = 0.d0
+
+  ALLOCATE( Rhoe_tmp(Nx+1,Ny+1,Nz+1) )
+  ALLOCATE( bcoef(Nx+1,Ny+1,Nz+1) )
+
+  iloy = 1
+  iloz = 1
+  inbvx = 1
+  inbvy = 1
+  inbvz = 1
+  idx = 0
+  idy = 0
+  idz = 0
+
+  ! copy to interp_Rhoe
+  DO kk = 1,Nz+1
+  DO jj = 1,Ny+1
+  DO ii = 1,Nx+1
+    i = ii
+    j = jj
+    k = kk
+    IF( kk == Nz+1 ) k = 1
+    IF( jj == Ny+1 ) j = 1
+    IF( ii == Nx+1 ) i = 1
+    ip = xyz2lin(i,j,k)
+    !
+    Rhoe_tmp(ii,jj,kk) = Rhoe(ip)
+  ENDDO 
+  ENDDO 
+  ENDDO 
+
+  CALL db3ink( x, Nx+1, y, Ny+1, z, Nz+1, Rhoe_tmp, kx,ky,kz, iknot, tx,ty,tz, bcoef, iflag )
+  WRITE(*,*) 'db3ink iflag = ', iflag
+
+  DO ip = 1, Npoints
+    dx = lingrid(1,ip) - shiftx
+    dy = lingrid(2,ip) - shifty
+    dz = lingrid(3,ip) - shiftz
+    CALL db3val( dx, dy, dz, idx,idy,idz, tx,ty,tz, Nx+1,Ny+1,Nz+1,kx,ky,kz, bcoef,&
+                 val, iflag, inbvx, inbvy, inbvz, iloy, iloz )
+    IF( iflag /= 0 ) THEN 
+      WRITE(*,*) 'ERROR in calling db3val: iflag = ', iflag
+      STOP 
+    ENDIF 
+    Rhoe_a(ip_a) = val
+  ENDDO 
+
+  WRITE(*,*) 'integ(Rhoe_a) = ', sum(Rhoe_a)*dVol
+  WRITE(*,*) 'integ(Rhoe) = ', sum(Rhoe)*dVol
+
+  DEALLOCATE( x, y, z )
+  DEALLOCATE( tx, ty, tz )
+  DEALLOCATE( Rhoe_tmp )
+  DEALLOCATE( bcoef )
+
+END SUBROUTINE 
 
 SUBROUTINE init_V_ps_loc_short( center, V_short_a )
   USE m_grid_atom_cube, ONLY : Npoints_a, grid_a
