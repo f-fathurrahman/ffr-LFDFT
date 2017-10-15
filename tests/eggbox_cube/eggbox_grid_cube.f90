@@ -20,20 +20,21 @@ PROGRAM eggbox_grid_cube
   INTEGER :: Narg
   INTEGER :: NN(3)
   REAL(8) :: hh(3), AA(3), BB(3)
-  CHARACTER(64) :: filexyz, arg_N, arg_pos
+  CHARACTER(64) :: filexyz, arg_N, arg_pos, arg_r_cut
   INTEGER :: ip, ist, N_in
   INTEGER :: iargc  ! pgf90 
   INTEGER :: tstart, counts_per_second, tstop
   CHARACTER(1) :: typ
-  REAL(8) :: center(3), pos
+  REAL(8) :: center(3), pos, r_cut
   REAL(8), ALLOCATABLE :: V_short_a(:), Rhoe_a(:)
 
   CALL system_clock( tstart, counts_per_second )
 
   Narg = iargc()
-  IF( Narg /= 3 ) THEN 
-    WRITE(*,*) 'ERROR: exactly three arguments must be given:'
-    WRITE(*,*) '       N, path to structure file, and coordinate (in bohr)'
+  IF( Narg /= 4 ) THEN 
+    WRITE(*,*) 'ERROR:'
+    WRITE(*,*) 'exactly 4 arguments must be given:'
+    WRITE(*,*) 'N, path to structure file, position and r_cut (in bohr)'
     STOP 
   ENDIF 
 
@@ -44,6 +45,9 @@ PROGRAM eggbox_grid_cube
   
   CALL getarg( 3, arg_pos )
   READ(arg_pos, *) pos
+
+  CALL getarg( 4, arg_r_cut )
+  READ(arg_r_cut, *) r_cut
 
   CALL init_atoms_xyz(filexyz)
   ! so that coord given in xyz file is in bohr
@@ -103,7 +107,7 @@ PROGRAM eggbox_grid_cube
 
   !
   center(:) = atpos(:,1)
-  CALL init_grid_atom_cube( center, 1.1d0, 55 )  ! 1.0 is quite reasonable for hydrogen atom
+  CALL init_grid_atom_cube( center, r_cut, 55 ) 
   !
   ALLOCATE( V_short_a(Npoints_a) )
   CALL init_V_ps_loc_short( center, V_short_a )
