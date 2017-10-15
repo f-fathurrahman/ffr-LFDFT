@@ -51,15 +51,19 @@ PROGRAM eggbox_grid_cube
   CALL init_PsPot()
 
   typ = 'p'
-  IF( typ == 's' ) THEN 
+  IF( typ == 's' ) THEN  ! sinc LF
     NN = (/ N_in, N_in, N_in /)
     hh(:) = (/1.d0, 1.d0, 1.d0/)*(16.d0/(NN(1)-1))
     CALL init_LF3d_sinc( NN, hh )
-  ELSE ! typ == 'p'
+  ELSEIF(typ == 'p') THEN ! periodic LF
     NN = (/ N_in, N_in, N_in /)
     AA = (/ 0.d0, 0.d0, 0.d0 /)
     BB = (/ 16.d0, 16.d0, 16.d0 /)
     CALL init_LF3d_p( NN, AA, BB )
+  ELSE 
+    WRITE(*,*)
+    WRITE(*,*) 'ERROR: Unknown typ:', typ
+    STOP 
   ENDIF 
 
   CALL info_atoms()
