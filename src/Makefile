@@ -134,7 +134,11 @@ Poisson_solve_DAGE.f90 \
 m_io_data.f90 \
 m_checkpoint.f90 \
 m_grid_atom_cube.f90 \
-dealloc_states.f90
+dealloc_states.f90 \
+setup_ffr_LFDFT.f90 \
+cleanup_ffr_LFDFT.f90 \
+do_KS_solve.f90 \
+guess_KS_solutions.f90
 
 C_SRC = \
 Faddeeva.c
