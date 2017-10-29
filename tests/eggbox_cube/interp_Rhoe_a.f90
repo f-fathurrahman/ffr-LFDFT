@@ -2,6 +2,7 @@
 !! FIXME This is only tested for periodic case
 !! FIXME Need to be modified for non-periodic case
 SUBROUTINE interp_Rhoe_a( Rhoe, Rhoe_a)
+  USE m_LF3d, ONLY : LF3d_TYPE, LF3d_PERIODIC
   USE m_grid_atom_cube
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      NN => LF3d_NN, &
@@ -28,6 +29,11 @@ SUBROUTINE interp_Rhoe_a( Rhoe, Rhoe_a)
   REAL(8) :: shiftx, shifty, shiftz
   INTEGER :: idx, idy, idz, iloy, iloz, inbvx, inbvy, inbvz
   REAL(8) :: val, dx, dy, dz
+
+  IF( LF3d_TYPE /= LF3d_PERIODIC ) THEN 
+    WRITE(*,*) 'ERROR in interp_Rhoe_a, need periodic LF'
+    STOP 
+  ENDIF 
 
   Nx = NN(1)
   Ny = NN(2)

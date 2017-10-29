@@ -59,7 +59,7 @@ PROGRAM eggbox_grid_cube
   PsPot_Dir = '../../HGH/'
   CALL init_PsPot()
 
-  typ = 's'
+  typ = 'p'
   IF( typ == 's' ) THEN  ! sinc LF
     NN = (/ N_in, N_in, N_in /)
     hh(:) = (/1.d0, 1.d0, 1.d0/)*(16.d0/(NN(1)-1))
