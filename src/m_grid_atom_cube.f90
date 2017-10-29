@@ -7,12 +7,13 @@ END MODULE
 
 
 ! This subroutine is not generalized for periodic case
-SUBROUTINE init_grid_atom_cube( center, cutoff, N_a )
+SUBROUTINE init_grid_atom_cube( center, cutoff, N_a, is_debug )
   USE m_grid_atom_cube
   IMPLICIT NONE 
   REAL(8) :: center(3)  ! atomic center
   REAL(8) :: cutoff ! cutoff radius, the cube's side length is 2*cutoff
   INTEGER :: N_a  ! sampling point, taken to be the same for x, y, and z direction
+  LOGICAL :: is_debug
   !
   INTEGER :: ip_a
   INTEGER :: ix, iy, iz
@@ -45,16 +46,18 @@ SUBROUTINE init_grid_atom_cube( center, cutoff, N_a )
     y = y_start + (iy-1)*delta_y
     z = z_start + (iz-1)*delta_z
     grid_a(1:3,ip_a) = (/ x, y, z /) + center(1:3)
-!    WRITE(*,*) grid_a(:,ip_a)
+    IF( is_debug ) THEN 
+      WRITE(*,'(1x,I8,3F18.10)') ip_a, grid_a(:,ip_a)
+    ENDIF 
   ENDDO 
   ENDDO 
   ENDDO 
 
   WRITE(*,*)
   WRITE(*,*) 'Atomic grid cube:'
-  WRITE(*,*) 'center = ', center(:)
-  WRITE(*,*) 'cutoff = ', cutoff
-  WRITE(*,*) 'dVol_a = ', dVol_a
+  WRITE(*,'(1x,A,3F18.10)') 'center = ', center(:)
+  WRITE(*,'(1x,A,F18.10)')  'cutoff = ', cutoff
+  WRITE(*,'(1x,A,ES18.10)') 'dVol_a = ', dVol_a
 
 END SUBROUTINE 
 

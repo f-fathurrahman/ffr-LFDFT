@@ -59,7 +59,7 @@ PROGRAM eggbox_grid_cube
   PsPot_Dir = '../../HGH/'
   CALL init_PsPot()
 
-  typ = 'p'
+  typ = 's'
   IF( typ == 's' ) THEN  ! sinc LF
     NN = (/ N_in, N_in, N_in /)
     hh(:) = (/1.d0, 1.d0, 1.d0/)*(16.d0/(NN(1)-1))
@@ -117,7 +117,7 @@ PROGRAM eggbox_grid_cube
 
   !
   center(:) = atpos(:,1)
-  CALL init_grid_atom_cube( center, r_cut, 55 ) 
+  CALL init_grid_atom_cube( center, r_cut, 55, .FALSE. ) 
   !
   ALLOCATE( V_short_a(Npoints_a) )
   CALL init_V_ps_loc_short( center, V_short_a, typ )
@@ -164,7 +164,14 @@ PROGRAM eggbox_grid_cube
 
   !
   ALLOCATE( Rhoe_a(Npoints_a) )
-  CALL interp_Rhoe_a( Rhoe, Rhoe_a )
+  !
+  IF( typ == 'p' ) THEN 
+    ! periodic
+    CALL interp_Rhoe_a( Rhoe, Rhoe_a )
+  ELSE
+    ! non periodic
+    CALL interp_Rhoe_a_sinc( Rhoe, Rhoe_a )
+  ENDIF 
   WRITE(*,*)
   WRITE(*,'(1x,A,F18.10)') 'Ps short a:', sum(V_short_a(:)*Rhoe_a(:))*dVol_a
   WRITE(*,'(1x,A,F18.10)') 'Ps short t:', sum( (V_ps_loc(:)-V_ps_loc_long(:)) *Rhoe(:))*dVol
@@ -202,12 +209,14 @@ SUBROUTINE init_V_ps_loc_short( center, V_short_a, typ )
 
   isp = 1
   IF( typ == 'p' ) THEN 
+    ! periodic case
     DO ip = 1,Npoints_a
       CALL calc_dr_periodic_1pnt( LL, center, grid_a(:,ip), dr_vec )
       dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
       V_short_a(ip) = hgh_eval_Vloc_R_short( Ps(isp), dr ) 
     ENDDO 
   ELSE 
+    ! non-periodic
     DO ip = 1,Npoints_a
       CALL calc_dr_1pnt( center, grid_a(:,ip), dr )
       V_short_a(ip) = hgh_eval_Vloc_R_short( Ps(isp), dr ) 
@@ -218,4 +227,5 @@ SUBROUTINE init_V_ps_loc_short( center, V_short_a, typ )
 END SUBROUTINE 
 
 #include "interp_Rhoe_a.f90"
+#include "interp_Rhoe_a_sinc.f90"
 
