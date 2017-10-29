@@ -48,6 +48,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
 !!> Display several informations about the algorithm
   CALL info_KS_solve_Emin_pcg( alpha_t, restart )
 
+!!> Here we allocate all working arrays
   ALLOCATE( g(Npoints,Nstates) )  ! gradient
   ALLOCATE( g_old(Npoints,Nstates) ) ! old gradient
   ALLOCATE( g_t(Npoints,Nstates) )  ! trial gradient
@@ -66,16 +67,20 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
     READ(112) v   ! FIXME Need to use file name
   ENDIF
 
+!!> Calculate initial total energy from given initial guess of wave function
   CALL calc_Rhoe( Focc, v )
   CALL update_potentials()
   CALL calc_betaNL_psi( Nstates, v )
   CALL calc_energies( v )
 
+!!> Save the initial Etot
   Etot_old = Etot
 
+!!> initialize alpha and beta
   alpha = 0.d0
   beta  = 0.d0
 
+!!> zero out all working arrays
   g(:,:)     = 0.d0
   g_t(:,:)   = 0.d0
   d(:,:)     = 0.d0
@@ -83,39 +88,51 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
   Kg(:,:)    = 0.d0
   Kg_old(:,:) = 0.d0
 
+
+!!> Here the iteration starts:
   DO iter = 1, Emin_NiterMax
-    !
-    ! Evaluate gradient at current trial vectors
+!!>
+!!> Evaluate gradient at current trial vectors
     CALL calc_grad( Nstates, v, g )
-    ! Precondition
+    !
+!!> Precondition the gradient using ILU0 preconditioner from SPARSKIT
+!!>
     DO ist = 1, Nstates
       CALL prec_ilu0( g(:,ist), Kg(:,ist) )
     ENDDO
-    !
-    ! set search direction
+!!
+!!> set search direction
+!
     IF( iter /= 1 ) THEN
       SELECT CASE ( I_CG_BETA )
       CASE(1)
-        ! Fletcher-Reeves
+!!> Fletcher-Reeves formula
         beta = sum( g * Kg ) / sum( g_old * Kg_old )
       CASE(2)
-        ! Polak-Ribiere
+!!> Polak-Ribiere formula
         beta = sum( (g-g_old)*Kg ) / sum( g_old * Kg_old )
       CASE(3)
-        ! Hestenes-Stiefel
+!!> Hestenes-Stiefeld formula
         beta = sum( (g-g_old)*Kg ) / sum( (g-g_old)*d_old )
       CASE(4)
-        ! Dai-Yuan
+!!> Dai-Yuan formula
         beta = sum( g * Kg ) / sum( (g-g_old)*d_old )
       END SELECT
     ENDIF
+!!>
+!!> Reset CG is beta is found to be smaller than zero
+!!>
     IF( beta < 0 ) THEN
       WRITE(*,'(1x,A,F18.10,A)') 'beta is smaller than zero: ', beta, ': setting it to zero'
     ENDIF
     beta = max( 0.d0, beta )
+!!>
+!!> Compute new direction
+!!>
     d(:,:) = -Kg(:,:) + beta*d_old(:,:)
-    !
-    ! Evaluate gradient at trial step
+!!>
+!!> Evaluate gradient at trial step
+!!>
     tv(:,:) = v(:,:) + alpha_t * d(:,:)
     CALL orthonormalize( Nstates, tv )
 
@@ -163,6 +180,9 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
 END SUBROUTINE
 
 
+!!> The following subroutine reports various information related to CG minimization
+!!> of Kohn-Sham energy:
+!!>
 SUBROUTINE info_KS_solve_Emin_pcg( alpha_t, restart )
   USE m_options, ONLY : I_CG_BETA, Emin_NiterMax, Emin_ETOT_CONV_THR
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
@@ -173,6 +193,9 @@ SUBROUTINE info_KS_solve_Emin_pcg( alpha_t, restart )
   !
   REAL(8) :: memGB
 
+!!> The following is \textbf{hard-wired} calculation. It may need to be updated
+!!> if the actual code is modified
+!!>
   memGB = Npoints*Nstates*8d0 * 8d0 / (1024d0*1024d0*1024.d0)
 
   WRITE(*,*)
@@ -193,6 +216,7 @@ SUBROUTINE info_KS_solve_Emin_pcg( alpha_t, restart )
   ELSEIF( I_CG_BETA == 4 ) THEN
     WRITE(*,*) 'Using Dai-Yuan formula'
   ELSE
+    ! This line should not be reached.
     WRITE(*,*) 'XXXXX WARNING: Unknown I_CG_BETA: ', I_CG_BETA
   ENDIF
   WRITE(*,*)
