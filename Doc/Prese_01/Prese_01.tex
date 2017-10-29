@@ -1,9 +1,99 @@
-Program untuk perhitungan struktur elektronik
+\documentclass{beamer}
 
-Teori : DFT
-basis set : fungsi Lagrange atau DVR
-
-Bahasa pemrograman: Fortran
+\begin{document}
 
 
+\begin{frame}
+\frametitle{\texttt{ffr\_LFDFT} in a nutshell}
+
+\begin{itemize}
+\item a poor man's program to do electronic structure calculation based on
+\textbf{density functional theory} (\texttt{DFT})
+\item basis set: \textbf{Lagrange functions} (\texttt{LF})
+\item \texttt{ffr}: my initials (to distinguish between several LFDFT's)
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{What can I do with \texttt{ffr\_LFDFT}?}
+
+Not much currently:
+\begin{itemize}
+\item total energy calculations
+\item electronic density and orbitals
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Getting started}
+
+\begin{itemize}
+
+\item Clone the repository:
+\begin{verbatim}
+git clone https://github.com/f-fathurrahman/ffr-LFDFT ffr-LFDFT
+\end{verbatim}
+
+\item Build
+\begin{verbatim}
+cd ffr-LFDFT
+cd src
+cp ../make.inc.gfortran make.inc
+make main
+make postproc
+\end{verbatim}
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{How to use it}
+
+It uses very similar input file with \texttt{PWSCF} from Quantum Espresso
+package.
+
+Currently, only HGH pseudopotentials are supported.
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Why wrote another package DFT code?}
+
+Several reasons not to do it:
+
+\begin{itemize}
+\item time-consuming
+\item need devotion
+\end{itemize}
+
+Several reasons to do it:
+
+\begin{itemize}
+\item to learn the "technology", knowing the nitty-gritty
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{My personal motivation}
+
+\begin{itemize}
+\item To develop a code to solve Kohn-Sham equation with fast convergence with
+respect to number of basis set. The convergence should be easy to control,
+with only few adjustable parameters.
+\item Education
+\end{itemize}
+
+
+\end{frame}
+
+\end{document}
 
