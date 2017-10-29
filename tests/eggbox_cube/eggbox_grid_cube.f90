@@ -59,7 +59,7 @@ PROGRAM eggbox_grid_cube
   PsPot_Dir = '../../HGH/'
   CALL init_PsPot()
 
-  typ = 's'
+  typ = 'p'
   IF( typ == 's' ) THEN  ! sinc LF
     NN = (/ N_in, N_in, N_in /)
     hh(:) = (/1.d0, 1.d0, 1.d0/)*(16.d0/(NN(1)-1))
@@ -122,9 +122,6 @@ PROGRAM eggbox_grid_cube
   ALLOCATE( V_short_a(Npoints_a) )
   CALL init_V_ps_loc_short( center, V_short_a, typ )
  
-  WRITE(*,*) 'integ(V_short a) = ', sum(V_short_a)*dVol_a
-  WRITE(*,*) 'integ(V_short t) = ', sum(V_ps_loc(:) - V_ps_loc_long(:))*dVol
-
   ! Laplacian matrix
   CALL init_nabla2_sparse()
   ! ILU0 preconditioner based on kinetic matrix
@@ -158,9 +155,6 @@ PROGRAM eggbox_grid_cube
 
   ! Calculate local pseudopotential energy
   E_ps_loc = sum( Rhoe(:) * V_ps_loc(:) )*dVol
-  WRITE(*,*)
-  WRITE(*,'(1x,A,F18.10)') 'E_ps_loc = ', E_ps_loc
-
 
   !
   ALLOCATE( Rhoe_a(Npoints_a) )
@@ -172,10 +166,23 @@ PROGRAM eggbox_grid_cube
     ! non periodic
     CALL interp_Rhoe_a_sinc( Rhoe, Rhoe_a )
   ENDIF 
+
   WRITE(*,*)
+  WRITE(*,*) 'These two values should be close:'
+  WRITE(*,*) 'integ(V_short a) = ', sum(V_short_a)*dVol_a
+  WRITE(*,*) 'integ(V_short t) = ', sum(V_ps_loc(:) - V_ps_loc_long(:))*dVol
+
+  WRITE(*,*)
+  WRITE(*,*) 'These two values should be close:'
   WRITE(*,'(1x,A,F18.10)') 'Ps short a:', sum(V_short_a(:)*Rhoe_a(:))*dVol_a
   WRITE(*,'(1x,A,F18.10)') 'Ps short t:', sum( (V_ps_loc(:)-V_ps_loc_long(:)) *Rhoe(:))*dVol
-  WRITE(*,'(1x,A,F18.10)') 'Ps long  t:', sum(V_ps_loc_long(:)*Rhoe(:))*dVol
+
+  WRITE(*,*)
+  WRITE(*,'(1x,A,F18.10)') 'Ps long  a/t:', sum(V_ps_loc_long(:)*Rhoe(:))*dVol
+
+  WRITE(*,*)
+  WRITE(*,*) 'These two values should be close:'
+  WRITE(*,'(1x,A,F18.10)') 'E_ps_loc = ', E_ps_loc
   WRITE(*,'(1x,A,F18.10)') 'Ps total a:', sum(V_short_a(:)*Rhoe_a(:))*dVol_a + sum(V_ps_loc_long(:)*Rhoe(:))*dVol
 
 
