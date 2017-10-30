@@ -2,15 +2,16 @@
 rm short.dat
 rm long.dat
 rm etot.dat
+rm integRhoe_a.dat
 
-N=35
+N=45
 
 for ss in `seq 7.5 0.05 8.5`
 do
 
 LOGFIL=fort.log.$N_$ss
 
-./eggbox_grid_cube.x $N ../../structures/H.xyz $ss 1.0 | tee $LOGFIL
+#./eggbox_grid_cube.x $N ../../structures/H.xyz $ss 1.0 | tee $LOGFIL
 
 #
 # Long part (should be the same for gric cube (a) and ordinary coarse method
@@ -42,5 +43,12 @@ etot_a=`echo $str | awk '{split($0, a); print a[4]}'`
 
 echo $ss $etot_a $etot >> etot.dat
 
+#
+# Integrated Rhoe_a
+#
+str=`grep "integ(Rhoe_a)" $LOGFIL`
+integRhoe_a=`echo $str | awk '{split($0, a); print a[3]}'`
+
+echo $ss $integRhoe_a >> integRhoe_a.dat
 
 done
