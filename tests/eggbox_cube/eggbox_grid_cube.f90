@@ -19,6 +19,7 @@ PROGRAM eggbox_grid_cube
   IMPLICIT NONE 
   INTEGER :: Narg
   INTEGER :: NN(3)
+  INTEGER :: N_a
   REAL(8) :: hh(3), AA(3), BB(3)
   CHARACTER(64) :: filexyz, arg_N, arg_pos, arg_r_cut
   INTEGER :: ip, ist, N_in
