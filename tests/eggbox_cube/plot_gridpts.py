@@ -18,6 +18,10 @@ grid2 = np.reshape( dat2, [N2,N2,N2,3] )
 
 zslice = 0
 plt.clf()
+
+fig = plt.gcf()
+fig.set_size_inches(10.0, 10.0)
+
 #
 for i in range(N1):
     for j in range(N1):
@@ -29,11 +33,11 @@ for i in range(N2):
     for j in range(N2):
         x = grid2[zslice,j,i,0]
         y = grid2[zslice,j,i,1]
-        plt.plot( x, y, marker='x', color='b' )
+        plt.plot( x, y, marker='o', color='r' )
 
-plt.xlim(0,16)
-plt.ylim(0,16)
 plt.axis('equal')
+plt.xlim(0.0,16)
+plt.ylim(0.0,16)
 plt.grid()
 plt.savefig('fort.101.png', dpi=300)
 plt.savefig('fort.101.pdf')
