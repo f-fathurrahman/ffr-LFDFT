@@ -1,7 +1,8 @@
 MODULE m_grid_atom_cube
   IMPLICIT NONE 
   INTEGER :: Npoints_a
-  REAL(8), ALLOCATABLE :: grid_a(:,:)
+  REAL(8), ALLOCATABLE :: lingrid_a(:,:)
+  INTEGER, ALLOCATABLE :: lin2xyz_a(:,:)
   REAL(8) :: dVol_a
 END MODULE 
 
@@ -22,7 +23,9 @@ SUBROUTINE init_grid_atom_cube( center, cutoff, N_a, is_debug )
   REAL(8) :: x, y, z
 
   Npoints_a = N_a**3
-  ALLOCATE( grid_a(3,Npoints_a) )
+
+  ALLOCATE( lingrid_a(3,Npoints_a) )
+  ALLOCATE( lin2xyz_a(3,Npoints_a) )
 
   x_start = -cutoff
   delta_x = 2.d0*cutoff/(N_a-1)
@@ -45,9 +48,10 @@ SUBROUTINE init_grid_atom_cube( center, cutoff, N_a, is_debug )
     x = x_start + (ix-1)*delta_x
     y = y_start + (iy-1)*delta_y
     z = z_start + (iz-1)*delta_z
-    grid_a(1:3,ip_a) = (/ x, y, z /) + center(1:3)
+    lingrid_a(1:3,ip_a) = (/ x, y, z /) + center(1:3)
+    lin2xyz_a(1:3,ip_a) = (/ ix, iy, iz /)
     IF( is_debug ) THEN 
-      WRITE(*,'(1x,I8,3F18.10)') ip_a, grid_a(:,ip_a)
+      WRITE(*,'(1x,I8,3F18.10)') ip_a, lingrid_a(:,ip_a)
     ENDIF 
   ENDDO 
   ENDDO 

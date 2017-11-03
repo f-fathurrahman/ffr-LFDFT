@@ -1,4 +1,4 @@
-MODULE m_LF3d_supersample
+MODULE m_LF3d_ss
 
   IMPLICIT NONE 
 

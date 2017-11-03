@@ -22,7 +22,6 @@ SUBROUTINE interp_Rhoe_a_sinc( Rhoe, Rhoe_a)
   INTEGER :: ip
   !
   INTEGER :: i,j,k, ii,jj,kk, ip_a
-  REAL(8) :: shiftx, shifty, shiftz
   INTEGER :: idx, idy, idz, iloy, iloz, inbvx, inbvy, inbvz
   REAL(8) :: val, dx, dy, dz
 
@@ -72,9 +71,9 @@ SUBROUTINE interp_Rhoe_a_sinc( Rhoe, Rhoe_a)
   CALL db3ink( x, Nx, y, Ny, z, Nz, interp_Rhoe, kx,ky,kz, iknot, tx,ty,tz, bcoef, iflag )
   
   DO ip_a = 1, Npoints_a
-    dx = grid_a(1,ip_a)
-    dy = grid_a(2,ip_a)
-    dz = grid_a(3,ip_a)
+    dx = lingrid_a(1,ip_a)
+    dy = lingrid_a(2,ip_a)
+    dz = lingrid_a(3,ip_a)
     CALL db3val( dx, dy, dz, idx,idy,idz, tx,ty,tz, Nx,Ny,Nz,kx,ky,kz, bcoef,&
                  val, iflag, inbvx, inbvy, inbvz, iloy, iloz )
     Rhoe_a(ip_a) = val

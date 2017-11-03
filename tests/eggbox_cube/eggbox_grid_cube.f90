@@ -2,13 +2,14 @@ PROGRAM eggbox_grid_cube
 
   USE m_constants, ONLY : Ry2eV
   USE m_options, ONLY : FREE_NABLA2
-  USE m_PsPot, ONLY : PsPot_Dir, NbetaNL
+  USE m_PsPot, ONLY : NbetaNL, PsPot_FilePath
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates, Focc, &
                        evals => KS_evals, &
                        evecs => KS_evecs
   !
-  USE m_atoms, ONLY : atpos => AtomicCoords
+  USE m_atoms, ONLY : atpos => AtomicCoords, atm2species, Zv => AtomicValences, &
+                      Natoms, Nspecies
   USE m_hamiltonian, ONLY : V_ps_loc, Rhoe, V_ps_loc_long
   USE m_energies, ONLY : E_ps_loc
   USE m_LF3d, ONLY : dVol => LF3d_dVol
@@ -16,49 +17,69 @@ PROGRAM eggbox_grid_cube
   USE m_constants, ONLY : ANG2BOHR
   USE m_grid_atom_cube, ONLY : Npoints_a, dVol_a
   !
+  USE m_atoms, ONLY : SpeciesSymbols
+  USE m_PsPot, ONLY : Ps_HGH_Params, NbetaNL
+  USE m_Ps_HGH, ONLY : init_Ps_HGH_Params
+  !
   IMPLICIT NONE 
   INTEGER :: Narg
   INTEGER :: NN(3)
   INTEGER :: N_a
   REAL(8) :: hh(3), AA(3), BB(3)
-  CHARACTER(64) :: filexyz, arg_N, arg_pos, arg_r_cut
+  CHARACTER(64) :: arg_in
   INTEGER :: ip, ist, N_in
   INTEGER :: iargc  ! pgf90 
   INTEGER :: tstart, counts_per_second, tstop
   CHARACTER(1) :: typ
-  REAL(8) :: center(3), pos, r_cut
+  REAL(8) :: center(3), xpos, ypos, r_cut
   REAL(8), ALLOCATABLE :: V_short_a(:), Rhoe_a(:)
 
   CALL system_clock( tstart, counts_per_second )
 
   Narg = iargc()
-  IF( Narg /= 4 ) THEN 
+  IF( Narg /= 6 ) THEN 
     WRITE(*,*) 'ERROR:'
-    WRITE(*,*) 'exactly 4 arguments must be given:'
-    WRITE(*,*) 'N, path to structure file, position and r_cut (in bohr)'
+    WRITE(*,*) 'exactly r arguments must be given:'
+    WRITE(*,*) 'N, path to PsPot file, xpos, ypos, r_cut, N_a'
     STOP 
   ENDIF 
 
-  CALL getarg( 1, arg_N )
-  READ(arg_N, *) N_in
+  CALL getarg( 1, arg_in )
+  READ(arg_in, *) N_in
 
-  CALL getarg( 2, filexyz )
+  CALL getarg( 2, arg_in )
+  ALLOCATE( PsPot_FilePath(1) )
+  PsPot_FilePath(1) = arg_in
   
-  CALL getarg( 3, arg_pos )
-  READ(arg_pos, *) pos
+  CALL getarg( 3, arg_in )
+  READ(arg_in, *) xpos
+  
+  CALL getarg( 4, arg_in )
+  READ(arg_in, *) ypos
 
-  CALL getarg( 4, arg_r_cut )
-  READ(arg_r_cut, *) r_cut
+  CALL getarg( 5, arg_in )
+  READ(arg_in, *) r_cut
 
-  CALL init_atoms_xyz(filexyz)
-  ! so that coord given in xyz file is in bohr
-  !atpos(:,:) = atpos(:,:)/ANG2BOHR  
-  ! 
-  atpos(:,:) = pos
+  CALL getarg( 6, arg_in )
+  READ(arg_in, *) N_a
 
-  ! Override PsPot_Dir
-  PsPot_Dir = '../../HGH/'
-  CALL init_PsPot()
+  ALLOCATE( atpos(3,1) )
+
+  atpos(:,1) = (/ xpos, ypos, 8.d0 /)
+
+  ALLOCATE( atm2species(1) )
+  Natoms = 1
+  Nspecies = 1
+  atm2species(1) = 1
+
+  !CALL init_PsPot()
+  ALLOCATE( SpeciesSymbols(1) )
+  ALLOCATE( Ps_HGH_Params(1) )
+  !
+  CALL init_Ps_HGH_Params( Ps_HGH_Params(1), PsPot_FilePath(1) )
+
+  ALLOCATE( Zv(1) )
+  Zv = Ps_HGH_Params(1)%Zval
 
   typ = 'p'
   IF( typ == 's' ) THEN  ! sinc LF
@@ -76,12 +97,10 @@ PROGRAM eggbox_grid_cube
     STOP 
   ENDIF 
 
-  CALL info_atoms()
   CALL info_PsPot()
   CALL info_LF3d()
 
-! Only use local pseudopotential
-  ! CALL init_betaNL()
+  ! Only use local pseudopotential
   NbetaNL = 0
 
   ! Initialize occupation numbers
@@ -118,7 +137,7 @@ PROGRAM eggbox_grid_cube
 
   !
   center(:) = atpos(:,1)
-  CALL init_grid_atom_cube( center, r_cut, 55, .FALSE. ) 
+  CALL init_grid_atom_cube( center, r_cut, N_a, .FALSE. ) 
   !
   ALLOCATE( V_short_a(Npoints_a) )
   CALL init_V_ps_loc_short( center, V_short_a, typ )
@@ -186,6 +205,8 @@ PROGRAM eggbox_grid_cube
   WRITE(*,'(1x,A,F18.10)') 'E_ps_loc = ', E_ps_loc
   WRITE(*,'(1x,A,F18.10)') 'Ps total a:', sum(V_short_a(:)*Rhoe_a(:))*dVol_a + sum(V_ps_loc_long(:)*Rhoe(:))*dVol
 
+  CALL dump_data()
+
 
   CALL dealloc_nabla2_sparse()
   CALL dealloc_ilu0_prec()
@@ -200,10 +221,43 @@ PROGRAM eggbox_grid_cube
   WRITE(*,*) 'Total elapsed time: ', dble(tstop - tstart)/counts_per_second, ' second.'
   WRITE(*,*)
 
+CONTAINS 
+
+SUBROUTINE dump_data()
+  USE m_LF3d, ONLY : grid_x => LF3d_grid_x, &
+                     lingrid => LF3d_lingrid, &
+                     lin2xyz => LF3d_lin2xyz
+  USE m_grid_atom_cube
+  INTEGER :: idx_center
+  INTEGER :: iz
+
+  idx_center = N_in/2 + 1
+  WRITE(*,*) 'idx_center = ', idx_center
+  WRITE(*,*) 'x = ', grid_x(idx_center)
+
+  DO ip = 1, Npoints
+    iz = lin2xyz(3,ip)
+    IF( iz == idx_center ) THEN 
+      WRITE(100,'(1x,3F18.10)') lingrid(1:2,ip), Rhoe(ip)
+    ENDIF 
+  ENDDO 
+
+  idx_center = N_a/2 + 1
+  DO ip = 1, Npoints_a
+    iz = lin2xyz_a(3,ip)
+    IF( iz == idx_center ) THEN 
+      WRITE(101,'(1x,4F18.10)') lingrid_a(1:2,ip), Rhoe_a(ip), V_short_a(ip)
+    ENDIF 
+  ENDDO 
+
+END SUBROUTINE 
+
+
+
 END PROGRAM 
 
 SUBROUTINE init_V_ps_loc_short( center, V_short_a, typ )
-  USE m_grid_atom_cube, ONLY : Npoints_a, grid_a
+  USE m_grid_atom_cube, ONLY : Npoints_a, lingrid_a
   USE m_LF3d, ONLY : LL => LF3d_LL
   USE m_PsPot, ONLY : Ps => Ps_HGH_Params
   USE m_Ps_HGH, ONLY : hgh_eval_Vloc_R_short
@@ -219,14 +273,14 @@ SUBROUTINE init_V_ps_loc_short( center, V_short_a, typ )
   IF( typ == 'p' ) THEN 
     ! periodic case
     DO ip = 1,Npoints_a
-      CALL calc_dr_periodic_1pnt( LL, center, grid_a(:,ip), dr_vec )
+      CALL calc_dr_periodic_1pnt( LL, center, lingrid_a(:,ip), dr_vec )
       dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
       V_short_a(ip) = hgh_eval_Vloc_R_short( Ps(isp), dr ) 
     ENDDO 
   ELSE 
     ! non-periodic
     DO ip = 1,Npoints_a
-      CALL calc_dr_1pnt( center, grid_a(:,ip), dr )
+      CALL calc_dr_1pnt( center, lingrid_a(:,ip), dr )
       V_short_a(ip) = hgh_eval_Vloc_R_short( Ps(isp), dr ) 
     ENDDO 
   ENDIF 

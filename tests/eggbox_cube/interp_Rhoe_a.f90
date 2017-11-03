@@ -103,9 +103,9 @@ SUBROUTINE interp_Rhoe_a( Rhoe, Rhoe_a)
 !  WRITE(*,*) 'iflag = ', iflag
   
   DO ip_a = 1, Npoints_a
-    dx = grid_a(1,ip_a) - shiftx
-    dy = grid_a(2,ip_a) - shifty
-    dz = grid_a(3,ip_a) - shiftz
+    dx = lingrid_a(1,ip_a) - shiftx
+    dy = lingrid_a(2,ip_a) - shifty
+    dz = lingrid_a(3,ip_a) - shiftz
     CALL db3val( dx, dy, dz, idx,idy,idz, tx,ty,tz, Nx+1,Ny+1,Nz+1,kx,ky,kz, bcoef,&
                  val, iflag, inbvx, inbvy, inbvz, iloy, iloz )
     !IF( iflag /= 0 ) THEN 
