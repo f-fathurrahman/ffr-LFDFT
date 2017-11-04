@@ -12,7 +12,7 @@ MODULE m_LF3d_ss
 
 END MODULE
 
-SUBROUTINE init_LF3d_supersample( Nsupersample_ )
+SUBROUTINE init_LF3d_p_ss( Nsupersample_ )
 
   USE m_LF3d, ONLY : AA => LF3d_AA, BB => LF3d_BB, LF3d_NN, LF3d_Npoints, LF3d_hh
   USE m_LF3d_supersample
@@ -78,4 +78,15 @@ SUBROUTINE init_LF3d_supersample( Nsupersample_ )
 END SUBROUTINE
 
 
+
+SUBROUTINE dealloc_LF3d_supersample()
+
+  USE m_LF3d_supersample
+  IMPLICIT NONE 
+
+  IF( allocated(LF3d_lingrid_ss) ) DEALLOCATE(LF3d_lingrid_ss)
+  IF( allocated(LF3d_xyz2lin_ss) ) DEALLOCATE(LF3d_xyz2lin_ss)
+  IF( allocated(LF3d_lin2xyz_ss) ) DEALLOCATE(LF3d_lin2xyz_ss)
+
+END SUBROUTINE 
 
