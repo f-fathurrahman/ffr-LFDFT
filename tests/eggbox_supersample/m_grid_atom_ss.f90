@@ -1,12 +1,12 @@
-MODULE m_grid_ss_atom
+MODULE m_grid_atom_ss
   IMPLICIT NONE 
-  INTEGER :: Ngrid_ss_atom
-  INTEGER, ALLOCATABLE :: idx_grid_ss_atom(:)
+  INTEGER :: Ngrid_atom_ss
+  INTEGER, ALLOCATABLE :: idx_grid_atom_ss(:)
 END MODULE 
 
 SUBROUTINE init_grid_atom_ss( center, cutoff )
 
-  USE m_LF3d_supersample, ONLY : lingrid_ss => LF3d_lingrid_ss, &
+  USE m_LF3d_ss, ONLY : lingrid_ss => LF3d_lingrid_ss, &
                                  Npoints_ss => LF3d_Npoints_ss
   USE m_LF3d, ONLY : LL => LF3d_LL
   USE m_grid_atom_ss, ONLY : Ngrid_atom_ss, idx_ss => idx_grid_atom_ss
@@ -16,12 +16,12 @@ SUBROUTINE init_grid_atom_ss( center, cutoff )
   INTEGER :: ip_ss, ii
   REAL(8) :: x_ss, y_ss, z_ss, dr_vec(3), dr
   !
-  INTEGER :: calc_Ngrid_ss_atom
+  INTEGER :: calc_Ngrid_atom_ss
   
-  Ngrid_ss_atom = calc_Ngrid_ss_atom( center, cutoff )
-  WRITE(*,*) 'Ngrid_ss_atom = ', Ngrid_ss_atom
+  Ngrid_atom_ss = calc_Ngrid_atom_ss( center, cutoff )
+  WRITE(*,*) 'Ngrid_ss_atom = ', Ngrid_atom_ss
 
-  ALLOCATE( idx_ss(Ngrid_ss_atom) )
+  ALLOCATE( idx_ss(Ngrid_atom_ss) )
 
   ii = 0
   DO ip_ss = 1,Npoints_ss
@@ -39,8 +39,8 @@ SUBROUTINE init_grid_atom_ss( center, cutoff )
 END SUBROUTINE 
 
 
-FUNCTION calc_Ngrid_ss_atom( center, cutoff ) RESULT( Npts )
-  USE m_LF3d_supersample, ONLY : lingrid_ss => LF3d_lingrid_ss, &
+FUNCTION calc_Ngrid_atom_ss( center, cutoff ) RESULT( Npts )
+  USE m_LF3d_ss, ONLY : lingrid_ss => LF3d_lingrid_ss, &
                                  Npoints_ss => LF3d_Npoints_ss
   USE m_LF3d, ONLY : LL => LF3d_LL
   IMPLICIT NONE 
@@ -49,6 +49,9 @@ FUNCTION calc_Ngrid_ss_atom( center, cutoff ) RESULT( Npts )
   INTEGER :: Npts, ip_ss
   REAL(8) :: x_ss, y_ss, z_ss, dr_vec(3), dr
   
+  !! FIXME: This is only for periodic case
+  !!
+
   Npts = 0
   DO ip_ss = 1,Npoints_ss
     x_ss = lingrid_ss(1,ip_ss)
