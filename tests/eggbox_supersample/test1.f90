@@ -113,7 +113,7 @@ SUBROUTINE setup_potentials()
   ! Memory for potentials
   CALL alloc_hamiltonian()
 
-  T_DO_SS = .FALSE.
+  T_DO_SS = .TRUE.
   IF( T_DO_SS ) THEN 
   ! Do supersampling stuffs
     ALLOCATE( V_ps_loc_long(Npoints) )
