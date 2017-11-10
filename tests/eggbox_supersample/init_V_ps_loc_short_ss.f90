@@ -1,4 +1,4 @@
-SUBROUTINE do_supersample( fin, fout )
+SUBROUTINE init_V_ps_loc_short_ss( fout )
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      lingrid => LF3d_lingrid, &
                      LL => LF3d_LL, &
@@ -12,7 +12,6 @@ SUBROUTINE do_supersample( fin, fout )
   USE m_grid_atom, ONLY : Ngrid_atom, idxa => idx_grid_atom
   USE m_grid_atom_ss, ONLY : Ngrid_atom_ss, idx_ss => idx_grid_atom_ss
   IMPLICIT NONE 
-  REAL(8) :: fin(Npoints)
   REAL(8) :: fout(Npoints)
   !
   INTEGER :: ip, ip_ss, ix, iy, iz
@@ -22,6 +21,10 @@ SUBROUTINE do_supersample( fin, fout )
   REAL(8) :: center(3), dr_vec(3), dr
   REAL(8) :: ff
   REAL(8) :: sinc
+
+  WRITE(*,*)
+  WRITE(*,*) 'V_ps_loc_short is initialized via supersampling method'
+  WRITE(*,*)
 
   isp = 1 
 
