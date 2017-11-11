@@ -106,28 +106,40 @@ CONTAINS
 SUBROUTINE setup_potentials()
   USE m_hamiltonian, ONLY : V_ps_loc_long, V_ps_loc
 
-  LOGICAL :: T_DO_SS
+  LOGICAL :: T_DO_SS, T_V_LONG_ONLY
 
   CALL init_strfact_shifted()
 
   ! Memory for potentials
   CALL alloc_hamiltonian()
 
-  T_DO_SS = .TRUE.
+  T_DO_SS = .FALSE.
+  T_V_LONG_ONLY = .TRUE.  ! only make sense if T_DO_SS is .FALSE.
+
   IF( T_DO_SS ) THEN 
   ! Do supersampling stuffs
-    ALLOCATE( V_ps_loc_long(Npoints) )
     ! Local pseudopotential (long part)
+    ALLOCATE( V_ps_loc_long(Npoints) )
     CALL init_V_ps_loc_G_long()
+    ! Local pseudopotential (short range), supersampling is applied
     ALLOCATE( V_ps_loc_short_ss(Npoints) )
     CALL init_V_ps_loc_short_ss( V_ps_loc_short_ss )
+    ! Total local pseudopotential
     V_ps_loc(:) = V_ps_loc_long(:) + V_ps_loc_short_ss(:)
 
   ELSE 
   ! no supersampling
     WRITE(*,*)
     WRITE(*,*) 'No supersampling'
-    CALL init_V_ps_loc_G()
+    IF( T_V_LONG_ONLY ) THEN 
+      WRITE(*,*)
+      WRITE(*,*) 'Only long range part of HGH pseudopotential is used'
+      ALLOCATE( V_ps_loc_long(Npoints) )
+      CALL init_V_ps_loc_G_long()
+      V_ps_loc(:) = V_ps_loc_long(:)
+    ELSE 
+      CALL init_V_ps_loc_G()
+    ENDIF 
   ENDIF 
   
   ! Only use local pseudopotential
