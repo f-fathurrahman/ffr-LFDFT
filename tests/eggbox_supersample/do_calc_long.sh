@@ -1,4 +1,4 @@
-N=45
+N=55
 Rcut="1.0"  # not really used in the calculation
 
 for ss in `seq 7.5 0.05 8.5`
