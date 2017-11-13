@@ -1,6 +1,6 @@
 N=45
 Rcut="1.0"  # dummy, not really used in the calculation
-ELEM="H"
+ELEM="C"
 
 for ss in `seq 7.5 0.05 8.5`
 do
