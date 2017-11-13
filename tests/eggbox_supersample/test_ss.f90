@@ -24,7 +24,7 @@ PROGRAM test
   USE m_states, ONLY : Nstates, Focc, &
                        evals => KS_evals, &
                        evecs => KS_evecs
-  USE m_hamiltonian, ONLY : Rhoe, V_ps_loc
+  USE m_hamiltonian, ONLY : Rhoe, V_ps_loc, V_ps_loc_long
   USE m_energies, ONLY : E_ps_loc
 
   IMPLICIT NONE 
@@ -39,6 +39,7 @@ PROGRAM test
   INTEGER :: N_in, idx_center, idx_center_ss
   INTEGER :: ip, ip_a, ix, iy, iz
   INTEGER :: ist
+  REAL(8) :: E_ps_loc_ss
   !
   REAL(8), ALLOCATABLE :: V_ps_loc_short_ss(:)
 
@@ -95,9 +96,13 @@ PROGRAM test
 
   ! Calculate local pseudopotential energy
   E_ps_loc = sum( Rhoe(:) * V_ps_loc(:) )*dVol
+  
+  ! Calculate local pseudopotential energy (ss method)
+  E_ps_loc_ss = sum( Rhoe(:) * (V_ps_loc_long(:) + V_ps_loc_short_ss(:)) )*dVol
 
   WRITE(*,*)
-  WRITE(*,*) 'E_ps_loc = ', E_ps_loc
+  WRITE(*,*) 'E_ps_loc    = ', E_ps_loc
+  WRITE(*,*) 'E_ps_loc_ss = ', E_ps_loc_ss
 
 
 CONTAINS 
@@ -113,19 +118,22 @@ SUBROUTINE setup_potentials()
   ! Memory for potentials
   CALL alloc_hamiltonian()
 
-  T_DO_SS = .FALSE.
-  T_V_LONG_ONLY = .TRUE.  ! only make sense if T_DO_SS is .FALSE.
+  T_DO_SS = .TRUE.
+  T_V_LONG_ONLY = .FALSE.  ! only make sense if T_DO_SS is .FALSE.
 
   IF( T_DO_SS ) THEN 
   ! Do supersampling stuffs
     ! Local pseudopotential (long part)
     ALLOCATE( V_ps_loc_long(Npoints) )
     CALL init_V_ps_loc_G_long()
+    !
     ! Local pseudopotential (short range), supersampling is applied
     ALLOCATE( V_ps_loc_short_ss(Npoints) )
     CALL init_V_ps_loc_short_ss( V_ps_loc_short_ss )
+    !
     ! Total local pseudopotential
-    V_ps_loc(:) = V_ps_loc_long(:) + V_ps_loc_short_ss(:)
+    !V_ps_loc(:) = V_ps_loc_long(:) + V_ps_loc_short_ss(:)
+    CALL init_V_ps_loc_G()  ! the usual method
 
   ELSE 
   ! no supersampling
