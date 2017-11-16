@@ -10,9 +10,9 @@ FUNCTION atom_znucl( symb ) RESULT( znucl )
     znucl = 1.d0
   CASE('He')
     znucl = 2.d0
-  CASE('Li')
+  CASE('Li', 'Li_sc')
     znucl = 3.d0
-  CASE('Be')
+  CASE('Be', 'Be_sc')
     znucl = 4.d0
   CASE('B')
     znucl = 5.d0
@@ -42,31 +42,31 @@ FUNCTION atom_znucl( symb ) RESULT( znucl )
     znucl = 17.d0
   CASE('Ar')
     znucl = 18.d0
-  CASE('K')
+  CASE('K', 'K_sc')
     znucl = 19.d0
-  CASE('Ca')
+  CASE('Ca', 'Ca_sc')
     znucl = 20.d0
-  CASE('Sc')
+  CASE('Sc', 'Sc_sc')
     znucl = 21.d0
-  CASE('Ti')
+  CASE('Ti', 'Ti_sc')
     znucl = 22.d0
-  CASE('V')
+  CASE('V', 'V_sc')
     znucl = 23.d0
-  CASE('Cr')
+  CASE('Cr', 'Cr_sc')
     znucl = 24.d0
-  CASE('Mn')
+  CASE('Mn', 'Mn_sc')
     znucl = 25.d0
-  CASE('Fe')
+  CASE('Fe', 'Fe_sc')
     znucl = 26.d0
-  CASE('Co')
+  CASE('Co', 'Co_sc')
     znucl = 27.d0
-  CASE('Ni')
+  CASE('Ni', 'Ni_sc')
     znucl = 28.d0
-  CASE('Cu')
+  CASE('Cu', 'Cu_sc')
     znucl = 29.d0
-  CASE('Zn')
+  CASE('Zn', 'Zn_sc')
     znucl = 30.d0
-  CASE('Ga')
+  CASE('Ga', 'Ga_sc')
     znucl = 31.d0
   CASE('Ge')
     znucl = 32.d0
@@ -78,31 +78,31 @@ FUNCTION atom_znucl( symb ) RESULT( znucl )
     znucl = 35.d0
   CASE('Kr')
     znucl = 36.d0
-  CASE('Rb')
+  CASE('Rb', 'Rb_sc')
     znucl = 37.d0
-  CASE('Sr')
+  CASE('Sr', 'Sr_sc')
     znucl = 38.d0
-  CASE('Y')
+  CASE('Y', 'Y_sc')
     znucl = 39.d0
-  CASE('Zr')
+  CASE('Zr', 'Zr_sc')
     znucl = 40.d0
-  CASE('Nb')
+  CASE('Nb', 'Nb_sc')
     znucl = 41.d0
-  CASE('Mo')
+  CASE('Mo', 'Mo_sc')
     znucl = 42.d0
-  CASE('Tc')
+  CASE('Tc', 'Tc_sc')
     znucl = 43.d0
-  CASE('Ru')
+  CASE('Ru', 'Ru_sc')
     znucl = 44.d0
-  CASE('Rh')
+  CASE('Rh', 'Rh_sc')
     znucl = 45.d0
-  CASE('Pd')
+  CASE('Pd', 'Pd_sc')
     znucl = 46.d0
-  CASE('Ag')
+  CASE('Ag', 'Ag_sc')
     znucl = 47.d0
-  CASE('Cd')
+  CASE('Cd', 'Cd_sc')
     znucl = 48.d0
-  CASE('In')
+  CASE('In', 'In_sc')
     znucl = 49.d0
   CASE('Sn')
     znucl = 50.d0
@@ -114,32 +114,32 @@ FUNCTION atom_znucl( symb ) RESULT( znucl )
     znucl = 53.d0
   CASE('Xe')
     znucl = 54.d0
-  CASE('Cs')
+  CASE('Cs', 'Cs_sc')
     znucl = 55.d0
-  CASE('Ba')
+  CASE('Ba', 'Ba_sc')
     znucl = 56.d0
   !
   ! Lanthanide skipped for the moment ...
   !
-  CASE('Hf')
+  CASE('Hf', 'Hf_sc')
     znucl = 72.d0
-  CASE('Ta')
+  CASE('Ta', 'Ta_sc')
     znucl = 73.d0
-  CASE('W')
+  CASE('W', 'W_sc')
     znucl = 74.d0
-  CASE('Re')
+  CASE('Re', 'Re_sc')
     znucl = 75.d0
-  CASE('Os')
+  CASE('Os', 'Os_sc')
     znucl = 76.d0
-  CASE('Ir')
+  CASE('Ir', 'Ir_sc')
     znucl = 77.d0
-  CASE('Pt')
+  CASE('Pt', 'Pt_sc')
     znucl = 78.d0
-  CASE('Au')
+  CASE('Au', 'Au_sc')
     znucl = 79.d0
-  CASE('Hg')
+  CASE('Hg', 'Hg_sc')
     znucl = 80.d0
-  CASE('Tl')
+  CASE('Tl', 'Tl_sc')
     znucl = 81.d0
   CASE('Pb')
     znucl = 82.d0
