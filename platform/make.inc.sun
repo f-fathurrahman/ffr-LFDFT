@@ -6,7 +6,8 @@ F77 = sunf95
 F77_OPTS = -O3
 
 F90 = sunf95
-F90_OPTS = -fpp -fast -dalign -w4        # already no warning message
+# already no warning message
+F90_OPTS = -fpp -fast -dalign -w4 
 F90_OPTS_NOWARN = -fpp -fast -dalign -w4
 
 # needed for my Ubuntu laptop
