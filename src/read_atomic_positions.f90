@@ -33,10 +33,11 @@ SUBROUTINE read_atomic_positions(filein)
   CLOSE(IU)
 
   IF( trim(line_unit) == 'angstrom' ) THEN 
-    in_pos(:,:) = ANG2BOHR*in_pos(:,:)
     WRITE(*,*)
     WRITE(*,*) 'Atomic positions are given in angstrom.'
-    WRITE(*,*) 'The program have converted them to bohr.'
+    WRITE(*,*) 'The program will convert them to bohr.'
+    !
+    in_pos(:,:) = ANG2BOHR*in_pos(:,:)
   ELSE 
     WRITE(*,*)
     WRITE(*,*) 'Atomic positions are given in bohr.'
