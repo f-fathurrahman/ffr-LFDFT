@@ -1,4 +1,6 @@
 !!>
+!!> \section{Subroutine \texttt{guess\_KS\_solutions}}
+!!>
 !!> Generate guess solutions (density and orbitals) for \texttt{KS\_solve\_XXX}
 !!> subroutines.
 !!>
@@ -33,5 +35,4 @@ SUBROUTINE guess_KS_solutions()
     WRITE(*,*)
     WRITE(*,*) 'Using random starting wavefunction'
   ENDIF
-END SUBROUTINE 
-
+END SUBROUTINE

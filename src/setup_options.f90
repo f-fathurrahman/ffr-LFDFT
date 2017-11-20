@@ -1,15 +1,16 @@
 
-! Convert several options from m_input_vars to internal variables defined
-! in m_options.
-! There might be name collision if there are the same variable defined
-! in both modules.
-! Need to think a better scheme for this.
+!!> Convert several options from \texttt{m_input_vars} to internal variables defined
+!!> in \texttt{m\_options}.
+!!>
+!!> TODO/FIXME:There might be name collision if there are the same variable defined
+!!> in both modules. Need to think a better scheme for this.
+!!>
 SUBROUTINE setup_options()
   USE m_input_vars
   USE m_options
-  IMPLICIT NONE 
+  IMPLICIT NONE
 
-  IF( assume_isolated == 'sinc' ) THEN 
+  IF( assume_isolated == 'sinc' ) THEN
     SELECT CASE( poisson_solver)
     CASE( 'ISF', 'isf' )
       I_POISSON_SOLVE = 1
@@ -18,10 +19,10 @@ SUBROUTINE setup_options()
     CASE DEFAULT
       I_POISSON_SOLVE = 1
     END SELECT
-  ELSE 
+  ELSE
     ! we are calculating periodic system, use default Poisson solver
     I_POISSON_SOLVE = 0
-  ENDIF 
+  ENDIF
 
   !
   SELECT CASE( KS_Solve )
@@ -29,9 +30,9 @@ SUBROUTINE setup_options()
     I_KS_SOLVE = 1
   CASE( 'SCF', 'scf' )
     I_KS_SOLVE = 2
-  CASE DEFAULT 
+  CASE DEFAULT
     WRITE(*,*) 'Using default value for I_KS_SOLVE = ', I_KS_SOLVE
-  END SELECT 
+  END SELECT
 
   !
   SELECT CASE( cg_beta )
@@ -43,9 +44,9 @@ SUBROUTINE setup_options()
     I_CG_BETA = 3
   CASE( 'Dai-Yuan', 'DY', 'D-Y' )
     I_CG_BETA = 4
-  CASE DEFAULT 
+  CASE DEFAULT
     WRITE(*,*) 'Using default values for I_CG_BETA = ', I_CG_BETA
-  END SELECT 
+  END SELECT
 
   ! Diagonalization method
   SELECT CASE( diagonalization )
@@ -57,18 +58,18 @@ SUBROUTINE setup_options()
     I_ALG_DIAG = 3
   CASE DEFAULT
     WRITE(*,*) 'Using default values for I_ALG_DIAG = ', I_ALG_DIAG
-  END SELECT 
+  END SELECT
 
   !
-  IF( electron_maxstep /= -1 ) THEN 
+  IF( electron_maxstep /= -1 ) THEN
     Emin_NiterMax = electron_maxstep
     SCF_NiterMax = electron_maxstep
-  ENDIF 
+  ENDIF
 
   !
-  IF( mixing_beta > 0.d0 ) THEN 
+  IF( mixing_beta > 0.d0 ) THEN
     SCF_betamix = mixing_beta
-  ENDIF 
+  ENDIF
 
   SELECT CASE( mixing_mode )
   CASE( 'linear' )
@@ -79,13 +80,12 @@ SUBROUTINE setup_options()
     MIXTYPE = 3
   CASE DEFAULT
     MIXTYPE = 1
-  END SELECT 
+  END SELECT
 
   !
-  IF( conv_thr > 0.d0 ) THEN 
+  IF( conv_thr > 0.d0 ) THEN
     Emin_ETOT_CONV_THR = conv_thr
     SCF_ETOT_CONV_THR = conv_thr
-  ENDIF 
+  ENDIF
 
-END SUBROUTINE 
-
+END SUBROUTINE

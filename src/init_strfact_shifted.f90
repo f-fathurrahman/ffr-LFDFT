@@ -1,6 +1,7 @@
 ! Calculate structure factor
+! FIXME: needed anyway even for sinc ??
 SUBROUTINE init_strfact_shifted()
- 
+
   USE m_atoms, ONLY : Na => Natoms, &
                       Xpos => AtomicCoords, &
                       Nspecies, &
@@ -31,10 +32,9 @@ SUBROUTINE init_strfact_shifted()
     DO ig = 1,Ng
       GX = (Xpos(1,ia)-shiftx)*Gv(1,ig) + (Xpos(2,ia)-shifty)*Gv(2,ig) + (Xpos(3,ia)-shiftz)*Gv(3,ig)
       strf(ig,isp) = strf(ig,isp) + cmplx( cos(GX), -sin(GX), kind=8 )
-    ENDDO 
-  ENDDO 
+    ENDDO
+  ENDDO
 
   CALL flush(6)
 
-END SUBROUTINE 
-
+END SUBROUTINE
