@@ -53,7 +53,8 @@ for l in lines:
         str1 = highlight(l, FortranLexer(), LatexFormatter()).split('\n')
         Nlen = len(str1)
         for il in range(1,Nlen-2):
-            print( str1[il] )
+            if str1[il] != '':
+                print(str1[il])
     else:
         if( startVerb == True ):
             print('\\end{Verbatim}')

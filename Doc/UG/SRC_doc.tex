@@ -119,145 +119,129 @@
 \begin{document}
 
 
-\section{Subroutine \texttt{setup\_ffr\_LFDFT()}}
+\section{Subroutine \texttt{setup\_options()}}
 
-This subroutine prepares various tasks before actually solving the Kohn-Sham
-equation.
+Convert several options from \texttt{m\_input\_vars} to internal variables defined
+in \texttt{m\_options}.
 
+TODO/FIXME:There might be name collision if there are the same variable defined
+in both modules. Need to think a better scheme for this.
 
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{SUBROUTINE }\PY{n}{setup\PYZus{}ffr\PYZus{}LFDFT}\PY{p}{(}\PY{p}{)}
-
-  \PY{k}{USE }\PY{n}{m\PYZus{}options}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{FREE\PYZus{}NABLA2}\PY{p}{,} \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE}
-  \PY{k}{USE }\PY{n}{m\PYZus{}input\PYZus{}vars}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{assume\PYZus{}isolated}
-  \PY{c}{!}
-  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{Narg}   \PY{c}{! number of argument}
-  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n+nb}{iargc}  \PY{c}{! needed for several compilers}
-  \PY{k+kt}{CHARACTER}\PY{p}{(}\PY{l+m+mi}{64}\PY{p}{)} \PY{k+kd}{::} \PY{n}{filein}
-
-\end{Verbatim}
-We check first number of argument(s) give to the program using built-in
-function \texttt{iargc()} and save the result to variable \texttt{Narg}
-Currently, we only support one argument, i.e. path to input file.
-The program will stop and display error message if \texttt{Narg}
-is not equal to one.
 
 \begin{Verbatim}[commandchars=\\\{\}]
-  \PY{n}{Narg} \PY{o}{=} \PY{n+nb}{iargc}\PY{p}{(}\PY{p}{)}
-  \PY{k}{IF}\PY{p}{(} \PY{n}{Narg} \PY{o}{/}\PY{o}{=} \PY{l+m+mi}{1} \PY{p}{)} \PY{k}{THEN}
-    \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)}
-    \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)} \PY{l+s+s1}{\PYZsq{}ERROR: exactly one argument must be given: input file path\PYZsq{}}
-    \PY{k}{STOP}
-  \PY{k}{ENDIF}
-
+\PY{k}{SUBROUTINE }\PY{n}{setup\PYZus{}options}\PY{p}{(}\PY{p}{)}
+  \PY{k}{USE }\PY{n}{m\PYZus{}input\PYZus{}vars}
+  \PY{k}{USE }\PY{n}{m\PYZus{}options}
+  \PY{k}{IMPLICIT }\PY{k}{NONE}
 \end{Verbatim}
-We get the actual argument using built-in subroutine \texttt{getarg()}.
+\begin{itemize}
 
-\begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{CALL }\PY{n+nb}{getarg}\PY{p}{(} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{filein} \PY{p}{)}
-
-\end{Verbatim}
-We read the input file using subroutine \texttt{read\_input()}
-
-\begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{CALL }\PY{n}{read\PYZus{}input}\PY{p}{(} \PY{n}{filein} \PY{p}{)}
-
-\end{Verbatim}
-The following subroutine will initialize global variables related to basis function
-and grid points, molecular or crystalline structures, and pseudopotentials.
-
-\begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{CALL }\PY{n}{setup\PYZus{}from\PYZus{}input}\PY{p}{(}\PY{p}{)}
-
-\end{Verbatim}
-Various options, such as convergence criteria, choice of algorithms, etc which are
-given in the input file, will be converted to internal variables (mostly defined in
-module \texttt{m\_options}).
-
-\begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{CALL }\PY{n}{setup\PYZus{}options}\PY{p}{(}\PY{p}{)}
-
-\end{Verbatim}
-The following calls will output information about molecular or crystalline
-structures, pseudopotentials, and basis function and grid points.
-
-\begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{CALL }\PY{n}{info\PYZus{}atoms}\PY{p}{(}\PY{p}{)}
-  \PY{k}{CALL }\PY{n}{info\PYZus{}PsPot}\PY{p}{(}\PY{p}{)}
-  \PY{k}{CALL }\PY{n}{info\PYZus{}LF3d}\PY{p}{(}\PY{p}{)}
-
-\end{Verbatim}
-This subroutine initialize nonlocal pseudopotential projectors. This subroutine
-must be called after variables from \texttt{m\_LF3d} are initialized as they are
-defined on grid points.
-
-TODO/FIXME: To be consistent, this call should be made in pseudopotential setup.
-(probably via subroutine \texttt{setup\_from\_input()})
-
-\begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{CALL }\PY{n}{init\PYZus{}betaNL}\PY{p}{(}\PY{p}{)}
-
-\end{Verbatim}
-This call will initialize electronic states and occupation numbers.
-
-\begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{CALL }\PY{n}{init\PYZus{}states}\PY{p}{(}\PY{p}{)}
-
-\end{Verbatim}
-This call will initialize and calculate structure factor $S_{f}(\mathbf{G})$.
-This is required for periodic LF.
-
-TODO/FIXME: This call should be made in \texttt{setup\_from\_input} or anther
-subroutine.
-
-\begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{CALL }\PY{n}{init\PYZus{}strfact\PYZus{}shifted}\PY{p}{(}\PY{p}{)}
-
-\end{Verbatim}
-Ewald energy
+\item
+Option for the choice of method to solve Poisson equation
 
 \begin{Verbatim}[commandchars=\\\{\}]
   \PY{k}{IF}\PY{p}{(} \PY{n}{assume\PYZus{}isolated} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}sinc\PYZsq{}} \PY{p}{)} \PY{k}{THEN}
-    \PY{k}{CALL }\PY{n}{calc\PYZus{}E\PYZus{}NN}\PY{p}{(}\PY{p}{)}
+    \PY{k}{SELECT }\PY{k}{CASE}\PY{p}{(} \PY{n}{poisson\PYZus{}solver}\PY{p}{)}
+    \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}ISF\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}isf\PYZsq{}} \PY{p}{)}
+      \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE} \PY{o}{=} \PY{l+m+mi}{1}
+    \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}DAGE\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}dage\PYZsq{}} \PY{p}{)}
+      \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE} \PY{o}{=} \PY{l+m+mi}{2}
+    \PY{k}{CASE }\PY{n}{DEFAULT}
+      \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE} \PY{o}{=} \PY{l+m+mi}{1}
+    \PY{k}{END }\PY{k}{SELECT}
   \PY{k}{ELSE}
-    \PY{k}{CALL }\PY{n}{calc\PYZus{}Ewald\PYZus{}qe}\PY{p}{(}\PY{p}{)}
+    \PY{c}{! we are calculating periodic system, use the default Poisson solver}
+    \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE} \PY{o}{=} \PY{l+m+mi}{0}
   \PY{k}{ENDIF}
-
 \end{Verbatim}
-The following call will initialize various global variables (arrays) needed to
-define Hamiltonian. It is mainly for storing potential terms.
+\item
+Option for the choice of method to solve Kohn-Sham equation
 
 \begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{CALL }\PY{n}{alloc\PYZus{}hamiltonian}\PY{p}{(}\PY{p}{)}
-
+  \PY{k}{SELECT }\PY{k}{CASE}\PY{p}{(} \PY{n}{KS\PYZus{}Solve} \PY{p}{)}
+  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}Emin\PYZus{}PCG\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}Emin\PYZus{}pcg\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}Emin\PYZhy{}PCG\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}Emin\PYZhy{}pcg\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}Emin\PYZus{}cg\PYZsq{}} \PY{p}{)}
+    \PY{n}{I\PYZus{}KS\PYZus{}SOLVE} \PY{o}{=} \PY{l+m+mi}{1}
+  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}SCF\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}scf\PYZsq{}} \PY{p}{)}
+    \PY{n}{I\PYZus{}KS\PYZus{}SOLVE} \PY{o}{=} \PY{l+m+mi}{2}
+  \PY{k}{CASE }\PY{n}{DEFAULT}
+    \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)} \PY{l+s+s1}{\PYZsq{}Using default value for I\PYZus{}KS\PYZus{}SOLVE = \PYZsq{}}\PY{p}{,} \PY{n}{I\PYZus{}KS\PYZus{}SOLVE}
+  \PY{k}{END }\PY{k}{SELECT}
 \end{Verbatim}
-Allocate local pseudopotential. For periodic sinc LF the potential is constructed
-directly on real space grid. For periodic LF, the potential is first constructed on
-reciprocal space and then transformed to real space grid via inverse FFT.
+\item
+How to calculate parameter $\beta$ in conjugate gradient method.
 
 \begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{IF}\PY{p}{(} \PY{n}{assume\PYZus{}isolated} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}sinc\PYZsq{}} \PY{p}{)} \PY{k}{THEN}
-    \PY{k}{CALL }\PY{n}{init\PYZus{}V\PYZus{}ps\PYZus{}loc}\PY{p}{(}\PY{p}{)}
-  \PY{k}{ELSE}
-    \PY{k}{CALL }\PY{n}{init\PYZus{}V\PYZus{}ps\PYZus{}loc\PYZus{}G}\PY{p}{(}\PY{p}{)}
+  \PY{k}{SELECT }\PY{k}{CASE}\PY{p}{(} \PY{n}{cg\PYZus{}beta} \PY{p}{)}
+  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}Fletcher\PYZhy{}Reeves\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}FR\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}F\PYZhy{}R\PYZsq{}} \PY{p}{)}
+    \PY{n}{I\PYZus{}CG\PYZus{}BETA} \PY{o}{=} \PY{l+m+mi}{1}
+  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}Polak\PYZhy{}Ribiere\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}PR\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}P\PYZhy{}R\PYZsq{}} \PY{p}{)}
+    \PY{n}{I\PYZus{}CG\PYZus{}BETA} \PY{o}{=} \PY{l+m+mi}{2}
+  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}Hestenes\PYZhy{}Stiefel\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}HS\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}H\PYZhy{}S\PYZsq{}} \PY{p}{)}
+    \PY{n}{I\PYZus{}CG\PYZus{}BETA} \PY{o}{=} \PY{l+m+mi}{3}
+  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}Dai\PYZhy{}Yuan\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}DY\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}D\PYZhy{}Y\PYZsq{}} \PY{p}{)}
+    \PY{n}{I\PYZus{}CG\PYZus{}BETA} \PY{o}{=} \PY{l+m+mi}{4}
+  \PY{k}{CASE }\PY{n}{DEFAULT}
+    \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)} \PY{l+s+s1}{\PYZsq{}Using default values for I\PYZus{}CG\PYZus{}BETA = \PYZsq{}}\PY{p}{,} \PY{n}{I\PYZus{}CG\PYZus{}BETA}
+  \PY{k}{END }\PY{k}{SELECT}
+\end{Verbatim}
+\item
+Iterative diagonalization methods
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{SELECT }\PY{k}{CASE}\PY{p}{(} \PY{n}{diagonalization} \PY{p}{)}
+  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}davidson\PYZhy{}qe\PYZsq{}} \PY{p}{)}
+    \PY{n}{I\PYZus{}ALG\PYZus{}DIAG} \PY{o}{=} \PY{l+m+mi}{1}
+  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}davidson\PYZsq{}} \PY{p}{)}
+    \PY{n}{I\PYZus{}ALG\PYZus{}DIAG} \PY{o}{=} \PY{l+m+mi}{2}
+  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}LOBPCG\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}lobpcg\PYZsq{}} \PY{p}{)}
+    \PY{n}{I\PYZus{}ALG\PYZus{}DIAG} \PY{o}{=} \PY{l+m+mi}{3}
+  \PY{k}{CASE }\PY{n}{DEFAULT}
+    \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)} \PY{l+s+s1}{\PYZsq{}Using default values for I\PYZus{}ALG\PYZus{}DIAG = \PYZsq{}}\PY{p}{,} \PY{n}{I\PYZus{}ALG\PYZus{}DIAG}
+  \PY{k}{END }\PY{k}{SELECT}
+\end{Verbatim}
+\item
+Number of electronic steps (for direct minimization and SCF cycle)
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{IF}\PY{p}{(} \PY{n}{electron\PYZus{}maxstep} \PY{o}{/}\PY{o}{=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1} \PY{p}{)} \PY{k}{THEN}
+    \PY{n}{Emin\PYZus{}NiterMax} \PY{o}{=} \PY{n}{electron\PYZus{}maxstep}
+    \PY{n}{SCF\PYZus{}NiterMax} \PY{o}{=} \PY{n}{electron\PYZus{}maxstep}
   \PY{k}{ENDIF}
+\end{Verbatim}
+\item
+Mixing parameter.
 
-  \PY{c}{! Laplacian matrix}
-  \PY{k}{CALL }\PY{n}{init\PYZus{}nabla2\PYZus{}sparse}\PY{p}{(}\PY{p}{)}
-  \PY{c}{! ILU0 preconditioner based on kinetic matrix}
-  \PY{k}{CALL }\PY{n}{init\PYZus{}ilu0\PYZus{}prec}\PY{p}{(}\PY{p}{)}
-
-  \PY{k}{IF}\PY{p}{(} \PY{n}{FREE\PYZus{}NABLA2} \PY{p}{)} \PY{k}{THEN}
-    \PY{k}{CALL }\PY{n}{dealloc\PYZus{}nabla2\PYZus{}sparse}\PY{p}{(}\PY{p}{)}
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{IF}\PY{p}{(} \PY{n}{mixing\PYZus{}beta} \PY{o}{\PYZgt{}} \PY{l+m+mf}{0.}\PY{n}{d0} \PY{p}{)} \PY{k}{THEN}
+    \PY{n}{SCF\PYZus{}betamix} \PY{o}{=} \PY{n}{mixing\PYZus{}beta}
   \PY{k}{ENDIF}
+\end{Verbatim}
+\item
+Charge-density mixing in SCF
 
-  \PY{k}{IF}\PY{p}{(} \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE} \PY{o}{==} \PY{l+m+mi}{1} \PY{p}{)} \PY{k}{THEN}
-    \PY{k}{CALL }\PY{n}{init\PYZus{}Poisson\PYZus{}solve\PYZus{}ISF}\PY{p}{(}\PY{p}{)}
-  \PY{k}{ELSEIF}\PY{p}{(} \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE} \PY{o}{==} \PY{l+m+mi}{2} \PY{p}{)} \PY{k}{THEN}
-    \PY{k}{CALL }\PY{n}{init\PYZus{}Poisson\PYZus{}solve\PYZus{}DAGE}\PY{p}{(}\PY{p}{)}
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{SELECT }\PY{k}{CASE}\PY{p}{(} \PY{n}{mixing\PYZus{}mode} \PY{p}{)}
+  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}linear\PYZsq{}} \PY{p}{)}
+    \PY{n}{MIXTYPE} \PY{o}{=} \PY{l+m+mi}{0}
+  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}linear\PYZhy{}adaptive\PYZsq{}} \PY{p}{)}
+    \PY{n}{MIXTYPE} \PY{o}{=} \PY{l+m+mi}{1}
+  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}broyden\PYZhy{}elk\PYZsq{}} \PY{p}{)}
+    \PY{n}{MIXTYPE} \PY{o}{=} \PY{l+m+mi}{3}
+  \PY{k}{CASE }\PY{n}{DEFAULT}
+    \PY{n}{MIXTYPE} \PY{o}{=} \PY{l+m+mi}{1}
+  \PY{k}{END }\PY{k}{SELECT}
+\end{Verbatim}
+\item
+Total energy convergence criteria
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{IF}\PY{p}{(} \PY{n}{conv\PYZus{}thr} \PY{o}{\PYZgt{}} \PY{l+m+mf}{0.}\PY{n}{d0} \PY{p}{)} \PY{k}{THEN}
+    \PY{n}{Emin\PYZus{}ETOT\PYZus{}CONV\PYZus{}THR} \PY{o}{=} \PY{n}{conv\PYZus{}thr}
+    \PY{n}{SCF\PYZus{}ETOT\PYZus{}CONV\PYZus{}THR} \PY{o}{=} \PY{n}{conv\PYZus{}thr}
   \PY{k}{ENDIF}
 \PY{k}{END }\PY{k}{SUBROUTINE}
 \end{Verbatim}
+\end{itemize}
 
 \end{document}
 
