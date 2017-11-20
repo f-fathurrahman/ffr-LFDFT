@@ -1,5 +1,7 @@
-
-!!> Convert several options from \texttt{m_input_vars} to internal variables defined
+!!>
+!!> \section{Subroutine \texttt{setup\_options()}}
+!!>
+!!> Convert several options from \texttt{m\_input\_vars} to internal variables defined
 !!> in \texttt{m\_options}.
 !!>
 !!> TODO/FIXME:There might be name collision if there are the same variable defined
@@ -10,6 +12,10 @@ SUBROUTINE setup_options()
   USE m_options
   IMPLICIT NONE
 
+!!> \begin{itemize}
+!!>
+!!> \item
+!!> Option for the choice of method to solve Poisson equation
   IF( assume_isolated == 'sinc' ) THEN
     SELECT CASE( poisson_solver)
     CASE( 'ISF', 'isf' )
@@ -20,11 +26,12 @@ SUBROUTINE setup_options()
       I_POISSON_SOLVE = 1
     END SELECT
   ELSE
-    ! we are calculating periodic system, use default Poisson solver
+    ! we are calculating periodic system, use the default Poisson solver
     I_POISSON_SOLVE = 0
   ENDIF
 
-  !
+!!> \item
+!!> Option for the choice of method to solve Kohn-Sham equation
   SELECT CASE( KS_Solve )
   CASE( 'Emin_PCG', 'Emin_pcg', 'Emin-PCG', 'Emin-pcg', 'Emin_cg' )
     I_KS_SOLVE = 1
@@ -34,7 +41,8 @@ SUBROUTINE setup_options()
     WRITE(*,*) 'Using default value for I_KS_SOLVE = ', I_KS_SOLVE
   END SELECT
 
-  !
+!!> \item
+!!> How to calculate parameter $\beta$ in conjugate gradient method.
   SELECT CASE( cg_beta )
   CASE( 'Fletcher-Reeves', 'FR', 'F-R' )
     I_CG_BETA = 1
@@ -48,7 +56,8 @@ SUBROUTINE setup_options()
     WRITE(*,*) 'Using default values for I_CG_BETA = ', I_CG_BETA
   END SELECT
 
-  ! Diagonalization method
+!!> \item
+!!> Iterative diagonalization methods
   SELECT CASE( diagonalization )
   CASE( 'davidson-qe' )
     I_ALG_DIAG = 1
@@ -60,17 +69,21 @@ SUBROUTINE setup_options()
     WRITE(*,*) 'Using default values for I_ALG_DIAG = ', I_ALG_DIAG
   END SELECT
 
-  !
+!!> \item
+!!> Number of electronic steps (for direct minimization and SCF cycle)
   IF( electron_maxstep /= -1 ) THEN
     Emin_NiterMax = electron_maxstep
     SCF_NiterMax = electron_maxstep
   ENDIF
 
-  !
+!!> \item
+!!> Mixing parameter.
   IF( mixing_beta > 0.d0 ) THEN
     SCF_betamix = mixing_beta
   ENDIF
 
+!!> \item
+!!> Charge-density mixing in SCF
   SELECT CASE( mixing_mode )
   CASE( 'linear' )
     MIXTYPE = 0
@@ -82,10 +95,12 @@ SUBROUTINE setup_options()
     MIXTYPE = 1
   END SELECT
 
-  !
+!!> \item
+!!> Total energy convergence criteria
   IF( conv_thr > 0.d0 ) THEN
     Emin_ETOT_CONV_THR = conv_thr
     SCF_ETOT_CONV_THR = conv_thr
   ENDIF
 
 END SUBROUTINE
+!!> \end{itemize}
