@@ -1,4 +1,9 @@
 !!>
+!!> Welcome to the documentation of \texttt{ffr\_LFDFT}
+!!>
+!!> If you are reading this you might be interested to learn the internal
+!!> of this program.
+!!>
 !!> This is the main program for \texttt{ffr\_LFDFT}.
 !!>
 PROGRAM ffr_LFDFT

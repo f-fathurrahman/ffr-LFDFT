@@ -119,126 +119,84 @@
 \begin{document}
 
 
-\section{Subroutine \texttt{setup\_options()}}
+\section{Subroutine \texttt{init\_strfact\_shifted()}}
 
-Convert several options from \texttt{m\_input\_vars} to internal variables defined
-in \texttt{m\_options}.
+The structure factor $S_{f}(\mathbf{G})$ for atom $i_a$ is calculated as
+\begin{equation}
+S_{f,i_a}(\mathbf{G}) = \exp\left[ -\imath \mathbf{G}\cdot\mathbf{R}_{i_a}\right]
+\label{eq:strfact}
+\end{equation}
+where $\mathbf{G}$ is reciprocal vector and $R_{i_a}$ is position of $i_a$-th atom.
 
-TODO/FIXME:There might be name collision if there are the same variable defined
-in both modules. Need to think a better scheme for this.
+This equation can be simplified into
+\begin{equation}
+S_{f,i_s} = \sum_{i_a}^{N_{a,s}} S_{f,i_a}
+\end{equation}
+where the sum is done over number of atoms of species $i_s$, which is denoted
+by $N_{a,s}$
 
+Note that, in this subroutine the position is shifted to fit the usual FFT grid.
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{SUBROUTINE }\PY{n}{setup\PYZus{}options}\PY{p}{(}\PY{p}{)}
-  \PY{k}{USE }\PY{n}{m\PYZus{}input\PYZus{}vars}
-  \PY{k}{USE }\PY{n}{m\PYZus{}options}
+\PY{k}{SUBROUTINE }\PY{n}{init\PYZus{}strfact\PYZus{}shifted}\PY{p}{(}\PY{p}{)}
+  \PY{k}{USE }\PY{n}{m\PYZus{}atoms}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{Na} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{Natoms}\PY{p}{,} \PY{p}{\PYZam{}}
+                      \PY{n}{Xpos} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{AtomicCoords}\PY{p}{,} \PY{p}{\PYZam{}}
+                      \PY{n}{Nspecies}\PY{p}{,} \PY{p}{\PYZam{}}
+                      \PY{n}{atm2species}\PY{p}{,} \PY{p}{\PYZam{}}
+                      \PY{n}{strf} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{StructureFactor}
+  \PY{k}{USE }\PY{n}{m\PYZus{}LF3d}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{Ng} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{LF3d\PYZus{}Npoints}\PY{p}{,} \PY{p}{\PYZam{}}
+                     \PY{n}{Gv} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{LF3d\PYZus{}Gv}\PY{p}{,} \PY{p}{\PYZam{}}
+                     \PY{n}{grid\PYZus{}x} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{LF3d\PYZus{}grid\PYZus{}x}\PY{p}{,} \PY{p}{\PYZam{}}
+                     \PY{n}{grid\PYZus{}y} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{LF3d\PYZus{}grid\PYZus{}y}\PY{p}{,} \PY{p}{\PYZam{}}
+                     \PY{n}{grid\PYZus{}z} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{LF3d\PYZus{}grid\PYZus{}z}
   \PY{k}{IMPLICIT }\PY{k}{NONE}
+  \PY{c}{!}
+  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{ia}\PY{p}{,} \PY{n}{isp}\PY{p}{,} \PY{n}{ig}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{GX}\PY{p}{,} \PY{n}{shiftx}\PY{p}{,} \PY{n}{shifty}\PY{p}{,} \PY{n}{shiftz}
+  \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)}
+  \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)} \PY{l+s+s1}{\PYZsq{}Calculating structure factor: shifted to Fourier grid\PYZsq{}}
 \end{Verbatim}
 \begin{itemize}
 
 \item
-Option for the choice of method to solve Poisson equation
+Calculate the shift with respect to the usual FFT grid.
 
 \begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{IF}\PY{p}{(} \PY{n}{assume\PYZus{}isolated} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}sinc\PYZsq{}} \PY{p}{)} \PY{k}{THEN}
-    \PY{k}{SELECT }\PY{k}{CASE}\PY{p}{(} \PY{n}{poisson\PYZus{}solver}\PY{p}{)}
-    \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}ISF\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}isf\PYZsq{}} \PY{p}{)}
-      \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE} \PY{o}{=} \PY{l+m+mi}{1}
-    \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}DAGE\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}dage\PYZsq{}} \PY{p}{)}
-      \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE} \PY{o}{=} \PY{l+m+mi}{2}
-    \PY{k}{CASE }\PY{n}{DEFAULT}
-      \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE} \PY{o}{=} \PY{l+m+mi}{1}
-    \PY{k}{END }\PY{k}{SELECT}
-  \PY{k}{ELSE}
-    \PY{c}{! we are calculating periodic system, use the default Poisson solver}
-    \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE} \PY{o}{=} \PY{l+m+mi}{0}
-  \PY{k}{ENDIF}
+  \PY{n}{shiftx} \PY{o}{=} \PY{l+m+mf}{0.5}\PY{n}{d0}\PY{o}{*}\PY{p}{(} \PY{n}{grid\PYZus{}x}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{grid\PYZus{}x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)} \PY{p}{)}
+  \PY{n}{shifty} \PY{o}{=} \PY{l+m+mf}{0.5}\PY{n}{d0}\PY{o}{*}\PY{p}{(} \PY{n}{grid\PYZus{}y}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{grid\PYZus{}y}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)} \PY{p}{)}
+  \PY{n}{shiftz} \PY{o}{=} \PY{l+m+mf}{0.5}\PY{n}{d0}\PY{o}{*}\PY{p}{(} \PY{n}{grid\PYZus{}z}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{grid\PYZus{}z}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)} \PY{p}{)}
 \end{Verbatim}
 \item
-Option for the choice of method to solve Kohn-Sham equation
+Allocate memory for structure factor
 
 \begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{SELECT }\PY{k}{CASE}\PY{p}{(} \PY{n}{KS\PYZus{}Solve} \PY{p}{)}
-  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}Emin\PYZus{}PCG\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}Emin\PYZus{}pcg\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}Emin\PYZhy{}PCG\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}Emin\PYZhy{}pcg\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}Emin\PYZus{}cg\PYZsq{}} \PY{p}{)}
-    \PY{n}{I\PYZus{}KS\PYZus{}SOLVE} \PY{o}{=} \PY{l+m+mi}{1}
-  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}SCF\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}scf\PYZsq{}} \PY{p}{)}
-    \PY{n}{I\PYZus{}KS\PYZus{}SOLVE} \PY{o}{=} \PY{l+m+mi}{2}
-  \PY{k}{CASE }\PY{n}{DEFAULT}
-    \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)} \PY{l+s+s1}{\PYZsq{}Using default value for I\PYZus{}KS\PYZus{}SOLVE = \PYZsq{}}\PY{p}{,} \PY{n}{I\PYZus{}KS\PYZus{}SOLVE}
-  \PY{k}{END }\PY{k}{SELECT}
+  \PY{k}{ALLOCATE}\PY{p}{(} \PY{n}{strf}\PY{p}{(}\PY{n}{Ng}\PY{p}{,}\PY{n}{Nspecies}\PY{p}{)} \PY{p}{)}
 \end{Verbatim}
 \item
-How to calculate parameter $\beta$ in conjugate gradient method.
+Initialize to zero
 
 \begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{SELECT }\PY{k}{CASE}\PY{p}{(} \PY{n}{cg\PYZus{}beta} \PY{p}{)}
-  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}Fletcher\PYZhy{}Reeves\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}FR\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}F\PYZhy{}R\PYZsq{}} \PY{p}{)}
-    \PY{n}{I\PYZus{}CG\PYZus{}BETA} \PY{o}{=} \PY{l+m+mi}{1}
-  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}Polak\PYZhy{}Ribiere\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}PR\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}P\PYZhy{}R\PYZsq{}} \PY{p}{)}
-    \PY{n}{I\PYZus{}CG\PYZus{}BETA} \PY{o}{=} \PY{l+m+mi}{2}
-  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}Hestenes\PYZhy{}Stiefel\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}HS\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}H\PYZhy{}S\PYZsq{}} \PY{p}{)}
-    \PY{n}{I\PYZus{}CG\PYZus{}BETA} \PY{o}{=} \PY{l+m+mi}{3}
-  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}Dai\PYZhy{}Yuan\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}DY\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}D\PYZhy{}Y\PYZsq{}} \PY{p}{)}
-    \PY{n}{I\PYZus{}CG\PYZus{}BETA} \PY{o}{=} \PY{l+m+mi}{4}
-  \PY{k}{CASE }\PY{n}{DEFAULT}
-    \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)} \PY{l+s+s1}{\PYZsq{}Using default values for I\PYZus{}CG\PYZus{}BETA = \PYZsq{}}\PY{p}{,} \PY{n}{I\PYZus{}CG\PYZus{}BETA}
-  \PY{k}{END }\PY{k}{SELECT}
+  \PY{n}{strf}\PY{p}{(}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{)} \PY{o}{=} \PY{n+nb}{cmplx}\PY{p}{(}\PY{l+m+mf}{0.}\PY{n}{d0}\PY{p}{,}\PY{l+m+mf}{0.}\PY{n}{d0}\PY{p}{,}\PY{n+nb}{kind}\PY{o}{=}\PY{l+m+mi}{8}\PY{p}{)}
+\end{Verbatim}
+
+\item
+Implementation of equation \ref{eq:strfact} is done here.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{DO }\PY{n}{ia} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{,}\PY{n}{Na}
+    \PY{n}{isp} \PY{o}{=} \PY{n}{atm2species}\PY{p}{(}\PY{n}{ia}\PY{p}{)}
+    \PY{k}{DO }\PY{n}{ig} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{,}\PY{n}{Ng}
+      \PY{n}{GX} \PY{o}{=} \PY{p}{(}\PY{n}{Xpos}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{ia}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{shiftx}\PY{p}{)}\PY{o}{*}\PY{n}{Gv}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{ig}\PY{p}{)} \PY{o}{+} \PY{p}{(}\PY{n}{Xpos}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{ia}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{shifty}\PY{p}{)}\PY{o}{*}\PY{n}{Gv}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{ig}\PY{p}{)} \PY{o}{+} \PY{p}{\PYZam{}}
+           \PY{p}{(}\PY{n}{Xpos}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{n}{ia}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{shiftz}\PY{p}{)}\PY{o}{*}\PY{n}{Gv}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{n}{ig}\PY{p}{)}
+      \PY{n}{strf}\PY{p}{(}\PY{n}{ig}\PY{p}{,}\PY{n}{isp}\PY{p}{)} \PY{o}{=} \PY{n}{strf}\PY{p}{(}\PY{n}{ig}\PY{p}{,}\PY{n}{isp}\PY{p}{)} \PY{o}{+} \PY{n+nb}{cmplx}\PY{p}{(} \PY{n+nb}{cos}\PY{p}{(}\PY{n}{GX}\PY{p}{)}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{n+nb}{sin}\PY{p}{(}\PY{n}{GX}\PY{p}{)}\PY{p}{,} \PY{n+nb}{kind}\PY{o}{=}\PY{l+m+mi}{8} \PY{p}{)}
+    \PY{k}{ENDDO}
+  \PY{k}{ENDDO}
 \end{Verbatim}
 \item
-Iterative diagonalization methods
+Finish
 
 \begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{SELECT }\PY{k}{CASE}\PY{p}{(} \PY{n}{diagonalization} \PY{p}{)}
-  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}davidson\PYZhy{}qe\PYZsq{}} \PY{p}{)}
-    \PY{n}{I\PYZus{}ALG\PYZus{}DIAG} \PY{o}{=} \PY{l+m+mi}{1}
-  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}davidson\PYZsq{}} \PY{p}{)}
-    \PY{n}{I\PYZus{}ALG\PYZus{}DIAG} \PY{o}{=} \PY{l+m+mi}{2}
-  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}LOBPCG\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}lobpcg\PYZsq{}} \PY{p}{)}
-    \PY{n}{I\PYZus{}ALG\PYZus{}DIAG} \PY{o}{=} \PY{l+m+mi}{3}
-  \PY{k}{CASE }\PY{n}{DEFAULT}
-    \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)} \PY{l+s+s1}{\PYZsq{}Using default values for I\PYZus{}ALG\PYZus{}DIAG = \PYZsq{}}\PY{p}{,} \PY{n}{I\PYZus{}ALG\PYZus{}DIAG}
-  \PY{k}{END }\PY{k}{SELECT}
-\end{Verbatim}
-\item
-Number of electronic steps (for direct minimization and SCF cycle)
-
-\begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{IF}\PY{p}{(} \PY{n}{electron\PYZus{}maxstep} \PY{o}{/}\PY{o}{=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1} \PY{p}{)} \PY{k}{THEN}
-    \PY{n}{Emin\PYZus{}NiterMax} \PY{o}{=} \PY{n}{electron\PYZus{}maxstep}
-    \PY{n}{SCF\PYZus{}NiterMax} \PY{o}{=} \PY{n}{electron\PYZus{}maxstep}
-  \PY{k}{ENDIF}
-\end{Verbatim}
-\item
-Mixing parameter.
-
-\begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{IF}\PY{p}{(} \PY{n}{mixing\PYZus{}beta} \PY{o}{\PYZgt{}} \PY{l+m+mf}{0.}\PY{n}{d0} \PY{p}{)} \PY{k}{THEN}
-    \PY{n}{SCF\PYZus{}betamix} \PY{o}{=} \PY{n}{mixing\PYZus{}beta}
-  \PY{k}{ENDIF}
-\end{Verbatim}
-\item
-Charge-density mixing in SCF
-
-\begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{SELECT }\PY{k}{CASE}\PY{p}{(} \PY{n}{mixing\PYZus{}mode} \PY{p}{)}
-  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}linear\PYZsq{}} \PY{p}{)}
-    \PY{n}{MIXTYPE} \PY{o}{=} \PY{l+m+mi}{0}
-  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}linear\PYZhy{}adaptive\PYZsq{}} \PY{p}{)}
-    \PY{n}{MIXTYPE} \PY{o}{=} \PY{l+m+mi}{1}
-  \PY{k}{CASE}\PY{p}{(} \PY{l+s+s1}{\PYZsq{}broyden\PYZhy{}elk\PYZsq{}} \PY{p}{)}
-    \PY{n}{MIXTYPE} \PY{o}{=} \PY{l+m+mi}{3}
-  \PY{k}{CASE }\PY{n}{DEFAULT}
-    \PY{n}{MIXTYPE} \PY{o}{=} \PY{l+m+mi}{1}
-  \PY{k}{END }\PY{k}{SELECT}
-\end{Verbatim}
-\item
-Total energy convergence criteria
-
-\begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{IF}\PY{p}{(} \PY{n}{conv\PYZus{}thr} \PY{o}{\PYZgt{}} \PY{l+m+mf}{0.}\PY{n}{d0} \PY{p}{)} \PY{k}{THEN}
-    \PY{n}{Emin\PYZus{}ETOT\PYZus{}CONV\PYZus{}THR} \PY{o}{=} \PY{n}{conv\PYZus{}thr}
-    \PY{n}{SCF\PYZus{}ETOT\PYZus{}CONV\PYZus{}THR} \PY{o}{=} \PY{n}{conv\PYZus{}thr}
-  \PY{k}{ENDIF}
+  \PY{k}{CALL }\PY{n+nb}{flush}\PY{p}{(}\PY{l+m+mi}{6}\PY{p}{)}
 \PY{k}{END }\PY{k}{SUBROUTINE}
 \end{Verbatim}
 \end{itemize}
