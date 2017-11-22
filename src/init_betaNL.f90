@@ -39,8 +39,8 @@ SUBROUTINE init_betaNL()
               CALL calc_dr_periodic_1pnt( LL, atpos(:,ia), lingrid(:,ip), dr_vec )
               dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
             ELSE 
-              ! Note that calc_dr_1pnt already took the square root
-              CALL calc_dr_1pnt( atpos(:,ia), lingrid(:,ip), dr )
+              CALL calc_dr_vec_1pnt( atpos(:,ia), lingrid(:,ip), dr_vec )
+              dr = sqrt( dr_vec(1)**2 + dr_vec(2)**2 + dr_vec(3)**2 )
             ENDIF 
             !
             IF( dr <= Ps(isp)%rcut_NL(l) ) THEN

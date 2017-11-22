@@ -29,6 +29,21 @@ SUBROUTINE calc_dr( r0, Npoints, lingrid, dr )
 
 END SUBROUTINE
 
+
+SUBROUTINE calc_dr_vec_1pnt( r0, lingrid, dr_vec )
+
+  IMPLICIT NONE
+  !
+  REAL(8) :: r0(3)
+  REAL(8) :: lingrid(3)
+  REAL(8) :: dr_vec(3)
+  
+  dr_vec(1) = lingrid(1) - r0(1)
+  dr_vec(2) = lingrid(2) - r0(2)
+  dr_vec(3) = lingrid(3) - r0(3)
+
+END SUBROUTINE
+
 SUBROUTINE calc_dr_1pnt( r0, lingrid, dr )
 
   IMPLICIT NONE
