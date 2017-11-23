@@ -119,8 +119,10 @@ FUNCTION atom_znucl( symb ) RESULT( znucl )
   CASE('Ba', 'Ba_sc')
     znucl = 56.d0
   !
-  ! Lanthanide skipped for the moment ...
+  ! Lanthanide and actinide are not complete
   !
+  CASE('Ce', 'Ce_sc')
+    znucl = 58.d0
   CASE('Hf', 'Hf_sc')
     znucl = 72.d0
   CASE('Ta', 'Ta_sc')
