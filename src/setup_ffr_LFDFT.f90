@@ -9,6 +9,10 @@ SUBROUTINE setup_ffr_LFDFT()
 
   USE m_options, ONLY : FREE_NABLA2, I_POISSON_SOLVE
   USE m_input_vars, ONLY : assume_isolated
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
+  USE m_states, ONLY : Nstates, &
+                       evals => KS_evals, &
+                       evecs => KS_evecs 
   !
   INTEGER :: Narg   ! number of argument
   INTEGER :: iargc  ! needed for several compilers
@@ -65,8 +69,19 @@ SUBROUTINE setup_ffr_LFDFT()
   CALL init_betaNL()
 
 !!> \item
-!!> This call will initialize electronic states and occupation numbers.
+!!> This call will determined number of occupied and unoccupied states.
+!!> It will also initialize occupation numbers.
+!!>
+!!> Note: Memories for eigenvectors and eigenvalues of KS equations are not
+!!> allocated here.
   CALL init_states()
+
+!!> \item
+!!> Allocate KS eigenvectors and eigenvalues.
+!!>
+!!> This step should be done in some wrapper subroutine, however, for current use-case
+!!> this is suffice.
+  ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
 
 !!> \item
 !!> This call will initialize and calculate structure factor $S_{f}(\mathbf{G})$.
