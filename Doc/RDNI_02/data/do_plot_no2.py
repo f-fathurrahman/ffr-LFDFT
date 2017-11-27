@@ -1,14 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-FILEPLOT = '../images/A_10_alpha_3.pdf'
+FILEPLOT = '../images/A_10_alpha_2.pdf'
 
 from matplotlib import rc
 rc('font',**{'family':'serif', 'size':16})
 rc('text', usetex=True)
 
-dat1 = np.loadtxt('A_10_alpha_3_oct.dat')
-dat2 = np.loadtxt('A_10_alpha_3_LF.dat')
+dat1 = np.loadtxt('A_10_alpha_2_oct.dat')
+dat2 = np.loadtxt('A_10_alpha_2_LF.dat')
 
 plt.clf()
 plt.plot( dat1[:,0], dat1[:,1], marker='o', linewidth=2, label='OCTOPUS' )

@@ -1,0 +1,194 @@
+\documentclass[8pt]{beamer}
+
+\begin{document}
+
+\title{Development of a Computer Program to Solve Electronic Structure using
+Lagrange Basis Functions}
+\author{Fadjar Fathurrahman}
+\date{29 November 2017}
+
+\frame{\titlepage}
+
+\begin{frame}
+\frametitle{Outline}
+
+\begin{itemize}
+\item Kohn-Sham equations
+\item Lagrange basis functions
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Total energy functional}
+
+Within LDA, Kohn-Sham energy functional can be written as:
+\begin{equation}
+E_{\mathrm{LDA}}\left[\{\psi_{i}(\mathbf{r})\}\right] =
+E_{\mathrm{kin}} + E_{\mathrm{ion}} + E_{\mathrm{Ha}} + E_{\mathrm{xc}}
+\end{equation}
+with the following energy terms.
+
+(1) kinetic energy:
+\begin{equation}
+E_{\mathrm{kin}} = -\frac{1}{2}\sum_{i_{st}}
+\int f_{i_{st}}
+\psi_{i_{st}}^{*}(\mathbf{r})\,\nabla^2\,\psi_{i_{st}}(\mathbf{r})
+\,\mathrm{d}\mathbf{r}
+\end{equation}
+
+(2) ion-electron interaction energy:
+\begin{equation}
+E_{\mathrm{ion}} = \int V_{\mathrm{ion}}(\mathbf{r})\, \rho(\mathbf{r})\,
+\mathrm{d}\mathbf{r}
+\end{equation}
+
+(3) Hartree (electrostatic) energy:
+\begin{equation}
+E_{\mathrm{Ha}} = \int \frac{1}{2}
+\dfrac{\rho(\mathbf{r})\rho(\mathbf{r}')}
+{\left|\mathbf{r} - \mathbf{r}'\right|}
+\mathrm{d}\mathbf{r}\mathrm{d}\mathbf{r}'
+\end{equation}
+
+(4) Exchange-correlation energy (using LDA):
+\begin{equation}
+E_{\mathrm{xc}} = \int \epsilon_{\mathrm{xc}}\left[\rho(\mathbf{r})\right]
+\rho(\mathbf{r})\,\mathrm{d}\mathbf{r}
+\end{equation}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Kohn-Sham equations}
+
+Central to the density functional theory is the so-called Kohn-Sham
+equation.
+This equation can be written as:
+\begin{equation}
+\left[
+-\frac{1}{2}\nabla^2  + V_{\mathrm{KS}}(\mathbf{r})
+\right] \psi_{i_{st}}(\mathbf{r}) =
+\epsilon_{i_{st}}\psi_{i_{st}}(\mathbf{r})
+\end{equation}
+where $\epsilon{i_{st}}$ and $\psi_{i_{st}}(\mathbf{r})$ is known as Kohn-Sham
+eigenvalues and eigenvectors (orbitals).
+Quantity $V_{\mathrm{KS}}$ is called the Kohn-Sham potential, which can be
+written as sum of several potentials:
+\begin{equation}
+V_{\mathrm{KS}}(\mathbf{r}) = V_{\mathrm{ion}}(\mathbf{r}) + V_{\mathrm{Ha}}(\mathbf{r})
++ V_{\mathrm{xc}}(\mathbf{r})
+\label{eq:KS-pot}
+\end{equation}
+
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Lagrange basis functions}
+
+For a given interval $[0,L]$, with $L>0$, the grid points $x_{i}$
+appropriate for periodic Lagrange function are given by:
+
+\begin{equation}
+x_{i}=\frac{L}{2}\frac{2i-1}{N}
+\end{equation}
+with $i=1,\ldots,N$. Number of points $N$ should be an odd number.
+
+The periodic cardinal functions $L_{i}^{\mathrm{per}}(x)$, defined
+at grid point $i$ are given by:
+\begin{equation}
+L_{i}^{\mathrm{per}}(x)=\frac{1}{\sqrt{NL}}\sum_{n=1}^{N}\cos\left(\frac{\pi}{L}(2n-N-1)(x-x_{i})\right).
+\end{equation}
+The expansion of periodic function in terms of Lagrange functions:
+\begin{equation}
+f(x)=\sum_{i=1}^{N}c_{i}L_{i}^{\mathrm{per}}(x)
+\end{equation}
+with expansion coefficients $c_{i}=\sqrt{L/N}f(x_{i})$. When doing
+variational calculation, the cofficients $c_{i}$ are the variational
+parameters. The actual function values $f(x_{i}$) at grid points
+$x_{i}$ is obtained by $f(x_{i})=\sqrt{N/L}c_{i}$. The prefactor
+is sometimes abbreviated by $h=L/N$ and is also referred to as scaling
+factor.
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Cluster LF}
+
+For a given interval $[A,B]$, with $B>A$, the grid points $x_{i}$
+appropriate for cluster Lagrange function are given by:
+\[
+x_{i}=A+\frac{B-A}{N+1}i
+\]
+where $i=1,\ldots,N$. Number of points $N$ can be either odd or
+even number.
+
+The cluster Lagrange functions $L_{i}^{\mathrm{clu}}(x)$, defined
+at grid point $i$ are given by:
+\begin{equation}
+L_{i}^{\mathrm{clu}}(x)=\frac{2}{\sqrt{(N+1)(B-A)}}\sum_{n=1}^{N}\sin\left(k_{n}(x_{i}-A)\right)\sin\left(k_{n}(x-A)\right).
+\end{equation}
+where $k_{n}=\pi n/(B-A)$. The expansion of a function $f(x)$ in
+terms of cluster Lagrange functions:
+\begin{equation}
+f(x)=\sum_{i=1}^{N}c_{i}L_{i}^{\mathrm{clu}}(x)
+\end{equation}
+with expansion coefficients $c_{i}=\sqrt{(B-A)/(N+1)}f(x_{i})$. When
+doing variational calculation, the cofficients $c_{i}$ are the variational
+parameters. The actual function values $f(x_{i}$) at grid points
+$x_{i}$ is obtained by $f(x_{i})=\sqrt{(N+1)/(B-A)}c_{i}$.
+
+Matrix elements $D_{jl}^{(2)}$ of the second derivatives for cluster
+Lagrange functions are
+\begin{equation}
+D_{jl}^{(2)}=\begin{cases}
+-\dfrac{1}{2}\left(\dfrac{\pi}{B-A}\right)^{2}\dfrac{2(N+1)^{2}+1}{3}-\dfrac{1}{\sin^{2}\left[\pi j/(N+1)\right]} & j=l\\
+-\dfrac{1}{2}\left(\dfrac{\pi}{B-A}\right)^{2}(-1)^{j-l}\left[\dfrac{1}{\sin^{2}\left[\dfrac{\pi(j-l)}{2(N+1)}\right]}-\dfrac{1}{\sin^{2}\left[\dfrac{\pi(j+l)}{2(N+1)}\right]}\right] & j\neq l
+\end{cases}
+\end{equation}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Expansion in Lagrange basis function}
+
+in 1D
+Schrodinger equation
+blah
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Solution to Kohn-Sham equations}
+
+Self-consistent field
+
+Direct minimization
+
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Result for Gaussian potentials}
+
+Gaussian potential
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Hydrogen atom}
+
+Gaussian potential
+
+\end{frame}
+
+
+\end{document}
+
