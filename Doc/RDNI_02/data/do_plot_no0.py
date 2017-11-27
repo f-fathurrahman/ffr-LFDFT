@@ -3,14 +3,14 @@ import matplotlib.pyplot as plt
 import os
 
 PRE = '../images/'
-BASEFILE = 'A_10_alpha_1.pdf'
+BASEFILE = 'A_10_alpha_0_5.pdf'
 
 from matplotlib import rc
 rc('font',**{'family':'serif', 'size':16})
 rc('text', usetex=True)
 
-dat1 = np.loadtxt('A_10_alpha_1_oct.dat')
-dat2 = np.loadtxt('A_10_alpha_1_LF.dat')
+dat1 = np.loadtxt('A_10_alpha_0.5_oct.dat')
+dat2 = np.loadtxt('A_10_alpha_0.5_LF.dat')
 
 FILEPLOT = PRE + BASEFILE
 
@@ -39,7 +39,7 @@ plt.grid()
 plt.legend(loc='upper left')
 plt.xlabel('Grid spacing (bohr)')
 plt.ylabel('Convergence (log(Ha))')
-plt.text(0.6, -3.5, "$\\alpha=1.0$", fontsize=24)
+plt.text(0.7, -4.5, "$\\alpha=0.5$", fontsize=24)
 plt.savefig(CONV_FILEPLOT)
 
 os.system('pdfcrop ' + CONV_FILEPLOT + ' ' + CONV_FILEPLOT)

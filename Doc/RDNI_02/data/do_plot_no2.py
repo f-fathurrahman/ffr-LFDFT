@@ -39,6 +39,7 @@ plt.grid()
 plt.legend(loc='upper left')
 plt.xlabel('Grid spacing (bohr)')
 plt.ylabel('Convergence (log(Ha))')
+plt.text(0.6, -3.5, "$\\alpha=2.0$", fontsize=24)
 plt.savefig(CONV_FILEPLOT)
 
 os.system('pdfcrop ' + CONV_FILEPLOT + ' ' + CONV_FILEPLOT)

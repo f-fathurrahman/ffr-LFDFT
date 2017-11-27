@@ -1,5 +1,54 @@
 \section{Implementation}
 
+Using Lagrange basis function \ref{eq:LF_p_1d} and its extension in 3d, Kohn-Sham orbitals
+at point $\mathbf{r} = (x,y,z)$ can be written as
+\begin{equation}
+\psi_{i_{st}}(x,y,z) = \sum_{\alpha}^{N_x} \sum_{\beta}^{N_y} \sum_{\gamma}^{N_z}
+C_{\alpha\beta\gamma}^{i_{st}} L_{\alpha}(x) L_{\beta}(y) L_{\gamma}(z)
+\end{equation}
+%
+Using this expansion, kinetic operator can be written as
+\begin{align}
+T_{\alpha\beta\gamma}^{\alpha'\beta'\gamma'} & = -\frac{1}{2} \sum_{i_{st}} f_{i_{st}}
+\Braket{ \psi_{i_{st}} | \nabla^2 | \psi_{i} } \\
+& =
+-\frac{1}{2}
+\sum_{i_{st}} f_{i_{st}} \sum_{\alpha\alpha'} \sum_{\beta\beta'} \sum_{\gamma\gamma'}
+C^{i_{st}}_{\alpha\beta\gamma} \mathbb{L}_{\alpha\beta\gamma}^{\alpha'\beta'\gamma'}
+C^{i_{st}}_{\alpha'\beta'\gamma'}
+\end{align}
+%
+were the Laplacian matrix $\mathbb{L}_{\alpha\beta\gamma}^{\alpha'\beta'\gamma'}$
+has the following form:
+\begin{multline}
+\mathbb{L}_{\alpha\beta\gamma}^{\alpha'\beta'\gamma'} =
+D^{(2)}_{\alpha\alpha'}\delta_{\beta\beta'}\delta_{\gamma\gamma'} +
+D^{(2)}_{\beta\beta'}\delta_{\alpha\alpha'}\delta_{\gamma\gamma'} + \\
+D^{(2)}_{\gamma\gamma'}\delta_{\alpha\alpha'}\delta_{\beta\beta'}
+\end{multline}
+%
+Specifically, for periodic Lagrange basis function $D^{(2)}_{ij}$, $i, j = \alpha, \beta, \gamma$
+can be written as follows.
+\begin{multline}
+D^{(2)}_{ij} = -\left( \frac{2\pi}{L} \right)^2 \frac{N'}{3} \left( N' + 1 \right) \delta_{ij} \\
++ \dfrac{ \left(\dfrac{2\pi}{L}\right)^2 (-1)^{i-j}\cos\left[\dfrac{\pi(i-j)}{N}\right]}
+{2\sin^2\left[\dfrac{\pi(i-j)}{N}\right]}
+(1-\delta_{nn'})
+\label{eq:kin1d_p}
+\end{multline}
+where $N' = (N-1)/2$.
+
+The matrix representation of kinetic operator is sparse.
+
+The remaining potential terms which are local have very simple matrix form, i.e.
+diagonal. The action of potential operator to Kohn-Sham orbital at point
+$(r_{\alpha\beta\gamma})$ thus can be
+obtained by pointwise multiplication with the potential on that point:
+\begin{equation}
+V_{\mathrm{KS}}(r_{\alpha\beta\gamma}) = V_{\mathrm{ion}}(r_{\alpha\beta\gamma}) +
+V_{\mathrm{Ha}}(r_{\alpha\beta\gamma}) + V_{\mathrm{xc}}(r_{\alpha\beta\gamma})
+\end{equation}
+
 We have implemented a program to solve Kohn-Sham equation using Lagrange basis functions.
 The program that we have implemented can be found in public repository:
 \url{https://github.com/f-fathurrahman/ffr-LFDFT}.

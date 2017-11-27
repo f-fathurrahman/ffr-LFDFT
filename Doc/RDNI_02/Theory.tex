@@ -52,7 +52,7 @@ results in the so-called Kohn-Sham equation:
 \right] \psi_{i_{st}}(\mathbf{r}) =
 \epsilon_{i_{st}}\psi_{i_{st}}(\mathbf{r})
 \end{equation}
-where $\epsilon{i_{st}}$ and $\psi_{i_{st}}(\mathbf{r})$ is known as Kohn-Sham
+where $\epsilon_{i_{st}}$ and $\psi_{i_{st}}(\mathbf{r})$ is known as Kohn-Sham
 eigenvalues and eigenvectors (orbitals).
 Quantity $V_{\mathrm{KS}}$ is called the Kohn-Sham potential, which can be
 written as sum of several potentials:
@@ -99,7 +99,32 @@ The last term in Equation \eqref{eq:KS-pot} is exchange-correlation potential.
 \subsection{Lagrange basis functions}
 
 Use of Lagrange basis functions in electronic structure calculation is relatively new.
-Familiy:
+Family:
+
+For a given interval $[0,L]$, with $L>0$, the grid points $x_{i}$
+appropriate for periodic Lagrange function are given by:
+
+\begin{equation}
+x_{i}=\frac{L}{2}\frac{2i-1}{N}
+\end{equation}
+with $i=1,\ldots,N$. Number of points $N$ should be an odd number.
+
+The periodic cardinal functions $L_{i}^{\mathrm{per}}(x)$, defined
+at grid point $i$ are given by:
+\begin{equation}
+L_{i}^{\mathrm{per}}(x)=\frac{1}{\sqrt{NL}}\sum_{n=1}^{N}\cos\left(\frac{\pi}{L}(2n-N-1)(x-x_{i})\right).
+\label{eq:LF_p_1d}
+\end{equation}
+The expansion of periodic function in terms of Lagrange functions:
+\begin{equation}
+f(x)=\sum_{i=1}^{N}c_{i}L_{i}^{\mathrm{per}}(x)
+\end{equation}
+with expansion coefficients $c_{i}=\sqrt{L/N}f(x_{i})$. When doing
+variational calculation, the cofficients $c_{i}$ are the variational
+parameters. The actual function values $f(x_{i}$) at grid points
+$x_{i}$ is obtained by $f(x_{i})=\sqrt{N/L}c_{i}$. The prefactor
+is sometimes abbreviated by $h=L/N$ and is also referred to as scaling
+factor.
 
 In this work, we will be using periodic Lagrange functions.
 

@@ -1,15 +1,13 @@
-\documentclass[%
-reprint, floatfix, amsmath, amssymb, aps]{revtex4-1}
+\documentclass[reprint, floatfix, amsmath, amssymb, aps]{revtex4-1}
 
 \usepackage{graphicx}
 \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
 \usepackage[utf8x]{inputenc}
 \usepackage{hyperref}
+\usepackage{braket}
 \usepackage{mhchem}
 
 \begin{document}
-
-
 
 \title{Development of a computer program for electronic structure calculation using Lagrange basis functions}
 \author{Fadjar Fathurrahman, Hermawan K. Dipojono}
@@ -24,10 +22,12 @@ especially at nanoscale where quantum nature of electrons might play important r
 to determine material properties. Among various methods for electronic structure calculation,
 density functional theory (DFT) based on Kohn-Sham equations is considered to be a popular one.
 In the the implementation to solve Kohn-Sham equations, single-electron wave function must be
-represented as an expansion of basis functions or some discretization schemes. Several
-existing computer programs for DFT calculations, such as  Quantum Espresso and Gaussian09,
+represented as an expansion of basis functions or discretized using
+some discretization schemes. Several
+existing computer programs for DFT calculations, such as
+\textsc{Quantum Espresso} and \textsc{Gaussian09},
 expand single-electron wave function using plane wave and Gaussian functions, respectively.
-Others, such as Octopus and GPAW use discretization based on finite-difference scheme.
+Others, such as \textsc{Octopus} and GPAW use discretization based on finite-difference scheme.
 In this article, we report our initial effort to implement a new computer program to
 solve Kohn-Sham equations using expansion in Lagrange basis functions (LFs).
 Use of this basis set in Kohn-Sham equation results in matrix eigenproblem which
