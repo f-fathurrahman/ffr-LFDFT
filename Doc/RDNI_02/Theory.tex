@@ -1,0 +1,109 @@
+\section{Theory}
+
+\subsection{Kohn-Sham density functional theory}
+
+Within LDA, Kohn-Sham energy functional can be written as \cite{Kohn1965}:
+\begin{equation}
+E_{\mathrm{LDA}}\left[\{\psi_{i}(\mathbf{r})\}\right] =
+E_{\mathrm{kin}} + E_{\mathrm{ion}} + E_{\mathrm{Ha}} + E_{\mathrm{xc}}
+\label{eq:KS_ene_func}
+\end{equation}
+with the following energy terms.
+\begin{itemize}
+\item Kinetic energy:
+\begin{equation}
+E_{\mathrm{kin}} = -\frac{1}{2}\sum_{i_{st}}
+\int f_{i_{st}}
+\psi_{i_{st}}^{*}(\mathbf{r})\,\nabla^2\,\psi_{i_{st}}(\mathbf{r})
+\,\mathrm{d}\mathbf{r}
+\end{equation}
+%
+\item ion-electron interaction energy:
+\begin{equation}
+E_{\mathrm{ion}} = \int V_{\mathrm{ion}}(\mathbf{r})\, \rho(\mathbf{r})\,
+\mathrm{d}\mathbf{r}
+\end{equation}
+%
+\item Hartree (electrostatic) energy:
+\begin{equation}
+E_{\mathrm{Ha}} = \int \frac{1}{2}
+\dfrac{\rho(\mathbf{r})\rho(\mathbf{r}')}
+{\left|\mathbf{r} - \mathbf{r}'\right|}
+\mathrm{d}\mathbf{r}\mathrm{d}\mathbf{r}'
+\end{equation}
+%
+\item Exchange-correlation energy (using LDA):
+\begin{equation}
+E_{\mathrm{xc}} = \int \epsilon_{\mathrm{xc}}\left[\rho(\mathbf{r})\right]
+\rho(\mathbf{r})\,\mathrm{d}\mathbf{r}
+\end{equation}
+%
+\end{itemize}
+
+Application of variational principle to energy functional \ref{eq:KS_ene_func}
+with the constraint
+\begin{equation}
+\int \psi^{*}_{i_{st}}(\mathbf{r}) \psi_{i_{st}}(\mathbf{r})\,\mathrm{d}\mathbf{r}
+\end{equation}
+results in the so-called Kohn-Sham equation:
+\begin{equation}
+\left[
+-\frac{1}{2}\nabla^2  + V_{\mathrm{KS}}(\mathbf{r})
+\right] \psi_{i_{st}}(\mathbf{r}) =
+\epsilon_{i_{st}}\psi_{i_{st}}(\mathbf{r})
+\end{equation}
+where $\epsilon{i_{st}}$ and $\psi_{i_{st}}(\mathbf{r})$ is known as Kohn-Sham
+eigenvalues and eigenvectors (orbitals).
+Quantity $V_{\mathrm{KS}}$ is called the Kohn-Sham potential, which can be
+written as sum of several potentials:
+\begin{equation}
+V_{\mathrm{KS}}(\mathbf{r}) = V_{\mathrm{ion}}(\mathbf{r}) + V_{\mathrm{Ha}}(\mathbf{r})
++ V_{\mathrm{xc}}(\mathbf{r})
+\label{eq:KS-pot}
+\end{equation}
+
+$V_{\mathrm{ion}}$ denotes attractive potential between ion (or atomic nuclei)
+with electrons. This potential can be written as:
+\begin{equation}
+V_{\mathrm{ion}}(\mathrm{r}) =
+\sum_{I}^{N_{\mathrm{atoms}}}
+\frac{Z_{I}}{ \left| \mathbf{r} - \mathbf{R}_{I} \right| }
+\end{equation}
+This potential is Coulombic and has singularities
+at the ionic centers. It is generally difficult to describe this potential
+numerically, so it is common to replace the full Coulombic potential
+with softer potential which is known as pseudopotential.
+There are various types or flavors of pseudopotentials.
+In the current implementation, ion-electron potential, $V_{\mathrm{ion}}$
+is treated by pseudopotential. HGH-type pseudopotential is employed due to the
+the availability of analytic forms both in real and reciprocal space.
+
+$V_{\mathrm{Ha}}$ is the classical Hartree potential. It is defined as
+\begin{equation}
+V_{\mathrm{Ha}}(\mathbf{r}) = \int
+\frac{\rho(\mathbf{r}')}
+{\mathbf{r} - \mathbf{r}'}\,\mathrm{d}\mathbf{r}',
+\end{equation}
+where $\rho(\mathbf{r})$ denotes electronic density:
+\begin{equation}
+\rho(\mathbf{r}) = \sum_{i_{st}=1}^{N_{\mathrm{occ}}}
+f_{i_{st}}
+\psi^{*}_{i_{st}}(\mathbf{r}) \psi_{i_{st}}(\mathbf{r})
+\end{equation}
+Alternatively, Hartree potential can also be obtained via solving Poisson equation:
+\begin{equation}
+\nabla^{2} V_{\mathrm{Ha}}(\mathbf{r}) = -4\pi \rho(\mathbf{r})
+\end{equation}
+The last term in Equation \eqref{eq:KS-pot} is exchange-correlation potential.
+
+\subsection{Lagrange basis functions}
+
+Use of Lagrange basis functions in electronic structure calculation is relatively new.
+Familiy:
+
+In this work, we will be using periodic Lagrange functions.
+
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{images/plot_LF_p_N_5.pdf}
+\end{figure}
+
