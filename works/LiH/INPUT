@@ -10,9 +10,9 @@
   A = 8.46683536902
   B = 8.46683536902
   C = 8.46683536902
-  nr1 = 45
-  nr2 = 45
-  nr3 = 45
+  nr1 = 11
+  nr2 = 11
+  nr3 = 11
 /
 
 &ELECTRONS
@@ -21,11 +21,11 @@
   electron_maxstep = 150
   mixing_beta = 0.5
   diagonalization = 'LOBPCG'
-  startingwfc = 'atomic'
+  startingwfc = 'random'
 /
 
 ATOMIC_SPECIES
-Li   3.0  Li_sc.hgh
+Li   3.0  Li.hgh
 H    1.0  H.hgh
 
 ATOMIC_POSITIONS angstrom

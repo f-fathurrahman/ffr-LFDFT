@@ -1,4 +1,5 @@
-for nn in 11 13 15 17 19 21 23 27 33 35 39 41 45 49 55
+#for nn in 11 13 15 17 19 21 23 27 33 35 39 41 45 49 55
+for nn in 57 59 61 63
 do
 
 cat << EOF > INPUT
@@ -9,8 +10,8 @@ cat << EOF > INPUT
 
 &SYSTEM
   ibrav = 8
-  nat = 2
-  ntyp = 2
+  nat = 1
+  ntyp = 1
   A = 8.46683536902
   B = 8.46683536902
   C = 8.46683536902
@@ -28,12 +29,10 @@ cat << EOF > INPUT
 /
 
 ATOMIC_SPECIES
-Li   3.0  Li.hgh
-H    1.0  H.hgh
+Pd   1.0  Pd.hgh
 
 ATOMIC_POSITIONS angstrom
-Li      0.0       0.0       5.04089768
-H       0.0       0.0       3.42593768
+Pd   4.23341768       4.23341768       4.23341768
 
 EOF
 
