@@ -1,5 +1,12 @@
 \section{Implementation}
 
+In this section, we wil describe our implementation of various terms 
+in Kohn-Sham equations using Lagrange basis functions.
+The computer program which contains our implementation can be found in public
+repository: \url{https://github.com/f-fathurrahman/ffr-LFDFT}.
+
+\subsection{Kohn-Sham equations in Lagrange basis functions representation}
+
 Using Lagrange basis function \ref{eq:LF_p_1d} and its extension in 3d, Kohn-Sham orbitals
 at point $\mathbf{r} = (x,y,z)$ can be written as
 \begin{equation}
@@ -49,6 +56,48 @@ V_{\mathrm{KS}}(r_{\alpha\beta\gamma}) = V_{\mathrm{ion}}(r_{\alpha\beta\gamma})
 V_{\mathrm{Ha}}(r_{\alpha\beta\gamma}) + V_{\mathrm{xc}}(r_{\alpha\beta\gamma})
 \end{equation}
 
-We have implemented a program to solve Kohn-Sham equation using Lagrange basis functions.
-The program that we have implemented can be found in public repository:
-\url{https://github.com/f-fathurrahman/ffr-LFDFT}.
+\subsection{Methods to solve Kohn-Sham equations}
+
+We implement two methods to solve the Kohn-Sham equations, namely
+via the self-consistent field (SCF) iterations and
+direct energy minimization.
+
+Outline of SCF iterations:
+\begin{itemize}
+\item Guess density $\rho(\mathbf{r})$
+\item Iterate until convergence
+\begin{itemize}
+\item Calculate Kohn-Sham potentials $V_{\mathrm{KS}}$ and build the Kohn-Sham
+Hamiltonian $H_{\mathrm{KS}}$
+\item Diagonalize $H_{\mathrm{KS}}$ to obtain $\mathrm{\psi_{i_{st}}}(\mathbf{r})$
+and $\epsilon_{i_{st}}$.
+\item Calculate charge density and total energy. If the calculation converges
+the stop the calculation, if not iterate.
+\end{itemize}
+\end{itemize}
+
+Outline of direct minimization, using 
+\begin{itemize}
+\item Generate guess Kohn-Sham orbitals, orthonormalize if needed.
+\item Calculate charge density, build Kohn-Sham potential and calculate total energy
+for this
+\item Iterate until convergence:
+%
+\begin{itemize}
+%
+\item Calculate Kohn-Sham electronic gradient $\mathbf{g}_{\psi}$ and the preconditioned
+gradient $\mathbf{Kg}_{\psi}$ where $\mathbf{K}$ is a preconditioner.
+%
+\item Calculate search direction:
+\begin{equation}
+\beta = \dfrac{\mathbf{g}_{\psi}^{\dagger}\mathbf{Kg}_{\psi}}
+{\mathbf{g}_{\psi,\mathrm{prev}}^{\dagger}\mathbf{Kg}_{\psi,\mathrm{prev}}}
+\end{equation}
+If $\mathbf{g}_{\psi,\mathrm{prev}}$ is not available (first iteration) then set
+$\beta = 0$.
+%
+\item Calculate new direction:
+\begin{equation}
+\end{itemize}
+%
+\end{itemize}

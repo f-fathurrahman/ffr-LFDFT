@@ -2,15 +2,23 @@
 
 \subsection{Kohn-Sham density functional theory}
 
-Within LDA, Kohn-Sham energy functional can be written as \cite{Kohn1965}:
+Kohn-Sham density functional theory, total energy of a system of interacting
+electrons can be written as \cite{Kohn1965}:
 \begin{equation}
-E_{\mathrm{LDA}}\left[\{\psi_{i}(\mathbf{r})\}\right] =
+E_{\mathrm{tot}}\left[\{\psi_{i}(\mathbf{r})\},\rho(\mathbf{r})\right] =
 E_{\mathrm{kin}} + E_{\mathrm{ion}} + E_{\mathrm{Ha}} + E_{\mathrm{xc}}
 \label{eq:KS_ene_func}
 \end{equation}
-with the following energy terms.
-\begin{itemize}
-\item Kinetic energy:
+where $\{\psi_{i}(\mathbf{r})\}$ is a set of single-electron wave functions or
+Kohn-Sham orbitals
+and $\rho(\mathbf{r})$ is electronic density:
+\begin{equation}
+\rho(\mathbf{r}) = \sum_{i_{st} = 1}^{N_{st}} f_{i_{st}} \psi^{*}_{i_{st}}(\mathbf{r})
+\psi_{i_{st}}(\mathbf{r})
+\end{equation}
+
+$E_{\mathrm{kin}}$ is kinetic energy of independent electrons described by
+Kohn-Sham orbitals:
 \begin{equation}
 E_{\mathrm{kin}} = -\frac{1}{2}\sum_{i_{st}}
 \int f_{i_{st}}
@@ -18,32 +26,33 @@ E_{\mathrm{kin}} = -\frac{1}{2}\sum_{i_{st}}
 \,\mathrm{d}\mathbf{r}
 \end{equation}
 %
-\item ion-electron interaction energy:
+$E_{\mathrm{ion}}(\mathbf{r})$ represents ion-electron interaction energy:
 \begin{equation}
 E_{\mathrm{ion}} = \int V_{\mathrm{ion}}(\mathbf{r})\, \rho(\mathbf{r})\,
 \mathrm{d}\mathbf{r}
 \end{equation}
 %
-\item Hartree (electrostatic) energy:
+$E_{\mathrm{Ha}}$ represents energy of classical distribution
+of charges (electrons) density which is also known as Hartree energy:
 \begin{equation}
-E_{\mathrm{Ha}} = \int \frac{1}{2}
+E_{\mathrm{Ha}} = \frac{1}{2} \int 
 \dfrac{\rho(\mathbf{r})\rho(\mathbf{r}')}
 {\left|\mathbf{r} - \mathbf{r}'\right|}
 \mathrm{d}\mathbf{r}\mathrm{d}\mathbf{r}'
 \end{equation}
 %
-\item Exchange-correlation energy (using LDA):
+The last energy term, $E_{\mathrm{xc}}$ is the exchange-correlation energy.
+It has several forms, however, in this work we will use on the so-called
+local density approximation of $E_{\mathrm{xc}}$:
 \begin{equation}
 E_{\mathrm{xc}} = \int \epsilon_{\mathrm{xc}}\left[\rho(\mathbf{r})\right]
 \rho(\mathbf{r})\,\mathrm{d}\mathbf{r}
 \end{equation}
-%
-\end{itemize}
 
 Application of variational principle to energy functional \ref{eq:KS_ene_func}
-with the constraint
+under the constraint
 \begin{equation}
-\int \psi^{*}_{i_{st}}(\mathbf{r}) \psi_{i_{st}}(\mathbf{r})\,\mathrm{d}\mathbf{r}
+\int \psi^{*}_{i_{st}}(\mathbf{r}) \psi_{i_{st}}(\mathbf{r})\,\mathrm{d}\mathbf{r} = 1
 \end{equation}
 results in the so-called Kohn-Sham equation:
 \begin{equation}
@@ -61,11 +70,11 @@ V_{\mathrm{KS}}(\mathbf{r}) = V_{\mathrm{ion}}(\mathbf{r}) + V_{\mathrm{Ha}}(\ma
 + V_{\mathrm{xc}}(\mathbf{r})
 \label{eq:KS-pot}
 \end{equation}
-
+%
 $V_{\mathrm{ion}}$ denotes attractive potential between ion (or atomic nuclei)
 with electrons. This potential can be written as:
 \begin{equation}
-V_{\mathrm{ion}}(\mathrm{r}) =
+V_{\mathrm{ion}}(\mathbf{r}) =
 \sum_{I}^{N_{\mathrm{atoms}}}
 \frac{Z_{I}}{ \left| \mathbf{r} - \mathbf{R}_{I} \right| }
 \end{equation}
@@ -73,22 +82,15 @@ This potential is Coulombic and has singularities
 at the ionic centers. It is generally difficult to describe this potential
 numerically, so it is common to replace the full Coulombic potential
 with softer potential which is known as pseudopotential.
-There are various types or flavors of pseudopotentials.
-In the current implementation, ion-electron potential, $V_{\mathrm{ion}}$
-is treated by pseudopotential. HGH-type pseudopotential is employed due to the
-the availability of analytic forms both in real and reciprocal space.
+Note that this potential can also represent any external local potential, for
+example harmonic confining potential in quantum dot system.
 
-$V_{\mathrm{Ha}}$ is the classical Hartree potential. It is defined as
+$V_{\mathrm{Ha}}$ is the classical electrostatic potential or commonly known
+as the Hartree potential. It is defined as
 \begin{equation}
 V_{\mathrm{Ha}}(\mathbf{r}) = \int
 \frac{\rho(\mathbf{r}')}
 {\mathbf{r} - \mathbf{r}'}\,\mathrm{d}\mathbf{r}',
-\end{equation}
-where $\rho(\mathbf{r})$ denotes electronic density:
-\begin{equation}
-\rho(\mathbf{r}) = \sum_{i_{st}=1}^{N_{\mathrm{occ}}}
-f_{i_{st}}
-\psi^{*}_{i_{st}}(\mathbf{r}) \psi_{i_{st}}(\mathbf{r})
 \end{equation}
 Alternatively, Hartree potential can also be obtained via solving Poisson equation:
 \begin{equation}
