@@ -4,7 +4,7 @@ do
 cat << EOF > INPUT
 &CONTROL
   pseudo_dir = '../../HGH'
-  etot_conv_thr = 1.0d-6
+  etot_conv_thr = 1.0d-9
 /
 
 &SYSTEM
@@ -36,7 +36,7 @@ H   4.23341768       4.23341768       4.23341768
 EOF
 
 LOGFILE="fort.log.$nn"
-../../ffr_LFDFT_pgi.x INPUT | tee $LOGFILE
+../../src/ffr_LFDFT_pgi.x INPUT | tee $LOGFILE
 
 str=`grep "! Electronic" $LOGFILE`
 etot=`echo $str | awk '{split($0, a); print a[4]}'`

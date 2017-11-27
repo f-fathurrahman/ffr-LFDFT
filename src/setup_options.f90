@@ -97,9 +97,9 @@ SUBROUTINE setup_options()
 
 !!> \item
 !!> Total energy convergence criteria
-  IF( conv_thr > 0.d0 ) THEN
-    Emin_ETOT_CONV_THR = conv_thr
-    SCF_ETOT_CONV_THR = conv_thr
+  IF( etot_conv_thr > 0.d0 ) THEN
+    Emin_ETOT_CONV_THR = etot_conv_thr
+    SCF_ETOT_CONV_THR = etot_conv_thr
   ENDIF
 
 END SUBROUTINE
