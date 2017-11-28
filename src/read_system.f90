@@ -13,6 +13,7 @@ SUBROUTINE read_system(filein)
   nr2 = 1
   nr3 = 1
   ibrav = 8
+  _Nstates_extra = 0
 
   OPEN(unit=IU, file=filein, status='old')
   READ(IU, nml=SYSTEM)

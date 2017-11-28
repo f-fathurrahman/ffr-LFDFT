@@ -1,12 +1,17 @@
 SUBROUTINE init_states()
 
+  USE m_input_vars, ONLY : _Nstates_extra
   USE m_states
   USE m_atoms, ONLY : Zv => AtomicValences, Natoms, atm2species
   IMPLICIT NONE 
   INTEGER :: ist, isp, ia
  
   Nspin = 1  ! default
-  Nstates_extra = 0 ! default
+  IF( _Nstates_extra > 0 ) THEN  
+    Nstates_extra = _Nstates_extra
+  ELSE 
+    Nstates_extra = 0 ! default
+  ENDIF 
 
   Nelectrons = 0.d0
   DO ia = 1,Natoms
