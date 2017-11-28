@@ -1,10 +1,10 @@
-\documentclass[8pt]{beamer}
+\documentclass[10pt]{beamer}
 
 \begin{document}
 
-\title{Development of a Computer Program to Solve Electronic Structure using
-Lagrange Basis Functions}
-\author{Fadjar Fathurrahman}
+\title{Development of a Computer Program for Electronic Structure
+Calculation using Lagrange Basis Functions}
+\author{Fadjar Fathurrahman, Hermawan K. Dipojono}
 \date{29 November 2017}
 
 \frame{\titlepage}
@@ -13,49 +13,67 @@ Lagrange Basis Functions}
 \frametitle{Outline}
 
 \begin{itemize}
+\item Introduction
 \item Kohn-Sham equations
 \item Lagrange basis functions
+\item Implementation
+\item Numerical results
 \end{itemize}
 
 \end{frame}
 
+
 \begin{frame}
-\frametitle{Total energy functional}
+\frametitle{Introduction}
 
-Within LDA, Kohn-Sham energy functional can be written as:
-\begin{equation}
-E_{\mathrm{LDA}}\left[\{\psi_{i}(\mathbf{r})\}\right] =
-E_{\mathrm{kin}} + E_{\mathrm{ion}} + E_{\mathrm{Ha}} + E_{\mathrm{xc}}
-\end{equation}
-with the following energy terms.
+\begin{itemize}
+\item Electronic structure calculations play important role for investigation of materials
+properties.
+\item Much of electronic structure calculations are based on Kohn-Sham density functional theory.
+\item Several computer packages can carry out electronic structure packages
+\end{itemize}
 
-(1) kinetic energy:
-\begin{equation}
-E_{\mathrm{kin}} = -\frac{1}{2}\sum_{i_{st}}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Problems}
+
+\begin{itemize}
+\item blah
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Kohn-Sham total energy functional}
+
+Total energy of a system of interacting electrons according to Kohn-Sham
+can be written as:
+\begin{align*}
+E_{\mathrm{tot}}\left[\{\psi_{i}(\mathbf{r})\},\rho(\mathbf{r})\right] & =
+E_{\mathrm{kin}} + E_{\mathrm{ion}} + E_{\mathrm{Ha}} + E_{\mathrm{xc}} \\
+%
+\rho(\mathbf{r}) & = \sum_{i_{st} = 1}^{N_{st}} f_{i_{st}} \psi^{*}_{i_{st}}(\mathbf{r})
+\psi_{i_{st}}(\mathbf{r}) \\
+%
+E_{\mathrm{kin}} & = -\frac{1}{2}\sum_{i_{st}}
 \int f_{i_{st}}
 \psi_{i_{st}}^{*}(\mathbf{r})\,\nabla^2\,\psi_{i_{st}}(\mathbf{r})
-\,\mathrm{d}\mathbf{r}
-\end{equation}
-
-(2) ion-electron interaction energy:
-\begin{equation}
-E_{\mathrm{ion}} = \int V_{\mathrm{ion}}(\mathbf{r})\, \rho(\mathbf{r})\,
-\mathrm{d}\mathbf{r}
-\end{equation}
-
-(3) Hartree (electrostatic) energy:
-\begin{equation}
-E_{\mathrm{Ha}} = \int \frac{1}{2}
+\,\mathrm{d}\mathbf{r} \\
+%
+E_{\mathrm{ion}} & = \int V_{\mathrm{ion}}(\mathbf{r})\, \rho(\mathbf{r})\,
+\mathrm{d}\mathbf{r} \\
+%
+E_{\mathrm{Ha}} & = \frac{1}{2} \int 
 \dfrac{\rho(\mathbf{r})\rho(\mathbf{r}')}
 {\left|\mathbf{r} - \mathbf{r}'\right|}
-\mathrm{d}\mathbf{r}\mathrm{d}\mathbf{r}'
-\end{equation}
-
-(4) Exchange-correlation energy (using LDA):
-\begin{equation}
-E_{\mathrm{xc}} = \int \epsilon_{\mathrm{xc}}\left[\rho(\mathbf{r})\right]
+\mathrm{d}\mathbf{r}\mathrm{d}\mathbf{r}' \\
+%
+E_{\mathrm{xc}} & = \int \epsilon_{\mathrm{xc}}\left[\rho(\mathbf{r})\right]
 \rho(\mathbf{r})\,\mathrm{d}\mathbf{r}
-\end{equation}
+\end{align*}
 
 \end{frame}
 
@@ -63,129 +81,275 @@ E_{\mathrm{xc}} = \int \epsilon_{\mathrm{xc}}\left[\rho(\mathbf{r})\right]
 \begin{frame}
 \frametitle{Kohn-Sham equations}
 
-Central to the density functional theory is the so-called Kohn-Sham
-equation.
-This equation can be written as:
+Ground state energy can be found by minimizing the Kohn-Sham energy functional or
+by solving the Kohn-Sham equation:
 \begin{equation}
 \left[
 -\frac{1}{2}\nabla^2  + V_{\mathrm{KS}}(\mathbf{r})
 \right] \psi_{i_{st}}(\mathbf{r}) =
 \epsilon_{i_{st}}\psi_{i_{st}}(\mathbf{r})
 \end{equation}
-where $\epsilon{i_{st}}$ and $\psi_{i_{st}}(\mathbf{r})$ is known as Kohn-Sham
-eigenvalues and eigenvectors (orbitals).
-Quantity $V_{\mathrm{KS}}$ is called the Kohn-Sham potential, which can be
-written as sum of several potentials:
-\begin{equation}
-V_{\mathrm{KS}}(\mathbf{r}) = V_{\mathrm{ion}}(\mathbf{r}) + V_{\mathrm{Ha}}(\mathbf{r})
-+ V_{\mathrm{xc}}(\mathbf{r})
-\label{eq:KS-pot}
-\end{equation}
+with the following potential terms
+\begin{align*}
+V_{\mathrm{KS}}(\mathbf{r}) & = V_{\mathrm{ion}}(\mathbf{r}) + V_{\mathrm{Ha}}(\mathbf{r})
++ V_{\mathrm{xc}}(\mathbf{r}) \\
+%
+V_{\mathrm{Ha}}(\mathbf{r}) & = \int
+\frac{\rho(\mathbf{r}')}
+{\mathbf{r} - \mathbf{r}'}\,\mathrm{d}\mathbf{r}' \\
+%
+\nabla^{2} V_{\mathrm{Ha}}(\mathbf{r}) & = -4\pi \rho(\mathbf{r})
+\end{align*}
+
 
 \end{frame}
 
+
+\begin{frame}
+\frametitle{Kohn-Sham equations}
+
+\begin{itemize}
+\item In the the implementation to solve Kohn-Sham equations, single-electron wave function must be
+  represented as an expansion of basis functions or discretized using
+  some discretization schemes.
+\item Several
+  existing computer programs for DFT calculations, such as
+  \textsc{Quantum Espresso} and \textsc{Gaussian09},
+  expand single-electron wave function using plane wave and Gaussian functions, respectively.
+\item Others, such as \textsc{Octopus} and GPAW use discretization based on finite-difference scheme.
+\end{itemize}
+
+\end{frame}
 
 
 
 \begin{frame}
 \frametitle{Lagrange basis functions}
 
-For a given interval $[0,L]$, with $L>0$, the grid points $x_{i}$
+For a given interval $[0,L]$, with $L>0$, the grid points $x_{\alpha}$
 appropriate for periodic Lagrange function are given by:
 
 \begin{equation}
-x_{i}=\frac{L}{2}\frac{2i-1}{N}
+x_{\alpha}=\frac{L}{2}\frac{2\alpha-1}{N}
 \end{equation}
-with $i=1,\ldots,N$. Number of points $N$ should be an odd number.
+with $\alpha=1,\ldots,N$. Number of points $N$ should be an odd number.
 
-The periodic cardinal functions $L_{i}^{\mathrm{per}}(x)$, defined
+The periodic cardinal functions $L_{\alpha}(x)$, defined
 at grid point $i$ are given by:
 \begin{equation}
-L_{i}^{\mathrm{per}}(x)=\frac{1}{\sqrt{NL}}\sum_{n=1}^{N}\cos\left(\frac{\pi}{L}(2n-N-1)(x-x_{i})\right).
+L_{\alpha}(x)=\frac{1}{\sqrt{NL}}\sum_{n=1}^{N}\cos\left(\frac{\pi}{L}(2n-N-1)(x-x_{\alpha})\right).
 \end{equation}
 The expansion of periodic function in terms of Lagrange functions:
 \begin{equation}
-f(x)=\sum_{i=1}^{N}c_{i}L_{i}^{\mathrm{per}}(x)
+f(x)=\sum_{\alpha=1}^{N}c_{\alpha}L_{\alpha}(x)
 \end{equation}
-with expansion coefficients $c_{i}=\sqrt{L/N}f(x_{i})$. When doing
-variational calculation, the cofficients $c_{i}$ are the variational
-parameters. The actual function values $f(x_{i}$) at grid points
-$x_{i}$ is obtained by $f(x_{i})=\sqrt{N/L}c_{i}$. The prefactor
-is sometimes abbreviated by $h=L/N$ and is also referred to as scaling
-factor.
+with expansion coefficients $c_{\alpha}=\sqrt{L/N}f(x_{\alpha})$.
 
 \end{frame}
 
 
 \begin{frame}
-\frametitle{Cluster LF}
+\frametitle{Lagrange basis functions}
 
-For a given interval $[A,B]$, with $B>A$, the grid points $x_{i}$
-appropriate for cluster Lagrange function are given by:
-\[
-x_{i}=A+\frac{B-A}{N+1}i
-\]
-where $i=1,\ldots,N$. Number of points $N$ can be either odd or
-even number.
+Plot of for Lagrange basis functions for $N = 5$, $L = 1.0$
 
-The cluster Lagrange functions $L_{i}^{\mathrm{clu}}(x)$, defined
-at grid point $i$ are given by:
-\begin{equation}
-L_{i}^{\mathrm{clu}}(x)=\frac{2}{\sqrt{(N+1)(B-A)}}\sum_{n=1}^{N}\sin\left(k_{n}(x_{i}-A)\right)\sin\left(k_{n}(x-A)\right).
-\end{equation}
-where $k_{n}=\pi n/(B-A)$. The expansion of a function $f(x)$ in
-terms of cluster Lagrange functions:
-\begin{equation}
-f(x)=\sum_{i=1}^{N}c_{i}L_{i}^{\mathrm{clu}}(x)
-\end{equation}
-with expansion coefficients $c_{i}=\sqrt{(B-A)/(N+1)}f(x_{i})$. When
-doing variational calculation, the cofficients $c_{i}$ are the variational
-parameters. The actual function values $f(x_{i}$) at grid points
-$x_{i}$ is obtained by $f(x_{i})=\sqrt{(N+1)/(B-A)}c_{i}$.
-
-Matrix elements $D_{jl}^{(2)}$ of the second derivatives for cluster
-Lagrange functions are
-\begin{equation}
-D_{jl}^{(2)}=\begin{cases}
--\dfrac{1}{2}\left(\dfrac{\pi}{B-A}\right)^{2}\dfrac{2(N+1)^{2}+1}{3}-\dfrac{1}{\sin^{2}\left[\pi j/(N+1)\right]} & j=l\\
--\dfrac{1}{2}\left(\dfrac{\pi}{B-A}\right)^{2}(-1)^{j-l}\left[\dfrac{1}{\sin^{2}\left[\dfrac{\pi(j-l)}{2(N+1)}\right]}-\dfrac{1}{\sin^{2}\left[\dfrac{\pi(j+l)}{2(N+1)}\right]}\right] & j\neq l
-\end{cases}
-\end{equation}
+{\centering
+\includegraphics[scale=0.5]{images/plot_LF_p_N_5.pdf}
+\par}
 
 \end{frame}
 
 
 \begin{frame}
-\frametitle{Expansion in Lagrange basis function}
+\frametitle{Using Lagrange basis function for Schrodinger equation}
 
-in 1D
-Schrodinger equation
-blah
+Given the 1D Schrodinger equation:
+\begin{equation*}
+\left[ -\frac{1}{2}\frac{\mathrm{d}^2}{\mathrm{d}x^2} + V(x)\right ] \psi(x)
+= \epsilon \psi(x)
+\end{equation*}
+Lagrange basis function to expand the one-electron wavefunction:
+\begin{equation*}
+\psi(x) = \sum_{\alpha}^{N} c_{\alpha} L_{\alpha}(x)
+\end{equation*}
+Matrix equation:
+\begin{equation*}
+\left( \mathbf{T} + \mathbf{V} \right) \mathbf{C} = \epsilon \mathbf{C}
+\end{equation*}
+
+Analytic expression for matrix $\mathbf{T}$ can be obtained from reference
+\footnote{See for example: \textit{J. Phys. Chem. A}
+\textbf{110}, {5549-5560}, (2006)}.
+Matrix $\mathbf{V}$ is diagonal.
+Eigenvalue $\epsilon$ can be found using standard eigenvalue solver.
 
 \end{frame}
+
 
 
 \begin{frame}
-\frametitle{Solution to Kohn-Sham equations}
+\frametitle{Extension to 3D}
 
-Self-consistent field
+Expansion of function in 3D using Lagrange basis function:
+\begin{equation*}
+\psi(\mathbf{r} = (x,y,z)) =
+\sum_{\alpha}\sum_{\beta}\sum_{\gamma} C_{\alpha\beta\gamma}
+L_{\alpha}(x) L_{\beta}(y) L_{\gamma}(z)
+\end{equation*}
 
-Direct minimization
+Similar matrix equation can be obtained in 3D case.
 
+Potential matrix is still diagonal and kinetic matrix now is expressed as:
+\begin{equation*}
+\mathbf{T}_{\alpha\beta\gamma}^{\alpha'\beta'\gamma'} =
+\mathbf{T}_{\alpha\alpha'}\delta_{\beta\beta'}\delta_{\gamma\gamma'} +
+\mathbf{T}_{\beta\beta'}\delta_{\alpha\alpha'}\delta_{\gamma\gamma'} +
+\mathbf{T}_{\gamma\gamma'}\delta_{\alpha\alpha'}\delta_{\beta\beta'}
+\end{equation*}
+where $\mathbf{T}_{ii'}$, $i=\alpha,\beta,\gamma$ are kinetic matrix for 1D case.
+Kinetic matrix is now sparse.
 
 \end{frame}
 
 \begin{frame}
-\frametitle{Result for Gaussian potentials}
+\frametitle{Our implementation}
+  
+Public repository: \url{https://github.com/f-fathurrahman/ffr-LFDFT}.
+  
+{\centering
+\includegraphics[scale=0.25]{images/ffr-LFDFT-github-cropped.png}
+\par}
+  
+\end{frame}
+  
 
-Gaussian potential
+\begin{frame}
+\frametitle{Numerical results}
+
+Total energy calculation on the following simple potentials:
+\begin{itemize}
+\item Gaussian potentials: convergence of total energy with respect to
+grid spacing
+\item atomic pseudotentials: hydrogen and lithium pseudopotentials
+\end{itemize}
+
+All calculations are done in $16\times16\times16$ bohr periodic box.
+Center of the potential is set to the center of the box.
 
 \end{frame}
+
+
+
+\begin{frame}
+\frametitle{Gaussian potentials}
+
+\begin{equation*}
+V^{\mathrm{Gau}}_{\mathrm{ion}}(r) = -A\exp(-\alpha r^2)
+\end{equation*}
+
+{
+\centering
+\includegraphics[scale=0.5]{images/V_gauss.pdf}
+\par
+}
+
+\end{frame}
+
+
+\begin{frame}[plain]
+  
+{\centering
+\includegraphics[width=\textwidth]{images/COMBINE_v2.pdf}
+}
+
+\end{frame}
+
+
+\begin{frame}[plain]
+
+{\centering
+\includegraphics[width=\textwidth]{images/COMBINE_v1.pdf}
+}
+
+\end{frame}
+
+
 
 \begin{frame}
 \frametitle{Hydrogen atom}
 
-Gaussian potential
+\begin{multline}
+  V^{\mathrm{H}}_{\mathrm{loc}}(\mathbf{r}) = 
+  -\dfrac{Z_{\mathrm{ion}}}{r}
+  \mathrm{erf}\left(
+  \dfrac{r}{\sqrt{2}r_{\mathrm{loc}}}
+  \right) + \\
+  \exp
+  \left[ -\frac{1}{2}
+  \left( \frac{r}{r_{\mathrm{loc}}}\right)^2
+  \right]
+  \times
+  \left[
+  C_{1} +
+  C_{2}\left( \frac{r}{r_{\mathrm{loc}}}\right)^2 +
+\right]
+\end{multline}
+with the following parameters:
+$Z_{\mathrm{ion}} = 1$, $r_{\mathrm{loc}} = 0.2$,
+$C_{1} = -4.1802372$, and $C_{2} = 0.725075$.
+
+
+\end{frame}
+
+\begin{frame}[plain]
+  
+{\centering
+\includegraphics[width=\textwidth]{images/atom_H.pdf}
+}
+  
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Lithium atom}
+
+\begin{multline*}
+V_{\mathrm{loc}}(\mathbf{r}) = 
+-\dfrac{Z_{\mathrm{ion}}}{r}
+\mathrm{erf}\left(
+\dfrac{r}{\sqrt{2}r_{\mathrm{loc}}}
+\right) + \\
+\exp
+\left[ -\frac{1}{2}
+\left( \frac{r}{r_{\mathrm{loc}}}\right)^2
+\right]
+\times
+\left[
+C_{1} +
+C_{2}\left( \frac{r}{r_{\mathrm{loc}}}\right)^2 +
+C_{3}\left( \frac{r}{r_{\mathrm{loc}}}\right)^4 +
+C_{4}\left( \frac{r}{r_{\mathrm{loc}}}\right)^6
+\right]
+\end{multline*}
+with the following parameters:
+$Z_{\mathrm{ion}} = 3$, $r_{\mathrm{loc}} = 0.4$,
+$C_{1} = -14.034868$, $C_{2} = 9.553476$, $C_{3} = -1.7664885$
+and $C_{4} = 0.084370$.
+
+\end{frame}
+
+
+\begin{frame}[t]
+\frametitle{Conclusions}
+
+\begin{itemize}
+\item Use of Lagrange basis functions to Kohn-Sham equation gives
+matrix-representation which is very similar to the one obtained by
+using finite-difference methods
+\item Compared to finite difference method, use of Lagrange basis functions
+gives better total energy convergence with respect to grid size (number of basis
+functions).
+\end{itemize}
 
 \end{frame}
 
