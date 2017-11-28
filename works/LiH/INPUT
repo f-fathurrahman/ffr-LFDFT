@@ -10,13 +10,14 @@
   A = 8.46683536902
   B = 8.46683536902
   C = 8.46683536902
-  nr1 = 11
-  nr2 = 11
-  nr3 = 11
+  nr1 = 45
+  nr2 = 45
+  nr3 = 45
+  _Nstates_extra = 1
 /
 
 &ELECTRONS
-  KS_Solve = 'Emin_pcg'
+  KS_Solve = 'SCF'
   cg_beta = 'PR'
   electron_maxstep = 150
   mixing_beta = 0.5
@@ -25,10 +26,11 @@
 /
 
 ATOMIC_SPECIES
-Li   3.0  Li.hgh
+Li   3.0  Li_sc.hgh
 H    1.0  H.hgh
 
 ATOMIC_POSITIONS angstrom
-Li      0.0       0.0       5.04089768
-H       0.0       0.0       3.42593768
+H     3.48341768451073     4.23341768451073     4.23341768451073
+Li    4.98341768451073     4.23341768451073     4.23341768451073
+
 

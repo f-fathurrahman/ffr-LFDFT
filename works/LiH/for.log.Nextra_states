@@ -1,0 +1,323 @@
+ 
+ ffr's program starts
+ 
+  █████       ███████████ ██████████   ███████████ ███████████
+ ░░███       ░░███░░░░░░█░░███░░░░███ ░░███░░░░░░█░█░░░███░░░█
+  ░███        ░███   █ ░  ░███   ░░███ ░███   █ ░ ░   ░███  ░ 
+  ░███        ░███████    ░███    ░███ ░███████       ░███    
+  ░███        ░███░░░█    ░███    ░███ ░███░░░█       ░███    
+  ░███      █ ░███  ░     ░███    ███  ░███  ░        ░███    
+  ███████████ █████       ██████████   █████          █████   
+ ░░░░░░░░░░░ ░░░░░       ░░░░░░░░░░   ░░░░░          ░░░░░    
+ 
+ Program started at  4:54: 7 , 29 November 2017
+ 
+ Compiled using PGI Fortran compiler
+ 
+ Reading input file: INPUT
+ 
+ Atomic positions are given in angstrom.
+ The program will convert them to bohr.
+ 
+ Finished reading input
+ 
+         Atoms Information
+         -----------------
+ 
+ Natoms   =             2
+ Nspecies =             2
+ 
+ Valence information:
+ Li        3.000
+ H         1.000
+ 
+ Atomic coordinates: (in bohr)
+ 
+ H          6.5827049290      7.9999994207      7.9999994207
+ Li         9.4172939125      7.9999994207      7.9999994207
+ 
+         Pseudopotential Information
+         ---------------------------
+ 
+ Species: Li
+ Pseudopotential file: ../../HGH/Li_sc.hgh
+ 
+    atom_name = Li_sc
+    zval =     3
+    lmax =    -1
+ 
+    Local pseudopotential parameters:
+ 
+    rlocal =       0.4000000000
+ 
+    c (for local potential ) = 
+        1    -14.0348680000
+        2      9.5534760000
+        3     -1.7664880000
+        4      0.0843700000
+ 
+ Species: H
+ Pseudopotential file: ../../HGH/H.hgh
+ 
+    atom_name = H
+    zval =     1
+    lmax =    -1
+ 
+    Local pseudopotential parameters:
+ 
+    rlocal =       0.2000000000
+ 
+    c (for local potential ) = 
+        1     -4.1802370000
+        2      0.7250750000
+        3      0.0000000000
+        4      0.0000000000
+ 
+         LF3d Grid Information
+         ---------------------
+ 
+ Type: PERIODIC
+ 
+ Box size            =   16.00000  16.00000  16.00000
+ Grid spacing        =    0.35556   0.35556   0.35556
+ Sampling Nx, Ny, Nz =    45   45   45
+ Number of points    =      91125
+ dVol                =    0.04495
+
+ Some grid points in x, y, and z directions:
+
+        1   0.17778       1   0.17778       1   0.17778
+        2   0.53333       2   0.53333       2   0.53333
+       ..   .......      ..   .......      ..   .......
+       44  15.46667      44  15.46667      44  15.46667
+       45  15.82222      45  15.82222      45  15.82222
+
+ Some G2 values
+
+          1   0.00000
+          2   0.15421
+        ...   .......
+      91124   0.92528
+      91125   0.46264
+ 
+ Initializing betaNL functions
+ 
+ Number of electrons =            4.00000
+ Nstates =        3
+ 
+ Initial occupation numbers
+        1           2.00000
+        2           2.00000
+        3           0.00000
+ 
+ Calculating structure factor: shifted to Fourier grid
+ 
+ V_ps_loc is initialized via G-space
+ 
+ Initializing nabla2_sparse
+ Memory required for nabla2_sparse:   1.358E-01 GB
+ 
+ ILU0 preconditioner is based on kinetic matrix
+ 
+ Using random starting wavefunction
+ 
+ Initial guess: integRho =       4.0000000000
+ 
+ Eigenvalues:
+ 
+    1     -4.3508451194
+    2     -1.1349888675
+    3     -0.7684351640
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   2.0000000000E+00
+ Rescaling Rho
+ After rescaling: integRho =       4.0000000000
+ 
+ SCF iter    1     -7.4193694042  7.4193694042E+00  3.4553274739E-02
+ 
+ Eigenvalues:
+ 
+    1     -1.3159121909
+    2     -0.0586659885
+    3      0.0047388108
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.1031470052E-01
+ Rescaling Rho
+ After rescaling: integRho =       4.0000000000
+ 
+ SCF iter    2     -7.7342917144  3.1492231015E-01  8.6934147884E-03
+ 
+ Eigenvalues:
+ 
+    1     -2.0926180396
+    2     -0.2357491882
+    3     -0.0820410498
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   7.9883797822E-02
+ Rescaling Rho
+ After rescaling: integRho =       4.0000000000
+ 
+ SCF iter    3     -7.7828416269  4.8549912465E-02  3.8515003000E-03
+ 
+ Eigenvalues:
+ 
+    1     -1.8453370053
+    2     -0.1456228636
+    3     -0.0463163819
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.5254246358E-02
+ Rescaling Rho
+ After rescaling: integRho =       4.0000000000
+ 
+ SCF iter    4     -8.1089907617  3.2614913488E-01  1.3488028524E-03
+ 
+ Eigenvalues:
+ 
+    1     -1.8564643598
+    2     -0.1723176734
+    3     -0.0505809849
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   6.2325323892E-04
+ Rescaling Rho
+ After rescaling: integRho =       4.0000000000
+ 
+ SCF iter    5     -8.0172004836  9.1790278118E-02  3.6915829155E-04
+ 
+ Eigenvalues:
+ 
+    1     -1.8606014821
+    2     -0.1600541813
+    3     -0.0466417007
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   6.1960630931E-05
+ Rescaling Rho
+ After rescaling: integRho =       4.0000000000
+ 
+ SCF iter    6     -8.0353513284  1.8150844796E-02  1.1571327784E-04
+ 
+ Eigenvalues:
+ 
+    1     -1.8585412383
+    2     -0.1629948344
+    3     -0.0472338265
+ 
+ Adaptive mixing ELK
+ SCF iter    7     -8.0332403151  2.1110133512E-03  1.5789282655E-05
+ 
+ Eigenvalues:
+ 
+    1     -1.8583727797
+    2     -0.1624527379
+    3     -0.0468076801
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   8.7092601389E-06
+ Rescaling Rho
+ After rescaling: integRho =       4.0000000000
+ 
+ SCF iter    8     -8.0333624962  1.2218115884E-04  4.3276546982E-06
+ 
+ Eigenvalues:
+ 
+    1     -1.8583651791
+    2     -0.1623569218
+    3     -0.0467490222
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   1.7313309195E-06
+ Rescaling Rho
+ After rescaling: integRho =       4.0000000000
+ 
+ SCF iter    9     -8.0333572950  5.2012507563E-06  1.5207092878E-06
+ 
+ Eigenvalues:
+ 
+    1     -1.8583816857
+    2     -0.1624338439
+    3     -0.0467893329
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   2.3973232110E-05
+ Rescaling Rho
+ After rescaling: integRho =       4.0000000000
+ 
+ SCF iter   10     -8.0332789354  7.8359613665E-05  4.0538282248E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.8583920572
+    2     -0.1624286913
+    3     -0.0467798263
+ 
+ Adaptive mixing ELK
+ WARNING: diff after mix rho =   2.2889354581E-06
+ Rescaling Rho
+ After rescaling: integRho =       4.0000000000
+ 
+ SCF iter   11     -8.0333370634  5.8128013208E-05  4.0541951972E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.8583766849
+    2     -0.1624307154
+    3     -0.0467750707
+ 
+ Adaptive mixing ELK
+ SCF iter   12     -8.0333481701  1.1106769103E-05  3.0580660242E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.8583764770
+    2     -0.1624357886
+    3     -0.0467743239
+ 
+ Adaptive mixing ELK
+ SCF iter   13     -8.0333448117  3.3583936325E-06  2.1808958606E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.8583782881
+    2     -0.1624383764
+    3     -0.0467733890
+ 
+ Adaptive mixing ELK
+ SCF iter   14     -8.0333450307  2.1890758894E-07  1.8213940303E-07
+ 
+ Eigenvalues:
+ 
+    1     -1.8583796153
+    2     -0.1624409344
+    3     -0.0467734483
+ 
+ Adaptive mixing ELK
+ 
+ SCF converged at    15 iterations.
+ 
+ Energy components:
+ 
+ Kinetic      =       7.5241244948
+ Local PS     =     -17.4355504324
+ NL PS        =       0.0000000000
+ Hartree      =       4.2877963596
+ XC           =      -2.0620358315
+ ---------------------------------
+ ! Electronic =      -7.6856654095
+ NN           =      -0.3476796706
+ ---------------------------------
+ ! Total      =      -8.0333450802
+ 
+ Final eigenvalues (Ha and eV)
+ 
+        1     -1.8583796153    -50.5694827394
+        2     -0.1624409344     -4.4202777314
+        3     -0.0467734483     -1.2727803651
+ 
+ Total elapsed time:   2.1470994000E+01 second.
+ 
+ Program stopped at  4:54:29 , 29 November 2017

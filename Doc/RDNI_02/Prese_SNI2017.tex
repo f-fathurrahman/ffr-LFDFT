@@ -1,4 +1,4 @@
-\documentclass[10pt]{beamer}
+\documentclass[10pt,t]{beamer}
 
 \begin{document}
 
@@ -23,36 +23,63 @@ Calculation using Lagrange Basis Functions}
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[c]
 \frametitle{Introduction}
 
 \begin{itemize}
 \item Electronic structure calculations play important role for investigation of materials
 properties.
 \item Much of electronic structure calculations are based on Kohn-Sham density functional theory.
-\item Several computer packages can carry out electronic structure packages
+\item Several computer packages can already carry out electronic structure calculations
+for systems containing of few atoms (characteristic length in angstrom) to ten thousands atoms
+(10-$10^3$ nm)
 \end{itemize}
 
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[c]
 \frametitle{Problems}
 
 \begin{itemize}
-\item blah
+\item These computer programs can "simplify" electronic structure calculations,
+espescially for non-specialists.
+However, they are not suitable for development of new methodologies.
+It is quite difficult to extend the program if we want some some customized calculations
+\item Much details are hidden beneath the programs. They usually contain thousands of lines codes
+or more which can be very intimidating for beginner developers to work with.
 \end{itemize}
 
 \end{frame}
 
 
-\begin{frame}
+
+\begin{frame}[c]
+\frametitle{This research}
+  
+\begin{itemize}
+\item We will to write our own electronic structure calculations program.
+
+\item In this presentation, I will describe some of our current work to implement
+electronic calculation based on
+{\color{blue}Kohn-Sham equations} and {\color{blue}Lagrange basis functions}
+and results of the calculations for
+{\color{blue}several simple systems}.
+\end{itemize}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}[c]
 \frametitle{Kohn-Sham total energy functional}
 
 Total energy of a system of interacting electrons according to Kohn-Sham
 can be written as:
 \begin{align*}
-E_{\mathrm{tot}}\left[\{\psi_{i}(\mathbf{r})\},\rho(\mathbf{r})\right] & =
+E_{\mathrm{tot}}\left[\{\psi_{i_{st}}(\mathbf{r})\},\rho(\mathbf{r})\right] & =
 E_{\mathrm{kin}} + E_{\mathrm{ion}} + E_{\mathrm{Ha}} + E_{\mathrm{xc}} \\
 %
 \rho(\mathbf{r}) & = \sum_{i_{st} = 1}^{N_{st}} f_{i_{st}} \psi^{*}_{i_{st}}(\mathbf{r})
@@ -78,7 +105,7 @@ E_{\mathrm{xc}} & = \int \epsilon_{\mathrm{xc}}\left[\rho(\mathbf{r})\right]
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[c]
 \frametitle{Kohn-Sham equations}
 
 Ground state energy can be found by minimizing the Kohn-Sham energy functional or
@@ -105,7 +132,7 @@ V_{\mathrm{Ha}}(\mathbf{r}) & = \int
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[c]
 \frametitle{Kohn-Sham equations}
 
 \begin{itemize}
@@ -256,20 +283,26 @@ V^{\mathrm{Gau}}_{\mathrm{ion}}(r) = -A\exp(-\alpha r^2)
 \end{frame}
 
 
-\begin{frame}[plain]
-  
+\begin{frame}
+\frametitle{Total energy}  
+
 {\centering
-\includegraphics[width=\textwidth]{images/COMBINE_v2.pdf}
-}
+\includegraphics[width=0.8\textwidth]{images/COMBINE_v2.pdf}
+\par
+Both our program (LFDFT) and \textsc{Octopus} converge to the same total energy value
+\par}
 
 \end{frame}
 
 
-\begin{frame}[plain]
+\begin{frame}
+\frametitle{Total energy convergence}
 
 {\centering
-\includegraphics[width=\textwidth]{images/COMBINE_v1.pdf}
-}
+\includegraphics[width=0.8\textwidth]{images/COMBINE_v1.pdf}
+\par
+LFDFT converges faster than \textsc{Octopus} (finite difference)
+\par}
 
 \end{frame}
 
@@ -297,14 +330,16 @@ V^{\mathrm{Gau}}_{\mathrm{ion}}(r) = -A\exp(-\alpha r^2)
 with the following parameters:
 $Z_{\mathrm{ion}} = 1$, $r_{\mathrm{loc}} = 0.2$,
 $C_{1} = -4.1802372$, and $C_{2} = 0.725075$.
-
+\footnote{
+  Hartwigsen, \textit{Phys. Rev. B}  \textbf{58}, 3641 (1998). 
+}
 
 \end{frame}
 
 \begin{frame}[plain]
   
 {\centering
-\includegraphics[width=\textwidth]{images/atom_H.pdf}
+\includegraphics[width=0.5\textwidth]{images/atom_H.pdf}
 }
   
 \end{frame}
@@ -335,9 +370,22 @@ with the following parameters:
 $Z_{\mathrm{ion}} = 3$, $r_{\mathrm{loc}} = 0.4$,
 $C_{1} = -14.034868$, $C_{2} = 9.553476$, $C_{3} = -1.7664885$
 and $C_{4} = 0.084370$.
+\footnote{
+  Hartwigsen, \textit{Phys. Rev. B}  \textbf{58}, 3641 (1998). 
+}
+
 
 \end{frame}
 
+\begin{frame}
+\frametitle{LiH HOMO and LUMO}
+
+{\centering
+\includegraphics[scale=0.25]{images/LiH_HOMO.png}
+\includegraphics[scale=0.25]{images/LiH_LUMO.png}
+\par}
+
+\end{frame}
 
 \begin{frame}[t]
 \frametitle{Conclusions}
