@@ -21,6 +21,7 @@ plt.grid()
 plt.legend(loc='lower left')
 plt.xlabel('Grid spacing (bohr)')
 plt.ylabel('Electronic energy (Ha)')
+plt.text(0.5, -8.3, "$\\alpha=0.1$", fontsize=24)
 plt.savefig(FILEPLOT)
 
 os.system('pdfcrop ' + FILEPLOT + ' ' + FILEPLOT)

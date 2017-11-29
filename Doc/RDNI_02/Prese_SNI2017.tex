@@ -9,7 +9,7 @@ Calculation using Lagrange Basis Functions}
 
 \frame{\titlepage}
 
-\begin{frame}
+\begin{frame}[c]
 \frametitle{Outline}
 
 \begin{itemize}
@@ -21,7 +21,6 @@ Calculation using Lagrange Basis Functions}
 \end{itemize}
 
 \end{frame}
-
 
 \begin{frame}[c]
 \frametitle{Introduction}
@@ -35,6 +34,10 @@ for systems containing of few atoms (characteristic length in angstrom) to ten t
 (10-$10^3$ nm)
 \end{itemize}
 
+{\centering
+\includegraphics[scale=0.7]{images/web/SoftLogo.pdf}
+\par}
+
 \end{frame}
 
 
@@ -45,7 +48,7 @@ for systems containing of few atoms (characteristic length in angstrom) to ten t
 \item These computer programs can "simplify" electronic structure calculations,
 espescially for non-specialists.
 However, they are not suitable for development of new methodologies.
-It is quite difficult to extend the program if we want some some customized calculations
+It is quite difficult to extend the program if we want to do some customized calculations.
 \item Much details are hidden beneath the programs. They usually contain thousands of lines codes
 or more which can be very intimidating for beginner developers to work with.
 \end{itemize}
@@ -60,7 +63,10 @@ or more which can be very intimidating for beginner developers to work with.
 \begin{itemize}
 \item We will to write our own electronic structure calculations program.
 
-\item In this presentation, I will describe some of our current work to implement
+\item \textbf{Downside}: It might takes several years to reach the same level
+of maturity with state-of-the-art well-established electronic structure programs.
+
+\item In this presentation, I will describe some of our preliminary works to implement
 electronic calculation based on
 {\color{blue}Kohn-Sham equations} and {\color{blue}Lagrange basis functions}
 and results of the calculations for
@@ -138,12 +144,14 @@ V_{\mathrm{Ha}}(\mathbf{r}) & = \int
 \begin{itemize}
 \item In the the implementation to solve Kohn-Sham equations, single-electron wave function must be
   represented as an expansion of basis functions or discretized using
-  some discretization schemes.
+  some discretization schemes such as finite-difference or finite-elements.
 \item Several
   existing computer programs for DFT calculations, such as
   \textsc{Quantum Espresso} and \textsc{Gaussian09},
   expand single-electron wave function using plane wave and Gaussian functions, respectively.
-\item Others, such as \textsc{Octopus} and GPAW use discretization based on finite-difference scheme.
+\item Others, such as \textsc{Octopus} and \textsc{GPAW} use discretization based on finite-difference scheme.
+\item In this work, we will use expansion based on Lagrange basis functions, which is relatively new
+and currently there are no widely-available programs which implement this.
 \end{itemize}
 
 \end{frame}
@@ -161,14 +169,14 @@ x_{\alpha}=\frac{L}{2}\frac{2\alpha-1}{N}
 \end{equation}
 with $\alpha=1,\ldots,N$. Number of points $N$ should be an odd number.
 
-The periodic cardinal functions $L_{\alpha}(x)$, defined
+The periodic cardinal functions $\phi_{\alpha}(x)$, defined
 at grid point $i$ are given by:
 \begin{equation}
-L_{\alpha}(x)=\frac{1}{\sqrt{NL}}\sum_{n=1}^{N}\cos\left(\frac{\pi}{L}(2n-N-1)(x-x_{\alpha})\right).
+\phi_{\alpha}(x)=\frac{1}{\sqrt{NL}}\sum_{n=1}^{N}\cos\left(\frac{\pi}{L}(2n-N-1)(x-x_{\alpha})\right).
 \end{equation}
 The expansion of periodic function in terms of Lagrange functions:
 \begin{equation}
-f(x)=\sum_{\alpha=1}^{N}c_{\alpha}L_{\alpha}(x)
+f(x)=\sum_{\alpha=1}^{N}c_{\alpha}\phi_{\alpha}(x)
 \end{equation}
 with expansion coefficients $c_{\alpha}=\sqrt{L/N}f(x_{\alpha})$.
 
@@ -197,7 +205,7 @@ Given the 1D Schrodinger equation:
 \end{equation*}
 Lagrange basis function to expand the one-electron wavefunction:
 \begin{equation*}
-\psi(x) = \sum_{\alpha}^{N} c_{\alpha} L_{\alpha}(x)
+\psi(x) = \sum_{\alpha}^{N} c_{\alpha} \phi_{\alpha}(x)
 \end{equation*}
 Matrix equation:
 \begin{equation*}
@@ -221,7 +229,7 @@ Expansion of function in 3D using Lagrange basis function:
 \begin{equation*}
 \psi(\mathbf{r} = (x,y,z)) =
 \sum_{\alpha}\sum_{\beta}\sum_{\gamma} C_{\alpha\beta\gamma}
-L_{\alpha}(x) L_{\beta}(y) L_{\gamma}(z)
+\phi_{\alpha}(x) \phi_{\beta}(y) \phi_{\gamma}(z)
 \end{equation*}
 
 Similar matrix equation can be obtained in 3D case.
@@ -236,9 +244,12 @@ Potential matrix is still diagonal and kinetic matrix now is expressed as:
 where $\mathbf{T}_{ii'}$, $i=\alpha,\beta,\gamma$ are kinetic matrix for 1D case.
 Kinetic matrix is now sparse.
 
+Similar matrix representation can be found in for finite-difference methods
+\footnote{See for example: \textit{Phys. Rev. Lett.} \textbf{72}, 1240 (1994).}.
+
 \end{frame}
 
-\begin{frame}
+\begin{frame}[c]
 \frametitle{Our implementation}
   
 Public repository: \url{https://github.com/f-fathurrahman/ffr-LFDFT}.
@@ -250,7 +261,7 @@ Public repository: \url{https://github.com/f-fathurrahman/ffr-LFDFT}.
 \end{frame}
   
 
-\begin{frame}
+\begin{frame}[c]
 \frametitle{Numerical results}
 
 Total energy calculation on the following simple potentials:
@@ -262,6 +273,9 @@ grid spacing
 
 All calculations are done in $16\times16\times16$ bohr periodic box.
 Center of the potential is set to the center of the box.
+
+We will also validate the results of our program against result from
+well-established program \textsc{Octopus} which uses finite difference method.
 
 \end{frame}
 
@@ -302,6 +316,9 @@ Both our program (LFDFT) and \textsc{Octopus} converge to the same total energy 
 \includegraphics[width=0.8\textwidth]{images/COMBINE_v1.pdf}
 \par
 LFDFT converges faster than \textsc{Octopus} (finite difference)
+\par
+For smoother potential (smaller $\alpha$) both methods converge faster
+(typicall for real-space methods)
 \par}
 
 \end{frame}
@@ -336,11 +353,13 @@ $C_{1} = -4.1802372$, and $C_{2} = 0.725075$.
 
 \end{frame}
 
-\begin{frame}[plain]
+\begin{frame}[plain,c]
   
 {\centering
-\includegraphics[width=0.5\textwidth]{images/atom_H.pdf}
-}
+\includegraphics[width=0.45\textwidth]{images/atom_H.pdf}\includegraphics[width=0.45\textwidth]{images/CONV_atom_H.pdf}
+\par
+LFDFT converges faster than \textsc{Octopus} (finite difference)
+\par}
   
 \end{frame}
 
@@ -377,19 +396,23 @@ and $C_{4} = 0.084370$.
 
 \end{frame}
 
-\begin{frame}
+\begin{frame}[c]
 \frametitle{LiH HOMO and LUMO}
 
 {\centering
-\includegraphics[scale=0.25]{images/LiH_HOMO.png}
-\includegraphics[scale=0.25]{images/LiH_LUMO.png}
+\includegraphics[scale=0.45]{images/LiH_HOMO_LUMO.png}
+\par
+HOMO (left image) and LUMO (right image) of LiH
 \par}
+
+
 
 \end{frame}
 
-\begin{frame}[t]
-\frametitle{Conclusions}
+\begin{frame}[c]
+\frametitle{Remarks and future works}
 
+Remarks
 \begin{itemize}
 \item Use of Lagrange basis functions to Kohn-Sham equation gives
 matrix-representation which is very similar to the one obtained by
@@ -397,6 +420,12 @@ using finite-difference methods
 \item Compared to finite difference method, use of Lagrange basis functions
 gives better total energy convergence with respect to grid size (number of basis
 functions).
+\end{itemize}
+
+Future works will focus on:
+\begin{itemize}
+\item Larger systems
+\item Parallization
 \end{itemize}
 
 \end{frame}
