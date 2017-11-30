@@ -1,17 +1,16 @@
-\documentclass[reprint, floatfix, amsmath, amssymb, aps]{revtex4-1}
+\documentclass[a4paper]{jpconf}
 
+\usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{graphicx}
-\usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
-\usepackage[utf8x]{inputenc}
-\usepackage{hyperref}
 \usepackage{braket}
-\usepackage{mhchem}
+\usepackage{url}
 
 \begin{document}
 
 \title{Development of a computer program for electronic structure calculation using Lagrange basis functions}
 \author{Fadjar Fathurrahman, Hermawan K. Dipojono}
-\affiliation{
+\address{
 Department of Engineering Physics, Bandung Institute of Technology \\
 Research Center for Nanoscience and Nanotechnology, Bandung Institute of Technology
 }
@@ -38,8 +37,6 @@ for several simple systems shows that total energy convergence with respect to t
 of grid points is better when using Lagrange basis functions.
 \end{abstract}
 
-\maketitle
-
 \input{Intro}
 
 \input{Theory}
@@ -48,8 +45,7 @@ of grid points is better when using Lagrange basis functions.
 
 \input{Results}
 
-
-\bibliography{LFDFT-v2}
+\input{References}
 
 \end{document}
 
