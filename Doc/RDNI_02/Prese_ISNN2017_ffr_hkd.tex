@@ -4,7 +4,11 @@
 
 \title{Development of a Computer Program for Electronic Structure
 Calculation using Lagrange Basis Functions}
-\author{Fadjar Fathurrahman, Hermawan K. Dipojono}
+\author{Fadjar Fathurrahman and Hermawan K. Dipojono}
+\institute{
+Department of Engineering Physics, Institut Teknologi Bandung \\
+Research Center for Nanoscience and Nanotechnology, Institut Teknologi Bandung
+}
 \date{29 November 2017}
 
 \frame{\titlepage}
@@ -242,29 +246,21 @@ Potential matrix is still diagonal and kinetic matrix now is expressed as:
 \mathbf{T}_{\gamma\gamma'}\delta_{\alpha\alpha'}\delta_{\beta\beta'}
 \end{equation*}
 where $\mathbf{T}_{ii'}$, $i=\alpha,\beta,\gamma$ are kinetic matrix for 1D case.
-Kinetic matrix is now sparse.
 
 Similar matrix representation can be found in for finite-difference methods
 \footnote{See for example: \textit{Phys. Rev. Lett.} \textbf{72}, 1240 (1994).}.
 
-\end{frame}
+Once we know how to calculate $\mathbf{T}$ and $\mathbf{V}$, we can find
+solution to Kohn-Sham equations using standard self consistent cycle (SCF) procedure.
 
-\begin{frame}[c]
-\frametitle{Our implementation}
-  
-Public repository: \url{https://github.com/f-fathurrahman/ffr-LFDFT}.
-  
-{\centering
-\includegraphics[scale=0.25]{images/ffr-LFDFT-github-cropped.png}
-\par}
-  
 \end{frame}
   
 
 \begin{frame}[c]
 \frametitle{Numerical results}
 
-Total energy calculation on the following simple potentials:
+We carry out total energy calculations for systems with the following
+simple potentials:
 \begin{itemize}
 \item Gaussian potentials: convergence of total energy with respect to
 grid spacing
@@ -348,7 +344,7 @@ with the following parameters:
 $Z_{\mathrm{ion}} = 1$, $r_{\mathrm{loc}} = 0.2$,
 $C_{1} = -4.1802372$, and $C_{2} = 0.725075$.
 \footnote{
-  Hartwigsen, \textit{Phys. Rev. B}  \textbf{58}, 3641 (1998). 
+  \textit{Phys. Rev. B}  \textbf{58}, 3641 (1998). 
 }
 
 \end{frame}
@@ -368,7 +364,7 @@ LFDFT converges faster than \textsc{Octopus} (finite difference)
 \frametitle{Lithium atom}
 
 \begin{multline*}
-V_{\mathrm{loc}}(\mathbf{r}) = 
+V^{\mathrm{Li}}_{\mathrm{loc}}(\mathbf{r}) = 
 -\dfrac{Z_{\mathrm{ion}}}{r}
 \mathrm{erf}\left(
 \dfrac{r}{\sqrt{2}r_{\mathrm{loc}}}
@@ -390,7 +386,7 @@ $Z_{\mathrm{ion}} = 3$, $r_{\mathrm{loc}} = 0.4$,
 $C_{1} = -14.034868$, $C_{2} = 9.553476$, $C_{3} = -1.7664885$
 and $C_{4} = 0.084370$.
 \footnote{
-  Hartwigsen, \textit{Phys. Rev. B}  \textbf{58}, 3641 (1998). 
+  \textit{Phys. Rev. B}  \textbf{58}, 3641 (1998). 
 }
 
 
@@ -425,8 +421,20 @@ functions).
 Future works will focus on:
 \begin{itemize}
 \item Larger systems
-\item Parallization
+\item Paralellization
 \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[c]
+\frametitle{Thank you for your attention!}
+    
+Public repository: \url{https://github.com/f-fathurrahman/ffr-LFDFT}.
+    
+{\centering
+\includegraphics[scale=0.25]{images/ffr-LFDFT-github-cropped.png}
+\par}
 
 \end{frame}
 
