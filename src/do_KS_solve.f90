@@ -1,5 +1,7 @@
 !!>
-!!> A driver routine for solving Kohn-Sham equations
+!!> \section{Subroutine \texttt{do\_KS\_solve}
+!!>
+!!> A driver routine for solving Kohn-Sham equations.
 !!>
 SUBROUTINE do_KS_solve()
 
@@ -16,6 +18,7 @@ SUBROUTINE do_KS_solve()
 
     CALL KS_solve_Emin_pcg( 3.d-5, .FALSE. )
     CALL info_energies()
+!!> Calculate eigenvalues
     CALL calc_evals( Nstates, Focc, evecs, evals )
 
   ELSEIF( I_KS_SOLVE == 2 ) THEN
@@ -31,6 +34,7 @@ SUBROUTINE do_KS_solve()
 
   ENDIF
 
+!!> Eigenvalues are displayed here
   WRITE(*,*)
   WRITE(*,*) 'Final eigenvalues (Ha and eV)'
   WRITE(*,*)

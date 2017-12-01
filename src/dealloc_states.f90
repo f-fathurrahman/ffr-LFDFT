@@ -1,3 +1,6 @@
+!!> 
+!!> \section{Subroutine \texttt{dealloc\_states}
+!!>
 SUBROUTINE dealloc_states()
   USE m_states
   IMPLICIT NONE 

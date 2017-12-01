@@ -57,7 +57,8 @@ PROGRAM ffr_LFDFT
   WRITE(*,'(1x,A,ES18.10,A)') 'Total elapsed time: ', &
            dble(tstop - tstart)/counts_per_second, ' second.'
 
-!!> \item Display goodbye message
+!!> \item
+!!> Display goodbye message
   CALL goodbye()
 
 END PROGRAM
