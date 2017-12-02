@@ -8,7 +8,7 @@
 !!> various core computational subroutines.
 !!>
 !!> If you want to quickly do a calculation for simple system or want to use directly
-!!> the core computational subroutines, please see examples in directory \texttt{\tests}.
+!!> the core computational subroutines, please see examples in directory \texttt{tests}.
 !!>
 PROGRAM ffr_LFDFT
 

@@ -1,3 +1,16 @@
+!!>
+!!> \section{Function \texttt{eval\_LF1d\_c}}
+!!> 
+!!> Evaluate cluster Lagrange function:
+!!> \begin{equation}
+!!> \phi_{\alpha}(x) = \frac{2}{\sqrt{(N+1)L}}
+!!> \sum_{i=1}^{N} \sin\left(k_{i}x\right) \sin\left(k_{i}x_{\alpha}\right)
+!!> \end{equation}
+!!> with $i = 1,2,\ldots,N$ and
+!!> \begin{equation}
+!!> k_{i} = \frac{\pi i}{L}
+!!> \end{equation}
+!!>
 FUNCTION eval_LF1d_c( N, L, A, grid, ibf, x ) RESULT(ff)
   USE m_constants, ONLY : PI
   IMPLICIT NONE

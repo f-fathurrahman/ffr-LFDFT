@@ -1,3 +1,8 @@
+!!>
+!!> \section{Subroutine \texttt{KS\_solve\_SCF}}
+!!> 
+!!> This is main computational routine for SCF solution of Kohn-Sham equations.
+!!>
 SUBROUTINE KS_solve_SCF()
   USE m_constants, ONLY: PI
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
@@ -69,9 +74,17 @@ SUBROUTINE KS_solve_SCF()
 
   flush(6)
 
+!!> Initial value for dr2 (convergence criteria for rhoe ???)
   dr2 = 1.d0
+
+!!>
+!!> SCF iterations begins here
+!!>
   DO iterSCF = 1, SCF_NiterMax
 
+!!>
+!!> Determine convergence criteria for iterative diagonalization
+!!>
     IF( iterSCF==1 ) THEN
       ethr = 1.d-1
     ELSE 
@@ -80,12 +93,17 @@ SUBROUTINE KS_solve_SCF()
       ethr = max( ethr, ETHR_EVALS_LAST )
     ENDIF 
 
+!!> Call the driver for iterative diagoanalization routine
     CALL Sch_solve_diag()
 
+!!> Calculate electron density
     CALL calc_rhoe( Focc, evecs )
 
+!!> Mix electron density
     CALL mixerifc( iterSCF, MIXTYPE, Npoints, Rhoe, dr2, nwork, workmix )
 
+!!> Normalize electron density.
+!!> Also, make sure that
     CALL normalize_rhoe( Npoints, Rhoe )  ! make sure no negative or very small rhoe
 
     integRho = sum(Rhoe)*dVol
@@ -104,6 +122,7 @@ SUBROUTINE KS_solve_SCF()
     
     dEtot = abs(Etot - Etot_old)
 
+!!> FIXME: should use ethr_etot ??
     IF( dEtot < 1d-7) THEN 
       WRITE(*,*)
       WRITE(*,'(1x,A,I5,A)') 'SCF converged at ', iterSCF, ' iterations.'

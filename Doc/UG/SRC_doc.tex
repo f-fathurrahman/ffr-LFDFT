@@ -119,87 +119,562 @@
 \begin{document}
 
 
-\section{Subroutine \texttt{init\_strfact\_shifted()}}
+\section{Main program: \texttt{ffr\_LFDFT}}
 
-The structure factor $S_{f}(\mathbf{G})$ for atom $i_a$ is calculated as
-\begin{equation}
-S_{f,i_a}(\mathbf{G}) = \exp\left[ -\imath \mathbf{G}\cdot\mathbf{R}_{i_a}\right]
-\label{eq:strfact}
-\end{equation}
-where $\mathbf{G}$ is reciprocal vector and $R_{i_a}$ is position of $i_a$-th atom.
+This is the main program for \texttt{ffr\_LFDFT}.
 
-This equation can be simplified into
-\begin{equation}
-S_{f,i_s} = \sum_{i_a}^{N_{a,s}} S_{f,i_a}
-\end{equation}
-where the sum is done over number of atoms of species $i_s$, which is denoted
-by $N_{a,s}$
+Start from here if you want to learn the call sequence of the main program.
+Most of the subroutines called here are wrapper subroutines which call
+various core computational subroutines.
 
-Note that, in this subroutine the position is shifted to fit the usual FFT grid.
+If you want to quickly do a calculation for simple system or want to use directly
+the core computational subroutines, please see examples in directory \texttt{tests}.
+
 
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{SUBROUTINE }\PY{n}{init\PYZus{}strfact\PYZus{}shifted}\PY{p}{(}\PY{p}{)}
-  \PY{k}{USE }\PY{n}{m\PYZus{}atoms}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{Na} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{Natoms}\PY{p}{,} \PY{p}{\PYZam{}}
-                      \PY{n}{Xpos} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{AtomicCoords}\PY{p}{,} \PY{p}{\PYZam{}}
-                      \PY{n}{Nspecies}\PY{p}{,} \PY{p}{\PYZam{}}
-                      \PY{n}{atm2species}\PY{p}{,} \PY{p}{\PYZam{}}
-                      \PY{n}{strf} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{StructureFactor}
-  \PY{k}{USE }\PY{n}{m\PYZus{}LF3d}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{Ng} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{LF3d\PYZus{}Npoints}\PY{p}{,} \PY{p}{\PYZam{}}
-                     \PY{n}{Gv} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{LF3d\PYZus{}Gv}\PY{p}{,} \PY{p}{\PYZam{}}
-                     \PY{n}{grid\PYZus{}x} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{LF3d\PYZus{}grid\PYZus{}x}\PY{p}{,} \PY{p}{\PYZam{}}
-                     \PY{n}{grid\PYZus{}y} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{LF3d\PYZus{}grid\PYZus{}y}\PY{p}{,} \PY{p}{\PYZam{}}
-                     \PY{n}{grid\PYZus{}z} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{LF3d\PYZus{}grid\PYZus{}z}
+\PY{k}{PROGRAM }\PY{n}{ffr\PYZus{}LFDFT}
   \PY{k}{IMPLICIT }\PY{k}{NONE}
-  \PY{c}{!}
-  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{ia}\PY{p}{,} \PY{n}{isp}\PY{p}{,} \PY{n}{ig}
-  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{GX}\PY{p}{,} \PY{n}{shiftx}\PY{p}{,} \PY{n}{shifty}\PY{p}{,} \PY{n}{shiftz}
-  \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)}
-  \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)} \PY{l+s+s1}{\PYZsq{}Calculating structure factor: shifted to Fourier grid\PYZsq{}}
+\end{Verbatim}
+Variables for timing stuffs
+Note that, for the moment the program only does timing for overall subroutines.
+It is very desirable, however, to measure timing of various steps in the program.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{tstart}\PY{p}{,} \PY{n}{counts\PYZus{}per\PYZus{}second}\PY{p}{,} \PY{n}{tstop}
+\end{Verbatim}
+
+Here begins the calls of wrapper subroutines.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c}{!!}
 \end{Verbatim}
 \begin{itemize}
 
 \item
-Calculate the shift with respect to the usual FFT grid.
+The following subroutine will print some information about the program.
 
 \begin{Verbatim}[commandchars=\\\{\}]
-  \PY{n}{shiftx} \PY{o}{=} \PY{l+m+mf}{0.5}\PY{n}{d0}\PY{o}{*}\PY{p}{(} \PY{n}{grid\PYZus{}x}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{grid\PYZus{}x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)} \PY{p}{)}
-  \PY{n}{shifty} \PY{o}{=} \PY{l+m+mf}{0.5}\PY{n}{d0}\PY{o}{*}\PY{p}{(} \PY{n}{grid\PYZus{}y}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{grid\PYZus{}y}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)} \PY{p}{)}
-  \PY{n}{shiftz} \PY{o}{=} \PY{l+m+mf}{0.5}\PY{n}{d0}\PY{o}{*}\PY{p}{(} \PY{n}{grid\PYZus{}z}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{grid\PYZus{}z}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)} \PY{p}{)}
+  \PY{k}{CALL }\PY{n}{welcome}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 \item
-Allocate memory for structure factor
+We start timing from here.
 
 \begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{ALLOCATE}\PY{p}{(} \PY{n}{strf}\PY{p}{(}\PY{n}{Ng}\PY{p}{,}\PY{n}{Nspecies}\PY{p}{)} \PY{p}{)}
+  \PY{k}{CALL }\PY{n+nb}{system\PYZus{}clock}\PY{p}{(} \PY{n}{tstart}\PY{p}{,} \PY{n}{counts\PYZus{}per\PYZus{}second} \PY{p}{)}
 \end{Verbatim}
 \item
-Initialize to zero
+This subroutine handles reading input file, setting-up
+basis set and grid points, pseudopotential-related variables, etc.
 
 \begin{Verbatim}[commandchars=\\\{\}]
-  \PY{n}{strf}\PY{p}{(}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{)} \PY{o}{=} \PY{n+nb}{cmplx}\PY{p}{(}\PY{l+m+mf}{0.}\PY{n}{d0}\PY{p}{,}\PY{l+m+mf}{0.}\PY{n}{d0}\PY{p}{,}\PY{n+nb}{kind}\PY{o}{=}\PY{l+m+mi}{8}\PY{p}{)}
-\end{Verbatim}
-
-\item
-Implementation of equation \ref{eq:strfact} is done here.
-
-\begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{DO }\PY{n}{ia} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{,}\PY{n}{Na}
-    \PY{n}{isp} \PY{o}{=} \PY{n}{atm2species}\PY{p}{(}\PY{n}{ia}\PY{p}{)}
-    \PY{k}{DO }\PY{n}{ig} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{,}\PY{n}{Ng}
-      \PY{n}{GX} \PY{o}{=} \PY{p}{(}\PY{n}{Xpos}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{ia}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{shiftx}\PY{p}{)}\PY{o}{*}\PY{n}{Gv}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{ig}\PY{p}{)} \PY{o}{+} \PY{p}{(}\PY{n}{Xpos}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{ia}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{shifty}\PY{p}{)}\PY{o}{*}\PY{n}{Gv}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{ig}\PY{p}{)} \PY{o}{+} \PY{p}{\PYZam{}}
-           \PY{p}{(}\PY{n}{Xpos}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{n}{ia}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n}{shiftz}\PY{p}{)}\PY{o}{*}\PY{n}{Gv}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{n}{ig}\PY{p}{)}
-      \PY{n}{strf}\PY{p}{(}\PY{n}{ig}\PY{p}{,}\PY{n}{isp}\PY{p}{)} \PY{o}{=} \PY{n}{strf}\PY{p}{(}\PY{n}{ig}\PY{p}{,}\PY{n}{isp}\PY{p}{)} \PY{o}{+} \PY{n+nb}{cmplx}\PY{p}{(} \PY{n+nb}{cos}\PY{p}{(}\PY{n}{GX}\PY{p}{)}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{n+nb}{sin}\PY{p}{(}\PY{n}{GX}\PY{p}{)}\PY{p}{,} \PY{n+nb}{kind}\PY{o}{=}\PY{l+m+mi}{8} \PY{p}{)}
-    \PY{k}{ENDDO}
-  \PY{k}{ENDDO}
+  \PY{k}{CALL }\PY{n}{setup\PYZus{}ffr\PYZus{}LFDFT}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 \item
-Finish
+Preparation for solving Kohn-Sham equation
 
 \begin{Verbatim}[commandchars=\\\{\}]
-  \PY{k}{CALL }\PY{n+nb}{flush}\PY{p}{(}\PY{l+m+mi}{6}\PY{p}{)}
+  \PY{k}{CALL }\PY{n}{guess\PYZus{}KS\PYZus{}solutions}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\item
+This soubroutine is the driver for primary subroutines to solve Kohn-Sham
+equation.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n}{do\PYZus{}KS\PYZus{}solve}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\item
+Free allocated memory
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n}{cleanup\PYZus{}ffr\PYZus{}LFDFT}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\item
+Stop timing and display elapsed time
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n+nb}{system\PYZus{}clock}\PY{p}{(} \PY{n}{tstop} \PY{p}{)}
+  \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)}
+  \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}(1x,A,ES18.10,A)\PYZsq{}}\PY{p}{)} \PY{l+s+s1}{\PYZsq{}Total elapsed time: \PYZsq{}}\PY{p}{,} \PY{p}{\PYZam{}}
+           \PY{n+nb}{dble}\PY{p}{(}\PY{n}{tstop} \PY{o}{\PYZhy{}} \PY{n}{tstart}\PY{p}{)}\PY{o}{/}\PY{n}{counts\PYZus{}per\PYZus{}second}\PY{p}{,} \PY{l+s+s1}{\PYZsq{} second.\PYZsq{}}
+\end{Verbatim}
+\item
+Display goodbye message
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n}{goodbye}\PY{p}{(}\PY{p}{)}
+\PY{k}{END }\PY{k}{PROGRAM}
+\end{Verbatim}
+\end{itemize}
+
+\section{Subroutine \texttt{setup\_ffr\_LFDFT()}}
+
+This subroutine prepares various tasks before actually solving the Kohn-Sham
+equation.
+
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{SUBROUTINE }\PY{n}{setup\PYZus{}ffr\PYZus{}LFDFT}\PY{p}{(}\PY{p}{)}
+  \PY{k}{USE }\PY{n}{m\PYZus{}options}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{FREE\PYZus{}NABLA2}\PY{p}{,} \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE}
+  \PY{k}{USE }\PY{n}{m\PYZus{}input\PYZus{}vars}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{assume\PYZus{}isolated}
+  \PY{k}{USE }\PY{n}{m\PYZus{}LF3d}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{Npoints} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{LF3d\PYZus{}Npoints}
+  \PY{k}{USE }\PY{n}{m\PYZus{}states}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{Nstates}\PY{p}{,} \PY{p}{\PYZam{}}
+                       \PY{n}{evals} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{KS\PYZus{}evals}\PY{p}{,} \PY{p}{\PYZam{}}
+                       \PY{n}{evecs} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{KS\PYZus{}evecs} 
+  \PY{c}{!}
+  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{Narg}   \PY{c}{! number of argument}
+  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n+nb}{iargc}  \PY{c}{! needed for several compilers}
+  \PY{k+kt}{CHARACTER}\PY{p}{(}\PY{l+m+mi}{64}\PY{p}{)} \PY{k+kd}{::} \PY{n}{filein}
+\end{Verbatim}
+\begin{itemize}
+
+\item
+We first check the number of argument(s) give to the program using built-in
+function \texttt{iargc()} and save the result to variable \texttt{Narg}.
+Currently, we only support one argument, i.e. path to input file.
+The program will stop and display error message if \texttt{Narg}
+is not equal to one.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{n}{Narg} \PY{o}{=} \PY{n+nb}{iargc}\PY{p}{(}\PY{p}{)}
+  \PY{k}{IF}\PY{p}{(} \PY{n}{Narg} \PY{o}{/}\PY{o}{=} \PY{l+m+mi}{1} \PY{p}{)} \PY{k}{THEN}
+    \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)}
+    \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)} \PY{l+s+s1}{\PYZsq{}ERROR: exactly one argument must be given: input file path\PYZsq{}}
+    \PY{k}{STOP}
+  \PY{k}{ENDIF}
+\end{Verbatim}
+\item
+We get the actual argument using built-in subroutine \texttt{getarg()}.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n+nb}{getarg}\PY{p}{(} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{filein} \PY{p}{)}
+\end{Verbatim}
+\item
+We read the input file using subroutine \texttt{read\_input()}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n}{read\PYZus{}input}\PY{p}{(} \PY{n}{filein} \PY{p}{)}
+\end{Verbatim}
+\item
+The following subroutine will initialize global variables related to basis function
+and grid points, molecular or crystalline structures, and pseudopotentials.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n}{setup\PYZus{}from\PYZus{}input}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\item
+Various options, such as convergence criteria, choice of algorithms, etc which are
+given in the input file, will be converted to internal variables (mostly defined in
+module \texttt{m\_options}).
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n}{setup\PYZus{}options}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\item
+The following calls will output information about molecular or crystalline
+structures, pseudopotentials, and basis function and grid points.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n}{info\PYZus{}atoms}\PY{p}{(}\PY{p}{)}
+  \PY{k}{CALL }\PY{n}{info\PYZus{}PsPot}\PY{p}{(}\PY{p}{)}
+  \PY{k}{CALL }\PY{n}{info\PYZus{}LF3d}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\item
+This subroutine initialize nonlocal pseudopotential projectors. It
+must be called after variables from \texttt{m\_LF3d} are initialized as they are
+defined on grid points.
+
+TODO/FIXME: To be consistent, this call should be made in pseudopotential setup.
+(probably via subroutine \texttt{setup\_from\_input()})
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n}{init\PYZus{}betaNL}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\item
+This call will determined number of occupied and unoccupied states.
+It will also initialize occupation numbers.
+
+Note: Memories for eigenvectors and eigenvalues of KS equations are not
+allocated here.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n}{init\PYZus{}states}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\item
+Allocate KS eigenvectors and eigenvalues.
+
+This step should be done in some wrapper subroutine, however, for current use-case
+this is suffice.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{ALLOCATE}\PY{p}{(} \PY{n}{evecs}\PY{p}{(}\PY{n}{Npoints}\PY{p}{,}\PY{n}{Nstates}\PY{p}{)}\PY{p}{,} \PY{n}{evals}\PY{p}{(}\PY{n}{Nstates}\PY{p}{)} \PY{p}{)}
+\end{Verbatim}
+\item
+This call will initialize and calculate structure factor $S_{f}(\mathbf{G})$.
+This is required for periodic LF.
+
+TODO/FIXME: This call should be made in \texttt{setup\_from\_input} or anther
+subroutine.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n}{init\PYZus{}strfact\PYZus{}shifted}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\item
+Ewald energy is calculated here.
+
+FIXME: Ewald energy calculation should be called everytime atomic positions
+are updated, for example in geometry optimization or molecular dynamics.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{IF}\PY{p}{(} \PY{n}{assume\PYZus{}isolated} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}sinc\PYZsq{}} \PY{p}{)} \PY{k}{THEN}
+    \PY{k}{CALL }\PY{n}{calc\PYZus{}E\PYZus{}NN}\PY{p}{(}\PY{p}{)}
+  \PY{k}{ELSE}
+    \PY{k}{CALL }\PY{n}{calc\PYZus{}Ewald\PYZus{}qe}\PY{p}{(}\PY{p}{)}
+  \PY{k}{ENDIF}
+\end{Verbatim}
+\item
+The following call will initialize various global variables (arrays) needed to
+define Hamiltonian. It is mainly used for storing potential terms.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n}{alloc\PYZus{}hamiltonian}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\item
+Allocate local pseudopotential. For periodic sinc LF the potential is constructed
+directly on real space grid. For periodic LF, the potential is first constructed on
+reciprocal space and then transformed to real space grid via inverse FFT.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{IF}\PY{p}{(} \PY{n}{assume\PYZus{}isolated} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}sinc\PYZsq{}} \PY{p}{)} \PY{k}{THEN}
+    \PY{k}{CALL }\PY{n}{init\PYZus{}V\PYZus{}ps\PYZus{}loc}\PY{p}{(}\PY{p}{)}
+  \PY{k}{ELSE}
+    \PY{k}{CALL }\PY{n}{init\PYZus{}V\PYZus{}ps\PYZus{}loc\PYZus{}G}\PY{p}{(}\PY{p}{)}
+  \PY{k}{ENDIF}
+\end{Verbatim}
+\item
+Laplacian matrix $\nabla^2$ is initialized here.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n}{init\PYZus{}nabla2\PYZus{}sparse}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\item
+Here we construct ILU0 preconditioner based on kinetic matrix.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n}{init\PYZus{}ilu0\PYZus{}prec}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\item
+If the option \texttt{FREE\_NABLA2} is \texttt{.TRUE.}, then memory for storing
+Laplacian matrix is freed immediately. In this way, application of kinetic operator
+will be done by a matrix-free algorithm instead of using sparse-matrix multiplication.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{IF}\PY{p}{(} \PY{n}{FREE\PYZus{}NABLA2} \PY{p}{)} \PY{k}{THEN}
+    \PY{k}{CALL }\PY{n}{dealloc\PYZus{}nabla2\PYZus{}sparse}\PY{p}{(}\PY{p}{)}
+  \PY{k}{ENDIF}
+\end{Verbatim}
+\item
+This is a special setup for Poisson solver in the case of non-periodic
+system. Currrently there are two different methods: (1) interpolating scaling
+function (ISF) method and (2) Direct Algorithm for Gravitation and Electrostatic (DAGE).
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{IF}\PY{p}{(} \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE} \PY{o}{==} \PY{l+m+mi}{1} \PY{p}{)} \PY{k}{THEN}
+    \PY{k}{CALL }\PY{n}{init\PYZus{}Poisson\PYZus{}solve\PYZus{}ISF}\PY{p}{(}\PY{p}{)}
+  \PY{k}{ELSEIF}\PY{p}{(} \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE} \PY{o}{==} \PY{l+m+mi}{2} \PY{p}{)} \PY{k}{THEN}
+    \PY{k}{CALL }\PY{n}{init\PYZus{}Poisson\PYZus{}solve\PYZus{}DAGE}\PY{p}{(}\PY{p}{)}
+  \PY{k}{ENDIF}
 \PY{k}{END }\PY{k}{SUBROUTINE}
 \end{Verbatim}
 \end{itemize}
+
+\section{Subroutine \texttt{guess\_KS\_solutions}}
+
+Generate guess solutions (density and orbitals) for \texttt{KS\_solve\_XXX}
+subroutines.
+
+Note that the global arrays \texttt{KS\_evals} and \texttt{KS\_evecs} are
+allocated in this subroutine.
+
+The algorithm used in this subroutine is not sophisticated. I have used ABINIT
+routine \texttt{atmlength} to generate gaussian charge density.
+
+For direct minimization (using \texttt{KS\_solve\_Emin\_XXX}),
+we need to generate initial wavefunction, so an
+iterative diagonalization step must be performed. This might cause significant
+additional time before the actual direct minimization step starts.
+
+For SCF, we can simply generate random initial wavefunction which will be used for
+iterative diagonalization step.
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{SUBROUTINE }\PY{n}{guess\PYZus{}KS\PYZus{}solutions}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+Here are the imported variables:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{USE }\PY{n}{m\PYZus{}input\PYZus{}vars}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{startingwfc}
+\end{Verbatim}
+\begin{itemize}
+\item
+Generate gaussian charge density.
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{c}{! FIXME: Need gen\PYZus{}guess\PYZus{}rho\PYZus{}gaussian for isolated system ?}
+  \PY{c}{!        thus bypassing calculation of structure factors ?}
+  \PY{k}{IF}\PY{p}{(} \PY{n}{startingwfc} \PY{o}{/}\PY{o}{=} \PY{l+s+s1}{\PYZsq{}random\PYZsq{}} \PY{p}{)} \PY{k}{THEN}
+    \PY{k}{CALL }\PY{n}{gen\PYZus{}guess\PYZus{}rho\PYZus{}gaussian}\PY{p}{(}\PY{p}{)}
+  \PY{k}{ENDIF}
+\end{Verbatim}
+\item
+Generate random initial wavefunction.
+This step is needed for both SCF and direct minimization method.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n}{gen\PYZus{}random\PYZus{}evecs}\PY{p}{(}\PY{p}{)}  \PY{c}{! also needed for initial diagonalization routine}
+\end{Verbatim}
+\item
+If the input variable \texttt{startingwfc} is not set to \texttt{'random'}
+then we need to do one iterative diagonalization step.
+If it is set to random then we don't need to do iterative diagonalization
+step as random wavefunction is suffice and subroutine will immediately return.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{IF}\PY{p}{(} \PY{n}{startingwfc} \PY{o}{/}\PY{o}{=} \PY{l+s+s1}{\PYZsq{}random\PYZsq{}} \PY{p}{)} \PY{k}{THEN}
+    \PY{c}{! This will call diagonalization routine}
+    \PY{k}{CALL }\PY{n}{gen\PYZus{}gaussian\PYZus{}evecs}\PY{p}{(}\PY{p}{)}
+  \PY{k}{ELSE}
+    \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)}
+    \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)} \PY{l+s+s1}{\PYZsq{}Using random starting wavefunction\PYZsq{}}
+  \PY{k}{ENDIF}
+\PY{k}{END }\PY{k}{SUBROUTINE}
+\end{Verbatim}
+\end{itemize}
+
+\section{Subroutine \texttt{do\_KS\_solve}}
+
+A driver routine for solving Kohn-Sham equations.
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{SUBROUTINE }\PY{n}{do\PYZus{}KS\PYZus{}solve}\PY{p}{(}\PY{p}{)}
+  \PY{k}{USE }\PY{n}{m\PYZus{}constants}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{Ry2eV}
+  \PY{k}{USE }\PY{n}{m\PYZus{}input\PYZus{}vars}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{startingwfc}
+  \PY{k}{USE }\PY{n}{m\PYZus{}options}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{I\PYZus{}KS\PYZus{}Solve}
+  \PY{k}{USE }\PY{n}{m\PYZus{}states}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{Nstates}\PY{p}{,} \PY{n}{Focc}\PY{p}{,} \PY{p}{\PYZam{}}
+                       \PY{n}{evals} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{KS\PYZus{}evals}\PY{p}{,} \PY{p}{\PYZam{}}
+                       \PY{n}{evecs} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{KS\PYZus{}evecs}
+  \PY{k}{IMPLICIT }\PY{k}{NONE} 
+  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{ist}
+\end{Verbatim}
+
+We are using direct minimization (this is the default):
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{IF}\PY{p}{(} \PY{n}{I\PYZus{}KS\PYZus{}SOLVE} \PY{o}{==} \PY{l+m+mi}{1} \PY{p}{)} \PY{k}{THEN} 
+\end{Verbatim}
+Call the main computational routine for direct minimization.
+Note that for the moment the parameter $\alpha_t$ is hardcoded to $3\times10^{-5}$
+
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PY{k}{CALL }\PY{n}{KS\PYZus{}solve\PYZus{}Emin\PYZus{}pcg}\PY{p}{(} \PY{l+m+mf}{3.}\PY{n}{d}\PY{o}{\PYZhy{}}\PY{l+m+mi}{5}\PY{p}{,} \PY{p}{.}\PY{n}{FALSE}\PY{p}{.} \PY{p}{)}
+\end{Verbatim}
+Display total energy components
+
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PY{k}{CALL }\PY{n}{info\PYZus{}energies}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+We need to calculate eigenvalues explicitly
+
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PY{k}{CALL }\PY{n}{calc\PYZus{}evals}\PY{p}{(} \PY{n}{Nstates}\PY{p}{,} \PY{n}{Focc}\PY{p}{,} \PY{n}{evecs}\PY{p}{,} \PY{n}{evals} \PY{p}{)}
+\end{Verbatim}
+
+We are using the conventional SCF with electron density mixing
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{ELSEIF}\PY{p}{(} \PY{n}{I\PYZus{}KS\PYZus{}SOLVE} \PY{o}{==} \PY{l+m+mi}{2} \PY{p}{)} \PY{k}{THEN}
+\end{Verbatim}
+We need to calculate electron density and update the local potentials
+if starting from random wavefunction
+
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PY{k}{IF}\PY{p}{(} \PY{n}{startingwfc} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}random\PYZsq{}} \PY{p}{)} \PY{k}{THEN}
+      \PY{c}{! Initial Rhoe and potentials}
+      \PY{k}{CALL }\PY{n}{calc\PYZus{}rhoe}\PY{p}{(} \PY{n}{Focc}\PY{p}{,} \PY{n}{evecs} \PY{p}{)}
+      \PY{c}{! FIXME: need this ?}
+      \PY{k}{CALL }\PY{n}{update\PYZus{}potentials}\PY{p}{(}\PY{p}{)}
+    \PY{k}{ENDIF}
+\end{Verbatim}
+Call the main computational routine for SCF
+
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PY{k}{CALL }\PY{n}{KS\PYZus{}solve\PYZus{}SCF}\PY{p}{(}\PY{p}{)}
+    \PY{k}{CALL }\PY{n}{info\PYZus{}energies}\PY{p}{(}\PY{p}{)}
+  \PY{k}{ENDIF}
+\end{Verbatim}
+Eigenvalues are displayed here
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)}
+  \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)} \PY{l+s+s1}{\PYZsq{}Final eigenvalues (Ha and eV)\PYZsq{}}
+  \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{o}{*}\PY{p}{)}
+  \PY{k}{DO }\PY{n}{ist} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{,}\PY{n}{Nstates}
+    \PY{k}{WRITE}\PY{p}{(}\PY{o}{*}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}(1x,I8,2F18.10)\PYZsq{}}\PY{p}{)} \PY{n}{ist}\PY{p}{,} \PY{n}{evals}\PY{p}{(}\PY{n}{ist}\PY{p}{)}\PY{p}{,} \PY{n}{evals}\PY{p}{(}\PY{n}{ist}\PY{p}{)}\PY{o}{*}\PY{l+m+mf}{2.}\PY{n}{d0}\PY{o}{*}\PY{n}{Ry2eV}
+  \PY{k}{ENDDO}
+\end{Verbatim}
+Write restart data
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{c}{!FIXME Need tidy up}
+  \PY{k}{CALL }\PY{n}{write\PYZus{}checkpoint}\PY{p}{(}\PY{p}{)}
+  \PY{k}{CALL }\PY{n}{write\PYZus{}KS\PYZus{}evecs}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}KS\PYZus{}evecs.dat\PYZsq{}}\PY{p}{)}
+\PY{k}{END }\PY{k}{SUBROUTINE} 
+\end{Verbatim}
+
+\section{Subroutine \texttt{cleanup\_ffr\_LFDFT}}
+
+This subroutine is the driver for various \texttt{dealloc\_XX} subroutines.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{SUBROUTINE }\PY{n}{cleanup\PYZus{}ffr\PYZus{}LFDFT}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+Currently, only this option is needed.
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{USE }\PY{n}{m\PYZus{}options}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE}
+  \PY{k}{IMPLICIT }\PY{k}{NONE} 
+\end{Verbatim}
+This call will deallocate Kohn-Sham eigenvalues and eigenvectors
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PY{k}{CALL }\PY{n}{dealloc\PYZus{}states}\PY{p}{(}\PY{p}{)}
+  \PY{k}{IF}\PY{p}{(} \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE} \PY{o}{==} \PY{l+m+mi}{1} \PY{p}{)} \PY{k}{THEN}
+    \PY{k}{CALL }\PY{n}{dealloc\PYZus{}Poisson\PYZus{}solve\PYZus{}ISF}\PY{p}{(}\PY{p}{)}
+  \PY{k}{ELSEIF}\PY{p}{(} \PY{n}{I\PYZus{}POISSON\PYZus{}SOLVE} \PY{o}{==} \PY{l+m+mi}{2} \PY{p}{)} \PY{k}{THEN}
+    \PY{k}{CALL }\PY{n}{dealloc\PYZus{}Poisson\PYZus{}solve\PYZus{}DAGE}\PY{p}{(}\PY{p}{)}
+  \PY{k}{ENDIF}
+  \PY{k}{CALL }\PY{n}{dealloc\PYZus{}nabla2\PYZus{}sparse}\PY{p}{(}\PY{p}{)}
+  \PY{k}{CALL }\PY{n}{dealloc\PYZus{}ilu0\PYZus{}prec}\PY{p}{(}\PY{p}{)}
+  \PY{k}{CALL }\PY{n}{dealloc\PYZus{}hamiltonian}\PY{p}{(}\PY{p}{)}
+  \PY{k}{CALL }\PY{n}{dealloc\PYZus{}LF3d}\PY{p}{(}\PY{p}{)}
+  \PY{k}{CALL }\PY{n}{dealloc\PYZus{}PsPot}\PY{p}{(}\PY{p}{)}
+  \PY{k}{CALL }\PY{n}{dealloc\PYZus{}atoms}\PY{p}{(}\PY{p}{)}
+\PY{k}{END }\PY{k}{SUBROUTINE} 
+\end{Verbatim}
+
+\section{Function \texttt{eval\_LF1d\_sinc}}
+
+Evaluate Lagrange-sinc function:
+\begin{equation}
+\phi_{\alpha}(x) = \frac{1}{\sqrt{h}}
+\frac{\sin\left[ \pi(x-x_{\alpha})/h \right]}{\pi(x-x_{\alpha})/h}
+\end{equation}
+where $h$ is grid spacing.
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{FUNCTION }\PY{n}{eval\PYZus{}LF1d\PYZus{}sinc}\PY{p}{(} \PY{n}{N}\PY{p}{,} \PY{n}{grid}\PY{p}{,} \PY{n}{ibf}\PY{p}{,} \PY{n}{x} \PY{p}{)} \PY{k}{RESULT}\PY{p}{(}\PY{n}{ff}\PY{p}{)}
+  \PY{k}{USE }\PY{n}{m\PYZus{}constants}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{PI}
+  \PY{k}{IMPLICIT }\PY{k}{NONE}
+  \PY{c}{!}
+  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{N}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{grid}\PY{p}{(}\PY{n}{N}\PY{p}{)}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{ff}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{dx}
+  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{ibf}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)}\PY{p}{,} \PY{k}{PARAMETER} \PY{k+kd}{::} \PY{n}{SMALL} \PY{o}{=} \PY{l+m+mf}{1.}\PY{n}{d}\PY{o}{\PYZhy{}}\PY{l+m+mi}{10}
+  \PY{c}{!}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{h}
+  
+  \PY{n}{h} \PY{o}{=} \PY{n}{grid}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{grid}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+  \PY{n}{dx} \PY{o}{=} \PY{n}{x} \PY{o}{\PYZhy{}} \PY{n}{grid}\PY{p}{(}\PY{n}{ibf}\PY{p}{)}
+  \PY{k}{IF}\PY{p}{(} \PY{n+nb}{abs}\PY{p}{(}\PY{n}{dx}\PY{p}{)} \PY{o}{\PYZlt{}} \PY{n}{SMALL} \PY{p}{)} \PY{k}{THEN} 
+    \PY{n}{dx} \PY{o}{=} \PY{n}{SMALL}
+  \PY{k}{ENDIF} 
+  \PY{n}{ff} \PY{o}{=} \PY{n+nb}{sin}\PY{p}{(} \PY{n}{PI}\PY{o}{*}\PY{n}{dx}\PY{o}{/}\PY{n}{h} \PY{p}{)} \PY{o}{/} \PY{p}{(}\PY{n}{PI}\PY{o}{*}\PY{n}{dx}\PY{p}{)} \PY{o}{*} \PY{n}{h} \PY{o}{/}\PY{n+nb}{sqrt}\PY{p}{(}\PY{n}{h}\PY{p}{)}
+\PY{k}{END }\PY{k}{FUNCTION}
+\end{Verbatim}
+
+\section{Function \texttt{eval\_LF1d\_p}}
+
+Evaluate periodic Lagrange function:
+\begin{equation}
+\phi_{\alpha}(x) = \frac{1}{\sqrt{NL}}
+\sum_{i=1}^{N} \cos\left[k_{i}(x - x_{\alpha})\right]
+\end{equation}
+with $i = 1,2,\ldots,N$ and
+\begin{equation}
+k_{i} = \frac{2\pi(i - N' - 1)}{L}
+\end{equation}
+$N' = (N-1)/2$ and $N$ must be an odd number.
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{FUNCTION }\PY{n}{eval\PYZus{}LF1d\PYZus{}p}\PY{p}{(}\PY{n}{N}\PY{p}{,} \PY{n}{L}\PY{p}{,} \PY{n}{grid}\PY{p}{,} \PY{n}{ibf}\PY{p}{,} \PY{n}{x}\PY{p}{)} \PY{k}{RESULT}\PY{p}{(}\PY{n}{ff}\PY{p}{)}
+  \PY{k}{USE }\PY{n}{m\PYZus{}constants}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{PI}
+  \PY{k}{IMPLICIT }\PY{k}{NONE}
+  \PY{c}{! arguments}
+  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{N}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{L}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{grid}\PY{p}{(}\PY{n}{N}\PY{p}{)}
+  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{ibf}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{x}\PY{p}{,} \PY{n}{ff}
+  \PY{c}{!}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{pre1}
+  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{ii}
+  \PY{c}{!}
+  \PY{n}{pre1} \PY{o}{=} \PY{l+m+mf}{1.}\PY{n}{d0}\PY{o}{/}\PY{n+nb}{sqrt}\PY{p}{(}\PY{n}{N}\PY{o}{*}\PY{n}{L}\PY{p}{)}
+  \PY{n}{ff} \PY{o}{=} \PY{l+m+mf}{0.}\PY{n}{d0}
+  \PY{k}{DO }\PY{n}{ii} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{,}\PY{n}{N}
+    \PY{n}{ff} \PY{o}{=} \PY{n}{ff} \PY{o}{+} \PY{n+nb}{cos}\PY{p}{(} \PY{n}{PI}\PY{o}{*}\PY{p}{(} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{ii} \PY{o}{\PYZhy{}} \PY{n}{N} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1} \PY{p}{)}\PY{o}{*}\PY{p}{(} \PY{n}{x} \PY{o}{\PYZhy{}} \PY{n}{grid}\PY{p}{(}\PY{n}{ibf}\PY{p}{)} \PY{p}{)}\PY{o}{/} \PY{n}{L} \PY{p}{)}
+  \PY{k}{ENDDO}
+  \PY{n}{ff} \PY{o}{=} \PY{n}{ff}\PY{o}{*}\PY{n}{pre1}
+\PY{k}{END }\PY{k}{FUNCTION}
+\end{Verbatim}
+
+\section{Function \texttt{eval\_LF1d\_c}}
+
+Evaluate cluster Lagrange function:
+\begin{equation}
+\phi_{\alpha}(x) = \frac{2}{\sqrt{(N+1)L}}
+\sum_{i=1}^{N} \sin\left(k_{i}x\right) \sin\left(k_{i}x_{\alpha}\right)
+\end{equation}
+with $i = 1,2,\ldots,N$ and
+\begin{equation}
+k_{i} = \frac{\pi i}{L}
+\end{equation}
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{FUNCTION }\PY{n}{eval\PYZus{}LF1d\PYZus{}c}\PY{p}{(} \PY{n}{N}\PY{p}{,} \PY{n}{L}\PY{p}{,} \PY{n}{A}\PY{p}{,} \PY{n}{grid}\PY{p}{,} \PY{n}{ibf}\PY{p}{,} \PY{n}{x} \PY{p}{)} \PY{k}{RESULT}\PY{p}{(}\PY{n}{ff}\PY{p}{)}
+  \PY{k}{USE }\PY{n}{m\PYZus{}constants}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{PI}
+  \PY{k}{IMPLICIT }\PY{k}{NONE}
+  \PY{c}{!}
+  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{N}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{L}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{A}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{grid}\PY{p}{(}\PY{n}{N}\PY{p}{)}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{ff}
+  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{ibf}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{x}
+  \PY{c}{!}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{ki}\PY{p}{,} \PY{n}{pre}
+  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{ii}
+  \PY{n}{pre} \PY{o}{=} \PY{l+m+mf}{2.}\PY{n}{d0}\PY{o}{/}\PY{n+nb}{sqrt}\PY{p}{(} \PY{p}{(}\PY{n}{N}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{*}\PY{n}{L} \PY{p}{)}
+  \PY{n}{ff} \PY{o}{=} \PY{l+m+mf}{0.}\PY{n}{d0}
+  \PY{k}{DO }\PY{n}{ii} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{N}
+    \PY{n}{ki} \PY{o}{=} \PY{n}{PI}\PY{o}{*}\PY{n}{ii}\PY{o}{/}\PY{n}{L}
+    \PY{n}{ff} \PY{o}{=} \PY{n}{ff} \PY{o}{+} \PY{n+nb}{sin}\PY{p}{(} \PY{n}{ki}\PY{o}{*}\PY{p}{(}\PY{n}{grid}\PY{p}{(}\PY{n}{ibf}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{A}\PY{p}{)} \PY{p}{)} \PY{o}{*} \PY{n+nb}{sin}\PY{p}{(} \PY{n}{ki}\PY{o}{*}\PY{p}{(}\PY{n}{x} \PY{o}{\PYZhy{}} \PY{n}{A}\PY{p}{)} \PY{p}{)}
+  \PY{k}{ENDDO}
+  \PY{n}{ff} \PY{o}{=} \PY{n}{ff}\PY{o}{*}\PY{n}{pre}
+\PY{k}{END }\PY{k}{FUNCTION}
+\end{Verbatim}
 
 \end{document}
 

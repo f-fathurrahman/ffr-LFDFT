@@ -10,7 +10,7 @@
 !!> The algorithm used in this subroutine is not sophisticated. I have used ABINIT
 !!> routine \texttt{atmlength} to generate gaussian charge density.
 !!>
-!!> For direct minimization (using \texttt{KS_solve_Emin_XX}),
+!!> For direct minimization (using \texttt{KS\_solve\_Emin\_XXX}),
 !!> we need to generate initial wavefunction, so an
 !!> iterative diagonalization step must be performed. This might cause significant
 !!> additional time before the actual direct minimization step starts.

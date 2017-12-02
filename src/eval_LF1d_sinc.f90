@@ -1,3 +1,13 @@
+!!>
+!!> \section{Function \texttt{eval\_LF1d\_sinc}}
+!!> 
+!!> Evaluate Lagrange-sinc function:
+!!> \begin{equation}
+!!> \phi_{\alpha}(x) = \frac{1}{\sqrt{h}}
+!!> \frac{\sin\left[ \pi(x-x_{\alpha})/h \right]}{\pi(x-x_{\alpha})/h}
+!!> \end{equation}
+!!> where $h$ is grid spacing.
+!!>
 FUNCTION eval_LF1d_sinc( N, grid, ibf, x ) RESULT(ff)
   USE m_constants, ONLY : PI
   IMPLICIT NONE

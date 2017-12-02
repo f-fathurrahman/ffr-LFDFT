@@ -1,7 +1,7 @@
 !!>
-!!> \section{Subroutine \texttt{cleanup\_ffr\_LFDFT}
+!!> \section{Subroutine \texttt{cleanup\_ffr\_LFDFT}}
 !!>
-!!> This subroutine is the driver for various \texttt{dealloc_XX} subroutines.
+!!> This subroutine is the driver for various \texttt{dealloc\_XX} subroutines.
 SUBROUTINE cleanup_ffr_LFDFT()
 !!>
 !!> Currently, only this option is needed.
