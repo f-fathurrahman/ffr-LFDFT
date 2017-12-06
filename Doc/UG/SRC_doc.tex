@@ -676,5 +676,37 @@ k_{i} = \frac{\pi i}{L}
 \PY{k}{END }\PY{k}{FUNCTION}
 \end{Verbatim}
 
+\section{Subroutine \texttt{calc\_betaNL\_psi}}
+
+Calculate dot product between $\beta_{\mathrm{NL}}(\mathbf{r})$ and $\psi(\mathbf{r})$
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{SUBROUTINE }\PY{n}{calc\PYZus{}betaNL\PYZus{}psi}\PY{p}{(} \PY{n}{Nstates}\PY{p}{,} \PY{n}{psi} \PY{p}{)}
+  \PY{k}{USE }\PY{n}{m\PYZus{}LF3d}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{Npoints} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{LF3d\PYZus{}Npoints}\PY{p}{,} \PY{p}{\PYZam{}}
+                     \PY{n}{dVol} \PY{o}{=}\PY{o}{\PYZgt{}} \PY{n}{LF3d\PYZus{}dVol}
+  \PY{k}{USE }\PY{n}{m\PYZus{}PsPot}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{NbetaNL}\PY{p}{,} \PY{n}{betaNL}
+  \PY{k}{USE }\PY{n}{m\PYZus{}hamiltonian}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{betaNL\PYZus{}psi}
+  \PY{k}{USE }\PY{n}{m\PYZus{}atoms}\PY{p}{,} \PY{k}{ONLY} \PY{p}{:} \PY{n}{Natoms}
+  \PY{k}{IMPLICIT }\PY{k}{NONE} 
+  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{Nstates}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{psi}\PY{p}{(}\PY{n}{Npoints}\PY{p}{,}\PY{n}{Nstates}\PY{p}{)}
+  \PY{k+kt}{INTEGER} \PY{k+kd}{::} \PY{n}{ist}\PY{p}{,} \PY{n}{ibeta}\PY{p}{,} \PY{n}{ia}
+  \PY{k+kt}{REAL}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{)} \PY{k+kd}{::} \PY{n}{ddot}
+  \PY{c}{! immediate return if no projectors are available}
+  \PY{k}{IF}\PY{p}{(} \PY{n}{NbetaNL} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{l+m+mi}{0} \PY{p}{)} \PY{k}{THEN}
+    \PY{k}{RETURN} 
+  \PY{k}{ENDIF} 
+  \PY{n}{betaNL\PYZus{}psi}\PY{p}{(}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{)} \PY{o}{=} \PY{l+m+mf}{0.}\PY{n}{d0}
+  \PY{k}{DO }\PY{n}{ia} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{,}\PY{n}{Natoms}
+    \PY{k}{DO }\PY{n}{ist} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{,}\PY{n}{Nstates}
+      \PY{k}{DO }\PY{n}{ibeta} \PY{o}{=} \PY{l+m+mi}{1}\PY{p}{,}\PY{n}{NbetaNL}
+        \PY{n}{betaNL\PYZus{}psi}\PY{p}{(}\PY{n}{ia}\PY{p}{,}\PY{n}{ist}\PY{p}{,}\PY{n}{ibeta}\PY{p}{)} \PY{o}{=} \PY{n}{ddot}\PY{p}{(} \PY{n}{Npoints}\PY{p}{,} \PY{n}{betaNL}\PY{p}{(}\PY{p}{:}\PY{p}{,}\PY{n}{ibeta}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{psi}\PY{p}{(}\PY{p}{:}\PY{p}{,}\PY{n}{ist}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{1} \PY{p}{)} \PY{o}{*} \PY{n}{dVol}
+      \PY{k}{ENDDO} 
+    \PY{k}{ENDDO} 
+  \PY{k}{ENDDO} 
+\PY{k}{END }\PY{k}{SUBROUTINE} 
+\end{Verbatim}
+
 \end{document}
 

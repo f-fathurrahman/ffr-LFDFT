@@ -70,7 +70,8 @@ def processFile(f):
 FILELIST = [
     "ffr_LFDFT.f90",
     "setup_ffr_LFDFT.f90", "guess_KS_solutions.f90", "do_KS_solve.f90", "cleanup_ffr_LFDFT.f90",
-    "eval_LF1d_sinc.f90", "eval_LF1d_p.f90", "eval_LF1d_c.f90"]
+    "eval_LF1d_sinc.f90", "eval_LF1d_p.f90", "eval_LF1d_c.f90",
+    "calc_betaNL_psi.f90"]
 
 for f in FILELIST:
     processFile('../../src/' + f)
