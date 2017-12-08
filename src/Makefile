@@ -15,6 +15,7 @@ m_energies.f90 \
 m_Ps_HGH.f90 \
 m_PsPot.f90 \
 m_input_vars.f90 \
+m_xc.f90 \
 welcome.f90 \
 goodbye.f90 \
 timestamp.f90 \
@@ -24,6 +25,8 @@ init_PsPot.f90 \
 dealloc_PsPot.f90 \
 fft_fftw3.f90 \
 LDA_VWN.f90 \
+calc_Exc_Vxc.f90 \
+calc_Exc.f90 \
 init_atoms_xyz.f90 \
 init_grid_1d_p.f90 \
 init_grid_1d_c.f90 \
@@ -138,7 +141,7 @@ dealloc_states.f90 \
 setup_ffr_LFDFT.f90 \
 cleanup_ffr_LFDFT.f90 \
 do_KS_solve.f90 \
-guess_KS_solutions.f90
+guess_KS_solutions.f90 
 
 C_SRC = \
 Faddeeva.c

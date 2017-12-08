@@ -1,3 +1,9 @@
+!!>
+!!> \section{Subroutine \texttt{update\_potentials}}
+!!>
+!!> This subroutine updates (calculates) Hartree and XC potentials for
+!!> a given electronic density.
+!!>
 SUBROUTINE update_potentials()
   
   USE m_options, ONLY : I_POISSON_SOLVE
@@ -6,10 +12,6 @@ SUBROUTINE update_potentials()
   USE m_hamiltonian, ONLY : Rhoe, V_Hartree, V_xc
 
   IMPLICIT NONE 
-  REAL(8), ALLOCATABLE :: epsxc(:), depsxc(:)
-  
-  ALLOCATE( epsxc(Npoints) )
-  ALLOCATE( depsxc(Npoints) )
 
   IF ( LF3d_TYPE == LF3d_PERIODIC ) THEN
     CALL Poisson_solve_fft( Rhoe, V_Hartree )
@@ -27,16 +29,9 @@ SUBROUTINE update_potentials()
     ENDIF 
   ENDIF
 
-  CALL excVWN( Npoints, Rhoe, epsxc )
-  CALL excpVWN( Npoints, Rhoe, depsxc )
+  CALL calc_Exc_Vxc()
 
-  V_xc(:) = epsxc(:) + Rhoe(:)*depsxc(:)
-
-!  WRITE(*,*) 'sum(epsxc) = ', sum(epsxc)
-!  WRITE(*,*) 'sum(V_xc) = ', sum(V_xc)
 !  WRITE(*,*) 'sum(V_Hartree) = ', sum(V_Hartree)
 
-  DEALLOCATE( epsxc )
-  DEALLOCATE( depsxc )
-
 END SUBROUTINE 
+

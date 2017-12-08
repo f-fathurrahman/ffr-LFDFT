@@ -1,0 +1,12 @@
+MODULE m_xc
+
+  IMPLICIT NONE 
+  CHARACTER(10) :: XC_NAME = 'VWN'
+                             ! 'PBE'
+
+  REAL(8), ALLOCATABLE :: EPS_XC(:)
+  REAL(8), ALLOCATABLE :: d_EPS_XC_RHO(:)
+  REAL(8), ALLOCATABLE :: d_EPS_XC_GRHO(:)
+
+END MODULE 
+

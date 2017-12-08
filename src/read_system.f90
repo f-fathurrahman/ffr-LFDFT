@@ -14,6 +14,7 @@ SUBROUTINE read_system(filein)
   nr3 = 1
   ibrav = 8
   _Nstates_extra = 0
+  input_dft = ''  ! default value is set in m_xc  ???
 
   OPEN(unit=IU, file=filein, status='old')
   READ(IU, nml=SYSTEM)

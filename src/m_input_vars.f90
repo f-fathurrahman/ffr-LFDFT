@@ -19,8 +19,10 @@ MODULE m_input_vars
   CHARACTER(56) :: assume_isolated
   !
   INTEGER :: _Nstates_extra  ! FIXME: need a better name ??
+  CHARACTER(10) :: input_dft
   !
-  NAMELIST /SYSTEM/ A, B, C, nr1, nr2, nr3, nat, ntyp, ibrav, assume_isolated, _Nstates_extra
+  NAMELIST /SYSTEM/ A, B, C, nr1, nr2, nr3, nat, ntyp, ibrav, assume_isolated, _Nstates_extra, &
+                    input_dft
   
 
   ! ELECTRONS

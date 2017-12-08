@@ -10,6 +10,7 @@
 SUBROUTINE setup_options()
   USE m_input_vars
   USE m_options
+  USE m_xc, ONLY : XC_NAME
   IMPLICIT NONE
 
 !!> \begin{itemize}
@@ -29,6 +30,24 @@ SUBROUTINE setup_options()
     ! we are calculating periodic system, use the default Poisson solver
     I_POISSON_SOLVE = 0
   ENDIF
+
+!!> \item
+!!> Set XC functional:
+!!> Currently only limited options are supported.
+!!>
+  SELECT CASE( input_dft )
+  CASE( 'PBE', 'pbe' )
+    XC_NAME = 'PBE'
+  CASE( 'LDA', 'lda', 'vwn' )
+    XC_NAME = 'VWN'
+  CASE DEFAULT
+    WRITE(*,*)
+    WRITE(*,*) 'Unknown input_dft: ', trim(input_dft)
+    WRITE(*,*) 'input_dft is set to VWN'
+    !
+    XC_NAME = 'VWN'
+  END SELECT 
+
 
 !!> \item
 !!> Option for the choice of method to solve Kohn-Sham equation

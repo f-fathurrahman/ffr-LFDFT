@@ -30,13 +30,11 @@ SUBROUTINE calc_energies( psi )
   REAL(8), ALLOCATABLE  :: nabla2_psi(:)
   INTEGER :: ist, ia, isp
   INTEGER :: l, m, iprj, jprj, ibeta, jbeta
-  REAL(8), ALLOCATABLE :: epsxc(:)
   REAL(8) :: enl1, hij
   !
   REAL(8) :: ddot
 
   ALLOCATE( nabla2_psi(Npoints) )
-  ALLOCATE( epsxc(Npoints) )
 
   E_total   = 0.d0
   E_kinetic = 0.d0
@@ -54,8 +52,7 @@ SUBROUTINE calc_energies( psi )
 
   E_Hartree = 0.5d0*sum( Rhoe(:) * V_Hartree(:) )*dVol
 
-  CALL excVWN( Npoints, Rhoe, epsxc )
-  E_xc = sum( Rhoe(:) * epsxc(:) )*dVol
+  CALL calc_Exc()
 
   !
   IF( NbetaNL > 0 ) THEN 
@@ -85,7 +82,6 @@ SUBROUTINE calc_energies( psi )
 
 !  CALL info_energies()
 
-  DEALLOCATE( epsxc )
   DEALLOCATE( nabla2_psi )
 
 END SUBROUTINE
