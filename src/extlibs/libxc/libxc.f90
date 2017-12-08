@@ -1,9 +1,3 @@
-# 1 "./libxc_master.F90"
-# 1 "<built-in>"
-# 1 "<command-line>"
-# 1 "/usr/include/stdc-predef.h" 1 3 4
-# 1 "<command-line>" 2
-# 1 "./libxc_master.F90"
 !! Copyright (C) 2003-2015 Miguel Marques
 !! All rights reserved.
 !!
@@ -58,7 +52,7 @@
 !! OF THE POSSIBILITY OF SUCH DAMAGE.
 
 !! $Id: libxc_master.F90 12341 2016-04-20 18:50:29Z dstrubbe $
-# 63 "./libxc_master.F90"
+
 !-------------------------------------------------------------------
 module xc_f90_types_m
 
