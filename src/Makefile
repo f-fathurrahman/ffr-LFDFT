@@ -176,7 +176,7 @@ OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) $(C_SRC:.c=.o) \
 	$(CC) -c $(CC_OPTS) $<
 
 # Libraries
-lib: sparskit poisson_ISF $(OBJ)
+lib: sparskit poisson_ISF libxc $(OBJ)
 	ar rcs libmain.a *.o
 
 sparskit: 
@@ -184,6 +184,9 @@ sparskit:
 
 poisson_ISF: 
 	cd extlibs/poisson_ISF; $(MAKE); cd ../../
+
+libxc:
+	cd extlibs/libxc; $(MAKE); cd ../../
 
 #
 # Main executable
