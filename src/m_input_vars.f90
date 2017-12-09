@@ -18,10 +18,10 @@ MODULE m_input_vars
   ! other PWSCF values is not valid
   CHARACTER(56) :: assume_isolated
   !
-  INTEGER :: _Nstates_extra  ! FIXME: need a better name ??
+  INTEGER :: Nstates_extra_  ! FIXME: need a better name ??
   CHARACTER(10) :: input_dft
   !
-  NAMELIST /SYSTEM/ A, B, C, nr1, nr2, nr3, nat, ntyp, ibrav, assume_isolated, _Nstates_extra, &
+  NAMELIST /SYSTEM/ A, B, C, nr1, nr2, nr3, nat, ntyp, ibrav, assume_isolated, Nstates_extra_, &
                     input_dft
   
 

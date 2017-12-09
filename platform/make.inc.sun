@@ -15,5 +15,5 @@ CC = suncc -std=c99 -I /usr/include/x86_64-linux-gnu/
 
 LIB_LINALG = -library=sunperf #-lblas -llapack
 LIB_FFTW3 = -lfftw3
-LIBS = $(LIB_LINALG) $(LIB_FFTW3)
-
+LIB_XC = -L/home/efefer/mysoftwares/libxc-3.0.0/lib -lxcf90 -lxc
+LIBS = $(LIB_LINALG) $(LIB_FFTW3) $(LIB_XC)

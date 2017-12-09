@@ -13,11 +13,34 @@ SUBROUTINE calc_Exc_Vxc()
 
   ! these calls should only be done for LDA
   IF( XC_NAME == 'VWN' ) THEN 
-    CALL excVWN( Npoints, Rhoe, EPS_XC )
-    CALL excpVWN( Npoints, Rhoe, d_EPS_XC_RHO )
+    !
+    !CALL excVWN( Npoints, Rhoe, EPS_XC )
+    !CALL excpVWN( Npoints, Rhoe, d_EPS_XC_RHO )
+
+    ALLOCATE( eps_x(Npoints), eps_c(Npoints) )
+    ALLOCATE( vrho_x(Npoints), vrho_c(Npoints) )
+
+    ! LDA exchange 
+    CALL xc_f90_func_init(xc_func, xc_info, 1, XC_UNPOLARIZED)
+    CALL xc_f90_lda_exc_vxc(xc_func, Npoints, Rhoe(1), eps_x(1), vrho_x(1))
+    CALL xc_f90_func_end(xc_func)
+
+    ! VWN correlation
+    ! LDA_C_VWN_1 = 28
+    ! LDA_C_VWN   = 7
+    CALL xc_f90_func_init(xc_func, xc_info, 7, XC_UNPOLARIZED)
+    CALL xc_f90_lda_exc_vxc(xc_func, Npoints, Rhoe(1), eps_c(1), vrho_c(1))
+    CALL xc_f90_func_end(xc_func)
+
+    EPS_XC(:) = eps_x(:) + eps_c(:)
+    d_EPS_XC_RHO(:) = vrho_x(:) + vrho_c(:)
+
     ! calculate potential
     V_xc(:) = EPS_XC(:) + Rhoe(:)*d_EPS_XC_RHO(:)
     !
+    DEALLOCATE( eps_x, eps_c )
+    DEALLOCATE( vrho_x, vrho_c )
+
   ELSEIF( XC_NAME == 'PBE' ) THEN 
     !
     ALLOCATE( gRhoe(Npoints) )
