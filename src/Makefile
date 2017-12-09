@@ -208,12 +208,14 @@ postproc: lib postproc.f90
 clean:
 	cd extlibs/sparskit; $(MAKE) clean
 	cd extlibs/poisson_ISF; $(MAKE) clean
+	cd extlibs/libxc; $(MAKE) clean
 	rm -rf *.o *.mod libmain.a libpoisson_ISF.a libsparskit.a
 
 # also delete *.x files
 cleanx:
 	cd extlibs/sparskit; $(MAKE) clean
 	cd extlibs/poisson_ISF; $(MAKE) clean
+	cd extlibs/libxc; $(MAKE) clean
 	rm -rf *.o *.mod libmain.a libpoisson_ISF.a libsparskit.a *.x
 
 

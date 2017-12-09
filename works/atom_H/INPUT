@@ -1,6 +1,6 @@
 &CONTROL
   pseudo_dir = '../../HGH'
-  etot_conv_thr = 1.0d-9
+  etot_conv_thr = 1.0d-6
 /
 
 &SYSTEM
@@ -10,9 +10,9 @@
   A = 8.46683536902
   B = 8.46683536902
   C = 8.46683536902
-  nr1 = 55
-  nr2 = 55
-  nr3 = 55
+  nr1 = 45
+  nr2 = 45
+  nr3 = 45
 /
 
 &ELECTRONS

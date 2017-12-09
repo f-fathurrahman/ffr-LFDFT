@@ -1,17 +1,16 @@
-EXE_MAIN = ffr_LFDFT_pgi.x
+EXE_MAIN = ffr_LFDFT_g95.x
 MAKE = make
-AR = ar
+AR   = ar
 
-F77 = pgf77
-F77_OPTS = -O3
+F90  = g95
+F90_OPTS = -Wall -ftrace=full -O3 -fno-second-underscore -cpp -g
+F90_OPTS_NOWARN = -ftrace=full -O3 -fno-second-underscore -cpp -g
 
-F90 = pgf90
-F90_OPTS = -Minform=inform -fast -Mpreprocess
-F90_OPTS_NOWARN = -fast -Mpreprocess
+F77  = g95
+F77_OPTS = -O3 -fno-second-underscore -cpp
 
 LIB_LINALG = -lblas -llapack
-LIB_FFTW3 = -lfftw3
+LIB_FFTW3  = -lfftw3
 LIB_XC = -L/home/efefer/mysoftwares/libxc-3.0.0/lib -lxcf90 -lxc
 LIBS = $(LIB_LINALG) $(LIB_FFTW3) $(LIB_XC)
-
 

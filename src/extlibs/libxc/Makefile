@@ -16,7 +16,7 @@ OBJ = $(LIBXC_SRC:.f90=.o)
 
 # we only need the *mod files
 lib: $(OBJ)
-	mv *.o *.mod ../../
+	cp *.o *.mod ../../
 
 # does not delete *.x files
 clean:

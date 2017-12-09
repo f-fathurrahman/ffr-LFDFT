@@ -13,9 +13,11 @@ SUBROUTINE calc_Exc()
 
   ! these calls should only be done for LDA
   IF( XC_NAME == 'VWN' ) THEN 
-    !CALL excVWN( Npoints, Rhoe, EPS_XC )
+!    CALL excVWN( Npoints, Rhoe, EPS_XC )
 
     ALLOCATE( eps_x(Npoints), eps_c(Npoints) )
+    eps_x(:) = 0.d0
+    eps_c(:) = 0.d0
 
     ! LDA exchange 
     CALL xc_f90_func_init(xc_func, xc_info, 1, XC_UNPOLARIZED)
