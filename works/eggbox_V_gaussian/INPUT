@@ -13,6 +13,7 @@
   nr1 = 35
   nr2 = 35
   nr3 = 35
+  input_dft = 'VWN'
 /
 
 &ELECTRONS

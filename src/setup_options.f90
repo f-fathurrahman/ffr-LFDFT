@@ -40,7 +40,7 @@ SUBROUTINE setup_options()
     WRITE(*,*)
     WRITE(*,*) 'input_dft is GGA-PBE'
     XC_NAME = 'PBE'
-  CASE( 'LDA', 'lda', 'vwn' )
+  CASE( 'LDA', 'lda', 'vwn', 'VWN' )
     WRITE(*,*) 'input_dft is LDA-VWN'
     XC_NAME = 'VWN'
   CASE DEFAULT

@@ -4,6 +4,7 @@ SUBROUTINE calc_Exc_Vxc()
   USE m_xc
   USE xc_f90_types_m
   USE xc_f90_lib_m
+  USE m_options, ONLY : USE_ARIAS_VWN
   IMPLICIT NONE 
   REAL(8), ALLOCATABLE :: gRhoe(:,:), gRhoe2(:)
   REAL(8), ALLOCATABLE :: eps_x(:), eps_c(:)
@@ -12,20 +13,27 @@ SUBROUTINE calc_Exc_Vxc()
   TYPE(xc_f90_pointer_t) :: xc_func
   TYPE(xc_f90_pointer_t) :: xc_info
   INTEGER :: ip
+  REAL(8), ALLOCATABLE :: d_EPS_XC_RHO(:)
 
   ! these calls should only be done for LDA
   IF( XC_NAME == 'VWN' ) THEN 
-    !
-    !CALL excVWN( Npoints, Rhoe, EPS_XC )
-    !CALL excpVWN( Npoints, Rhoe, d_EPS_XC_RHO )
+    
+    IF( USE_ARIAS_VWN ) THEN 
+      ALLOCATE( d_EPS_XC_RHO(Npoints) )
+      CALL excVWN( Npoints, Rhoe, EPS_XC )
+      CALL excpVWN( Npoints, Rhoe, d_EPS_XC_RHO )
+      ! calculate potential
+      V_xc(:) = EPS_XC(:) + d_EPS_XC_RHO(:)*Rhoe(:)
+      DEALLOCATE( d_EPS_XC_RHO )
+    ELSE 
 
     ALLOCATE( eps_x(Npoints), eps_c(Npoints) )
     ALLOCATE( vrho_x(Npoints), vrho_c(Npoints) )
 
-    eps_x(:)  = 0.d0
-    eps_c(:)  = 0.d0
-    vrho_x(:) = 0.d0
-    vrho_c(:) = 0.d0
+    eps_x(1:Npoints)  = 0.d0
+    eps_c(1:Npoints)  = 0.d0
+    vrho_x(1:Npoints) = 0.d0
+    vrho_c(1:Npoints) = 0.d0
 
     ! LDA exchange 
     CALL xc_f90_func_init(xc_func, xc_info, 1, XC_UNPOLARIZED)
@@ -39,13 +47,15 @@ SUBROUTINE calc_Exc_Vxc()
     CALL xc_f90_lda_exc_vxc(xc_func, Npoints, Rhoe(1), eps_c(1), vrho_c(1))
     CALL xc_f90_func_end(xc_func)
 
-    EPS_XC(:) = eps_x(:) + eps_c(:)
+    EPS_XC(1:Npoints) = eps_x(1:Npoints) + eps_c(1:Npoints)
 
     ! calculate potential
     V_xc(:) = EPS_XC(:) + vrho_x(:) + vrho_c(:)
     !
     DEALLOCATE( eps_x, eps_c )
     DEALLOCATE( vrho_x, vrho_c )
+    
+    ENDIF ! USE_ARIAS_VWN
 
   ELSEIF( XC_NAME == 'PBE' ) THEN 
     !

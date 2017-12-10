@@ -5,6 +5,7 @@ SUBROUTINE calc_Exc()
   USE m_xc
   USE xc_f90_types_m
   USE xc_f90_lib_m
+  USE m_options, ONLY : USE_ARIAS_VWN
   IMPLICIT NONE 
   REAL(8), ALLOCATABLE :: gRhoe(:,:), gRhoe2(:)
   REAL(8), ALLOCATABLE :: eps_x(:), eps_c(:)
@@ -14,11 +15,14 @@ SUBROUTINE calc_Exc()
 
   ! these calls should only be done for LDA
   IF( XC_NAME == 'VWN' ) THEN 
-!    CALL excVWN( Npoints, Rhoe, EPS_XC )
+
+    IF( USE_ARIAS_VWN ) THEN 
+      CALL excVWN( Npoints, Rhoe, EPS_XC )
+    ELSE
 
     ALLOCATE( eps_x(Npoints), eps_c(Npoints) )
-    eps_x(:) = 0.d0
-    eps_c(:) = 0.d0
+    eps_x(1:Npoints) = 0.d0
+    eps_c(1:Npoints) = 0.d0
 
     ! LDA exchange 
     CALL xc_f90_func_init(xc_func, xc_info, 1, XC_UNPOLARIZED)
@@ -33,6 +37,7 @@ SUBROUTINE calc_Exc()
     CALL xc_f90_func_end(xc_func)
 
     EPS_XC(:) = eps_x(:) + eps_c(:)
+    ENDIF ! USE_ARIAS_VWN
 
     E_xc = sum( Rhoe(:) * EPS_XC(:) )*dVol
 
@@ -61,7 +66,7 @@ SUBROUTINE calc_Exc()
 
     E_xc = sum( Rhoe(:) * EPS_XC(:) )*dVol
 
-    WRITE(*,*) 'E_xc PBE = ', E_xc
+!    WRITE(*,*) 'E_xc PBE = ', E_xc
 
     !
     DEALLOCATE( gRhoe )
