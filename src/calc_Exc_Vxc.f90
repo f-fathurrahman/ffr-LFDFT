@@ -87,7 +87,8 @@ SUBROUTINE calc_Exc_Vxc()
 
     ! need factor 2 for divh ???
     DO ip = 1,Npoints 
-      V_xc(ip) = EPS_XC(ip) + vrho_x(ip) + vrho_c(ip) - divh(ip)
+!      V_xc(ip) = EPS_XC(ip) + vrho_x(ip) + vrho_c(ip) - 2.d0*divh(ip)
+      V_xc(ip) = vrho_x(ip) + vrho_c(ip) - 2d0*divh(ip)
     ENDDO 
 
     !
