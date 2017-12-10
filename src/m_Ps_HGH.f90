@@ -78,20 +78,20 @@ CONTAINS
   END FUNCTION
 
 
-!  !----------------------------------------------------------------------------
-!  FUNCTION hgh_eval_proj_R( psp, l, i, r ) RESULT( pil )
-!  !----------------------------------------------------------------------------
-!    TYPE(Ps_HGH_Params_T) :: psp
-!    INTEGER :: l, i  ! l can be zero, i varies from 1 to 3
-!    REAL(8) :: r
-!    REAL(8) :: pil
+  !----------------------------------------------------------------------------
+  FUNCTION hgh_eval_proj_R_v2( psp, l, i, r ) RESULT( pil )
+  !----------------------------------------------------------------------------
+    TYPE(Ps_HGH_Params_T) :: psp
+    INTEGER :: l, i  ! l can be zero, i varies from 1 to 3
+    REAL(8) :: r
+    REAL(8) :: pil
     !
-!    REAL(8) :: num, denum
+    REAL(8) :: num, denum
     !
-!    num = sqrt(2.d0)*r**(l + 2*(i-1)) * exp( -(r/psp%rc(l))**2 )
-!    denum = (psp%rc(l))**( l + (4*i-1)/2 ) * gamma( dble(l) + (4*i-1)/2.d0 )
-!    pil = num/denum
-!  END FUNCTION
+    num = sqrt(2.d0)*r**(l + 2*(i-1)) * exp( -(r/psp%rc(l))**2 )
+    denum = (psp%rc(l))**( l + (4*i-1)/2 ) * gamma( dble(l) + (4*i-1)/2.d0 )
+    pil = num/denum
+  END FUNCTION
 
 
   !----------------------------------------------------------------------------
@@ -265,6 +265,7 @@ CONTAINS
   !----------------------------------------------------------------------------
   FUNCTION load_params(iunit, params)
   !----------------------------------------------------------------------------
+    USE m_xc, ONLY : XC_NAME
     INTEGER, INTENT(IN)  :: iunit ! where to read from
     TYPE(Ps_HGH_Params_T), INTENT(out) :: params ! should INOUT instead?
     INTEGER :: load_params ! 0 if success, 1 otherwise.
@@ -353,6 +354,19 @@ CONTAINS
     params%k(2, 1, 2) = -0.5d0      * sqrt(7.d0/9.d0)       * params%k(2, 2, 2)
     params%k(2, 1, 3) =  0.5d0      * sqrt(63.0/143.0)      * params%k(2, 3, 3)
     params%k(2, 2, 3) = -0.5d0      * (18.d0/sqrt(143.d0))  * params%k(2, 3, 3)
+
+    ! special case for PBE ????
+    IF( XC_NAME == 'PBE' ) THEN 
+      params%h(0, 1, 2) = 2.d0*params%h(0, 1, 2)
+      params%h(0, 1, 3) = 2.d0*params%h(0, 1, 3)
+      params%h(0, 2, 3) = 2.d0*params%h(0, 2, 3)
+      params%h(1, 1, 2) = 2.d0*params%h(1, 1, 2)
+      params%h(1, 1, 3) = 2.d0*params%h(1, 1, 3)
+      params%h(1, 2, 3) = 2.d0*params%h(1, 2, 3)
+      params%h(2, 1, 2) = 2.d0*params%h(2, 1, 2)
+      params%h(2, 1, 3) = 2.d0*params%h(2, 1, 3)
+      params%h(2, 2, 3) = 2.d0*params%h(2, 2, 3)
+    ENDIF 
 
     ! Parameters are symmetric.
     DO k = 0, 3

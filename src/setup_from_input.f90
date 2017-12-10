@@ -1,3 +1,4 @@
+! FIXME: should be renamed setup_system_from_input ??
 SUBROUTINE setup_from_input()
   USE m_input_vars
   IMPLICIT NONE

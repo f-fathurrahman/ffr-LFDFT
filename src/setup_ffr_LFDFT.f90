@@ -42,15 +42,15 @@ SUBROUTINE setup_ffr_LFDFT()
   CALL read_input( filein )
 
 !!> \item
-!!> The following subroutine will initialize global variables related to basis function
-!!> and grid points, molecular or crystalline structures, and pseudopotentials.
-  CALL setup_from_input()
-
-!!> \item
 !!> Various options, such as convergence criteria, choice of algorithms, etc which are
 !!> given in the input file, will be converted to internal variables (mostly defined in
 !!> module \texttt{m\_options}).
   CALL setup_options()
+
+!!> \item
+!!> The following subroutine will initialize global variables related to basis function
+!!> and grid points, molecular or crystalline structures, and pseudopotentials.
+  CALL setup_from_input()
 
 !!> \item
 !!> The following calls will output information about molecular or crystalline

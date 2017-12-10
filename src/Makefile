@@ -12,10 +12,10 @@ m_nabla2_sparse.f90 \
 m_hamiltonian.f90 \
 m_states.f90 \
 m_energies.f90 \
+m_xc.f90 \
 m_Ps_HGH.f90 \
 m_PsPot.f90 \
 m_input_vars.f90 \
-m_xc.f90 \
 welcome.f90 \
 goodbye.f90 \
 timestamp.f90 \
