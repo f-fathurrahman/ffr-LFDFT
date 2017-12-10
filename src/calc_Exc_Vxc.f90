@@ -10,6 +10,8 @@ SUBROUTINE calc_Exc_Vxc()
   REAL(8), ALLOCATABLE :: vrho_x(:), vrho_c(:), vgrho_x(:), vgrho_c(:)
   TYPE(xc_f90_pointer_t) :: xc_func
   TYPE(xc_f90_pointer_t) :: xc_info
+  REAL(8) :: norm_grad
+  REAL(8) :: ddot
 
   ! these calls should only be done for LDA
   IF( XC_NAME == 'VWN' ) THEN 
@@ -52,6 +54,10 @@ SUBROUTINE calc_Exc_Vxc()
     ALLOCATE( vrho_x(Npoints), vrho_c(Npoints) )
     ALLOCATE( vgrho_x(Npoints), vgrho_c(Npoints) )
 
+    CALL op_nabla_magnitude( Rhoe, gRhoe )
+    norm_grad = sqrt( ddot( Npoints, gRhoe,1, gRhoe, 1 ) )
+    gRhoe(:) = gRhoe(:)/norm_grad
+
     ! PBE exchange 
     CALL xc_f90_func_init(xc_func, xc_info, 101, XC_UNPOLARIZED)
     CALL xc_f90_gga_exc_vxc(xc_func, Npoints, Rhoe(1), gRhoe(1), eps_x(1), vrho_x(1), vgrho_x(1))
@@ -63,11 +69,9 @@ SUBROUTINE calc_Exc_Vxc()
     CALL xc_f90_func_end(xc_func)
 
     EPS_XC(:) = eps_x(:) + eps_c(:)
-    d_EPS_XC_RHO(:) = vrho_x(:) + vrho_c(:)
-    d_EPS_XC_GRHO(:) = vgrho_x(:) + vgrho_c(:)
     !
     ! calculate potential
-    V_xc(:) = EPS_XC(:) + Rhoe(:)*d_EPS_XC_RHO(:) + gRhoe(:)*d_EPS_XC_GRHO(:)
+    V_xc(:) = EPS_XC(:) + vrho_x(:) + vrho_c(:) + vgrho_x(:) + vgrho_c(:)
     !
     DEALLOCATE( gRhoe )
     DEALLOCATE( eps_x, eps_c )

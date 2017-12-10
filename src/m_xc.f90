@@ -5,8 +5,6 @@ MODULE m_xc
                              ! 'PBE'
 
   REAL(8), ALLOCATABLE :: EPS_XC(:)
-  REAL(8), ALLOCATABLE :: d_EPS_XC_RHO(:)
-  REAL(8), ALLOCATABLE :: d_EPS_XC_GRHO(:)
 
 END MODULE 
 

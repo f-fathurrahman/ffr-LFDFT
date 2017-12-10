@@ -11,9 +11,5 @@ SUBROUTINE dealloc_hamiltonian()
   IF( allocated(betaNL_psi) ) DEALLOCATE(betaNL_psi)
 
   IF( allocated(EPS_XC) ) DEALLOCATE( EPS_XC )
-  IF( allocated(d_EPS_XC_RHO) ) DEALLOCATE( d_EPS_XC_RHO )
-  IF( XC_NAME == 'GGA-PBE' ) THEN 
-    IF( allocated(d_EPS_XC_GRHO) ) DEALLOCATE( d_EPS_XC_GRHO )
-  ENDIF 
 
 END SUBROUTINE 

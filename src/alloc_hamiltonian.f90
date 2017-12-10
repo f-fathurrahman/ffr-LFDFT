@@ -13,7 +13,7 @@ SUBROUTINE alloc_hamiltonian()
   USE m_PsPot, ONLY : NbetaNL
   USE m_atoms, ONLY : Natoms
   USE m_states, ONLY : Nstates
-  USE m_xc, ONLY : EPS_XC, d_EPS_XC_RHO, d_EPS_XC_GRHO, XC_NAME
+  USE m_xc, ONLY : EPS_XC
   IMPLICIT NONE
 
   ALLOCATE( V_ps_loc( Npoints ) )
@@ -32,10 +32,6 @@ SUBROUTINE alloc_hamiltonian()
   Rhoe(:) = 0.d0
 
   ALLOCATE( EPS_XC(Npoints) )
-  ALLOCATE( d_EPS_XC_RHO(Npoints) )
-  IF( XC_NAME == 'PBE' ) THEN 
-    ALLOCATE( d_EPS_XC_GRHO(Npoints) )
-  ENDIF 
 
 END SUBROUTINE
 

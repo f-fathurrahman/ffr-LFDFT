@@ -49,6 +49,7 @@ init_V_ps_loc_G_long.f90 \
 init_V_coul_G.f90 \
 dealloc_LF3d.f90 \
 op_nabla2.f90 \
+op_nabla.f90 \
 init_nabla2_sparse.f90 \
 dealloc_nabla2_sparse.f90 \
 dealloc_atoms.f90 \
