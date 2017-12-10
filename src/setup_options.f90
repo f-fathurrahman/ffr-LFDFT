@@ -37,8 +37,11 @@ SUBROUTINE setup_options()
 !!>
   SELECT CASE( input_dft )
   CASE( 'PBE', 'pbe' )
+    WRITE(*,*)
+    WRITE(*,*) 'input_dft is GGA-PBE'
     XC_NAME = 'PBE'
   CASE( 'LDA', 'lda', 'vwn' )
+    WRITE(*,*) 'input_dft is LDA-VWN'
     XC_NAME = 'VWN'
   CASE DEFAULT
     WRITE(*,*)

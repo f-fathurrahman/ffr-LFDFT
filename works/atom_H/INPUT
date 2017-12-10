@@ -13,6 +13,7 @@
   nr1 = 45
   nr2 = 45
   nr3 = 45
+  input_dft = 'PBE'
 /
 
 &ELECTRONS
