@@ -28,7 +28,7 @@ SUBROUTINE update_potentials()
     ENDIF 
   ENDIF
 
-  CALL calc_Exc_Vxc()
+  CALL calc_Vxc()
 
 !  WRITE(*,*) 'sum(V_Hartree) = ', sum(V_Hartree)
 

@@ -25,7 +25,7 @@ init_PsPot.f90 \
 dealloc_PsPot.f90 \
 fft_fftw3.f90 \
 LDA_VWN.f90 \
-calc_Exc_Vxc.f90 \
+calc_Vxc.f90 \
 calc_Exc.f90 \
 init_atoms_xyz.f90 \
 init_grid_1d_p.f90 \

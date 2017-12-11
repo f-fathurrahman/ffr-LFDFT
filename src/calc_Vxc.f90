@@ -1,4 +1,4 @@
-SUBROUTINE calc_Exc_Vxc()
+SUBROUTINE calc_Vxc()
   USE m_hamiltonian, ONLY : Rhoe, V_xc
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_xc
