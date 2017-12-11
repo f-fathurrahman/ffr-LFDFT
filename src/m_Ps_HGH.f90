@@ -214,7 +214,7 @@ CONTAINS
     !
     INTEGER :: iunit, ii, i, j, k
     LOGICAL :: found
-    INTEGER :: n_s, n_p, n_d, n_c_local
+    INTEGER :: n_s, n_p, n_d, n_f, n_c_local
 
     ! Set initially everything to zero.
     psp%c(1:4)  = 0.d0
@@ -234,8 +234,8 @@ CONTAINS
     OPEN(unit=iunit,file=filename, action='read', form='formatted', status='old')
 
     READ(iunit,*) psp%atom_name
-    READ(iunit,*) n_s, n_p, n_d
-    psp%zval = n_s + n_p + n_d
+    READ(iunit,*) n_s, n_p, n_d, n_f
+    psp%zval = n_s + n_p + n_d + n_f
     
     READ(iunit,*) psp%rlocal, n_c_local
     !WRITE(*,*) 'n_c_local = ', n_c_local
