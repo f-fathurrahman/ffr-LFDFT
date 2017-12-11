@@ -7,16 +7,19 @@ This is a work in progress.
 An experimental package to solve electronic structure based on density functional theory
 using Lagrange basis functions.
 
+It can do total energy calculations via SCF and direct minimization.
+
 Tested compilers:
-- gfortran
-- g95
-- ifort
-- pgi
-- sunf95
+- [`gfortran`](https://gcc.gnu.org/fortran/)
+- [`g95`](www.g95.org)
+- [`ifort`](https://software.intel.com/en-us/fortran-compilers)
+- [`pgf90`](https://www.pgroup.com/products/community.htm)
+- [`sunf95`](http://www.oracle.com/technetwork/server-storage/developerstudio/downloads/index.html)
 
 Dependencies
 - BLAS and LAPACK
 - FFTW3
+- LibXC
 
 Contains selected `SPARSKIT` files.
 
