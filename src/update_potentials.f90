@@ -7,9 +7,8 @@
 SUBROUTINE update_potentials()
   
   USE m_options, ONLY : I_POISSON_SOLVE
-  USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
-                     LF3d_TYPE, LF3d_PERIODIC
-  USE m_hamiltonian, ONLY : Rhoe, V_Hartree, V_xc
+  USE m_LF3d, ONLY : LF3d_TYPE, LF3d_PERIODIC
+  USE m_hamiltonian, ONLY : Rhoe, V_Hartree
 
   IMPLICIT NONE 
 

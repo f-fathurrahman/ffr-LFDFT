@@ -2,8 +2,6 @@ MODULE m_options
 
   IMPLICIT NONE 
 
-  LOGICAL :: USE_ARIAS_VWN = .TRUE.  ! only for debugging
-
   LOGICAL :: T_PRINT_INTEG_RHO = .FALSE.
 
   INTEGER :: I_POISSON_SOLVE = 1

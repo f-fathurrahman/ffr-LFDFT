@@ -1,5 +1,5 @@
 &CONTROL
-  pseudo_dir = '../../HGH'
+  pseudo_dir = '../../pseudopotentials/pade_gth/'
   etot_conv_thr = 1.0d-6
 /
 
@@ -24,7 +24,7 @@
 /
 
 ATOMIC_SPECIES
-Al    1.0  Al.hgh
+Al    1.0  Al-q3.gth
 
 ATOMIC_POSITIONS angstrom
 Al   0.0  0.0  0.0

@@ -17,7 +17,7 @@ SUBROUTINE init_V_ps_loc_gaussian_G( Nparams, A, alpha )
   REAL(8) :: alpha(Nparams)
   !
   INTEGER :: ip, isp, Nx, Ny, Nz
-  REAL(8) :: Gm, Omega
+  REAL(8) :: Omega
   COMPLEX(8), ALLOCATABLE :: ctmp(:)
 
   IF( Nspecies /= Nparams ) THEN 
@@ -48,7 +48,6 @@ SUBROUTINE init_V_ps_loc_gaussian_G( Nparams, A, alpha )
     WRITE(*,*)
     ctmp(:) = cmplx(0.d0,0.d0,kind=8)
     DO ip = 1,Npoints
-      Gm = sqrt(G2(ip))
       ctmp(ip) = -A(isp)*(PI/alpha(isp))**1.5d0 * exp(-0.25d0*G2(ip)/alpha(isp)) &
                  * strf(ip,isp) / Omega
     ENDDO

@@ -5,10 +5,10 @@ SUBROUTINE calc_Exc()
   USE m_xc
   USE xc_f90_types_m
   USE xc_f90_lib_m
-  USE m_options, ONLY : USE_ARIAS_VWN
   IMPLICIT NONE 
   REAL(8), ALLOCATABLE :: gRhoe(:,:), gRhoe2(:)
   REAL(8), ALLOCATABLE :: eps_x(:), eps_c(:)
+  REAL(8), ALLOCATABLE :: EPS_XC(:)
   TYPE(xc_f90_pointer_t) :: xc_func
   TYPE(xc_f90_pointer_t) :: xc_info
   INTEGER :: ip
@@ -17,6 +17,7 @@ SUBROUTINE calc_Exc()
   IF( XC_NAME == 'VWN' ) THEN 
 
     IF( USE_ARIAS_VWN ) THEN 
+      ALLOCATE( EPS_XC(Npoints) )
       CALL excVWN( Npoints, Rhoe, EPS_XC )
     ELSE
 
@@ -39,7 +40,11 @@ SUBROUTINE calc_Exc()
     EPS_XC(:) = eps_x(:) + eps_c(:)
     ENDIF ! USE_ARIAS_VWN
 
-    E_xc = sum( Rhoe(:) * EPS_XC(:) )*dVol
+    E_xc = sum( Rhoe(:) * (eps_x(:) + eps_c(:)) )*dVol
+
+    IF( USE_ARIAS_VWN ) THEN 
+      DEALLOCATE( EPS_XC )
+    ENDIF 
 
   ELSEIF( XC_NAME == 'PBE' ) THEN 
     !

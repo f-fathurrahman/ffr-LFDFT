@@ -1,23 +1,16 @@
-EXE_MAIN = ffr_LFDFT_ifort.x
+EXE_MAIN = ffr_LFDFT_g95.x
 MAKE = make
-AR = ar
-F77 = ifort
-F77_OPTS = -O3
+AR   = ar
 
-F90 = ifort
-F90_OPTS = -fpp -xHost -O2 -fpp -warn -nogen-interfaces
-F90_OPTS_NOWARN = -fpp -xHost -O2 -fpp
+F90  = g95
+F90_OPTS = -Wall -ftrace=full -O3 -fno-second-underscore -cpp -g
+F90_OPTS_NOWARN = -ftrace=full -O3 -fno-second-underscore -cpp -g
 
-CC_OPTS = -std=c99
+F77  = g95
+F77_OPTS = -O3 -fno-second-underscore -cpp
 
-#F90_OPTS = -fpp -O3 # -check uninit -xHost
-# -CB for check bound of arrays
-#F90_OPTS = -CB -warn -nogen-interfaces
-#F90_OPTS = -O3 -funroll-all-loops -vector
-#LIB_FFTW3 = /home/efefer/mysoftwares/lib/libfftw3.a
-
-LIB_FFTW3 = -lfftw3
-LIB_LINALG = -L$(MKLROOT)/lib/intel64 -lmkl_core -lmkl_sequential -lmkl_intel_lp64
+LIB_LINALG = -lblas -llapack
+LIB_FFTW3  = -lfftw3
 LIB_XC = -L/home/efefer/mysoftwares/libxc-3.0.0/lib -lxcf90 -lxc
 LIBS = $(LIB_LINALG) $(LIB_FFTW3) $(LIB_XC)
 

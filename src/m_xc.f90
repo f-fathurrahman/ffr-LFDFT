@@ -4,7 +4,7 @@ MODULE m_xc
   CHARACTER(10) :: XC_NAME = 'VWN'
                              ! 'PBE'
 
-  REAL(8), ALLOCATABLE :: EPS_XC(:)
+  LOGICAL :: USE_ARIAS_VWN = .TRUE.  ! only for debugging
 
 END MODULE 
 
