@@ -172,7 +172,6 @@ CONTAINS
     TYPE(Ps_HGH_Params_T) :: psp
     REAL(8) :: r
     !
-    INTEGER :: i
     REAL(8) :: rrloc ! r/rlocal
     REAL(8) :: Vloc
     REAL(8), PARAMETER :: SMALL = 1d-10
@@ -205,8 +204,74 @@ CONTAINS
     Vloc = exp(-0.5d0*rrloc**2)*term1
   END FUNCTION
 
-  !----------------------------------------------------------------------------
+
+  ! format used by CP2K program (slightly modified)
+  !-----------------------------------------------
   SUBROUTINE init_Ps_HGH_Params(psp, filename)
+  !-----------------------------------------------
+    TYPE(Ps_HGH_Params_T), INTENT(INOUT) :: psp
+    CHARACTER(len=*), INTENT(IN) :: filename
+    !
+    INTEGER :: iunit, ii, i, j, k
+    LOGICAL :: found
+    INTEGER :: n_s, n_p, n_d, n_c_local
+
+    ! Set initially everything to zero.
+    psp%c(1:4)  = 0.d0
+    psp%rlocal  = 0.d0
+    psp%rc(0:3) = 0.d0
+    psp%h(0:3,1:3,1:3) = 0.d0
+    psp%k(0:3,1:3,1:3) = 0.d0
+    psp%Nproj_l(0:3) = 0
+
+    INQUIRE(file=filename, exist=found)
+    IF(.NOT.found) THEN
+      WRITE(*,*) 'ERROR: Pseudopotential file: ', trim(filename), ' is not found.'
+      STOP
+    ENDIF
+
+    iunit = 303  ! arbirary
+    OPEN(unit=iunit,file=filename, action='read', form='formatted', status='old')
+
+    READ(iunit,*) psp%atom_name
+    READ(iunit,*) n_s, n_p, n_d
+    psp%zval = n_s + n_p + n_d
+    
+    READ(iunit,*) psp%rlocal, n_c_local
+    !WRITE(*,*) 'n_c_local = ', n_c_local
+    READ(iunit,*) psp%c(1:n_c_local)
+
+    READ(iunit,*) psp%lmax
+    psp%lmax = psp%lmax - 1
+    !WRITE(*,*) 'psp%lmax = ', psp%lmax
+
+    DO i = 0,psp%lmax
+      READ(iunit,*) psp%rc(i), psp%Nproj_l(i)
+      !WRITE(*,*) psp%rc(i), psp%Nproj_l(i)
+      DO ii = 1,psp%Nproj_l(i)
+        READ(iunit,*) psp%h(i,ii,ii:psp%Nproj_l(i))
+      ENDDO 
+    ENDDO 
+    
+    CLOSE(iunit)
+
+    ! Parameters are symmetric.
+    DO k = 0, 3
+      DO i = 1, 3
+        DO j = i + 1, 3
+          psp%h(k, j, i) = psp%h(k, i, j)
+        ENDDO
+      ENDDO
+    ENDDO
+
+    CALL find_NL_cutoff(psp)
+
+  END SUBROUTINE 
+
+
+
+  !----------------------------------------------------------------------------
+  SUBROUTINE init_Ps_HGH_Params_old(psp, filename)
   !----------------------------------------------------------------------------
     TYPE(Ps_HGH_Params_T), INTENT(INOUT) :: psp
     CHARACTER(len=*), INTENT(IN)  :: filename

@@ -1,5 +1,5 @@
 &CONTROL
-  pseudo_dir = '../../HGH'
+  pseudo_dir = '../../pade'
   etot_conv_thr = 1.0d-6
 /
 
@@ -13,7 +13,7 @@
   nr1 = 45
   nr2 = 45
   nr3 = 45
-  input_dft = 'PBE'
+  input_dft = 'VWN'
 /
 
 &ELECTRONS
@@ -25,7 +25,7 @@
 /
 
 ATOMIC_SPECIES
-H   1.0  H.hgh
+H   1.0  H-q1
 
 ATOMIC_POSITIONS angstrom
 H   4.23341768       4.23341768       4.23341768
