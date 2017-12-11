@@ -19,6 +19,8 @@ SUBROUTINE calc_Exc()
     IF( USE_ARIAS_VWN ) THEN 
       ALLOCATE( EPS_XC(Npoints) )
       CALL excVWN( Npoints, Rhoe, EPS_XC )
+      E_xc = sum( Rhoe(:) * EPS_XC(:) )*dVol
+      DEALLOCATE( EPS_XC )
     ELSE
 
     ALLOCATE( eps_x(Npoints), eps_c(Npoints) )
@@ -37,14 +39,8 @@ SUBROUTINE calc_Exc()
     CALL xc_f90_lda_exc(xc_func, Npoints, Rhoe(1), eps_c(1))
     CALL xc_f90_func_end(xc_func)
 
-    EPS_XC(:) = eps_x(:) + eps_c(:)
-    ENDIF ! USE_ARIAS_VWN
-
     E_xc = sum( Rhoe(:) * (eps_x(:) + eps_c(:)) )*dVol
-
-    IF( USE_ARIAS_VWN ) THEN 
-      DEALLOCATE( EPS_XC )
-    ENDIF 
+    ENDIF ! if USE_ARIAS_VWN
 
   ELSEIF( XC_NAME == 'PBE' ) THEN 
     !
@@ -67,14 +63,11 @@ SUBROUTINE calc_Exc()
     CALL xc_f90_gga_exc(xc_func, Npoints, Rhoe(1), gRhoe2(1), eps_c(1))
     CALL xc_f90_func_end(xc_func)
 
-    EPS_XC(:) = eps_x(:) + eps_c(:)
-
-    E_xc = sum( Rhoe(:) * EPS_XC(:) )*dVol
-
-!    WRITE(*,*) 'E_xc PBE = ', E_xc
+    E_xc = sum( Rhoe(:) * (eps_x(:) + eps_c(:)) )*dVol
 
     !
     DEALLOCATE( gRhoe )
+    DEALLOCATE( gRhoe2 )
     DEALLOCATE( eps_x, eps_c )
 
   ENDIF 
