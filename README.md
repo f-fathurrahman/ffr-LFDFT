@@ -12,7 +12,7 @@ using Lagrange basis functions.
 
 This package is growing from my implementation of Prof. Arias'
 [practical DFT mini-course](http://jdftx.org/PracticalDFT.html).
-While plane wave is used as the basis set in the course, Lagrange basis functions
+While plane wave is used as the basis set in that course, here Lagrange basis functions
 is used as the basis set in this package.
 
 Presently, it can do total energy calculations via SCF and direct minimization.
@@ -44,7 +44,7 @@ Several numerical libraries are also required:
 - FFTW3
 - LibXC
 
-## Building
+## Building the program
 
 To build the program you need to change to directory `src`
 ```
@@ -71,8 +71,8 @@ Main executable is named `ffr_LFDFT_<compiler_name>.x`, for example `ffr_LFDFT_g
 ## Using the program
 
 To use the main program, you need to prepare an input file.
-The input files are very similar to [Quantum Espresso](http://www.quantum-espresso.org/)'s
-`pw.x` input.
+The input file format is very similar to [Quantum ESPRESSO](http://www.quantum-espresso.org/)'s
+`pw.x` input. There is no restriction to input file name, as long as it is a valid name.
 The following is an example of input file for LiH molecule:
 ```
 &CONTROL
@@ -111,7 +111,14 @@ H     3.48341768451073     4.23341768451073     4.23341768451073
 Li    4.98341768451073     4.23341768451073     4.23341768451073
 ```
 
-To run the main program
+Because of its similarity with `pw.x` input, Xcrysden can be used to visualize the
+input file. For example, if the filename of input file is
+
+Different from `pw.x` of Quantum ESPRESSO, which by default read input file from
+standard input (using redirection `<`), `ffr-LFDFT` reads the name of the input file from
+its first argument. The output, however, is printed out to standard output.
+The output can be redirected to a file by using `>`.
+The following is a typical command to run the program:
 
 ```
 ffr_LFDFT_gfortran.x INPUT > LOG
@@ -122,8 +129,70 @@ More examples can be found in `work` directory.
 ## Post-processing program
 
 One post-processing program, with very limited capability, is also provided.
-Currently it only can produce 3D orbital in XSF (Xcrysden) format.
+Currently it only can produce 3D orbital in XSF format which can be visualize
+by several visualization programs.
 
 ![HOMO of LiH](images/LiH_HOMO.png)
 
 ![LUMO of LiH](images/LiH_LUMO.png)
+
+
+## Development
+
+`ffr-LFDFT` is written in Fortran using modular procedural programming paradigm.
+I have tried to avoid to make the code simple enough to read and modify.
+In some aspects, the programming style is  similar to the one used in `Elk` code.
+
+Several examples of using the subroutines are given in directory `tests`.
+The following code is an example of how to initialize various types of
+Lagrange basis functions (sinc, cluster, and periodic)
+and the associated the grid points:
+
+```fortran
+SUBROUTINE test_sinc()
+  IMPLICIT NONE
+  INTEGER :: NN(3)
+  REAL(8) :: hh(3)
+
+  NN = (/ 63, 63, 63 /)
+  hh = (/ 0.3d0, 0.3d0, 0.3d0 /)
+
+  CALL init_LF3d_sinc( NN, hh )
+  CALL info_LF3d()
+  CALL dealloc_LF3d()
+END 
+
+SUBROUTINE test_cluster()
+  IMPLICIT NONE
+  INTEGER :: NN(3)
+  REAL(8) :: AA(3), BB(3)
+
+  NN = (/ 63, 63, 63 /)
+  AA = (/ 0.d0, 0.d0, 0.d0 /)
+  BB = (/ 16.d0, 16.d0, 16.d0 /)
+
+  CALL init_LF3d_c( NN, AA, BB )
+  CALL info_LF3d()
+  CALL dealloc_LF3d()
+END 
+
+SUBROUTINE test_periodic()
+  IMPLICIT NONE
+  INTEGER :: NN(3)
+  REAL(8) :: AA(3), BB(3)
+
+  NN = (/ 63, 63, 63 /)
+  AA = (/ 0.d0, 0.d0, 0.d0 /)
+  BB = (/ 16.d0, 16.d0, 16.d0 /)
+
+  CALL init_LF3d_p( NN, AA, BB )
+  CALL info_LF3d()
+  CALL dealloc_LF3d()
+END 
+
+PROGRAM ex_init
+  CALL test_periodic()
+  CALL test_cluster()
+  CALL test_sinc()
+END PROGRAM
+```
