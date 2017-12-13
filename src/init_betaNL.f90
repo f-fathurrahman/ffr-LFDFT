@@ -1,3 +1,8 @@
+!!>
+!!> \section{Subroutine \texttt{init\_betaNL}}
+!!>
+!!> Initialize projectors for nonlocal pseudopotentials.
+!!>
 SUBROUTINE init_betaNL()
 
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
@@ -32,6 +37,13 @@ SUBROUTINE init_betaNL()
         DO m = -l,l
           ibeta = ibeta + 1
           Np_beta = 0
+          ! FIXME: this loop can be reduced to sum over number of points
+          ! around an atom (maybe named m_grid_atom)
+          ! within cutoff and no checking of dr is necessary
+          ! do ip_a = 1, Npoints_a(ia)
+          !   ip = idx_grid_atom(ia,ip_a) ! mapping between ip_a and ip
+          ! enddo
+          ! Remember to set betaNL(ip,ibeta) = 0.d0 for ip outside atoms
           DO ip = 1,Npoints
             !
             IF( LF3d_TYPE == LF3d_PERIODIC ) THEN 

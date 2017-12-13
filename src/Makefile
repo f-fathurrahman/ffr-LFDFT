@@ -148,7 +148,7 @@ C_SRC = \
 Faddeeva.c
 
 
-OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) $(C_SRC:.c=.o) \
+OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) $(C_SRC:.c=.o)
 
 #
 # Suffix rule for Fortran 90

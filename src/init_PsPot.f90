@@ -1,3 +1,10 @@
+!!> 
+!!> \section{Subroutine \texttt{init\_PsPot}}
+!!>
+!!> This is a driver for initialization and reading pseudopotentials.
+!!> Note that this subroutine is only for testing purpose and is not meant
+!!> to be a generic driver.
+
 SUBROUTINE init_PsPot()
 
   USE m_atoms, ONLY : SpeciesSymbols, Nspecies, AtomicValences, &
@@ -15,7 +22,7 @@ SUBROUTINE init_PsPot()
 
   DO isp = 1,Nspecies
     ! initialize HGH pseudopotentials for each atomic species
-    PsPot_FilePath(isp) = trim(PsPot_Dir) // trim(SpeciesSymbols(isp)) // '.hgh'
+    PsPot_FilePath(isp) = trim(PsPot_Dir) // trim(SpeciesSymbols(isp)) // '.gth'
     CALL init_Ps_HGH_Params( Ps_HGH_Params(isp), PsPot_FilePath(isp) )
     ! Set atomic valences
     AtomicValences(isp) = Ps_HGH_Params(isp)%zval
