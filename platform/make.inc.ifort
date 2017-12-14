@@ -5,8 +5,8 @@ F77 = ifort
 F77_OPTS = -O3
 
 F90 = ifort
-F90_OPTS = -fpp -xHost -O2 -fpp -warn -nogen-interfaces
-F90_OPTS_NOWARN = -fpp -xHost -O2 -fpp
+F90_OPTS = -fpp -xHost -O2 -fpp -warn -nogen-interfaces -ipo
+F90_OPTS_NOWARN = -fpp -xHost -O2 
 
 CC_OPTS = -std=c99
 
