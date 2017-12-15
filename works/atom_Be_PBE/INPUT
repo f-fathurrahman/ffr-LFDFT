@@ -1,5 +1,5 @@
 &CONTROL
-  pseudo_dir = './'
+  pseudo_dir = '../../pseudopotentials/pbe_gth'
   etot_conv_thr = 1.0d-6
 /
 
@@ -18,14 +18,14 @@
 
 &ELECTRONS
   KS_Solve = 'Emin_pcg'
-  cg_beta = 'DY'
+  cg_beta = 'PR'
   electron_maxstep = 150
   mixing_beta = 0.1
   diagonalization = 'LOBPCG'
 /
 
 ATOMIC_SPECIES
-Be   4.0  Be_sc.hgh
+Be   4.0  Be-q4.gth
 
 ATOMIC_POSITIONS bohr
 Be   8.0  8.0  8.0
