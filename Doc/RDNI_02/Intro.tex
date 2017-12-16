@@ -12,6 +12,15 @@ as Kohn-Sham equations.
 To solve Kohn-Sham equations, one must use basis set expansions or some discretization
 schemes.
 
+One popular basis set is gaussian basis set, especially
+in gas-phase chemistry. \textsc{Gaussian09}: \cite{Gaussian2009}
+
+Plane wave basis set is very popular, especially in condensed matter
+\textsc{Quantum ESPRESSO}: \cite{Giannozzi2009,Giannozzi2017}.
+
+Real space basis set \textsc{Octopus}: \cite{Marques2003,Castro2006,Xavier2015}
+GPAW: \cite{Enkovaara2010}
+
 Lagrange mesh \cite{Baye2015}
 
 Lagrange-sinc: \cite{Choi2015,Choi2016}
@@ -22,14 +31,9 @@ Lagrange-sinc PAW \cite{Kang2016}
 
 Tuckerman's group: \cite{HeeSeungLee2006,HeeSeungLee2006,HeeSeungLee2008}
 
-\textsc{Quantum ESPRESSO}: \cite{Giannozzi2009,Giannozzi2017}.
-
-\textsc{Gaussian09}: \cite{Gaussian2009}
-
-\textsc{Octopus}: \cite{Marques2003,Castro2006,Xavier2015}
-
-GPAW: \cite{Enkovaara2010}
-
 Objective:
+create implementation of total energy calculation using Lagrange basis functions
+comparison to other real space
 
-Scope:
+Scope: We limit our discussion to several simple forms of potential such as
+gaussian and GTH local pseudopotential.
