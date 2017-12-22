@@ -1,23 +1,19 @@
-EXE_MAIN = ffr_LFDFT_ifort.x
+EXE_MAIN = ffr_LFDFT_sun.x
 MAKE = make
 AR = ar
-F77 = ifort
+
+F77 = sunf95
 F77_OPTS = -O3
 
-F90 = ifort
-F90_OPTS = -fpp -xHost -O2 -fpp -warn -nogen-interfaces -ipo
-F90_OPTS_NOWARN = -fpp -xHost -O2 
+F90 = sunf95
+# already no warning message
+F90_OPTS = -fpp -fast -dalign -w4 
+F90_OPTS_NOWARN = -fpp -fast -dalign -w4
 
-CC_OPTS = -std=c99
+# needed for my Ubuntu laptop
+CC = suncc -std=c99 -I /usr/include/x86_64-linux-gnu/
 
-#F90_OPTS = -fpp -O3 # -check uninit -xHost
-# -CB for check bound of arrays
-#F90_OPTS = -CB -warn -nogen-interfaces
-#F90_OPTS = -O3 -funroll-all-loops -vector
-#LIB_FFTW3 = /home/efefer/mysoftwares/lib/libfftw3.a
-
+LIB_LINALG = -library=sunperf #-lblas -llapack
 LIB_FFTW3 = -lfftw3
-LIB_LINALG = -L$(MKLROOT)/lib/intel64 -lmkl_core -lmkl_sequential -lmkl_intel_lp64
 LIB_XC = -L/home/efefer/mysoftwares/libxc-3.0.0/lib -lxcf90 -lxc
 LIBS = $(LIB_LINALG) $(LIB_FFTW3) $(LIB_XC)
-
