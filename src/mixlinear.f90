@@ -18,10 +18,6 @@ SUBROUTINE mixlinear( iscl, beta, n, nu, mu, d )
   real(8) :: t0,t1
   IF( n <= 0 ) RETURN 
 
-  WRITE(*,*)
-  WRITE(*,*) 'Mixing: ELK-linear: beta = ', beta
-  WRITE(*,*)
-
   ! initialise mixer
   IF( iscl <= 0 ) THEN 
     mu(:) = nu(:)

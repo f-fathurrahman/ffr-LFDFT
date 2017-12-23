@@ -24,7 +24,7 @@ SUBROUTINE mixerifc( iscl, mtype, n, v, dv, nwork, work )
       nwork = n
       RETURN 
     ENDIF 
-    call mixlinear(iscl,beta0,n,v,work,dv)
+    CALL mixlinear(iscl,beta0,n,v,work,dv)
   CASE(1)
     ! adaptive linear mixing
     IF(nwork <= 0) THEN 
@@ -48,6 +48,7 @@ SUBROUTINE mixerifc( iscl, mtype, n, v, dv, nwork, work )
   END SELECT
   RETURN 
 END SUBROUTINE 
+
 
 SUBROUTINE getmixdata(mtype,mixdescr)
   IMPLICIT NONE 

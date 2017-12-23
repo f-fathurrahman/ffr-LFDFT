@@ -25,8 +25,6 @@ SUBROUTINE mixbroyden(iscl,n,msd,alpha,w0,nu,mu,f,df,u,a,d)
   REAL(8) :: dnrm2
   EXTERNAL dnrm2
 
-  WRITE(*,*) 'Broyden mixing (ELK)'
-
   IF( n < 1 ) THEN 
     WRITE(*,*)
     WRITE(*,'("Error(mixbroyden): n < 1 : ",I8)') n

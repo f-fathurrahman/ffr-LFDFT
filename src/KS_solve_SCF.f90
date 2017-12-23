@@ -55,19 +55,29 @@ SUBROUTINE KS_solve_SCF()
   IF( MIXTYPE == 0 ) THEN 
     nwork = Npoints
     ALLOCATE( workmix(nwork) )
+    WRITE(*,*)
+    WRITE(*,*) 'Using linear mixing with beta = ', beta0
+    WRITE(*,*)
   !
   ! Adaptive linear mixing
   ELSEIF( MIXTYPE == 1 ) THEN 
     nwork = 3*Npoints
     ALLOCATE( workmix(nwork) )
+    WRITE(*,*)
+    WRITE(*,*) 'Using adaptive linear mixing'
+    WRITE(*,*)
   !
   ! Broyden mixing
   ELSEIF( MIXTYPE == 3 ) THEN 
     nwork = (4+2*mixsdb)*Npoints + mixsdb**2
     ALLOCATE( workmix(nwork) )
+    WRITE(*,*)
+    WRITE(*,*) 'Using Broyden mixing'
     WRITE(*,*) 'Broyden mixing nwork = ', nwork
+    WRITE(*,*)
   ELSE 
-    WRITE(*,*) 'Unknown MIXTYPE: ', MIXTYPE
+    WRITE(*,*)
+    WRITE(*,*) 'WARNING: Unknown MIXTYPE: ', MIXTYPE
     WRITE(*,*) 'Switching to default: adaptive linear mixing'
     MIXTYPE = 1
     nwork = 3*Npoints
@@ -83,6 +93,10 @@ SUBROUTINE KS_solve_SCF()
 !!> SCF iterations begins here
 !!>
   DO iterSCF = 1, SCF_NiterMax
+
+    WRITE(*,*)
+    WRITE(*,'(1x,A,I5,A)') '*** Begin SCF iter: ', iterSCF, '***'
+    WRITE(*,*)
 
 !!>
 !!> Determine convergence criteria for iterative diagonalization
@@ -104,39 +118,35 @@ SUBROUTINE KS_solve_SCF()
 !!> Mix electron density
     CALL mixerifc( iterSCF, MIXTYPE, Npoints, Rhoe, dr2, nwork, workmix )
 
-!!> Normalize electron density.
-!!> Also, make sure that
+!!> Make sure that there are no negative densities
     CALL normalize_rhoe( Npoints, Rhoe )  ! make sure no negative or very small rhoe
 
-    integRho = sum(Rhoe)*dVol
-    IF( abs(integRho - Nelectrons) > 1.0d-6 ) THEN
-      WRITE(*,'(1x,A,ES18.10)') 'WARNING: diff after mix rho = ', abs(integRho-Nelectrons)
-      WRITE(*,*) 'Rescaling Rho'
-      Rhoe(:) = Nelectrons/integRho * Rhoe(:)
-      integRho = sum(Rhoe)*dVol
-      WRITE(*,'(1x,A,F18.10)') 'After rescaling: integRho = ', integRho
-      WRITE(*,*)
-    ENDIF 
-
+!!> Update potentials and evaluate total energy.
     CALL update_potentials()
     CALL calc_betaNL_psi( Nstates, evecs )
     CALL calc_energies( evecs ) ! update the potentials or not ?
     
     dEtot = abs(Etot - Etot_old)
 
-!!> FIXME: should use ethr_etot ??
+    WRITE(*,*)
+    WRITE(*,'(1x,A,I5,F18.10,2ES18.10)') 'SCF: ', iterSCF, Etot, dEtot, dr2
+
+!!> Check total energy convergence. Exit SCF loop if convergence is achieved.
     IF( dEtot < SCF_ETOT_CONV_THR ) THEN 
       WRITE(*,*)
-      WRITE(*,'(1x,A,I5,A)') 'SCF converged at ', iterSCF, ' iterations.'
+      WRITE(*,'(1x,A,I5,A)') 'SCF converged after ', iterSCF, ' iterations.'
       EXIT 
     ENDIF 
 
-    WRITE(*,'(1x,A,I5,F18.10,2ES18.10)') 'SCF iter', iterSCF, Etot, dEtot, dr2
+!!> Convergence is not achieved. Prepare for the next SCF iteration.
+!!> Save previous Rhoe and total energy.
 
     Etot_old = Etot
     Rhoe_old(:) = Rhoe(:)
     flush(6)
   ENDDO
+
+!!> Free memory
 
   DEALLOCATE( workmix )
   DEALLOCATE( Rhoe_old )

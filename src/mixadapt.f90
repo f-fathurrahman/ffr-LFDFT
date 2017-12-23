@@ -6,7 +6,7 @@
 !BOP
 ! !ROUTINE: mixadapt
 ! !INTERFACE:
-subroutine mixadapt(iscl,beta0,betamax,n,nu,mu,beta,f,d)
+SUBROUTINE mixadapt(iscl,beta0,betamax,n,nu,mu,beta,f,d)
 ! !INPUT/OUTPUT PARAMETERS:
 !   iscl    : self-consistent loop number (in,integer)
 !   beta0   : mixing parameter (in,real)
@@ -38,45 +38,45 @@ subroutine mixadapt(iscl,beta0,betamax,n,nu,mu,beta,f,d)
 !   Modified, August 2011 (JKD)
 !EOP
 !BOC
-implicit none
-! arguments
-integer, intent(in) :: iscl
-real(8), intent(in) :: beta0,betamax
-integer, intent(in) :: n
-real(8), intent(inout) :: nu(n),mu(n)
-real(8), intent(inout) :: beta(n),f(n)
-real(8), intent(out) :: d
-! local variables
-integer i
-real(8) t1
+  IMPLICIT NONE 
+  ! arguments
+  INTEGER, INTENT(in) :: iscl
+  REAL(8), INTENT(in) :: beta0,betamax
+  INTEGER, INTENT(in) :: n
+  REAL(8), INTENT(inout) :: nu(n),mu(n)
+  REAL(8), INTENT(inout) :: beta(n),f(n)
+  REAL(8), INTENT(out) :: d
+  ! local variables
+  INTEGER :: i
+  REAL(8) :: t1
 
-  WRITE(*,*) 'Adaptive mixing ELK'
- 
-if (n.le.0) return
-! initialise mixer
-if (iscl.le.0) then
-  call dcopy(n,nu,1,mu,1)
-  f(:)=0.d0
-  beta(:)=beta0
-  d=1.d0
-  return
-end if
-d=0.d0
-do i=1,n
-  t1=nu(i)-mu(i)
-  if (t1*f(i).ge.0.d0) then
-    beta(i)=beta(i)+beta0
-    if (beta(i).gt.betamax) beta(i)=betamax
-  else
-    beta(i)=(beta(i)+beta0)*0.5d0
-  end if
-  f(i)=t1
-  nu(i)=beta(i)*nu(i)+(1.d0-beta(i))*mu(i)
-  d=d+t1**2
-  mu(i)=nu(i)
-end do
-d=sqrt(d/dble(n))
-return
-end subroutine
+  IF (n <= 0) RETURN 
+  ! initialise mixer
+  IF (iscl <= 0) THEN 
+    CALL dcopy(n,nu,1,mu,1)
+    f(:) = 0.d0
+    beta(:) = beta0
+    d = 1.d0
+    RETURN 
+  ENDIF 
+
+  d = 0.d0
+  DO i = 1,n
+    t1 = nu(i) - mu(i)
+    IF( t1*f(i) >= 0.d0 ) THEN 
+      beta(i) = beta(i) + beta0
+      IF( beta(i) > betamax ) beta(i) = betamax
+    ELSE 
+      beta(i) = ( beta(i) + beta0 )*0.5d0
+    ENDIF 
+    f(i) = t1
+    nu(i) = beta(i)*nu(i) + (1.d0 - beta(i))*mu(i)
+    d = d + t1**2
+    mu(i) = nu(i)
+  ENDDO 
+  d = sqrt(d/dble(n))
+  RETURN 
+END SUBROUTINE 
+
 !EOC
 
