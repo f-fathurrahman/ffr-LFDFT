@@ -15,7 +15,6 @@ SUBROUTINE KS_solve_SCF()
                         SCF_ETOT_CONV_THR
   USE m_hamiltonian, ONLY : Rhoe
   USE m_energies, ONLY : Etot => E_total
-  USE m_states, ONLY : Nelectrons
 !!> These mixing-related variables should be put into specialized modules
   USE m_options, ONLY : beta0, betamax, mixsdb, broydpm, SCF_betamix, SCF_NiterMax
   IMPLICIT NONE
@@ -96,7 +95,6 @@ SUBROUTINE KS_solve_SCF()
 
     WRITE(*,*)
     WRITE(*,'(1x,A,I5,A)') '*** Begin SCF iter: ', iterSCF, '***'
-    WRITE(*,*)
 
 !!>
 !!> Determine convergence criteria for iterative diagonalization
@@ -135,6 +133,8 @@ SUBROUTINE KS_solve_SCF()
     IF( dEtot < SCF_ETOT_CONV_THR ) THEN 
       WRITE(*,*)
       WRITE(*,'(1x,A,I5,A)') 'SCF converged after ', iterSCF, ' iterations.'
+      WRITE(*,'(1x,A,ES18.10)') 'SCF_ETOT_CONV_THR = ', SCF_ETOT_CONV_THR
+      WRITE(*,'(1x,A,ES18.10)') 'dEtot             = ', dEtot
       EXIT 
     ENDIF 
 

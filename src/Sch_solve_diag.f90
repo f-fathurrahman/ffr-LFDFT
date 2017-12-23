@@ -68,7 +68,6 @@ SUBROUTINE Sch_solve_diag()
   DO ist = 1, Nstates
     WRITE(*,'(1x,I4,F18.10)') ist, evals(ist)
   ENDDO
-  WRITE(*,*)
 
   IF( ortho_check_after_diag ) THEN 
     CALL ortho_check( Npoints, Nstates, dVol, evecs )

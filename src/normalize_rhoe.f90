@@ -18,12 +18,12 @@ SUBROUTINE normalize_rhoe( Npoints, rhoe )
 !!> Need to rescale electron density such that it integrates to number of electrons.
     integRho = sum(Rhoe)*dVol
     IF( abs(integRho - Nelectrons) > 1.0d-6 ) THEN
+      WRITE(*,*)
       WRITE(*,'(1x,A,ES18.10)') 'WARNING: diff after mix rho = ', abs(integRho-Nelectrons)
       WRITE(*,*) 'Rescaling Rho'
       Rhoe(:) = Nelectrons/integRho * Rhoe(:)
       integRho = sum(Rhoe)*dVol
       WRITE(*,'(1x,A,F18.10)') 'After rescaling: integRho = ', integRho
-      WRITE(*,*)
     ENDIF 
 
 END SUBROUTINE 

@@ -111,7 +111,7 @@ SUBROUTINE setup_options()
     MIXTYPE = 0
   CASE( 'linear-adaptive' )
     MIXTYPE = 1
-  CASE( 'broyden-elk' )
+  CASE( 'broyden-elk', 'elk-broyden' )
     MIXTYPE = 3
   CASE DEFAULT
     MIXTYPE = 1
