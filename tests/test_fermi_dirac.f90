@@ -5,6 +5,7 @@ PROGRAM test_calc_occupations
   INTEGER :: ist
   REAL(8) :: Tbeta, efermi
   REAL(8), ALLOCATABLE :: evals(:)
+  REAL(8) :: Nelectrons_calc
 
   Nelectrons = 3.d0
   Nstates = 8
@@ -32,16 +33,28 @@ PROGRAM test_calc_occupations
   evals(7) = -0.5d0
   evals(8) = -0.1d0
 
-  efermi = 0.5d0*( evals(4) - evals(3) )
-  Tbeta = 0.001d0
+  !efermi = 0.5d0*( evals(4) + evals(3) )
+  !efermi = evals(5)
+  Tbeta = 20d0
+
+  CALL calc_occupations( Nstates, Nelectrons, Focc, evals, Tbeta, efermi )
 
   WRITE(*,'(1x,A,2F18.10)') 'Fermi, Tbeta = ', efermi, Tbeta
-  CALL fermi_dirac( Nstates, evals, efermi, Tbeta, Focc )
+  !CALL fermi_dirac( Nstates, evals, efermi, Tbeta, Focc )
 
   DO ist = 1,Nstates
     WRITE(*,'(1x,I4,2F18.10)') ist, evals(ist), Focc(ist)
   ENDDO 
   WRITE(*,*) 'sum(Focc) = ', sum(Focc)
+
+  Nelectrons_calc = 0.d0
+  DO ist = 1,Nstates
+    IF( evals(ist) <= efermi ) THEN 
+      Nelectrons_calc = Nelectrons_calc + Focc(ist)
+    ENDIF 
+  ENDDO 
+  WRITE(*,*) 'Nelectrons_calc = ', Nelectrons_calc
+
 
 END PROGRAM 
 

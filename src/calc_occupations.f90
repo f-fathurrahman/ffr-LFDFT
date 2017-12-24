@@ -12,7 +12,7 @@ SUBROUTINE calc_occupations( Nstates, Nelectrons, Focc, evals, Tbeta, efermi )
   REAL(8) :: efermi
   !
   REAL(8), PARAMETER :: TOL = 1d-15
-  INTEGER, PARAMETER :: MAXITER = 2
+  INTEGER, PARAMETER :: MAXITER = 100
   INTEGER :: ilb, ulb, iter, iub, ist
   REAL(8) :: lb, ub, flb, fub
   REAL(8), ALLOCATABLE :: Focc_ub(:), Focc_lb(:)
@@ -100,6 +100,9 @@ SUBROUTINE calc_occupations( Nstates, Nelectrons, Focc, evals, Tbeta, efermi )
     ENDDO 
 
   ELSEIF( Nstates == Nelectrons ) THEN 
+    WRITE(*,*)
+    WRITE(*,*) 'Nstates is equal to Nelectrons'
+    !
     DO ist = 1,Nstates
       Focc(ist) = 1.d0
     ENDDO 
@@ -111,6 +114,9 @@ SUBROUTINE calc_occupations( Nstates, Nelectrons, Focc, evals, Tbeta, efermi )
     STOP 
 
   ENDIF 
+
+  WRITE(*,*)
+  WRITE(*,*) 'End of calc_occupations'
 
   DEALLOCATE( Focc_lb )
   DEALLOCATE( Focc_ub )
