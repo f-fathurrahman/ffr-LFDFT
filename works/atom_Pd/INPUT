@@ -24,7 +24,7 @@
 /
 
 ATOMIC_SPECIES
-Pd   1.0  Pd.hgh
+Pd   1.0  Pd-q10.gth
 
 ATOMIC_POSITIONS angstrom
 Pd   4.23341768       4.23341768       4.23341768
