@@ -28,19 +28,9 @@ PROGRAM do_SCF_gaussian_G
   ! Start timing
   CALL system_clock( tstart, counts_per_second )
 
-  ! Initialize states and occupation numbers MANUALLY
-  Nstates = Nstates_occ + Nstates_extra
-  Nelectrons = 2.d0*Nstates_occ
-  ALLOCATE( Zv(1) )
-  Zv(1) = Nelectrons
-  !
-  ALLOCATE( Focc(Nstates) )
-  Focc(:) = 0.d0
-  DO ist = 1,Nstates_occ
-    Focc(ist) = 2.d0
-  ENDDO 
-  
   CALL init_system_atoms()
+
+  CALL init_system_electronic_states()
 
   !
   NN = (/ N_in, N_in, N_in /)
@@ -55,17 +45,7 @@ PROGRAM do_SCF_gaussian_G
   ! Memory for potentials
   CALL alloc_hamiltonian()
 
-  ! Local pseudopotential
-  Nparams = Nspecies
-  ALLOCATE( A(Nparams) )
-  ALLOCATE( alpha(Nparams) )
-  A(1) = A_in/(2.d0*PI*alpha_in**2)**1.5d0
-  alpha(1) = 0.5d0/alpha_in**2
-
-  WRITE(*,*)
-  WRITE(*,'(1x,A,2F18.10)') 'Potential parameters: ', A(1), alpha(1)
-
-  CALL init_V_ps_loc_gaussian_G( Nparams, A, alpha )  ! appropriate for periodic system
+  CALL setup_gaussian_potential()
 
   ! Set this explicitly in order to skip any term involving nonlocal pseudopotentials
   NbetaNL = 0
@@ -96,6 +76,34 @@ PROGRAM do_SCF_gaussian_G
 
 
 CONTAINS 
+
+
+SUBROUTINE setup_gaussian_potential()
+  ! Local pseudopotential
+  Nparams = Nspecies
+  ALLOCATE( A(Nparams) )
+  ALLOCATE( alpha(Nparams) )
+  A(1) = A_in/(2.d0*PI*alpha_in**2)**1.5d0
+  alpha(1) = 0.5d0/alpha_in**2
+  !
+  CALL init_V_ps_loc_gaussian_G( Nparams, A, alpha )  ! appropriate for periodic system
+END SUBROUTINE 
+
+
+
+SUBROUTINE init_system_electronic_states()
+  ! Initialize states and occupation numbers MANUALLY
+  Nstates = Nstates_occ + Nstates_extra
+  Nelectrons = 2.d0*Nstates_occ
+  ALLOCATE( Zv(1) )
+  Zv(1) = Nelectrons
+  !
+  ALLOCATE( Focc(Nstates) )
+  Focc(:) = 0.d0
+  DO ist = 1,Nstates_occ
+    Focc(ist) = 2.d0
+  ENDDO 
+END SUBROUTINE 
 
 
 SUBROUTINE init_system_atoms()
@@ -161,10 +169,14 @@ SUBROUTINE setup_args()
   Narg = iargc()
   IF( Narg /= 5 ) THEN 
     WRITE(*,*) 'ERROR: exactly four arguments must be given:'
-    WRITE(*,*) '       N A alpha Nstates_occ Nstates_extra'
+    WRITE(*,*) '       N A_in alpha_in Nstates_occ Nstates_extra'
     WRITE(*,*)
-    WRITE(*,*) ' A and alpha is Gaussian parameter:'
+    WRITE(*,*) 'A and alpha is Gaussian parameter:'
     WRITE(*,*) '   f(r) = A*exp( - alpha*r^2 )'
+    WRITE(*,*)
+    WRITE(*,*) 'with'
+    WRITE(*,*) '   A     = A_in/(2.d0*PI*alpha_in**2)**1.5d0'
+    WRITE(*,*) '   alpha = 0.5d0/alpha_in**2'
     STOP 
   ENDIF 
 
