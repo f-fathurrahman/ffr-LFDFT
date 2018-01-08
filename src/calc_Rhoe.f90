@@ -24,6 +24,7 @@ SUBROUTINE calc_rhoe( Focc, psi )
   INTEGER :: ist
 
   Rhoe(:) = 0.d0
+  ! FIXME: only for FIXED occ ? Not working for metals with fractional occupation ??
   DO ist = 1, Nstates_occ
     Rhoe(:) = Rhoe(:) + Focc(ist) * psi(:,ist) * psi(:,ist)
   ENDDO
