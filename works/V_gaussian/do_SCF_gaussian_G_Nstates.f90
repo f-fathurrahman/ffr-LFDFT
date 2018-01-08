@@ -1,14 +1,13 @@
 PROGRAM do_SCF_gaussian_G
 
-  USE m_constants, ONLY : Ry2eV
+  USE m_constants, ONLY : PI
   USE m_options, ONLY : FREE_NABLA2
   USE m_atoms, ONLY : Natoms, Nspecies, AtomicCoords, atm2species, &
                       SpeciesSymbols, Zv => AtomicValences, &
                       AtomicMasses
-  USE m_states, ONLY : Nstates, Focc, Nelectrons, Nstates_occ
+  USE m_states, ONLY : Nstates, Focc, Nelectrons, Nstates_occ, Nstates_extra
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, dVol => LF3d_dVol
-  USE m_states, ONLY : Nstates, Focc, &
-                       evals => KS_evals, &
+  USE m_states, ONLY : evals => KS_evals, &
                        evecs => KS_evecs
   USE m_PsPot, ONLY : NbetaNL
   IMPLICIT NONE 
@@ -30,23 +29,18 @@ PROGRAM do_SCF_gaussian_G
   CALL system_clock( tstart, counts_per_second )
 
   ! Initialize states and occupation numbers MANUALLY
-  Nstates_occ = Nstates
-  Nelectrons = 2.d0*Nstates
+  Nstates = Nstates_occ + Nstates_extra
+  Nelectrons = 2.d0*Nstates_occ
   ALLOCATE( Zv(1) )
   Zv(1) = Nelectrons
+  !
   ALLOCATE( Focc(Nstates) )
-  Focc(:) = 2.d0
-
-  ! 'Atomic' positions
-  Nspecies = 1
-  Natoms = 1
-  ALLOCATE( AtomicCoords(3,Natoms) )
-  AtomicCoords(:,1) = (/ 8.d0, 8.d0, 8.d0 /)
-  ALLOCATE( atm2species(Natoms) )
-  atm2species(1) = 1
-  ALLOCATE( SpeciesSymbols(Nspecies) )
-  SpeciesSymbols(1) = 'X'
-  ALLOCATE( AtomicMasses(Nspecies) )
+  Focc(:) = 0.d0
+  DO ist = 1,Nstates_occ
+    Focc(ist) = 2.d0
+  ENDDO 
+  
+  CALL init_system_atoms()
 
   !
   NN = (/ N_in, N_in, N_in /)
@@ -65,9 +59,12 @@ PROGRAM do_SCF_gaussian_G
   Nparams = Nspecies
   ALLOCATE( A(Nparams) )
   ALLOCATE( alpha(Nparams) )
-  A(1) = A_in
-  alpha(1) = alpha_in
-  !
+  A(1) = A_in/(2.d0*PI*alpha_in**2)**1.5d0
+  alpha(1) = 0.5d0/alpha_in**2
+
+  WRITE(*,*)
+  WRITE(*,'(1x,A,2F18.10)') 'Potential parameters: ', A(1), alpha(1)
+
   CALL init_V_ps_loc_gaussian_G( Nparams, A, alpha )  ! appropriate for periodic system
 
   ! Set this explicitly in order to skip any term involving nonlocal pseudopotentials
@@ -100,11 +97,25 @@ PROGRAM do_SCF_gaussian_G
 
 CONTAINS 
 
+
+SUBROUTINE init_system_atoms()
+  ! 'Atomic' positions
+  Nspecies = 1
+  Natoms = 1
+  ALLOCATE( AtomicCoords(3,Natoms) )
+  AtomicCoords(:,1) = (/ 8.d0, 8.d0, 8.d0 /)
+  ALLOCATE( atm2species(Natoms) )
+  atm2species(1) = 1
+  ALLOCATE( SpeciesSymbols(Nspecies) )
+  SpeciesSymbols(1) = 'X'
+  ALLOCATE( AtomicMasses(Nspecies) )
+!
+END SUBROUTINE 
+
 !------------------
 SUBROUTINE do_SCF()
 !------------------
-  USE m_options, ONLY: I_ALG_DIAG
-
+  USE m_options, ONLY: I_ALG_DIAG, MIXTYPE
 
   ! Manually allocate KS eigenvectors and eigenvalues
   ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
@@ -119,16 +130,19 @@ SUBROUTINE do_SCF()
 
   CALL ortho_check( Npoints, Nstates, dVol, evecs )
 
+  CALL calc_Rhoe( Focc, evecs )
+
   I_ALG_DIAG = 3 ! LOBPCG
+  MIXTYPE = 1 ! adaptive linear
   CALL KS_solve_SCF()
 
   CALL info_energies()
 
   WRITE(*,*)
-  WRITE(*,*) 'Final eigenvalues (Ha and eV)'
+  WRITE(*,*) 'Final eigenvalues (Ha)'
   WRITE(*,*)
   DO ist = 1,Nstates
-    WRITE(*,'(1x,I8,2F18.10)') ist, evals(ist), evals(ist)*2.d0*Ry2eV
+    WRITE(*,'(1x,I8,2F18.10)') ist, evals(ist), Focc(ist)
   ENDDO 
 
   ! write data
@@ -145,9 +159,9 @@ SUBROUTINE setup_args()
   INTEGER :: iargc
 
   Narg = iargc()
-  IF( Narg /= 4 ) THEN 
+  IF( Narg /= 5 ) THEN 
     WRITE(*,*) 'ERROR: exactly four arguments must be given:'
-    WRITE(*,*) '       N A alpha Nstates'
+    WRITE(*,*) '       N A alpha Nstates_occ Nstates_extra'
     WRITE(*,*)
     WRITE(*,*) ' A and alpha is Gaussian parameter:'
     WRITE(*,*) '   f(r) = A*exp( - alpha*r^2 )'
@@ -164,7 +178,10 @@ SUBROUTINE setup_args()
   READ(arg_tmp, *) alpha_in
 
   CALL getarg( 4, arg_tmp )
-  READ(arg_tmp, *) Nstates
+  READ(arg_tmp, *) Nstates_occ
+
+  CALL getarg( 5, arg_tmp )
+  READ(arg_tmp, *) Nstates_extra
 !
 END SUBROUTINE 
 
