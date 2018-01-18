@@ -9,27 +9,30 @@ Using Kohn-Sham density functional theory \cite{Kohn1965} the difficult many-ele
 Schrodinger equation is mapped on to a set of single-electron equations, widely known
 as Kohn-Sham equations.
 
-To solve Kohn-Sham equations, one must use basis set expansions or some discretization
-schemes.
+To solve Kohn-Sham equations, one needs to use basis set expansions or some discretization
+schemes. One choice for such basis set is Gaussian basis set which
+is used in various popular computer programs such as
+\textsc{Gaussian09} \cite{Gaussian2009} and GAMESS \cite{Schmidt1993,Gordon2005}.
+In condensed matter community, plane wave basis set is very popular
+which is used in several computer programs such as
+\textsc{Quantum ESPRESSO} \cite{Giannozzi2009,Giannozzi2017}.
+Instead of using specific basis set, alternatively one can discretize Kohn-Sham equations
+using standard finite-difference schemes such as implemented in computer programs
+such as \textsc{Octopus} \cite{Marques2003,Castro2006,Xavier2015}
+and \textsc{GPAW} \cite{Enkovaara2010}.
 
-One popular basis set is gaussian basis set, especially
-in gas-phase chemistry. \textsc{Gaussian09}: \cite{Gaussian2009}
-
-Plane wave basis set is very popular, especially in condensed matter
-\textsc{Quantum ESPRESSO}: \cite{Giannozzi2009,Giannozzi2017}.
-
-Real space basis set \textsc{Octopus}: \cite{Marques2003,Castro2006,Xavier2015}
-GPAW: \cite{Enkovaara2010}
-
-Lagrange mesh \cite{Baye2015}
-
+Lagrange basis functions are a family of functions which have been
+utilized for solving several differential equations in physics, which
+is reviewed in a comprehensive review \cite{Baye2015}.
+It uses in the context of solving Kohn-Sham equations are probably
+first introduced in several publications from Tuckerman's group
+\cite{HeeSeungLee2006,HeeSeungLee2006,HeeSeungLee2008}
+and quite recently in several publications of Kim's group.
 Lagrange-sinc: \cite{Choi2015,Choi2016}
-
 Lagrange-sinc + CI based on HF and KS: \cite{Kim2015}
-
 Lagrange-sinc PAW \cite{Kang2016}
 
-Tuckerman's group: \cite{HeeSeungLee2006,HeeSeungLee2006,HeeSeungLee2008}
+
 
 Objective:
 create implementation of total energy calculation using Lagrange basis functions
