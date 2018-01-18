@@ -144,9 +144,7 @@ cleanup_ffr_LFDFT.f90 \
 do_KS_solve.f90 \
 guess_KS_solutions.f90 
 
-C_SRC = \
-Faddeeva.c
-
+C_SRC = 
 
 OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) $(C_SRC:.c=.o)
 
@@ -177,7 +175,7 @@ OBJ = $(SRC:.f90=.o) $(SRC:.f=.o) $(C_SRC:.c=.o)
 	$(CC) -c $(CC_OPTS) $<
 
 # Libraries
-lib: sparskit poisson_ISF libxc $(OBJ)
+lib: sparskit poisson_ISF libxc Faddeeva $(OBJ)
 	ar rcs libmain.a *.o
 
 sparskit: 
@@ -188,6 +186,9 @@ poisson_ISF:
 
 libxc:
 	cd extlibs/libxc; $(MAKE); cd ../../
+
+Faddeeva:
+	cd extlibs/Faddeeva; $(MAKE); cd ../../
 
 #
 # Main executable
@@ -210,6 +211,7 @@ clean:
 	cd extlibs/sparskit; $(MAKE) clean
 	cd extlibs/poisson_ISF; $(MAKE) clean
 	cd extlibs/libxc; $(MAKE) clean
+	cd extlibs/Faddeeva; $(MAKE) clean
 	rm -rf *.o *.mod libmain.a libpoisson_ISF.a libsparskit.a
 
 # also delete *.x files
@@ -217,6 +219,7 @@ cleanx:
 	cd extlibs/sparskit; $(MAKE) clean
 	cd extlibs/poisson_ISF; $(MAKE) clean
 	cd extlibs/libxc; $(MAKE) clean
+	cd extlibs/Faddeeva; $(MAKE) clean
 	rm -rf *.o *.mod libmain.a libpoisson_ISF.a libsparskit.a *.x
 
 

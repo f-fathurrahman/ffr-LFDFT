@@ -6,8 +6,11 @@ F77 = pgf77
 F77_OPTS = -O3
 
 F90 = pgf90
-F90_OPTS = -Minform=inform -fast -Mpreprocess
+F90_OPTS = -Minform=warn -fast -Mpreprocess
 F90_OPTS_NOWARN = -fast -Mpreprocess
+
+CC = pgcc
+CC_OPTS = -fast -c99 -silent
 
 LIB_LINALG = -lblas -llapack
 LIB_FFTW3 = -lfftw3
