@@ -96,9 +96,23 @@ gradient $\mathbf{Kg}_{\psi}$ where $\mathbf{K}$ is a preconditioner.
 If $\mathbf{g}_{\psi,\mathrm{prev}}$ is not available (first iteration) then set
 $\beta = 0$.
 %
-\item Calculate new direction:
+\item Calculate preconditioned search direction (with $K$ is a preconditioner)
 \begin{equation}
-\mathbf{d} = 
+\mathbf{d} = -K\mathbf{g} + \beta d_{n-1}
+\end{equation}
+%
+\item Update wavefunction as:
+\begin{equation}
+\mathbf{C}_{n+1} = \mathbf{C}_{n} + \alpha \mathbf{d}_{n}
+\end{equation}
+where $\alpha$ is:
+\begin{equation}
+\alpha = \alpha_{t}\frac{\mathbf{g}\cdot\mathbf{d}}
+{\left(\mathbf{g}-\mathbf{g}_{t}\right)\cdot\mathbf{d}_{n}}
+\end{equation}
+and
+\begin{equation}
+\mathbf{g}_{t} = \nabla_{\psi}E\left(\mathbf{C} + \alpha_{t}\mathbf{d}_{n}\right)
 \end{equation}
 \end{itemize}
 %
