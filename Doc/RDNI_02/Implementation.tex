@@ -17,7 +17,7 @@ C_{\alpha\beta\gamma}^{i_{st}} L_{\alpha}(x) L_{\beta}(y) L_{\gamma}(z)
 Using this expansion, kinetic operator can be written as
 \begin{align}
 T_{\alpha\beta\gamma}^{\alpha'\beta'\gamma'} & = -\frac{1}{2} \sum_{i_{st}} f_{i_{st}}
-\Braket{ \psi_{i_{st}} | \nabla^2 | \psi_{i} } \\
+\Braket{ \psi_{i_{st}} | \nabla^2 | \psi_{i_{st}} } \\
 & =
 -\frac{1}{2}
 \sum_{i_{st}} f_{i_{st}} \sum_{\alpha\alpha'} \sum_{\beta\beta'} \sum_{\gamma\gamma'}
@@ -32,6 +32,7 @@ has the following form:
 D^{(2)}_{\alpha\alpha'}\delta_{\beta\beta'}\delta_{\gamma\gamma'} +
 D^{(2)}_{\beta\beta'}\delta_{\alpha\alpha'}\delta_{\gamma\gamma'} +
 D^{(2)}_{\gamma\gamma'}\delta_{\alpha\alpha'}\delta_{\beta\beta'}
+\label{eq:Laplace3d}
 \end{equation}
 %
 Specifically, for periodic Lagrange basis function $D^{(2)}_{ij}$, $i, j = \alpha, \beta, \gamma$
@@ -45,15 +46,26 @@ D^{(2)}_{ij} = -\left( \frac{2\pi}{L} \right)^2 \frac{N'}{3} \left( N' + 1 \righ
 \end{equation}
 where $N' = (N-1)/2$.
 
-The matrix representation of kinetic operator is sparse.
+While the matrix $D^{(2)}_{ij}$ is dense, its counterpart in 3D is sparse. So, we can
+use sparse matrix data structure to do matrix-vector multiplication in when calculating
+action of kinetic operator to wavefunction. Specifically, we used compressed sparse column
+(CSC) format as representation of Laplacian operator in \eqref{eq:Laplace3d}.
+\textsf{SPARSKIT}\cite{Saad1994} package is used for sparse matrix multiplication
+operations. This package is also used for calculating incomplete LU preconditioner
+which is used in Kohn-Sham energy minimization via conjugate gradient.
 
 The remaining potential terms which are local have very simple matrix form, i.e.
-diagonal. The action of potential operator to Kohn-Sham orbital at point
-$(r_{\alpha\beta\gamma})$ thus can be
-obtained by pointwise multiplication with the potential on that point:
+diagonal:
 \begin{equation}
 V_{\mathrm{KS}}(r_{\alpha\beta\gamma}) = V_{\mathrm{ion}}(r_{\alpha\beta\gamma}) +
 V_{\mathrm{Ha}}(r_{\alpha\beta\gamma}) + V_{\mathrm{xc}}(r_{\alpha\beta\gamma})
+\end{equation}  
+The action of potential operator to Kohn-Sham orbital at point
+$(r_{\alpha\beta\gamma})$ can simply be
+obtained by pointwise multiplication with the potential on that point:
+\begin{equation}
+V_{\mathrm{KS}\alpha\beta\gamma}^{\alpha'\beta'\gamma'} \psi(r_{\alpha\beta\gamma}) =
+V_{\mathrm{KS}}(r_{\alpha\beta\gamma})\psi(r_{\alpha\beta\gamma})
 \end{equation}
 
 \subsection{Methods to solve Kohn-Sham equations}
