@@ -55,7 +55,7 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart )
   ENDIF
 
 !!> Calculate initial total energy from given initial guess of wave function
-  CALL calc_band_energies( v, Eband )
+  CALL calc_Ebands( v, Ebands )
 
 !!> Save the initial Etot
   Etot_old = Etot
@@ -120,9 +120,6 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart )
     tv(:,:) = v(:,:) + alpha_t * d(:,:)
     CALL orthonormalize( Nstates, tv )
 
-    CALL calc_Rhoe( Focc, tv )
-    CALL update_potentials()  ! Now global vars on m_hamiltonian are changed
-    CALL calc_betaNL_psi( Nstates, tv )
     CALL calc_grad( Nstates, tv, g_t )
     !
     ! Compute estimate of best step and update current trial vectors
@@ -137,10 +134,7 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart )
     v(:,:) = v(:,:) + alpha * d(:,:)
     CALL orthonormalize( Nstates, v )
 
-    CALL calc_Rhoe( Focc, v )
-    CALL update_potentials()
-    CALL calc_betaNL_psi( Nstates, v )
-    CALL calc_energies( v )
+    CALL calc_Ebands( v, Ebands )
     !
     WRITE(*,'(1x,I5,F18.10,ES18.10)') iter, Etot, Etot_old-Etot
     !
@@ -164,47 +158,3 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart )
 END SUBROUTINE
 
 
-!!> The following subroutine reports various information related to CG minimization
-!!> of Kohn-Sham energy:
-!!>
-SUBROUTINE info_KS_solve_Emin_pcg( alpha_t, restart )
-  USE m_options, ONLY : I_CG_BETA, Emin_NiterMax, Emin_ETOT_CONV_THR
-  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
-  USE m_states, ONLY : Nstates
-  IMPLICIT NONE
-  REAL(8) :: alpha_t
-  LOGICAL :: restart
-  !
-  REAL(8) :: memGB
-
-!!> The following is \textbf{hard-wired} calculation. It may need to be updated
-!!> if the actual code is modified
-!!>
-  memGB = Npoints*Nstates*8d0 * 8d0 / (1024d0*1024d0*1024.d0)
-
-  WRITE(*,*)
-  WRITE(*,*) 'Minimizing KS total energy functional using PCG algorithm'
-  WRITE(*,*) '---------------------------------------------------------'
-  WRITE(*,*)
-  WRITE(*,'(1x,A,I8)')     'NiterMax = ', Emin_NiterMax
-  WRITE(*,'(1x,A,ES10.3)') 'alpha_t  = ', alpha_t
-  WRITE(*,*)               'restart  = ', restart
-  WRITE(*,'(1x,A,ES10.3)') 'conv_thr = ', Emin_ETOT_CONV_THR
-  WRITE(*,*)
-  IF( I_CG_BETA == 1 ) THEN
-    WRITE(*,*) 'Using Fletcher-Reeves formula'
-  ELSEIF( I_CG_BETA == 2 ) THEN
-    WRITE(*,*) 'Using Polak-Ribiere formula'
-  ELSEIF( I_CG_BETA == 3 ) THEN
-    WRITE(*,*) 'Using Hestenes-Stiefel formula'
-  ELSEIF( I_CG_BETA == 4 ) THEN
-    WRITE(*,*) 'Using Dai-Yuan formula'
-  ELSE
-    ! This line should not be reached.
-    WRITE(*,*) 'XXXXX WARNING: Unknown I_CG_BETA: ', I_CG_BETA
-  ENDIF
-  WRITE(*,*)
-  WRITE(*,'(1x,A,F18.10)') 'KS_solve_Emin_pcg: memGB = ', memGB
-  WRITE(*,*)
-
-END SUBROUTINE
