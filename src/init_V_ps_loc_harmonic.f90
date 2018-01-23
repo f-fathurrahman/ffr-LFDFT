@@ -17,8 +17,8 @@ SUBROUTINE init_V_ps_loc_harmonic( omega, center )
 
   WRITE(*,*)
   WRITE(*,*) 'Initializing V_ps_loc with harmonic potential'
-  WRITE(*,*) 'omega = ', omega
-  WRITE(*,*) 'center = ', center
+  WRITE(*,'(1x,A,3F10.2)') 'omega  = ', omega
+  WRITE(*,'(1x,A,3F10.2)') 'center = ', center
 
   DO ip = 1, Npoints
     dx = lingrid(1,ip) - center(1)

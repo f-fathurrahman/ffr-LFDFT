@@ -21,7 +21,7 @@ PROGRAM test_sch
   !
   REAL(8) :: ddot
   
-  NN = (/ 25, 25, 25 /)
+  NN = (/ 35, 35, 35 /)
   AA = (/ 0.d0, 0.d0, 0.d0 /)
   BB = (/ 6.d0, 6.d0, 6.d0 /)
 
@@ -37,6 +37,7 @@ PROGRAM test_sch
   CALL init_ilu0_prec()
 
   CALL init_V_ps_loc_harmonic( 2.d0, 0.5*(BB-AA) )
+  WRITE(*,*)
   WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
 
   Nstates = 4
@@ -45,40 +46,18 @@ PROGRAM test_sch
 
   NbetaNL = 0
 
+  ! Set up initial guess
   ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
-
   DO ist = 1, Nstates
     DO ip = 1, Npoints
       CALL random_number( evecs(ip,ist) )
     ENDDO
   ENDDO
-  CALL ortho_gram_schmidt( evecs, Npoints, Npoints, Nstates )
-  DO ist = 1, Nstates
-    WRITE(*,*) ist, ddot( Npoints, evecs(:,ist), 1, evecs(:,ist), 1 )
-  ENDDO 
-  
-  DO ist = 1, Nstates
-    WRITE(*,'(1x,I4,F18.10)') ist, evals(ist)
-  ENDDO
+  CALL orthonormalize( Nstates, evecs )
 
-  DO ist = 1, Nstates
-    WRITE(*,*) ist, ddot( Npoints, evecs(:,ist), 1, evecs(:,ist), 1 )
-  ENDDO 
-
-  evecs(:,:) = evecs(:,:)/sqrt(dVol)
-
-  !CALL Sch_solve_diag()
   CALL Sch_solve_Emin_pcg( 3.d-5, .FALSE. )
 
-  !CALL calc_Energies( evecs, Ekin, Epot, Etot )
-  !WRITE(*,*) 'Ekin = ', Ekin
-  !WRITE(*,*) 'Epot = ', Epot
-  !WRITE(*,*) 'Etot = ', Etot
-
   DEALLOCATE( evecs, evals )
-  
-  111 WRITE(*,*) 'Deallocating ...'
-  
   DEALLOCATE( Focc )
   CALL dealloc_nabla2_sparse()
   CALL dealloc_ilu0_prec()
