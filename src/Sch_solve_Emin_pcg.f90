@@ -28,12 +28,9 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart )
   REAL(8), ALLOCATABLE :: d(:,:), d_old(:,:)
   REAL(8), ALLOCATABLE :: Kg(:,:), Kg_old(:,:) ! preconditioned
   REAL(8), ALLOCATABLE :: tv(:,:)
-  REAL(8) :: alpha, beta, denum, Etot_old
+  REAL(8) :: alpha, beta, denum, Ebands_old, Ebands
   !
   INTEGER :: iter, ist
-
-!!> Display several informations about the algorithm
-  CALL info_KS_solve_Emin_pcg( alpha_t, restart )
 
 !!> Here we allocate all working arrays
   ALLOCATE( g(Npoints,Nstates) )  ! gradient
@@ -55,10 +52,10 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart )
   ENDIF
 
 !!> Calculate initial total energy from given initial guess of wave function
-  CALL calc_Ebands( v, Ebands )
+  CALL calc_Ebands( Nstates, v, Ebands )
 
-!!> Save the initial Etot
-  Etot_old = Etot
+!!> Save the initial Ebands
+  Ebands_old = Ebands
 
 !!> initialize alpha and beta
   alpha = 0.d0
@@ -134,16 +131,16 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart )
     v(:,:) = v(:,:) + alpha * d(:,:)
     CALL orthonormalize( Nstates, v )
 
-    CALL calc_Ebands( v, Ebands )
+    CALL calc_Ebands( Nstates, v, Ebands )
     !
-    WRITE(*,'(1x,I5,F18.10,ES18.10)') iter, Etot, Etot_old-Etot
+    WRITE(*,'(1x,I5,F18.10,ES18.10)') iter, Ebands, Ebands_old-Ebands
     !
-    IF( abs(Etot - Etot_old) < Emin_ETOT_CONV_THR ) THEN
-      WRITE(*,*) 'KS_solve_Emin_pcg converged in iter', iter
+    IF( abs(Ebands - Ebands_old) < Emin_ETOT_CONV_THR ) THEN
+      WRITE(*,*) 'Sch_solve_Emin_pcg converged in iter', iter
       EXIT
     ENDIF
     !
-    Etot_old = Etot
+    Ebands_old = Ebands
     g_old(:,:) = g(:,:)
     d_old(:,:) = d(:,:)
     Kg_old(:,:) = Kg(:,:)
