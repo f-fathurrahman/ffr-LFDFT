@@ -8,7 +8,7 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
   REAL(8) :: evals(Nstates)
   ! Local variable
   REAL(8) :: RNORM
-  INTEGER :: ist, istEP, MAX_DIR, NCONV
+  INTEGER :: ist, istep, MAX_DIR
   LOGICAL :: IS_CONVERGED
   REAL(8) :: MACHINE_ZERO, TOLERANCE
   REAL(8), ALLOCATABLE :: RES_TOL(:), RES_NORM(:), evals_red(:)

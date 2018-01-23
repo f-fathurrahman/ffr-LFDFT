@@ -27,8 +27,6 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
   real(8) :: mem
   ! Iterator
   INTEGER :: i
-  ! Functions
-  REAL(8) :: ddot
   !
   REAL(8), ALLOCATABLE :: IMat(:,:)
 

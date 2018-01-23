@@ -14,9 +14,7 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart )
 !!> The following variables are imported.
 !!>
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
-  USE m_states, ONLY : Nstates, &
-                       Focc, &
-                       v => KS_evecs
+  USE m_states, ONLY : Nstates, v => KS_evecs
   USE m_options, ONLY : I_CG_BETA, Emin_NiterMax, Emin_ETOT_CONV_THR
   USE m_options, ONLY : T_WRITE_RESTART
 
