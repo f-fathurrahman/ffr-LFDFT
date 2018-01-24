@@ -1,15 +1,16 @@
 ! eFeFeR
 
 !------------------------------------------------
-SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
+SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance, verbose )
 !------------------------------------------------
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates
   IMPLICIT NONE 
   ! arguments
-  REAL(8), intent(inout) :: lambda(Nstates)
-  REAL(8), intent(inout) :: X(Npoints,Nstates)
-  REAL(8), intent(in) :: tolerance
+  REAL(8), INTENT(inout) :: lambda(Nstates)
+  REAL(8), INTENT(inout) :: X(Npoints,Nstates)
+  REAL(8), INTENT(in) :: tolerance
+  LOGICAL :: verbose
   ! Local variables
   INTEGER, PARAMETER :: maxIter=100
   REAL(8), PARAMETER :: tfudge=1.d10
@@ -24,7 +25,8 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
   INTEGER :: Nstates2,Nstates3
   INTEGER :: nconv, ilock,nlock
   INTEGER :: info
-  real(8) :: mem
+  REAL(8) :: mem
+  REAL(8) :: Ebands, Ebands_old, diff_Ebands
   ! Iterator
   INTEGER :: i
   !
@@ -54,7 +56,9 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
 
   mem = (7.d0*Npoints*Nstates3 + Nstates*Nstates + 3.d0*Nstates3*Nstates3)*16.0
   mem = mem + Nstates*8.0
-  !WRITE(*,*) 'Allocated dynamic memory in LOBPCG = ', mem/1024.d0/1024.d0
+  IF( verbose ) THEN 
+    WRITE(*,'(1x,A,F10.3)') 'Allocated dynamic memory in LOBPCG = ', mem/1024.d0/1024.d0
+  ENDIF 
 
   ! Initial wavefunction
   Q(1:Npoints,1:Nstates) = X(:,:)
@@ -85,17 +89,27 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
 !
   nconv = 0 ! Reset nconv
   nlock = 0
+
+  Ebands     = 0.d0
+  Ebands_old = 0.d0
   
-  !WRITE(*,*)
-  !WRITE(*,*) 'Eigenvalue convergence:'
   DO i=1,Nstates
     ! TODO: use BLAS
     !resnrm(i) = sqrt( ddot(Npoints, Q(1,Nstates+i),1, Q(1,Nstates+i),1) )
     resnrm(i) = abs(lambda(i)-lambda_old(i))
-    !WRITE(*,'(I8,F18.10,ES18.10)') i, lambda(i), resnrm(i)
     IF(resnrm(i) < tolerance) nconv = nconv + 1
     IF(resnrm(i) < tolerance/TFUDGE) nlock = nlock + 1
   ENDDO
+
+  Ebands = sum( lambda(1:Nstates) )
+  !
+  IF( verbose ) THEN 
+    WRITE(*,*)
+    WRITE(*,*) 'Eigenvalues convergence:'
+    DO i = 1,Nstates
+      WRITE(*,'(I8,F18.10,ES18.10)') i, lambda(i), resnrm(i)
+    ENDDO 
+  ENDIF 
 
   IF(nlock > 0) THEN
     WRITE(*,*) 'WARNING: nlock=',nlock
@@ -181,26 +195,38 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
     ! Check convergence
     nconv = 0 ! reset nconv
     nlock = 0
-    !WRITE(*,*)
-    !WRITE(*,*) 'Eigenvalues convergence:'
-    DO i=1,Nstates
-      !resnrm(i) = sqrt( ddot(Npoints, Q(1,Nstates+i),1, Q(1,Nstates+i),1) )
+    DO i = 1,Nstates
+      ! NOTE: This is different from the original LOBPCG in KSSOLV/Knyazev
       resnrm(i) = abs(lambda(i)-lambda_old(i))
-      !WRITE(*,'(I8,F18.10,ES18.10)') i, lambda(i), resnrm(i)
       IF(resnrm(i) < tolerance) nconv = nconv + 1
       IF(resnrm(i) < tolerance/TFUDGE) ilock = ilock + 1
     ENDDO
-    !WRITE(*,*) 'LOBPCG iter = ', iter, 'nconv = ', nconv
+    !
+    Ebands_old = Ebands
+    Ebands = sum( lambda(1:Nstates) )
+    diff_Ebands = abs( Ebands - Ebands_old )
+    !
+    IF( verbose ) THEN 
+      WRITE(*,*)
+      WRITE(*,*) 'Eigenvalues convergence:'
+      DO i = 1,Nstates
+        WRITE(*,'(I8,F18.10,ES18.10)') i, lambda(i), resnrm(i)
+      ENDDO 
+      WRITE(*,*)
+      WRITE(*,'(1x,2(A,I8))') 'LOBPCG iter = ', iter, ' nconv = ', nconv
+      WRITE(*,'(1x,A,I8,F18.10,ES18.10)') 'LOBPCG Ebands ', iter, Ebands, diff_Ebands
+    ENDIF 
   
     IF(nconv >= Nstates) GOTO 10
 
     ! Apply preconditioner
-    DO i=1,Nstates
+    DO i = 1,Nstates
       CALL prec_ilu0_inplace( Q(:,Nstates+i) )
     ENDDO 
   
-    IF(nlock > 0) THEN
-      WRITE(*,*) 'Warning: nlock=',nlock
+    IF( nlock > 0 ) THEN
+      WRITE(*,*)
+      WRITE(*,'(1x,A,I8)') 'LOBPCG: Warning: nlock = ',nlock
     ENDIF 
   
 !
@@ -217,7 +243,8 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
     ! Cholesky decomposition
     CALL dpotrf('U',Nstates,temp1,Nstates,info)
     IF(info /= 0) THEN 
-      WRITE(*,'(1x,A,I4)') 'ERROR calculating Cholesky decomposition : info ', info
+      WRITE(*,*)
+      WRITE(*,'(1x,A,I4)') 'LOBPCG: ERROR calculating Cholesky decomposition : info ', info
       STOP 
     ENDIF
 
@@ -269,7 +296,8 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance )
     ! Cholesky decomposition
     CALL dpotrf('U',Nstates,temp1,Nstates,info)
     IF(info /= 0) THEN 
-      WRITE(*,'(1x,A,I4)') 'ERROR calculating Cholesky decomposition : info = ', info
+      WRITE(*,*)
+      WRITE(*,'(1x,A,I4)') 'LOBPCG: ERROR calculating Cholesky decomposition : info = ', info
       STOP
     ENDIF 
     ! P = P/C

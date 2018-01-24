@@ -1,3 +1,5 @@
+! This subroutine is based on Davidson method used in pw.x of
+! Quantum Espresso package
 
 ! gstart = 2
 ! lrot = .false.
