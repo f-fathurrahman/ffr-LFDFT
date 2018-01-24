@@ -9,17 +9,19 @@
 !!>
 !!> AUTHOR: Fadjar Fathurrahman
 
-SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMax, verbose )
+SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
+                               Ebands_NiterMax, verbose )
 !!>
 !!> The following variables are imported.
 !!>
-  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints, dVol => LF3d_dVol
   USE m_states, ONLY : Nstates, v => KS_evecs, evals => KS_evals
   USE m_options, ONLY : I_CG_BETA
   USE m_options, ONLY : T_WRITE_RESTART
 
   IMPLICIT NONE
   !
+  INTEGER :: linmin_type
   REAL(8) :: alpha_t  ! step size
   LOGICAL :: restart
   REAL(8) :: Ebands_CONV_THR
@@ -36,6 +38,8 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMa
   REAL(8) :: RNORM
   !
   INTEGER :: iter, ist
+  !
+  REAL(8) :: dir_deriv, curvature, Ebands_trial
 
 !!> Display several informations about the algorithm
   IF( verbose ) THEN 
@@ -130,15 +134,25 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMa
     tv(:,:) = v(:,:) + alpha_t * d(:,:)
     CALL orthonormalize( Nstates, tv )
 
-    CALL calc_grad( Nstates, tv, g_t )
-    !
-    ! Compute estimate of best step and update current trial vectors
-    denum = sum( (g - g_t) * d )
-    IF( denum /= 0.d0 ) THEN  ! FIXME: use abs ?
-      alpha = abs( alpha_t * sum( g * d )/denum )
+
+    ! Line minimization
+    IF( linmin_type == 1 ) THEN 
+      !
+      dir_deriv = 2.d0*sum( d*g )*dVol  ! need dVol !!!
+      CALL calc_Ebands( Nstates, tv, evals, Ebands_trial )
+      curvature = ( Ebands_trial - ( Ebands + alpha_t*dir_deriv ) ) / alpha_t**2
+      alpha = abs(-dir_deriv/(2.d0*curvature))
     ELSE
-      alpha = 0.d0
-    ENDIF
+      ! Default
+      CALL calc_grad( Nstates, tv, g_t )
+      ! Compute estimate of best step and update current trial vectors
+      denum = sum( (g - g_t) * d )
+      IF( denum /= 0.d0 ) THEN  ! FIXME: use abs ?
+        alpha = abs( alpha_t * sum( g * d )/denum )
+      ELSE
+        alpha = 0.d0
+      ENDIF
+    ENDIF 
 
     v(:,:) = v(:,:) + alpha * d(:,:)
     CALL orthonormalize( Nstates, v )
