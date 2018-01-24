@@ -102,6 +102,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance, verbose )
   ENDDO
 
   RNORM = SUM( abs(lambda - lambda_old) )/REAL(Nstates, kind=8)
+  IS_CONVERGED = RNORM <= TOLERANCE
   !
   Ebands = sum( lambda(1:Nstates) )
   diff_Ebands = 1.d0
@@ -121,7 +122,6 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance, verbose )
     WRITE(*,*) 'WARNING: nlock=',nlock
   ENDIF
 
-  IS_CONVERGED = RNORM <= TOLERANCE
   !
   IF(nconv >= Nstates) THEN
     WRITE(*,*)

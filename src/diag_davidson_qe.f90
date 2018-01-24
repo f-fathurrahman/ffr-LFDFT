@@ -4,13 +4,14 @@
 ! gstart = 2
 ! lrot = .false.
 SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
-                             e, btype, notcnv, dav_iter )
+                             e, btype, notcnv, dav_iter, verbose )
   IMPLICIT NONE
   !
   INTEGER, PARAMETER :: DP=8
   INTEGER, PARAMETER :: stdout=6
   REAL(DP), PARAMETER :: ZERO=0.d0
   INTEGER, INTENT(IN) :: Nbasis, nvec, nvecx
+  LOGICAL :: verbose
     ! dimension of the matrix to be diagonalized
     ! integer number of searched low-lying roots
     ! maximum dimension of the reduced basis set
@@ -48,8 +49,10 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
     ! work space, contains psi
     ! the product of H and psi
   LOGICAL, ALLOCATABLE :: conv(:) ! true if the root is converged
+  LOGICAL :: IS_CONVERGED
   REAL(DP) :: empty_ethr ! threshold for empty bands
   REAL(DP), EXTERNAL :: ddot
+  REAL(DP) :: Ebands, Ebands_old, diff_Ebands, RNORM
   INTEGER :: ib
   !
   IF ( nvec > nvecx / 2 ) THEN
@@ -108,199 +111,190 @@ SUBROUTINE diag_davidson_qe( Nbasis, nvec, nvecx, evc, ethr, &
   CALL rdiaghg( Nred, nvec, hr, sr, nvecx, ew, vr )
   !
   e(1:nvec) = ew(1:nvec)
-  !
-  !
+
+  Ebands = sum(ew(1:nvec))
+  Ebands_old = Ebands
+
   ! ... iterate
   !
   iterate: DO kter = 1, maxter
-     WRITE(*,*)
-     WRITE(*,*) 'dav_iter = ', kter
-     !
-     dav_iter = kter
-     !     !
-     np = 0
-     !
-     DO n = 1, nvec
+    !
+    dav_iter = kter
+    !     !
+    np = 0
+    !
+    DO n = 1, nvec
         !
-        IF ( .NOT. conv(n) ) THEN
-           !
-           ! ... this root not yet converged ...
-           !
-           np = np + 1
-           !
-           ! ... reorder eigenvectors so that coefficients for unconverged
-           ! ... roots come first. This allows to use quick matrix-matrix
-           ! ... multiplications to set a new basis vector (see below)
-           !
-           IF ( np /= n ) vr(:,np) = vr(:,n)
-           !
-           ! ... for use in g_psi
-           !
-           ew(Nred+np) = e(n)
-           !
-        END IF
+      IF( .NOT. conv(n) ) THEN
         !
-     END DO
-     !
-     nb1 = Nred + 1
-     !
-     ! ... expand the basis set with new basis vectors ( H - e*S )|psi> ...
-     !
-     CALL DGEMM( 'N', 'N', Nbasis, notcnv, Nred, 1.D0, &
+        ! ... this root not yet converged ...
+        !
+        np = np + 1
+        !
+        ! ... reorder eigenvectors so that coefficients for unconverged
+        ! ... roots come first. This allows to use quick matrix-matrix
+        ! ... multiplications to set a new basis vector (see below)
+        !
+        IF ( np /= n ) vr(:,np) = vr(:,n)
+        !
+        ! ... for use in g_psi
+        !
+        ew(Nred+np) = e(n)
+        !
+      ENDIF
+        !
+    END DO
+    !
+    nb1 = Nred + 1
+    !
+    ! ... expand the basis set with new basis vectors ( H - e*S )|psi> ...
+    !
+    CALL DGEMM( 'N', 'N', Nbasis, notcnv, Nred, 1.D0, &
                   psi, Nbasis, vr, nvecx, 0.D0, psi(1,nb1), Nbasis )
-     !
-     DO np = 1, notcnv
-        !
-        psi(:,Nred+np) = - ew(Nred+np) * psi(:,Nred+np)
-        !
-     END DO
-     !
-     CALL DGEMM( 'N', 'N', Nbasis, notcnv, Nred, 1.D0, &
-                 hpsi, Nbasis, vr, nvecx, 1.D0, psi(1,nb1), Nbasis )
-     !
-     !
-     ! ... approximate inverse iteration / preconditioning
-     !
-     DO ib = 1,notcnv
-       CALL prec_ilu0_inplace( psi(:,nb1+ib-1) )
-     ENDDO
-     !
-     !
-     ! ... "normalize" correction vectors psi(:,nb1:Nred+notcnv) in
-     ! ... order to improve numerical stability of subspace diagonalization
-     ! ... (rdiaghg) ew is used as work array :
-     !
-     ! ...         ew = <psi_i|psi_i>,  i = Nred + 1, Nred + notcnv
-     !
-     DO n = 1, notcnv
-        !
-        ew(n) = 2.D0 * ddot( Nbasis, psi(1,Nred+n), 1, psi(1,Nred+n), 1 )
-        ew(n) = ew(n) - psi(1,Nred+n) * psi(1,Nred+n)
-        !
-     END DO
-     !
-     DO n = 1, notcnv
-        !
-        psi(:,Nred+n) = psi(:,Nred+n) / SQRT( ew(n) )
-        !
-     END DO
-     !
-     ! ... here compute the hpsi and spsi of the new functions
-     !
-     CALL calc_betaNL_psi( notcnv, psi(:,nb1) )  ! ????? POTENTIALLY PROBLEMS in calc_betaNL_psi ???
-     CALL op_H( notcnv, psi(:,nb1), hpsi(:,nb1) )
-     !
-     ! ... update the reduced hamiltonian
-     !
-     CALL DGEMM( 'T', 'N', Nred+notcnv, notcnv, Nbasis, 1.D0, psi, &  ! 2.0 -> 1.0
-                 Nbasis, hpsi(1,nb1), Nbasis, 0.D0, hr(1,nb1), nvecx )
-     CALL DGER( Nred+notcnv, notcnv, -1.D0, psi, &
-                 Nbasis, hpsi(1,nb1), Nbasis, hr(1,nb1), nvecx )
-     !
-     !
-     CALL DGEMM( 'T', 'N', Nred+notcnv, notcnv, Nbasis, 1.D0, psi, &  ! 2 -> 1.0
-                 Nbasis, psi(1,nb1), Nbasis, 0.D0, sr(1,nb1) , nvecx )
-     !
-     CALL DGER( Nred+notcnv, notcnv, -1.D0, psi, &
-                 Nbasis, psi(1,nb1), Nbasis, sr(1,nb1), nvecx )
+    !
+    DO np = 1, notcnv
+      !
+      psi(:,Nred+np) = - ew(Nred+np) * psi(:,Nred+np)
+      !
+    END DO
+    !
+    CALL DGEMM( 'N', 'N', Nbasis, notcnv, Nred, 1.D0, &
+                hpsi, Nbasis, vr, nvecx, 1.D0, psi(1,nb1), Nbasis )
+    !
+    !
+    ! ... approximate inverse iteration / preconditioning
+    !
+    DO ib = 1,notcnv
+      CALL prec_ilu0_inplace( psi(:,nb1+ib-1) )
+    ENDDO
+    !
+    !
+    ! ... "normalize" correction vectors psi(:,nb1:Nred+notcnv) in
+    ! ... order to improve numerical stability of subspace diagonalization
+    ! ... (rdiaghg) ew is used as work array :
+    !
+    ! ...         ew = <psi_i|psi_i>,  i = Nred + 1, Nred + notcnv
+    !
+    DO n = 1, notcnv
+      ew(n) = 2.D0 * ddot( Nbasis, psi(1,Nred+n), 1, psi(1,Nred+n), 1 )
+      ew(n) = ew(n) - psi(1,Nred+n) * psi(1,Nred+n)
+    END DO
+    !
+    DO n = 1, notcnv
+      psi(:,Nred+n) = psi(:,Nred+n) / SQRT( ew(n) )
+    END DO
+    !
+    ! ... here compute the hpsi and spsi of the new functions
+    !
+    CALL calc_betaNL_psi( notcnv, psi(:,nb1) )  ! ????? POTENTIALLY PROBLEMS in calc_betaNL_psi ???
+    CALL op_H( notcnv, psi(:,nb1), hpsi(:,nb1) )
+    !
+    ! ... update the reduced hamiltonian
+    !
+    CALL DGEMM( 'T', 'N', Nred+notcnv, notcnv, Nbasis, 1.D0, psi, &  ! 2.0 -> 1.0
+                Nbasis, hpsi(1,nb1), Nbasis, 0.D0, hr(1,nb1), nvecx )
+    CALL DGER( Nred+notcnv, notcnv, -1.D0, psi, &
+                Nbasis, hpsi(1,nb1), Nbasis, hr(1,nb1), nvecx )
+    !
+    !
+    CALL DGEMM( 'T', 'N', Nred+notcnv, notcnv, Nbasis, 1.D0, psi, &  ! 2 -> 1.0
+                Nbasis, psi(1,nb1), Nbasis, 0.D0, sr(1,nb1) , nvecx )
+    !
+    CALL DGER( Nred+notcnv, notcnv, -1.D0, psi, &
+                Nbasis, psi(1,nb1), Nbasis, sr(1,nb1), nvecx )
+    !
+    Nred = Nred + notcnv
+    !
+    DO n = 1, Nred
+      DO m = n + 1, Nred
+        hr(m,n) = hr(n,m)
+        sr(m,n) = sr(n,m)
+      END DO
+    END DO
+    !
+    ! diagonalize the reduced hamiltonian
+    !
+    CALL rdiaghg( Nred, nvec, hr, sr, nvecx, ew, vr )
+    !
+    ! test for convergence
+    !
+    WHERE( btype(1:nvec) == 1 )
+      conv(1:nvec) = ( ( ABS( ew(1:nvec) - e(1:nvec) ) < ethr ) )
+    ELSEWHERE
+      conv(1:nvec) = ( ( ABS( ew(1:nvec) - e(1:nvec) ) < empty_ethr ) )
+    END WHERE
 
-     !
-     Nred = Nred + notcnv
-     !
-     DO n = 1, Nred
+    RNORM = SUM( abs(ew(1:nvec) - e(1:nvec)) )/REAL(nvec, kind=8)
+    IS_CONVERGED = RNORM <= ethr
+
+    Ebands = sum(ew(1:nvec))
+    diff_Ebands = abs(Ebands - Ebands_old)
+
+    IF( verbose ) THEN 
+      WRITE(*,*)
+      WRITE(*,'(1x,A,I8,ES18.10)') 'Davidson QE: iter, RNORM ', kter, RNORM
+      WRITE(*,'(1x,A,I8,F18.10,ES18.10)') 'Davidson QE Ebands ', kter, Ebands, diff_Ebands      
+      WRITE(*,*) 'Eigenvalues convergence:'
+      DO n = 1,nvec
+        WRITE(*,'(1x,I8,F18.10,ES18.10)') n, ew(n), ABS( ew(n) - e(n) )
+      ENDDO
+    ENDIF 
+    !
+    notcnv = COUNT( .NOT. conv(:) )
+    !
+    e(1:nvec) = ew(1:nvec)
+    Ebands_old = Ebands
+    !
+    ! ... if overall convergence has been achieved, or the dimension of
+    ! ... the reduced basis set is becoming too large, or in any case if
+    ! ... we are at the last iteration refresh the basis set. i.e. replace
+    ! ... the first nvec elements with the current estimate of the
+    ! ... eigenvectors;  set the basis dimension to nvec.
+    !
+    IF ( notcnv == 0 .OR. &
+         Nred+notcnv > nvecx .OR. dav_iter == maxter ) THEN
+       !        !
+       CALL DGEMM( 'N', 'N', Nbasis, nvec, Nred, 1.D0, &
+                   psi, Nbasis, vr, nvecx, 0.D0, evc, Nbasis )
+      !
+      IF ( notcnv == 0 ) THEN
+        ! ... all roots converged: return
+        WRITE(*,*)
+        WRITE(*,*) 'Davidson QE: All roots converged'
+        EXIT iterate
         !
-        DO m = n + 1, Nred
-           !
-           hr(m,n) = hr(n,m)
-           sr(m,n) = sr(n,m)
-           !
-        END DO
-        !
-     END DO
-     !
-     ! ... diagonalize the reduced hamiltonian
-     !
-     CALL rdiaghg( Nred, nvec, hr, sr, nvecx, ew, vr )
-     !
-     ! ... test for convergence
-     !
-     WHERE( btype(1:nvec) == 1 )
-        !
-        conv(1:nvec) = ( ( ABS( ew(1:nvec) - e(1:nvec) ) < ethr ) )
-        !
-     ELSEWHERE
-        !
-        conv(1:nvec) = ( ( ABS( ew(1:nvec) - e(1:nvec) ) < empty_ethr ) )
-        !
-     END WHERE
-     WRITE(*,*)
-     WRITE(*,*) 'Eigenvalues convergence:'
-     DO n = 1,nvec
-       WRITE(*,'(1x,I8,F18.10,ES18.10)') n, e(n), ABS( ew(n) - e(n) )
-     ENDDO
-     !
-     notcnv = COUNT( .NOT. conv(:) )
-     !
-     e(1:nvec) = ew(1:nvec)
-     !
-     ! ... if overall convergence has been achieved, or the dimension of
-     ! ... the reduced basis set is becoming too large, or in any case if
-     ! ... we are at the last iteration refresh the basis set. i.e. replace
-     ! ... the first nvec elements with the current estimate of the
-     ! ... eigenvectors;  set the basis dimension to nvec.
-     !
-     IF ( notcnv == 0 .OR. &
-          Nred+notcnv > nvecx .OR. dav_iter == maxter ) THEN
-        !        !
-        CALL DGEMM( 'N', 'N', Nbasis, nvec, Nred, 1.D0, &
-                    psi, Nbasis, vr, nvecx, 0.D0, evc, Nbasis )
-        !
-        IF ( notcnv == 0 ) THEN
-           !
-           ! ... all roots converged: return
-           !
-           !WRITE(*,*) 'All root converged ...'
-           EXIT iterate
-           !
-        ELSE IF ( dav_iter == maxter ) THEN
-           !
-           ! ... last iteration, some roots not converged: return
-           !
-           WRITE( stdout, '(5X,"WARNING: ",I5, &
-                &   " eigenvalues not converged in diag_davidson_qe")' ) notcnv
-           !           !
-           EXIT iterate
-           !
-        END IF
-        !
-        ! ... refresh psi, H*psi and S*psi
-        !
-        psi(:,1:nvec) = evc(:,1:nvec)
-        !
-        !
-        CALL DGEMM( 'N', 'N', Nbasis, nvec, Nred, 1.D0, hpsi, &
+      ELSE IF ( dav_iter == maxter ) THEN
+        ! ... last iteration, some roots not converged: return
+        WRITE( stdout, '(5X,"WARNING: ",I5, " eigenvalues not converged in diag_davidson_qe")' ) notcnv
+        EXIT iterate
+      END IF
+
+      IF( IS_CONVERGED ) THEN 
+        WRITE(*,*)
+        WRITE(*,*) 'Davidson QE: Convergence achieved based on RNORM'
+        EXIT iterate
+      ENDIF
+
+      !
+      ! ... refresh psi, H*psi and S*psi
+      !
+      psi(:,1:nvec) = evc(:,1:nvec)
+      CALL DGEMM( 'N', 'N', Nbasis, nvec, Nred, 1.D0, hpsi, &
                     Nbasis, vr, nvecx, 0.D0, psi(1,nvec+1), Nbasis )
-        !
-        hpsi(:,1:nvec) = psi(:,nvec+1:nvec+nvec)
-        !
-        ! ... refresh the reduced hamiltonian
-        !
-        Nred = nvec
-        !
-        hr(:,1:Nred) = 0.D0
-        sr(:,1:Nred) = 0.D0
-        vr(:,1:Nred) = 0.D0
-        !
-        DO n = 1, Nred
-           !
-           hr(n,n) = e(n)
-           sr(n,n) = 1.D0
-           vr(n,n) = 1.D0
-           !
-        END DO
-        !        !
-     END IF
-     !
+      !
+      hpsi(:,1:nvec) = psi(:,nvec+1:nvec+nvec)
+      ! ... refresh the reduced hamiltonian
+      Nred = nvec
+      hr(:,1:Nred) = 0.D0
+      sr(:,1:Nred) = 0.D0
+      vr(:,1:Nred) = 0.D0
+      !
+      DO n = 1, Nred
+        hr(n,n) = e(n)
+        sr(n,n) = 1.D0
+        vr(n,n) = 1.D0
+      END DO
+    END IF
   END DO iterate
   !
   DEALLOCATE( conv )

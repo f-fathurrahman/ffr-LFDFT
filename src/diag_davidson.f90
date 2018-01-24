@@ -162,6 +162,7 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE, verbose )
     ENDDO
 
     RNORM = SUM( abs(evals - evals_old) )/REAL(Nstates, kind=8)
+    IS_CONVERGED = RNORM <= TOLERANCE
     !
     Ebands = sum( evals(1:Nstates) )
     diff_Ebands = abs( Ebands - Ebands_old )
@@ -175,8 +176,6 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE, verbose )
         WRITE(*,'(1X,I5,F18.10,ES18.10)') ist, evals(ist), abs( evals(ist)-evals_old(ist) )
       ENDDO 
     ENDIF 
-
-    IS_CONVERGED = RNORM <= TOLERANCE
 
     evals_old(:) = evals(:)
     Ebands_old = Ebands
