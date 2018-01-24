@@ -56,12 +56,12 @@ SUBROUTINE Sch_solve_diag()
  
     ! No need to (re)normalize the eigenvectors
     ! Factor dVol is already incorpared in \texttt{diag_davidson}
-    CALL diag_davidson( evals, evecs, ethr )
+    CALL diag_davidson( evals, evecs, ethr, .FALSE. )
 
   ELSEIF( I_ALG_DIAG == 3 ) THEN 
 
     evecs = evecs(:,:)*sqrt(dVol)  ! normalize
-    CALL diag_lobpcg( evals, evecs, ethr )
+    CALL diag_lobpcg( evals, evecs, ethr, .FALSE. )
     evecs(:,:) = evecs(:,:)/sqrt(dVol)
 
   ENDIF 

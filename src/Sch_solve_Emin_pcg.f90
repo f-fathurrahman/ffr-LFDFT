@@ -31,6 +31,9 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMa
   REAL(8), ALLOCATABLE :: tv(:,:)
   REAL(8) :: alpha, beta, denum, Ebands_old, Ebands
   !
+  REAL(8), ALLOCATABLE :: evals_old(:)
+  REAL(8) :: RNORM
+  !
   INTEGER :: iter, ist
 
 !!> Display several informations about the algorithm
@@ -48,6 +51,7 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMa
 
   ALLOCATE( tv(Npoints,Nstates) )  ! temporary vector for calculating trial gradient
 
+  ALLOCATE( evals_old(Nstates) )
 
   ! Read starting eigenvectors from file
   ! FIXME: This is no longer relevant
@@ -60,6 +64,8 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMa
 
 !!> Save the initial Ebands
   Ebands_old = Ebands
+
+  evals_old(:) = evals(:)
 
 !!> initialize alpha and beta
   alpha = 0.d0
@@ -130,21 +136,28 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMa
     ELSE
       alpha = 0.d0
     ENDIF
-    !WRITE(*,*) 'iter, alpha_t, alpha, beta', iter, alpha_t, alpha, beta
 
     v(:,:) = v(:,:) + alpha * d(:,:)
     CALL orthonormalize( Nstates, v )
 
     CALL calc_Ebands( Nstates, v, evals, Ebands )
-    !
-    WRITE(*,'(1x,I5,F18.10,ES18.10)') iter, Ebands, Ebands_old-Ebands
+
+    RNORM = SUM( abs(evals - evals_old) )/REAL(Nstates, kind=8)
+
+    WRITE(*,'(1x,I5,F18.10,2ES18.10)') iter, Ebands, Ebands_old-Ebands, RNORM
     !
     IF( abs(Ebands - Ebands_old) < Ebands_CONV_THR ) THEN
-      WRITE(*,*) 'Sch_solve_Emin_pcg converged in iter', iter
+      WRITE(*,*)
+      WRITE(*,*) 'Sch_solve_Emin_pcg: Convergence achieved based on diff_Ebands'
+      EXIT
+    ELSEIF( RNORM < Ebands_CONV_THR ) THEN 
+      WRITE(*,*)
+      WRITE(*,*) 'Sch_solve_Emin_pcg: Convergence achieved based on RNORM'
       EXIT
     ENDIF
     !
     Ebands_old = Ebands
+    evals_old(:) = evals(:)
     g_old(:,:) = g(:,:)
     d_old(:,:) = d(:,:)
     Kg_old(:,:) = Kg(:,:)
@@ -155,6 +168,7 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMa
     WRITE(111) v
   ENDIF
 
+  DEALLOCATE( evals_old )
   DEALLOCATE( g, g_old, g_t, d, d_old, tv, Kg, Kg_old )
 END SUBROUTINE
 

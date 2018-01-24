@@ -21,16 +21,21 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance, verbose )
   REAL(8), ALLOCATABLE :: evals_T(:)
   REAL(8), ALLOCATABLE :: lambda_old(:)
   !
+  LOGICAL :: IS_CONVERGED
   INTEGER :: iter
   INTEGER :: Nstates2,Nstates3
   INTEGER :: nconv, ilock,nlock
   INTEGER :: info
   REAL(8) :: mem
   REAL(8) :: Ebands, Ebands_old, diff_Ebands
+  REAL(8) :: RNORM
   ! Iterator
   INTEGER :: i
   !
   REAL(8), ALLOCATABLE :: IMat(:,:)
+
+
+  IS_CONVERGED = .FALSE.
 
   ALLOCATE( IMat(Nstates,Nstates) )
   IMat(:,:) = 0.d0
@@ -90,21 +95,22 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance, verbose )
   nconv = 0 ! Reset nconv
   nlock = 0
 
-  Ebands     = 0.d0
-  Ebands_old = 0.d0
-  
   DO i=1,Nstates
-    ! TODO: use BLAS
-    !resnrm(i) = sqrt( ddot(Npoints, Q(1,Nstates+i),1, Q(1,Nstates+i),1) )
     resnrm(i) = abs(lambda(i)-lambda_old(i))
     IF(resnrm(i) < tolerance) nconv = nconv + 1
     IF(resnrm(i) < tolerance/TFUDGE) nlock = nlock + 1
   ENDDO
 
+  RNORM = SUM( abs(lambda - lambda_old) )/REAL(Nstates, kind=8)
+  !
   Ebands = sum( lambda(1:Nstates) )
+  diff_Ebands = 1.d0
+  Ebands_old = Ebands
   !
   IF( verbose ) THEN 
     WRITE(*,*)
+    WRITE(*,'(1x,A,I8,ES18.10)') 'LOBPCG: iter, rnorm', 1, RNORM
+    WRITE(*,'(1x,A,I8,F18.10,ES18.10)') 'LOBPCG Ebands ', iter, Ebands, diff_Ebands
     WRITE(*,*) 'Eigenvalues convergence:'
     DO i = 1,Nstates
       WRITE(*,'(I8,F18.10,ES18.10)') i, lambda(i), resnrm(i)
@@ -115,7 +121,18 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance, verbose )
     WRITE(*,*) 'WARNING: nlock=',nlock
   ENDIF
 
-  IF(nconv >= Nstates) GOTO 10
+  IS_CONVERGED = RNORM <= TOLERANCE
+  !
+  IF(nconv >= Nstates) THEN
+    WRITE(*,*)
+    WRITE(*,*) 'LOBPCG: Convergence achieved based on nconv'
+    GOTO 10
+  ELSEIF( IS_CONVERGED ) THEN 
+    WRITE(*,*)
+    WRITE(*,*) 'LOBPCG: Convergence achieved based on RNORM'
+    GOTO 10
+  ENDIF 
+
 
   ! Apply preconditioner
   DO i=1,Nstates
@@ -202,22 +219,32 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance, verbose )
       IF(resnrm(i) < tolerance/TFUDGE) ilock = ilock + 1
     ENDDO
     !
-    Ebands_old = Ebands
+    RNORM = SUM( abs(lambda - lambda_old) )/REAL(Nstates, kind=8)
     Ebands = sum( lambda(1:Nstates) )
     diff_Ebands = abs( Ebands - Ebands_old )
+    Ebands_old = Ebands
     !
     IF( verbose ) THEN 
       WRITE(*,*)
+      WRITE(*,'(1x,A,I8,ES18.10)') 'LOBPCG: iter, RNORM ', iter, RNORM
+      WRITE(*,'(1x,A,I8,F18.10,ES18.10)') 'LOBPCG Ebands ', iter, Ebands, diff_Ebands
       WRITE(*,*) 'Eigenvalues convergence:'
       DO i = 1,Nstates
         WRITE(*,'(I8,F18.10,ES18.10)') i, lambda(i), resnrm(i)
       ENDDO 
-      WRITE(*,*)
-      WRITE(*,'(1x,2(A,I8))') 'LOBPCG iter = ', iter, ' nconv = ', nconv
-      WRITE(*,'(1x,A,I8,F18.10,ES18.10)') 'LOBPCG Ebands ', iter, Ebands, diff_Ebands
     ENDIF 
-  
-    IF(nconv >= Nstates) GOTO 10
+
+    IS_CONVERGED = RNORM <= TOLERANCE
+    !
+    IF(nconv >= Nstates) THEN
+      WRITE(*,*)
+      WRITE(*,*) 'LOBPCG: Convergence achieved based on nconv'
+      GOTO 10
+    ELSEIF( IS_CONVERGED ) THEN 
+      WRITE(*,*)
+      WRITE(*,*) 'LOBPCG: Convergence achieved based on RNORM'
+      GOTO 10
+    ENDIF 
 
     ! Apply preconditioner
     DO i = 1,Nstates
@@ -306,6 +333,11 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance, verbose )
     ! HP = HP/C
     CALL dtrsm('R','U','N','N', Npoints,Nstates, 1.d0,temp1,Nstates, &
       HQ(1,Nstates2+1),Npoints)
+
+    IF( verbose ) THEN 
+      flush(6)
+    ENDIF 
+
   ENDDO ! end of iteration loop
 
 10 CONTINUE

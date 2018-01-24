@@ -1,4 +1,7 @@
-SUBROUTINE diag_davidson( evals, v, TOLERANCE )
+! Diagonalization of Hamiltonian via Davidson method.
+! This subroutine is based on Davidson subroutine used in SOCORRO.
+
+SUBROUTINE diag_davidson( evals, v, TOLERANCE, verbose )
   
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints , dVol => LF3d_dVol
   USE m_states, ONLY : Nstates
@@ -6,17 +9,21 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
   ! Arguments
   REAL(8) :: v(Npoints,Nstates)
   REAL(8) :: evals(Nstates)
+  REAL(8) :: TOLERANCE
+  LOGICAL :: verbose
   ! Local variable
   REAL(8) :: RNORM
-  INTEGER :: ist, istep, MAX_DIR
+  INTEGER :: ist, iter, MAX_DIR
   LOGICAL :: IS_CONVERGED
-  REAL(8) :: MACHINE_ZERO, TOLERANCE
+  REAL(8) :: MACHINE_ZERO
   REAL(8), ALLOCATABLE :: RES_TOL(:), RES_NORM(:), evals_red(:)
   REAL(8), ALLOCATABLE :: cmat(:,:), H_MAT(:,:), O_MAT(:,:), evecs(:,:)
   REAL(8), ALLOCATABLE :: HV(:,:), R(:,:), HR(:,:), xtemp(:,:)
   REAL(8), ALLOCATABLE :: evals_old(:)
   ! BLAS function
   REAL(8) :: ddot
+  !
+  REAL(8) :: Ebands, Ebands_old, diff_Ebands
 
   ALLOCATE( RES_TOL(Nstates) )
   ALLOCATE( RES_NORM(Nstates) )
@@ -48,7 +55,7 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
     RES_TOL(ist) = SQRT( ddot(Npoints, R(:,ist),1, R(:,ist),1)*dVol )
   ENDDO
 
-  istep = 1
+  iter = 1
   IS_CONVERGED = .FALSE.
   MAX_DIR = 100
   MACHINE_ZERO = 2.220446049250313D-16
@@ -56,18 +63,15 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
   RNORM = 1.D0
 
   evals_old(:) = 0.d0
+  Ebands = sum( evals(1:Nstates) )
+  Ebands_old = Ebands
 
-  DO WHILE ( (istep <= MAX_DIR) .AND. (.NOT.IS_CONVERGED) )
+  DO WHILE ( (iter <= MAX_DIR) .AND. (.NOT.IS_CONVERGED) )
     
-    WRITE(*,'(I8,ES18.10)') istep, RNORM
     RES_NORM = 1.D0
 
-    !WHERE(MACHINE_ZERO < RES_TOL) RES_NORM = 1.d0/RES_TOL
-    !WRITE(*,*) 'RES_NORM:', RES_NORM
-    
     DO ist = 1,Nstates
       IF(MACHINE_ZERO < RES_TOL(ist)) RES_NORM(ist) = 1.D0/RES_TOL(ist)
-      !WRITE(*,*) ist, RES_NORM(ist)
     END DO
 
     ! Scale the residual vectors
@@ -92,7 +96,7 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
     CALL calc_betaNL_psi( Nstates, R )
     CALL op_H( Nstates, R, HR )
 
-    IF(istep == 1) THEN
+    IF(iter == 1) THEN
       CALL DGEMM('T','N',Nstates,Nstates,Npoints, 1.d0, V, Npoints, HV,Npoints, 0.d0,cmat,Nstates)
       H_MAT(1:Nstates,1:Nstates) = cmat*dVol
     ELSE
@@ -157,22 +161,33 @@ SUBROUTINE diag_davidson( evals, v, TOLERANCE )
       RES_TOL(ist) = SQRT( ddot(Npoints, R(:,ist),1, R(:,ist),1)*dVol )
     ENDDO
 
-    WRITE(*,*)
-    WRITE(*,*) 'Eigenvalues convergence:'
-    DO ist = 1,Nstates
-      WRITE(*,'(1X,I5,F18.10,ES18.10)') ist, evals(ist), abs( evals(ist)-evals_old(ist) )
-    ENDDO 
-
     RNORM = SUM( abs(evals - evals_old) )/REAL(Nstates, kind=8)
+    !
+    Ebands = sum( evals(1:Nstates) )
+    diff_Ebands = abs( Ebands - Ebands_old )
+    !
+    IF( verbose ) THEN 
+      WRITE(*,*)
+      WRITE(*,'(1x,A,I8,ES18.10)') 'Davidson: iter, RNORM ', iter, RNORM
+      WRITE(*,'(1x,A,I8,F18.10,ES18.10)') 'Davidson Ebands ', iter, Ebands, diff_Ebands
+      WRITE(*,*) 'Eigenvalues convergence:'
+      DO ist = 1,Nstates
+        WRITE(*,'(1X,I5,F18.10,ES18.10)') ist, evals(ist), abs( evals(ist)-evals_old(ist) )
+      ENDDO 
+    ENDIF 
 
-    IS_CONVERGED = rnorm <= TOLERANCE
+    IS_CONVERGED = RNORM <= TOLERANCE
 
     evals_old(:) = evals(:)
-    istep = istep + 1
+    Ebands_old = Ebands
+
+    iter = iter + 1
+    !
+    IF( verbose ) THEN 
+      flush(6)
+    ENDIF 
   END DO
 
-  WRITE(*,*) 'End od block-Davidson iteration: rnorm = ', RNORM
-  
   DEALLOCATE(RES_TOL)
   DEALLOCATE(RES_NORM)
   DEALLOCATE(cmat)
