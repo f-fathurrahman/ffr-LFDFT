@@ -1,0 +1,13 @@
+\chapter{Solving Schrodinger equation in 3D}
+
+Currently, there are two class of methods to solve Schrodinger equation in
+\texttt{ffr-LFDFT}:
+\begin{enumerate}
+\item Diagonalization-based method, which is implemented in subroutine \texttt{Sch\_solve\_diag}.
+This is done by solving eigenproblems $H\psi=\epsilon\psi$ directly.
+There are several algorithms available for doing this. Currently implemented diagonalization
+methods are Davidson and LOBPCG.
+\item Band-energy minimization method, which is implemented in subroutine \texttt{Sch\_solve\_Emin\_pcg}.
+This is done by minimizing band energy.
+\texttt{}
+\end{enumerate}
