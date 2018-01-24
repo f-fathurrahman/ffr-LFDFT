@@ -9,7 +9,7 @@
 !!>
 !!> AUTHOR: Fadjar Fathurrahman
 
-SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMax )
+SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMax, verbose )
 !!>
 !!> The following variables are imported.
 !!>
@@ -24,12 +24,13 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMa
   LOGICAL :: restart
   REAL(8) :: Ebands_CONV_THR
   INTEGER :: Ebands_NiterMax
+  LOGICAL :: verbose
   !
   REAL(8), ALLOCATABLE :: g(:,:), g_old(:,:), g_t(:,:)
   REAL(8), ALLOCATABLE :: d(:,:), d_old(:,:)
   REAL(8), ALLOCATABLE :: Kg(:,:), Kg_old(:,:) ! preconditioned
   REAL(8), ALLOCATABLE :: tv(:,:)
-  REAL(8) :: alpha, beta, denum, Ebands_old, Ebands
+  REAL(8) :: alpha, beta, denum, Ebands_old, Ebands, diff_Ebands
   !
   REAL(8), ALLOCATABLE :: evals_old(:)
   REAL(8) :: RNORM
@@ -37,7 +38,9 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMa
   INTEGER :: iter, ist
 
 !!> Display several informations about the algorithm
-  CALL info_Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMax )
+  IF( verbose ) THEN 
+    CALL info_Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMax )
+  ENDIF 
 
 !!> Here we allocate all working arrays
   ALLOCATE( g(Npoints,Nstates) )  ! gradient
@@ -141,12 +144,21 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMa
     CALL orthonormalize( Nstates, v )
 
     CALL calc_Ebands( Nstates, v, evals, Ebands )
+    diff_Ebands = Ebands - Ebands_old
 
     RNORM = SUM( abs(evals - evals_old) )/REAL(Nstates, kind=8)
 
-    WRITE(*,'(1x,I5,F18.10,2ES18.10)') iter, Ebands, Ebands_old-Ebands, RNORM
+    IF( verbose ) THEN 
+      WRITE(*,*)
+      WRITE(*,'(1x,A,I8,ES18.10)') 'Sch_solve_Emin_pcg: iter, RNORM ', iter, RNORM
+      WRITE(*,'(1x,A,I8,F18.10,ES18.10)') 'Sch_solve_Emin_pcg Ebands ', iter, Ebands, diff_Ebands
+      WRITE(*,*) 'Eigenvalues convergence:'
+      DO ist = 1,Nstates
+        WRITE(*,'(1X,I5,F18.10,ES18.10)') ist, evals(ist), abs( evals(ist)-evals_old(ist) )
+      ENDDO 
+    ENDIF 
     !
-    IF( abs(Ebands - Ebands_old) < Ebands_CONV_THR ) THEN
+    IF( abs(diff_Ebands) < Ebands_CONV_THR ) THEN
       WRITE(*,*)
       WRITE(*,*) 'Sch_solve_Emin_pcg: Convergence achieved based on diff_Ebands'
       EXIT
