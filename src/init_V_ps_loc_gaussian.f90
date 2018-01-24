@@ -16,7 +16,7 @@ SUBROUTINE init_V_ps_loc_gaussian( Nparams, A, alpha )
   REAL(8) :: r
 
   IF( Nspecies /= Nparams ) THEN 
-    WRITE(*,*) 'ERROR in constructing Gaussian potential in G-space'
+    WRITE(*,*) 'ERROR in init_V_ps_loc_gaussian'
     WRITE(*,'(1x,A,2I4)') 'Nspecies /= Nparams : ', Nspecies, Nparams
     STOP 
   ENDIF 
