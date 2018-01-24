@@ -10,21 +10,16 @@ PROGRAM test_sch
   USE m_hamiltonian, ONLY : V_ps_loc
   IMPLICIT NONE
   !
-  INTEGER, ALLOCATABLE :: btype(:)
-  INTEGER :: dav_iter, notcnv
-  REAL(8) :: ethr
   INTEGER :: ist, ip
   INTEGER :: NN(3)
   REAL(8) :: AA(3), BB(3)
-  REAL(8) :: Ekin, Epot, Etot
   !
   REAL(8) :: ddot
   
-  NN = (/ 25, 25, 25 /)
+  NN = (/ 45, 45, 45 /)
   AA = (/ 0.d0, 0.d0, 0.d0 /)
   BB = (/ 6.d0, 6.d0, 6.d0 /)
 
-  !CALL init_LF3d_p( NN, AA, BB )
   CALL init_LF3d_c( NN, AA, BB )
 
   CALL info_LF3d()
@@ -42,13 +37,8 @@ PROGRAM test_sch
   ALLOCATE( Focc(Nstates) )
   Focc(:) = 1.d0
 
-  !CALL sch_solve_Emin_cg( 3.d-5, 100, .FALSE. )
-  !GOTO 111
-
   ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
 
-  ALLOCATE( btype(Nstates) )
-  btype(:) = 1 ! all bands are occupied
   DO ist = 1, Nstates
     DO ip = 1, Npoints
       CALL random_number( evecs(ip,ist) )
@@ -58,45 +48,24 @@ PROGRAM test_sch
   DO ist = 1, Nstates
     WRITE(*,*) ist, ddot( Npoints, evecs(:,ist), 1, evecs(:,ist), 1 )
   ENDDO 
-  !evecs(:,:) = evecs(:,:)/sqrt(dVol)
 
-  !ethr = 1.d-1
-  !CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
-  !                       evals, btype, notcnv, dav_iter )
-  !WRITE(*,*) 'dav_iter = ', dav_iter
- 
-  !ethr = 1.d-3
-  !CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
-  !                       evals, btype, notcnv, dav_iter )
-  !WRITE(*,*) 'dav_iter = ', dav_iter
-  
-  ethr = 1.d-6
-  !CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, ethr, &
-  !                       evals, btype, notcnv, dav_iter )
-  !CALL diag_davidson( evals, evecs, ethr )
-  CALL diag_lobpcg( Nstates, evals, evecs )
+  CALL diag_lobpcg( evals, evecs, 1.0d-4, .TRUE. )
 
-  WRITE(*,*) 'dav_iter = ', dav_iter
-  
+  WRITE(*,*)
+  WRITE(*,*) 'Final eigenvalues:'
   DO ist = 1, Nstates
     WRITE(*,'(1x,I4,F18.10)') ist, evals(ist)
   ENDDO
 
-  DO ist = 1, Nstates
-    WRITE(*,*) ist, ddot( Npoints, evecs(:,ist), 1, evecs(:,ist), 1 )
-  ENDDO 
-
   evecs(:,:) = evecs(:,:)/sqrt(dVol)
 
-  !CALL calc_Energies( evecs, Ekin, Epot, Etot )
-  !WRITE(*,*) 'Ekin = ', Ekin
-  !WRITE(*,*) 'Epot = ', Epot
-  !WRITE(*,*) 'Etot = ', Etot
+  WRITE(*,*)
+  WRITE(*,*) 'Check normalization:'
+  DO ist = 1, Nstates
+    WRITE(*,'(1x,I4,F18.10)') ist, ddot( Npoints, evecs(:,ist), 1, evecs(:,ist), 1 )*dVol
+  ENDDO 
 
   DEALLOCATE( evecs, evals )
-  
-  111 WRITE(*,*) 'Deallocating ...'
-  
   DEALLOCATE( Focc )
   CALL dealloc_nabla2_sparse()
   CALL dealloc_ilu0_prec()
