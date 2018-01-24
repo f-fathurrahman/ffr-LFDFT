@@ -109,7 +109,7 @@ SUBROUTINE diag_lobpcg( LAMBDA, X, tolerance, verbose )
   !
   IF( verbose ) THEN 
     WRITE(*,*)
-    WRITE(*,'(1x,A,I8,ES18.10)') 'LOBPCG: iter, rnorm', 1, RNORM
+    WRITE(*,'(1x,A,I8,ES18.10)') 'LOBPCG: iter, RNORM ', 1, RNORM
     WRITE(*,'(1x,A,I8,F18.10,ES18.10)') 'LOBPCG Ebands ', iter, Ebands, diff_Ebands
     WRITE(*,*) 'Eigenvalues convergence:'
     DO i = 1,Nstates
