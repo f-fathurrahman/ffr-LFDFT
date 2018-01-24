@@ -1,8 +1,7 @@
 PROGRAM test_sch
 
   USE m_constants, ONLY: PI
-  USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
-                     dVol => LF3d_dVol
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates, &
                        Focc, &
                        evals => KS_evals, &
@@ -11,21 +10,14 @@ PROGRAM test_sch
   USE m_PsPot, ONLY : NbetaNL
   IMPLICIT NONE
   !
-  INTEGER, ALLOCATABLE :: btype(:)
-  INTEGER :: dav_iter, notcnv
-  REAL(8) :: ethr
   INTEGER :: ist, ip
   INTEGER :: NN(3)
   REAL(8) :: AA(3), BB(3)
-  REAL(8) :: Ekin, Epot, Etot
   !
-  REAL(8) :: ddot
-  
   NN = (/ 35, 35, 35 /)
   AA = (/ 0.d0, 0.d0, 0.d0 /)
   BB = (/ 6.d0, 6.d0, 6.d0 /)
 
-  !CALL init_LF3d_p( NN, AA, BB )
   CALL init_LF3d_c( NN, AA, BB )
 
   CALL info_LF3d()
@@ -55,7 +47,7 @@ PROGRAM test_sch
   ENDDO
   CALL orthonormalize( Nstates, evecs )
 
-  CALL Sch_solve_Emin_pcg( 3.d-5, .FALSE. )
+  CALL Sch_solve_Emin_pcg( 3.d-5, .FALSE., 1d-4, 100 )
 
   DEALLOCATE( evecs, evals )
   DEALLOCATE( Focc )

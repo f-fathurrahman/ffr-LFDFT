@@ -9,19 +9,22 @@
 !!>
 !!> AUTHOR: Fadjar Fathurrahman
 
-SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart )
+SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMax )
 !!>
 !!> The following variables are imported.
 !!>
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
-  USE m_states, ONLY : Nstates, v => KS_evecs
-  USE m_options, ONLY : I_CG_BETA, Emin_NiterMax, Emin_ETOT_CONV_THR
+  USE m_states, ONLY : Nstates, v => KS_evecs, evals => KS_evals
+  USE m_options, ONLY : I_CG_BETA
   USE m_options, ONLY : T_WRITE_RESTART
 
   IMPLICIT NONE
   !
   REAL(8) :: alpha_t  ! step size
   LOGICAL :: restart
+  REAL(8) :: Ebands_CONV_THR
+  INTEGER :: Ebands_NiterMax
+  !
   REAL(8), ALLOCATABLE :: g(:,:), g_old(:,:), g_t(:,:)
   REAL(8), ALLOCATABLE :: d(:,:), d_old(:,:)
   REAL(8), ALLOCATABLE :: Kg(:,:), Kg_old(:,:) ! preconditioned
@@ -29,6 +32,9 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart )
   REAL(8) :: alpha, beta, denum, Ebands_old, Ebands
   !
   INTEGER :: iter, ist
+
+!!> Display several informations about the algorithm
+  CALL info_Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMax )
 
 !!> Here we allocate all working arrays
   ALLOCATE( g(Npoints,Nstates) )  ! gradient
@@ -50,7 +56,7 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart )
   ENDIF
 
 !!> Calculate initial total energy from given initial guess of wave function
-  CALL calc_Ebands( Nstates, v, Ebands )
+  CALL calc_Ebands( Nstates, v, evals, Ebands )
 
 !!> Save the initial Ebands
   Ebands_old = Ebands
@@ -69,7 +75,7 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart )
 
 
 !!> Here the iteration starts:
-  DO iter = 1, Emin_NiterMax
+  DO iter = 1, Ebands_NiterMax
 !!>
 !!> Evaluate gradient at current trial vectors
     CALL calc_grad( Nstates, v, g )
@@ -129,11 +135,11 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart )
     v(:,:) = v(:,:) + alpha * d(:,:)
     CALL orthonormalize( Nstates, v )
 
-    CALL calc_Ebands( Nstates, v, Ebands )
+    CALL calc_Ebands( Nstates, v, evals, Ebands )
     !
     WRITE(*,'(1x,I5,F18.10,ES18.10)') iter, Ebands, Ebands_old-Ebands
     !
-    IF( abs(Ebands - Ebands_old) < Emin_ETOT_CONV_THR ) THEN
+    IF( abs(Ebands - Ebands_old) < Ebands_CONV_THR ) THEN
       WRITE(*,*) 'Sch_solve_Emin_pcg converged in iter', iter
       EXIT
     ENDIF
@@ -152,4 +158,53 @@ SUBROUTINE Sch_solve_Emin_pcg( alpha_t, restart )
   DEALLOCATE( g, g_old, g_t, d, d_old, tv, Kg, Kg_old )
 END SUBROUTINE
 
+
+!!>
+!!> The following subroutine reports various information related to CG minimization
+!!> of for diagonalizing Schrodinger equation.
+!!>
+SUBROUTINE info_Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMax )
+  USE m_options, ONLY : I_CG_BETA
+  USE m_LF3d, ONLY : Npoints => LF3d_Npoints
+  USE m_states, ONLY : Nstates
+  IMPLICIT NONE
+  !
+  REAL(8) :: alpha_t
+  LOGICAL :: restart
+  REAL(8) :: Ebands_CONV_THR
+  INTEGER :: Ebands_NiterMax
+  !
+  REAL(8) :: memGB
+
+!!> The following is \textbf{hard-wired} calculation. It may need to be updated
+!!> if the actual code is modified
+!!>
+  memGB = Npoints*Nstates*8d0 * 8d0 / (1024d0*1024d0*1024.d0)
+
+  WRITE(*,*)
+  WRITE(*,*) 'Minimization of Ebands using PCG algorithm (solving Schrodinger equation):'
+  WRITE(*,*) '--------------------------------------------------------------------------'
+  WRITE(*,*)
+  WRITE(*,'(1x,A,I8)')     'NiterMax = ', Ebands_NiterMax
+  WRITE(*,'(1x,A,ES10.3)') 'alpha_t  = ', alpha_t
+  WRITE(*,*)               'restart  = ', restart
+  WRITE(*,'(1x,A,ES10.3)') 'conv_thr = ', Ebands_CONV_THR
+  WRITE(*,*)
+  IF( I_CG_BETA == 1 ) THEN
+    WRITE(*,*) 'Using Fletcher-Reeves formula'
+  ELSEIF( I_CG_BETA == 2 ) THEN
+    WRITE(*,*) 'Using Polak-Ribiere formula'
+  ELSEIF( I_CG_BETA == 3 ) THEN
+    WRITE(*,*) 'Using Hestenes-Stiefel formula'
+  ELSEIF( I_CG_BETA == 4 ) THEN
+    WRITE(*,*) 'Using Dai-Yuan formula'
+  ELSE
+    ! This line should not be reached.
+    WRITE(*,*) 'XXXXX WARNING: Unknown I_CG_BETA: ', I_CG_BETA
+  ENDIF
+  WRITE(*,*)
+  WRITE(*,'(1x,A,F18.10)') 'KS_solve_Emin_pcg: memGB = ', memGB
+  WRITE(*,*)
+
+END SUBROUTINE
 
