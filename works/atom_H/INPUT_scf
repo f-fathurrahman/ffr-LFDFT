@@ -5,29 +5,27 @@
 
 &SYSTEM
   ibrav = 8
-  nat = 2
+  nat = 1
   ntyp = 1
   A = 8.46683536902
   B = 8.46683536902
   C = 8.46683536902
-  nr1 = 35
-  nr2 = 35
-  nr3 = 35
+  nr1 = 45
+  nr2 = 45
+  nr3 = 45
+  input_dft = 'VWN'
 /
 
 &ELECTRONS
-  KS_Solve = 'Emin_pcg'
-  cg_beta = 'PR'
+  KS_Solve = 'SCF'
   electron_maxstep = 150
   mixing_beta = 0.5
   diagonalization = 'LOBPCG'
-  startingwfc = 'atomic'
 /
 
 ATOMIC_SPECIES
 H   1.0  H-q1.gth
 
-ATOMIC_POSITIONS bohr
-H    -0.75  0.0  0.0
-H     0.75  0.0  0.0
+ATOMIC_POSITIONS angstrom
+H   4.23341768       4.23341768       4.23341768
 
