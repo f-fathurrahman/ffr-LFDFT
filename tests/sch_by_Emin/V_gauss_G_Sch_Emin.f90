@@ -76,7 +76,7 @@ PROGRAM test_sch
   ENDDO
   CALL orthonormalize( Nstates, evecs )
 
-  CALL Sch_solve_Emin_pcg( 3.d-5, .FALSE., 1d-4, 100, .TRUE. )
+  CALL Sch_solve_Emin_pcg( 1, 3.d-5, .FALSE., 1d-4, 100, .TRUE. )
 
   WRITE(*,*)
   WRITE(*,*) 'Final eigenvalues:'
