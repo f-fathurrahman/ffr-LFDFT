@@ -11,7 +11,7 @@ PROGRAM test_Sch_solve
   !
   INTEGER :: ist, ip
   INTEGER :: NN(3)
-  REAL(8) :: hh(3)
+  REAL(8) :: AA(3), BB(3)
   !
   INTEGER, ALLOCATABLE :: btype(:)
   INTEGER :: notcnv, dav_iter
@@ -30,9 +30,9 @@ PROGRAM test_Sch_solve
   CALL setup_args()
   
   NN(:) = N_in
-  hh(:) = 16.d0/(N_in-1)
-  CALL init_LF3d_sinc( NN, hh )
-  CALL info_LF3d()
+  AA(:) = (/ 0.d0, 0.d0, 0.d0 /)
+  BB(:) = (/ 16.d0, 16.d0, 16.d0 /)
+  CALL init_LF3d_p( NN, AA, BB )
 
   ! Set up potential
   CALL alloc_hamiltonian()
@@ -57,7 +57,8 @@ PROGRAM test_Sch_solve
   atpos(:,1) = (/ 0.d0, 0.d0, 0.d0 /)
   atm2species(1) = 1
   !
-  CALL init_V_ps_loc_gaussian( Nparams, A, alpha )
+  CALL init_strfact_shifted()
+  CALL init_V_ps_loc_gaussian_G( Nparams, A, alpha )
 
   Nstates = 4
   ALLOCATE( Focc(Nstates) )
