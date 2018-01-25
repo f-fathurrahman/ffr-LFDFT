@@ -24,6 +24,14 @@ SUBROUTINE init_V_ps_loc_gaussian( Nparams, A, alpha )
   WRITE(*,*)
   WRITE(*,*) 'Initializing V_ps_loc with Gaussian potential (real space)'
 
+  ! Print out, for similar information given in init_V_ps_loc_gaussian_G
+  DO isp = 1, Nspecies
+    WRITE(*,*)
+    WRITE(*,'(1x,A,I5)') 'Gaussian potential parameter set #', isp
+    WRITE(*,'(1x,A,F18.10)') 'A     = ', A(isp)
+    WRITE(*,'(1x,A,F18.10)') 'alpha = ', alpha(isp)
+  ENDDO 
+
   DO ia = 1,Natoms
     isp = atm2species(ia)
     DO ip = 1, Npoints

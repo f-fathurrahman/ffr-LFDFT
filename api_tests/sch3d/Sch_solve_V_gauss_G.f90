@@ -78,7 +78,7 @@ PROGRAM test_Sch_solve
   SELECT CASE(trim(diag_method))
   CASE( 'davidson', 'Emin1', 'Emin2' )
     CALL orthonormalize( Nstates, evecs )
-  CASE( 'lobpcg', 'davidson_qe' )
+  CASE( 'lobpcg', 'davidson_qe2', 'davidson_qe3', 'davidson_qe4' )
     CALL ortho_gram_schmidt( evecs, Npoints, Npoints, Nstates )
   CASE DEFAULT
     ! Should not reach here
@@ -89,12 +89,26 @@ PROGRAM test_Sch_solve
   !
   ! Call the diagonalization subroutine
   !
-  IF( trim(diag_method) == 'davidson_qe' ) THEN 
+  IF( trim(diag_method) == 'davidson_qe2' ) THEN 
+    !
+    ALLOCATE( btype(Nstates) )
+    btype(:) = 1
+    CALL diag_davidson_qe( Npoints, Nstates, 2*Nstates, evecs, 1.0d-4, evals, &
+                           btype, notcnv, dav_iter, .TRUE. )
+    !
+  ELSEIF( trim(diag_method) == 'davidson_qe3' ) THEN 
+    !
+    ALLOCATE( btype(Nstates) )
+    btype(:) = 1
+    CALL diag_davidson_qe( Npoints, Nstates, 3*Nstates, evecs, 1.0d-4, evals, &
+                           btype, notcnv, dav_iter, .TRUE. )
+    !
+  ELSEIF( trim(diag_method) == 'davidson_qe4' ) THEN 
     !
     ALLOCATE( btype(Nstates) )
     btype(:) = 1
     CALL diag_davidson_qe( Npoints, Nstates, 4*Nstates, evecs, 1.0d-4, evals, &
-                         btype, notcnv, dav_iter, .TRUE. )
+                           btype, notcnv, dav_iter, .TRUE. )
     !
   ELSEIF( trim(diag_method) == 'davidson' ) THEN 
     !
@@ -121,7 +135,10 @@ PROGRAM test_Sch_solve
   ENDDO
 
   ! Remember to renormalize eigenvectors for diag_davidson_qe and diag_lobpcg
-  IF( trim(diag_method) == 'davidson_qe' .OR. trim(diag_method) == 'lobpcg' ) THEN 
+  IF( trim(diag_method) == 'davidson_qe2' .OR. &
+      trim(diag_method) == 'davidson_qe3' .OR. &
+      trim(diag_method) == 'davidson_qe4' .OR. &
+      trim(diag_method) == 'lobpcg' ) THEN 
     evecs(:,:) = evecs(:,:)/sqrt(dVol)
   ENDIF 
 
@@ -177,9 +194,17 @@ SUBROUTINE setup_args()
   READ(arg_tmp, *) alpha_in
 
   CALL getarg( 4, diag_method )
-  IF( trim(diag_method) == 'davidson_qe' ) THEN 
+  IF( trim(diag_method) == 'davidson_qe2' ) THEN 
     WRITE(*,*)
-    WRITE(*,*) 'Using davidson_qe'
+    WRITE(*,*) 'Using davidson_qe2'
+    !
+  ELSEIF( trim(diag_method) == 'davidson_qe3' ) THEN 
+    WRITE(*,*)
+    WRITE(*,*) 'Using davidson_qe3'
+    !
+  ELSEIF( trim(diag_method) == 'davidson_qe4' ) THEN 
+    WRITE(*,*)
+    WRITE(*,*) 'Using davidson_qe4'
     !
   ELSEIF( trim(diag_method) == 'davidson' ) THEN 
     WRITE(*,*)
