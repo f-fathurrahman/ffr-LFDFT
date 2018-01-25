@@ -41,8 +41,7 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
   !
   REAL(8) :: dir_deriv, curvature, Ebands_trial
   !
-  REAL(8) :: ddot
-  REAL(8) :: beta_PR
+  REAL(8) :: beta_PR, calc_dir_deriv
 
 !!> Display several informations about the algorithm
   IF( verbose ) THEN 
@@ -148,14 +147,8 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
     ! Line minimization
     IF( linmin_type == 1 ) THEN 
       !
-!      dir_deriv = 2.d0*sum( d*g )*dVol  ! need dVol !!!
-      dir_deriv = 0.d0
-      DO ist = 1, Nstates
-        DO ip = 1, Npoints
-          dir_deriv = dir_deriv + d(ip,ist)*g(ip,ist)
-        ENDDO 
-      ENDDO 
-      dir_deriv = 2.d0*dir_deriv*dVol
+      ! dir_deriv = 2.d0*sum( d*g )*dVol  ! need dVol !!!
+      dir_deriv = calc_dir_deriv( Npoints*Nstates, d, g )*dVol
       CALL calc_Ebands( Nstates, tv, evals, Ebands_trial )
       curvature = ( Ebands_trial - ( Ebands + alpha_t*dir_deriv ) ) / alpha_t**2
       alpha = abs(-dir_deriv/(2.d0*curvature))
