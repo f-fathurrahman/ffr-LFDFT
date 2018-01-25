@@ -6,7 +6,6 @@ PROGRAM test_sch
                        evals => KS_evals, &
                        evecs => KS_evecs
   USE m_atoms, ONLY : Nspecies, atpos => AtomicCoords, Natoms, atm2species
-  USE m_hamiltonian, ONLY : V_ps_loc
   USE m_PsPot, ONLY : NbetaNL
   IMPLICIT NONE
   !
@@ -54,9 +53,7 @@ PROGRAM test_sch
   !
   CALL init_V_ps_loc_gaussian( Nparams, A, alpha )  ! appropriate for periodic system
 
-  WRITE(*,*)
-  WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
-
+  ! States initialization
   Nstates = 4
   ALLOCATE( Focc(Nstates) )
   Focc(:) = 1.d0
