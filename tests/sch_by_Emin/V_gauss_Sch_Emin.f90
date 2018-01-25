@@ -51,7 +51,7 @@ PROGRAM test_sch
   atpos(:,1) = (/ 0.d0, 0.d0, 0.d0 /)
   atm2species(1) = 1
   !
-  CALL init_V_ps_loc_gaussian( Nparams, A, alpha )  ! appropriate for periodic system
+  CALL init_V_ps_loc_gaussian( Nparams, A, alpha )
 
   ! States initialization
   Nstates = 4

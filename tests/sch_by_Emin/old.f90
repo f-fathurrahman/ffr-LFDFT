@@ -6,6 +6,7 @@ PROGRAM test_sch
                        evals => KS_evals, &
                        evecs => KS_evecs
   USE m_atoms, ONLY : Nspecies, atpos => AtomicCoords, Natoms, atm2species
+  USE m_hamiltonian, ONLY : V_ps_loc
   USE m_PsPot, ONLY : NbetaNL
   IMPLICIT NONE
   !
@@ -19,6 +20,7 @@ PROGRAM test_sch
   INTEGER :: Nparams
   INTEGER :: N_in
 
+  N_in = 35
   NN(:) = N_in
   AA(:) = (/ 0.d0, 0.d0, 0.d0 /)
   BB(:) = (/ 16.d0, 16.d0, 16.d0 /)
@@ -33,8 +35,8 @@ PROGRAM test_sch
   CALL init_ilu0_prec()
 
   ! Local pseudopotential
-  alpha_in = 2.5d0
-  A_in = 1.d0
+  alpha_in = 1.15d0
+  A_in = 10.d0
   ! A = 10, alpha=0.45 --> small band gap
   ! band gap is proportional to sqrt(A_in)/alpha_in
   Nspecies = 1
@@ -50,12 +52,15 @@ PROGRAM test_sch
   ALLOCATE( atm2species(Natoms) )
   atpos(:,1) = (/ 0.d0, 0.d0, 0.d0 /)
   atm2species(1) = 1
+  !
   ! Structure factor, shifted to FFT grid
   CALL init_strfact_shifted()  ! need several variables in m_atoms, so we put it here
   !
   CALL init_V_ps_loc_gaussian_G( Nparams, A, alpha )  ! appropriate for periodic system
 
-  ! States initialization
+  WRITE(*,*)
+  WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
+
   Nstates = 4
   ALLOCATE( Focc(Nstates) )
   Focc(:) = 1.d0
@@ -71,7 +76,7 @@ PROGRAM test_sch
   ENDDO
   CALL orthonormalize( Nstates, evecs )
 
-  CALL Sch_solve_Emin_pcg( 2, 3.d-5, .FALSE., 1d-4, 100, .TRUE. )
+  CALL Sch_solve_Emin_pcg( 1, 3.d-5, .FALSE., 1d-4, 100, .TRUE. )
 
   WRITE(*,*)
   WRITE(*,*) 'Final eigenvalues:'
