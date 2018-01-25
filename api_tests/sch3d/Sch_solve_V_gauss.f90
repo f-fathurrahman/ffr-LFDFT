@@ -1,4 +1,4 @@
-PROGRAM do_Sch_solve
+PROGRAM test_Sch_solve
 
   USE m_constants, ONLY: PI
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, dVol => LF3d_dVol
