@@ -42,6 +42,7 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
   REAL(8) :: dir_deriv, curvature, Ebands_trial
   !
   REAL(8) :: ddot
+  REAL(8) :: beta_PR
 
 !!> Display several informations about the algorithm
   IF( verbose ) THEN 
@@ -114,17 +115,10 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
       CASE(2)
 !!> Polak-Ribiere formula
 !!>        beta = sum( (g-g_old)*Kg ) / sum( g_old * Kg_old )
-!        num = 0.d0
-!        denum = 0.d0
-!        DO ist = 1,Nstates
-!          DO ip = 1,Npoints
-!            num = num + ( g(ip,ist) - g_old(ip,ist) ) * Kg(ip,ist)
-!            denum = denum + g_old(ip,ist) * Kg_old(ip,ist)
-!          ENDDO 
-!        ENDDO 
-        num = ddot( Npoints*Nstates, g - g_old, 1, Kg, 1 )
-        denum = ddot( Npoints*Nstates, g_old, 1, Kg_old, 1 )
-        beta = num/denum
+!        num = ddot( Npoints*Nstates, g - g_old, 1, Kg, 1 )
+!        denum = ddot( Npoints*Nstates, g_old, 1, Kg_old, 1 )
+!        beta = num/denum
+        beta = beta_PR( Npoints*Nstates, g, g_old, Kg, Kg_old )
       CASE(3)
 !!> Hestenes-Stiefeld formula
         beta = sum( (g-g_old)*Kg ) / sum( (g-g_old)*d_old )
