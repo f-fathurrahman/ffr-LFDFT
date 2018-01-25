@@ -1,4 +1,4 @@
-PROGRAM test_sch
+PROGRAM do_Sch_solve
 
   USE m_constants, ONLY: PI
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, dVol => LF3d_dVol
@@ -73,13 +73,17 @@ PROGRAM test_sch
   ENDDO
 
   ! Setup proper orthonormalization
-  IF( trim(diag_method) == 'davidson' ) THEN 
+  !
+  SELECT CASE(trim(diag_method))
+  CASE( 'davidson', 'Emin1', 'Emin2' )
     CALL orthonormalize( Nstates, evecs )
-  ELSE 
-    ! Other that diag_davidson:
+  CASE( 'lobpcg', 'davidson_qe' )
     CALL ortho_gram_schmidt( evecs, Npoints, Npoints, Nstates )
-  ENDIF 
-
+  CASE DEFAULT
+    ! Should not reach here
+    WRITE(*,*) 'ERROR 82 Unknown diag_method = ', trim(diag_method)
+    STOP 
+  END SELECT 
 
   !
   ! Call the diagonalization subroutine
@@ -98,6 +102,14 @@ PROGRAM test_sch
   ELSEIF( trim(diag_method) == 'lobpcg' ) THEN 
     !
     CALL diag_lobpcg( evals, evecs, 1.0d-4, .TRUE. )
+    !
+  ELSEIF( trim(diag_method) == 'Emin1' ) THEN 
+    !
+    CALL Sch_solve_Emin_pcg( 1, 3.d-5, .FALSE., 1d-4, 100, .TRUE. )
+    !
+  ELSEIF( trim(diag_method) == 'Emin2' ) THEN 
+    !
+    CALL Sch_solve_Emin_pcg( 2, 3.d-5, .FALSE., 1d-4, 100, .TRUE. )
     !
   ENDIF 
 
@@ -175,6 +187,14 @@ SUBROUTINE setup_args()
   ELSEIF( trim(diag_method) == 'lobpcg' ) THEN 
     WRITE(*,*)
     WRITE(*,*) 'Using LOBPCG'
+    !
+  ELSEIF( trim(diag_method) == 'Emin1' ) THEN 
+    WRITE(*,*)
+    WRITE(*,*) 'Using Emin1'
+    !
+  ELSEIF( trim(diag_method) == 'Emin2' ) THEN 
+    WRITE(*,*)
+    WRITE(*,*) 'Using Emin2'
     !
   ELSE 
     WRITE(*,*)
