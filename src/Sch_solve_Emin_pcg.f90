@@ -32,14 +32,16 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
   REAL(8), ALLOCATABLE :: d(:,:), d_old(:,:)
   REAL(8), ALLOCATABLE :: Kg(:,:), Kg_old(:,:) ! preconditioned
   REAL(8), ALLOCATABLE :: tv(:,:)
-  REAL(8) :: alpha, beta, denum, Ebands_old, Ebands, diff_Ebands
+  REAL(8) :: alpha, beta, num, denum, Ebands_old, Ebands, diff_Ebands
   !
   REAL(8), ALLOCATABLE :: evals_old(:)
   REAL(8) :: RNORM
   !
-  INTEGER :: iter, ist
+  INTEGER :: iter, ist, ip
   !
   REAL(8) :: dir_deriv, curvature, Ebands_trial
+  !
+  REAL(8) :: ddot
 
 !!> Display several informations about the algorithm
   IF( verbose ) THEN 
@@ -49,7 +51,9 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
 !!> Here we allocate all working arrays
   ALLOCATE( g(Npoints,Nstates) )  ! gradient
   ALLOCATE( g_old(Npoints,Nstates) ) ! old gradient
-  ALLOCATE( g_t(Npoints,Nstates) )  ! trial gradient
+  IF( linmin_type == 2 ) THEN 
+    ALLOCATE( g_t(Npoints,Nstates) )  ! trial gradient
+  ENDIF 
   ALLOCATE( d(Npoints,Nstates) )  ! direction
   ALLOCATE( d_old(Npoints,Nstates) )  ! old direction
 
@@ -80,12 +84,13 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
 
 !!> zero out all working arrays
   g(:,:)     = 0.d0
-  g_t(:,:)   = 0.d0
   d(:,:)     = 0.d0
   d_old(:,:) = 0.d0
   Kg(:,:)    = 0.d0
   Kg_old(:,:) = 0.d0
-
+  IF( linmin_type == 2 ) THEN 
+    g_t(:,:)   = 0.d0
+  ENDIF 
 
 !!> Here the iteration starts:
   DO iter = 1, Ebands_NiterMax
@@ -108,7 +113,18 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
         beta = sum( g * Kg ) / sum( g_old * Kg_old )
       CASE(2)
 !!> Polak-Ribiere formula
-        beta = sum( (g-g_old)*Kg ) / sum( g_old * Kg_old )
+!!>        beta = sum( (g-g_old)*Kg ) / sum( g_old * Kg_old )
+!        num = 0.d0
+!        denum = 0.d0
+!        DO ist = 1,Nstates
+!          DO ip = 1,Npoints
+!            num = num + ( g(ip,ist) - g_old(ip,ist) ) * Kg(ip,ist)
+!            denum = denum + g_old(ip,ist) * Kg_old(ip,ist)
+!          ENDDO 
+!        ENDDO 
+        num = ddot( Npoints*Nstates, g - g_old, 1, Kg, 1 )
+        denum = ddot( Npoints*Nstates, g_old, 1, Kg_old, 1 )
+        beta = num/denum
       CASE(3)
 !!> Hestenes-Stiefeld formula
         beta = sum( (g-g_old)*Kg ) / sum( (g-g_old)*d_old )
@@ -138,7 +154,14 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
     ! Line minimization
     IF( linmin_type == 1 ) THEN 
       !
-      dir_deriv = 2.d0*sum( d*g )*dVol  ! need dVol !!!
+!      dir_deriv = 2.d0*sum( d*g )*dVol  ! need dVol !!!
+      dir_deriv = 0.d0
+      DO ist = 1, Nstates
+        DO ip = 1, Npoints
+          dir_deriv = dir_deriv + d(ip,ist)*g(ip,ist)
+        ENDDO 
+      ENDDO 
+      dir_deriv = 2.d0*dir_deriv*dVol
       CALL calc_Ebands( Nstates, tv, evals, Ebands_trial )
       curvature = ( Ebands_trial - ( Ebands + alpha_t*dir_deriv ) ) / alpha_t**2
       alpha = abs(-dir_deriv/(2.d0*curvature))
@@ -195,7 +218,10 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
   ENDIF
 
   DEALLOCATE( evals_old )
-  DEALLOCATE( g, g_old, g_t, d, d_old, tv, Kg, Kg_old )
+  DEALLOCATE( g, g_old, d, d_old, tv, Kg, Kg_old )
+  IF( linmin_type == 2 ) THEN 
+    DEALLOCATE( g_t )
+  ENDIF 
 END SUBROUTINE
 
 
