@@ -84,7 +84,7 @@ ENDDO
 DEALLOCATE( grid_x )
 \end{fortrancode}
 
-A complete example code can be found in file \texttt{tests/init/ex\_init\_1d.f90}.
+A complete example code can be found in file \texttt{api\_tests/init/ex\_init\_1d.f90}.
 
 
 \section{Plotting the basis functions}
@@ -102,7 +102,7 @@ shown in Figure \ref{fig:LF1d_p_5}, \ref{fig:LF1d_c_5}, and
 
 \begin{figure}[h]
 {\centering
-\includegraphics[width=0.5\textwidth]{../../tests/plot_1d/LF1d_p.pdf}
+\includegraphics[width=0.5\textwidth]{../../api_tests/plot_1d/LF1d_p.pdf}
 \par}
 \caption{Periodic LF}\label{fig:LF1d_p_5}
 \end{figure}
@@ -112,7 +112,7 @@ found in \texttt{tests/plot\_1d/ex\_plot\_1d.f90}.
 
 \begin{figure}[h]
 {\centering
-\includegraphics[width=0.5\textwidth]{../../tests/plot_1d/LF1d_c.pdf}
+\includegraphics[width=0.5\textwidth]{../../api_tests/plot_1d/LF1d_c.pdf}
 \par}
 \caption{Cluster/box LF}\label{fig:LF1d_c_5}
 \end{figure}
@@ -141,7 +141,7 @@ for t in types:
 
 \begin{figure}[h]
 {\centering
-\includegraphics[width=0.5\textwidth]{../../tests/plot_1d/LF1d_sinc.pdf}
+\includegraphics[width=0.5\textwidth]{../../api_tests/plot_1d/LF1d_sinc.pdf}
 \par}
 \caption{Sinc LF}\label{fig:LF1d_sinc_5}
 \end{figure}
@@ -151,7 +151,7 @@ for t in types:
 
 We can expand any "appropriate" function $f(x)$ using LFs:
 \begin{equation}
-f(x) = \sum_{i}^{N} c_{i} \varphi_{i}(x)
+f(x) = \sum_{i=1}^{N} c_{i} \varphi_{i}(x)
 \end{equation}
 with $c_{i} = f(x_{i}) \sqrt{\Delta}$
 
