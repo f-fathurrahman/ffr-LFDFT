@@ -28,7 +28,10 @@ PROGRAM test_Sch_solve
   !
   REAL(8), EXTERNAL :: ddot
 
-  I_CG_BETA = 1 ! Fletcher-Reeves
+  !I_CG_BETA = 1 ! Fletcher-Reeves
+  I_CG_BETA = 2 ! Polak-Ribiere
+  !I_CG_BETA = 3 ! Hestenes-Stiefeld
+  !I_CG_BETA = 4 ! Dai-Yuan
 
   CALL setup_args()
   

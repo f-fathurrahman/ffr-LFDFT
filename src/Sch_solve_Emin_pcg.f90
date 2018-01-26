@@ -35,12 +35,12 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
   !
   REAL(8), ALLOCATABLE :: evals_old(:)
   REAL(8) :: RNORM
-  !
   INTEGER :: iter, ist, ip
   !
   REAL(8) :: dir_deriv, curvature, Ebands_trial
-  !
   REAL(8) :: beta_FR, beta_PR, calc_dir_deriv
+  !
+  REAL(8) :: ddot
 
 !!> Display several informations about the algorithm
   IF( verbose ) THEN 
@@ -120,10 +120,16 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
         beta = beta_PR( Npoints*Nstates, g, g_old, Kg, Kg_old )
       CASE(3)
 !!> Hestenes-Stiefeld formula
-        beta = sum( (g-g_old)*Kg ) / sum( (g-g_old)*d_old )
+!        beta = sum( (g-g_old)*Kg ) / sum( (g-g_old)*d_old )
+        num = ddot( Npoints*Nstates, g, 1, Kg, 1 ) - ddot( Npoints*Nstates, g_old, 1, Kg, 1 )
+        denum = ddot( Npoints*Nstates, g, 1, d_old, 1 ) - ddot( Npoints*Nstates, g_old, 1, d_old, 1 )
+        beta = num/denum
       CASE(4)
 !!> Dai-Yuan formula
-        beta = sum( g * Kg ) / sum( (g-g_old)*d_old )
+!        beta = sum( g * Kg ) / sum( (g-g_old)*d_old )
+        num = ddot( Npoints*Nstates, g, 1, Kg, 1 )
+        denum = ddot( Npoints*Nstates, g, 1, d_old, 1 ) - ddot( Npoints*Nstates, g_old, 1, d_old, 1 )
+        beta = num/denum
       END SELECT
     ENDIF
 !!>
@@ -151,14 +157,16 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
       dir_deriv = calc_dir_deriv( Npoints*Nstates, d, g )*dVol
       CALL calc_Ebands( Nstates, tv, evals, Ebands_trial )
       curvature = ( Ebands_trial - ( Ebands + alpha_t*dir_deriv ) ) / alpha_t**2
-      alpha = abs(-dir_deriv/(2.d0*curvature))
+      alpha = abs(dir_deriv/(2.d0*curvature))
     ELSE
-      ! Default
+      ! Using gradient
       CALL calc_grad( Nstates, tv, g_t )
       ! Compute estimate of best step and update current trial vectors
-      denum = sum( (g - g_t) * d )
+      !denum = sum( (g - g_t) * d )
+      denum = ddot( Nstates*Npoints, g, 1, d, 1) - ddot( Nstates*Npoints, g_t, 1, d, 1 )
+      num = ddot( Nstates*Npoints, g, 1, d, 1 )
       IF( denum /= 0.d0 ) THEN  ! FIXME: use abs ?
-        alpha = abs( alpha_t * sum( g * d )/denum )
+        alpha = abs( alpha_t * num/denum )
       ELSE
         alpha = 0.d0
       ENDIF
