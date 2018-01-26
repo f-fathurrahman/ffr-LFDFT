@@ -1,3 +1,5 @@
+!!> Polak-Ribiere formula
+!!>        beta = sum( (g-g_old)*Kg ) / sum( g_old * Kg_old )
 FUNCTION beta_PR( N, g, g_old, Kg, Kg_old ) RESULT(beta)
   IMPLICIT NONE 
   INTEGER :: N

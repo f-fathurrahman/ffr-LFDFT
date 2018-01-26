@@ -16,9 +16,8 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
 !!>
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, dVol => LF3d_dVol
   USE m_states, ONLY : Nstates, v => KS_evecs, evals => KS_evals
-  USE m_options, ONLY : I_CG_BETA
-  USE m_options, ONLY : T_WRITE_RESTART
-
+  USE m_options, ONLY : I_CG_BETA, T_WRITE_RESTART
+  !
   IMPLICIT NONE
   !
   INTEGER :: linmin_type
@@ -41,7 +40,7 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
   !
   REAL(8) :: dir_deriv, curvature, Ebands_trial
   !
-  REAL(8) :: beta_PR, calc_dir_deriv
+  REAL(8) :: beta_FR, beta_PR, calc_dir_deriv
 
 !!> Display several informations about the algorithm
   IF( verbose ) THEN 
@@ -110,13 +109,14 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
       SELECT CASE ( I_CG_BETA )
       CASE(1)
 !!> Fletcher-Reeves formula
-        beta = sum( g * Kg ) / sum( g_old * Kg_old )
+!        beta = sum( g * Kg ) / sum( g_old * Kg_old )
+        beta = beta_FR( Nstates*Npoints, g, g_old, Kg, Kg_old )
       CASE(2)
 !!> Polak-Ribiere formula
-!!>        beta = sum( (g-g_old)*Kg ) / sum( g_old * Kg_old )
-!        num = ddot( Npoints*Nstates, g - g_old, 1, Kg, 1 )
-!        denum = ddot( Npoints*Nstates, g_old, 1, Kg_old, 1 )
-!        beta = num/denum
+!!> \begin{verbatim}
+!!>     beta = sum( (g-g_old)*Kg ) / sum( g_old * Kg_old )
+!!> \end{verbatim}
+!!>
         beta = beta_PR( Npoints*Nstates, g, g_old, Kg, Kg_old )
       CASE(3)
 !!> Hestenes-Stiefeld formula

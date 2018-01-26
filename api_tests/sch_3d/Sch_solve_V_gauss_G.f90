@@ -7,6 +7,7 @@ PROGRAM test_Sch_solve
                        evecs => KS_evecs
   USE m_atoms, ONLY : Nspecies, atpos => AtomicCoords, Natoms, atm2species
   USE m_PsPot, ONLY : NbetaNL
+  USE m_options, ONLY : I_CG_BETA
   IMPLICIT NONE
   !
   INTEGER :: ist, ip
@@ -26,6 +27,8 @@ PROGRAM test_Sch_solve
   CHARACTER(64) :: diag_method
   !
   REAL(8), EXTERNAL :: ddot
+
+  I_CG_BETA = 1 ! Fletcher-Reeves
 
   CALL setup_args()
   

@@ -146,6 +146,7 @@ guess_KS_solutions.f90 \
 calc_Ebands.f90 \
 Sch_solve_Emin_pcg.f90 \
 beta_PR.f90 \
+beta_FR.f90 \
 calc_dir_deriv.f90
 
 C_SRC = 
