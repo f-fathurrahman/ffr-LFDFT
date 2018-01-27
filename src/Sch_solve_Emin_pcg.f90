@@ -35,24 +35,21 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
   !
   REAL(8), ALLOCATABLE :: evals_old(:)
   REAL(8) :: RNORM
-  INTEGER :: iter, ist, ip
+  INTEGER :: iter, ist
   !
   REAL(8) :: dir_deriv, curvature, Ebands_trial
-  REAL(8) :: beta_FR, beta_PR, calc_dir_deriv
+  REAL(8) :: beta_FR, beta_PR, beta_HS, beta_DY, calc_dir_deriv
   !
   REAL(8) :: ddot
 
 !!> Display several informations about the algorithm
   IF( verbose ) THEN 
-    CALL info_Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMax )
+    CALL info_Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMax )
   ENDIF 
 
 !!> Here we allocate all working arrays
   ALLOCATE( g(Npoints,Nstates) )  ! gradient
   ALLOCATE( g_old(Npoints,Nstates) ) ! old gradient
-  IF( linmin_type == 2 ) THEN 
-    ALLOCATE( g_t(Npoints,Nstates) )  ! trial gradient
-  ENDIF 
   ALLOCATE( d(Npoints,Nstates) )  ! direction
   ALLOCATE( d_old(Npoints,Nstates) )  ! old direction
 
@@ -87,9 +84,13 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
   d_old(:,:) = 0.d0
   Kg(:,:)    = 0.d0
   Kg_old(:,:) = 0.d0
+
+!!> \texttt{g\_t} is required when using line minimization based on trial gradient.
   IF( linmin_type == 2 ) THEN 
+    ALLOCATE( g_t(Npoints,Nstates) )  ! trial gradient
     g_t(:,:)   = 0.d0
   ENDIF 
+
 
 !!> Here the iteration starts:
   DO iter = 1, Ebands_NiterMax
@@ -109,8 +110,12 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
       SELECT CASE ( I_CG_BETA )
       CASE(1)
 !!> Fletcher-Reeves formula
-!        beta = sum( g * Kg ) / sum( g_old * Kg_old )
-        beta = beta_FR( Nstates*Npoints, g, g_old, Kg, Kg_old )
+!!> \begin{verbatim}
+!!>     beta = sum( g * Kg ) / sum( g_old * Kg_old )
+!!> \end{verbatim}
+!!>
+        beta = beta_FR( Npoints*Nstates, g, g_old, Kg, Kg_old )
+!!>
       CASE(2)
 !!> Polak-Ribiere formula
 !!> \begin{verbatim}
@@ -118,18 +123,23 @@ SUBROUTINE Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
 !!> \end{verbatim}
 !!>
         beta = beta_PR( Npoints*Nstates, g, g_old, Kg, Kg_old )
+!!>
       CASE(3)
 !!> Hestenes-Stiefeld formula
-!        beta = sum( (g-g_old)*Kg ) / sum( (g-g_old)*d_old )
-        num = ddot( Npoints*Nstates, g, 1, Kg, 1 ) - ddot( Npoints*Nstates, g_old, 1, Kg, 1 )
-        denum = ddot( Npoints*Nstates, g, 1, d_old, 1 ) - ddot( Npoints*Nstates, g_old, 1, d_old, 1 )
-        beta = num/denum
+!!> \begin{verbatim}
+!!>     beta = sum( (g-g_old)*Kg ) / sum( (g-g_old)*d_old )
+!!> \end{verbatim}
+!!>
+        beta = beta_HS( Npoints*Nstates, g, g_old, Kg, d_old )
+!!>
       CASE(4)
 !!> Dai-Yuan formula
-!        beta = sum( g * Kg ) / sum( (g-g_old)*d_old )
-        num = ddot( Npoints*Nstates, g, 1, Kg, 1 )
-        denum = ddot( Npoints*Nstates, g, 1, d_old, 1 ) - ddot( Npoints*Nstates, g_old, 1, d_old, 1 )
-        beta = num/denum
+!!> \begin{verbatim}
+!!>     beta = sum( g * Kg ) / sum( (g-g_old)*d_old )
+!!> \end{verbatim}
+!!>
+        beta = beta_DY( Npoints*Nstates, g, g_old, Kg, d_old )
+!!>
       END SELECT
     ENDIF
 !!>
@@ -224,12 +234,14 @@ END SUBROUTINE
 !!> The following subroutine reports various information related to CG minimization
 !!> of for diagonalizing Schrodinger equation.
 !!>
-SUBROUTINE info_Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_NiterMax )
+SUBROUTINE info_Sch_solve_Emin_pcg( linmin_type, alpha_t, restart, Ebands_CONV_THR, &
+                                    Ebands_NiterMax )
   USE m_options, ONLY : I_CG_BETA
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates
   IMPLICIT NONE
   !
+  INTEGER :: linmin_type
   REAL(8) :: alpha_t
   LOGICAL :: restart
   REAL(8) :: Ebands_CONV_THR
@@ -264,8 +276,16 @@ SUBROUTINE info_Sch_solve_Emin_pcg( alpha_t, restart, Ebands_CONV_THR, Ebands_Ni
     WRITE(*,*) 'XXXXX WARNING: Unknown I_CG_BETA: ', I_CG_BETA
   ENDIF
   WRITE(*,*)
-  WRITE(*,'(1x,A,F18.10)') 'KS_solve_Emin_pcg: memGB = ', memGB
+  IF( linmin_type == 1 ) THEN 
+    WRITE(*,*) 'Using quadratic line minimization based on energy'
+  ELSEIF( linmin_type == 2 ) THEN 
+    WRITE(*,*) 'Using line minimizing based on gradient'
+  ELSE 
+    ! This line should not be reached
+    WRITE(*,*) 'XXXXX WARNING: Unknown linmin_type: ', linmin_type
+  ENDIF 
   WRITE(*,*)
+  WRITE(*,'(1x,A,F18.10)') 'KS_solve_Emin_pcg: memGB = ', memGB
 
 END SUBROUTINE
 

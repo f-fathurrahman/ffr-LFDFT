@@ -1,3 +1,8 @@
+!!>
+!!> \section{Subroutine \texttt{init_nabla2_sparse()}}
+!!>
+!!> This subroutines initialize sparse Laplacian matrix elements in compressed sparse
+!!> column format.
 SUBROUTINE init_nabla2_sparse()
 
   USE m_LF3d, ONLY : NN => LF3d_NN, &
