@@ -144,10 +144,14 @@ SUBROUTINE init_nabla2_sparse()
   DEALLOCATE( rowGbl_y_orig )
   DEALLOCATE( rowGbl_z_orig )
 
+!!>
 !!> Sort the resulting \texttt{colptr}, this is required for ILU preconditioning.
+!!> This is not required for matrix multiplication routine, though.
 !!>
+! FIXME: Probably we need a way to by pass this sorting step.
+!        Alternatively, use matrix-free preconditioner
+!
   nwork = max( Npoints+1, 2*(colptr(Npoints+1)-colptr(1)) )
-!!>
   ALLOCATE( iwork( nwork ) )
   CALL csort( Npoints, nzval, rowval, colptr, iwork, .TRUE. )
   DEALLOCATE( iwork )
