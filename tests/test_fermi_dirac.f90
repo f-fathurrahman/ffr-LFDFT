@@ -3,27 +3,26 @@ PROGRAM test_calc_occupations
   USE m_states
   IMPLICIT NONE 
   INTEGER :: ist
-  REAL(8) :: Tbeta, efermi
+  REAL(8) :: swidth, efermi
+  INTEGER :: i_smear
   REAL(8), ALLOCATABLE :: evals(:)
   REAL(8) :: Nelectrons_calc
+  INTEGER :: Nstates_Nocc
+  REAL(8) :: Entropy
 
   Nelectrons = 3.d0
   Nstates = 8
 
-  Nstates_occ = Nstates - Nelectrons
+  ! Assume singly-occupied states
+  Nstates_Nocc = Nstates - int(Nelectrons)
+  Nstates_occ  = int(Nelectrons)
+
   WRITE(*,*) 'Nstates_occ = ', Nstates_occ
 
   ALLOCATE( Focc(Nstates) )
-  Focc(1) = 1.d0
-  Focc(2) = 1.d0
-  Focc(3) = 1.d0
-  Focc(4) = 0.d0
-  Focc(5) = 0.d0
-  Focc(6) = 0.d0
-  Focc(7) = 0.d0
-  Focc(8) = 0.d0
-
   ALLOCATE( evals(Nstates) )
+
+  ! Set eigenvalues manually
   evals(1) = -5.3d0
   evals(2) = -3.1d0
   evals(3) = -2.02d0
@@ -33,27 +32,35 @@ PROGRAM test_calc_occupations
   evals(7) = -0.5d0
   evals(8) = -0.1d0
 
-  !efermi = 0.5d0*( evals(4) + evals(3) )
-  !efermi = evals(5)
-  Tbeta = 20d0
+  efermi = 0.5d0*( evals(4) + evals(3) )
+  WRITE(*,*)
+  WRITE(*,*) 'Efermi is set to be ', efermi
 
-  CALL calc_occupations( Nstates, Nelectrons, Focc, evals, Tbeta, efermi )
-
-  WRITE(*,'(1x,A,2F18.10)') 'Fermi, Tbeta = ', efermi, Tbeta
-  !CALL fermi_dirac( Nstates, evals, efermi, Tbeta, Focc )
-
-  DO ist = 1,Nstates
-    WRITE(*,'(1x,I4,2F18.10)') ist, evals(ist), Focc(ist)
+  DO i_smear = 1, 10
+    swidth = i_smear*0.01d0  ! in Ha
+    WRITE(*,*)
+    WRITE(*,'(1x,A,F6.3)') 'Smearing width (Ha): ', swidth
+    !
+    CALL fermi_dirac( .FALSE., Nstates, evals, efermi, swidth, Focc )
+    !
+    DO ist = 1,Nstates
+      WRITE(*,'(1x,I4,2F18.10)') ist, evals(ist), Focc(ist)
+    ENDDO 
+    WRITE(*,'(1x,A,F18.10)') 'sum(Focc) = ', sum(Focc)
+    !
+    Nelectrons_calc = 0.d0
+    DO ist = 1,Nstates
+      IF( evals(ist) <= efermi ) THEN 
+        Nelectrons_calc = Nelectrons_calc + Focc(ist)
+      ENDIF 
+    ENDDO 
+    WRITE(*,'(1x,A,F18.10)') 'Nelectrons_calc = ', Nelectrons_calc
+    !
+    CALL calc_Entropy( .FALSE., Nstates, swidth, Focc, Entropy )
+    !
+    WRITE(*,'(1x,A,F18.10)') 'Entropy = ', Entropy
   ENDDO 
-  WRITE(*,*) 'sum(Focc) = ', sum(Focc)
 
-  Nelectrons_calc = 0.d0
-  DO ist = 1,Nstates
-    IF( evals(ist) <= efermi ) THEN 
-      Nelectrons_calc = Nelectrons_calc + Focc(ist)
-    ENDIF 
-  ENDDO 
-  WRITE(*,*) 'Nelectrons_calc = ', Nelectrons_calc
 
 
 END PROGRAM 

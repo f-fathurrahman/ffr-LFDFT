@@ -131,6 +131,7 @@ gen_gaussian_evecs.f90 \
 calc_occupations.f90 \
 calc_entropy.f90 \
 fermi_dirac.f90 \
+calc_Entropy.f90 \
 normalize_rhoe.f90 \
 Poisson_solve_ISF.f90 \
 m_Faddeeva.f90 \
