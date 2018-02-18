@@ -8,8 +8,8 @@ SUBROUTINE init_V_ps_loc_gaussian_G( Nparams, A, alpha )
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
                      G2 => LF3d_G2, &
                      NN => LF3d_NN, &
-                     LL => LF3d_LL
-
+                     LL => LF3d_LL, &
+                     dVol => LF3d_dVol
   IMPLICIT NONE 
   !
   INTEGER :: Nparams
@@ -62,7 +62,7 @@ SUBROUTINE init_V_ps_loc_gaussian_G( Nparams, A, alpha )
 
   ENDDO 
 
-  WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
+  WRITE(*,'(1x,A,F18.10)') 'Integrated V_ps_loc = ', sum(V_ps_loc)*dVol
 
   flush(6)
 

@@ -3,7 +3,8 @@
 !
 SUBROUTINE init_V_ps_loc_gaussian( Nparams, A, alpha )
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints, &
-                     lingrid => LF3d_lingrid
+                     lingrid => LF3d_lingrid, &
+                     dVol => LF3d_dVol
   USE m_hamiltonian, ONLY : V_ps_loc
   USE m_atoms, ONLY : Nspecies, atpos => AtomicCoords, Natoms, atm2species
   IMPLICIT NONE 
@@ -40,7 +41,7 @@ SUBROUTINE init_V_ps_loc_gaussian( Nparams, A, alpha )
     ENDDO 
   ENDDO 
 
-  WRITE(*,*) 'sum(V_ps_loc) = ', sum(V_ps_loc)
+  WRITE(*,*) 'integ V_ps_loc = ', sum(V_ps_loc)*dVol
 
   flush(6)
 
