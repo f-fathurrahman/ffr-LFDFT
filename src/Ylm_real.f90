@@ -90,7 +90,7 @@ FUNCTION Ylm_real( l, m, R ) RESULT(ylm)
       RETURN 
 
     ELSEIF( m == 1 ) THEN 
-      ylm = 0.25*sqrt(21/2/PI)*sint*( 5.d0*cost**2 - 1.d0 )*cos(phi)
+      ylm = 0.25*sqrt(21.d0/2.d0/PI)*sint*( 5.d0*cost**2 - 1.d0 )*cos(phi)
       RETURN 
 
     ELSEIF( m == 2 ) THEN 
