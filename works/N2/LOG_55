@@ -1,0 +1,212 @@
+
+ ffr's program starts
+
+  .----------------.  .----------------.  .----------------.  .----------------.  .----------------.
+ | .--------------. || .--------------. || .--------------. || .--------------. || .--------------. |
+ | |   _____      | || |  _________   | || |  ________    | || |  _________   | || |  _________   | |
+ | |  |_   _|     | || | |_   ___  |  | || | |_   ___ `.  | || | |_   ___  |  | || | |  _   _  |  | |
+ | |    | |       | || |   | |_  \_|  | || |   | |   `. \ | || |   | |_  \_|  | || | |_/ | | \_|  | |
+ | |    | |   _   | || |   |  _|      | || |   | |    | | | || |   |  _|      | || |     | |      | |
+ | |   _| |__/ |  | || |  _| |_       | || |  _| |___.' / | || |  _| |_       | || |    _| |_     | |
+ | |  |________|  | || | |_____|      | || | |________.'  | || | |_____|      | || |   |_____|    | |
+ | |              | || |              | || |              | || |              | || |              | |
+ | '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |
+  '----------------'  '----------------'  '----------------'  '----------------'  '----------------'
+
+ Program started at 19: 3:18 ,  4 March 2018
+
+ Compiled using GNU Fortran compiler
+
+ Reading input file: INPUT
+
+ Atomic positions are given in angstrom.
+ The program will convert them to bohr.
+
+ Finished reading input
+
+ Unknown input_dft: 
+ input_dft is set to VWN
+
+         Atoms Information
+         -----------------
+
+ Natoms   =            2
+ Nspecies =            1
+
+ Valence information:
+ N         5.000
+
+ Atomic coordinates: (in bohr)
+
+ N          6.8189206691      7.9999994122      7.9999994122
+ N          9.1810781553      7.9999994122      7.9999994122
+
+         Pseudopotential Information
+         ---------------------------
+
+ Species: N
+ Pseudopotential file: ../../pseudopotentials/pade_gth/N-q5.gth
+
+    atom_name = N
+    zval =     5
+    lmax =     1
+
+    Local pseudopotential parameters:
+
+    rlocal =       0.2891792300
+
+    c (for local potential ) = 
+        1    -12.2348198800
+        2      1.7664072800
+        3      0.0000000000
+        4      0.0000000000
+
+    Nonlocal pseudopotential parameters:
+
+    Matrix h for l =    0
+    Nproj_l        =    1
+    rc             =       0.2566048700
+    rcut_NL        =       1.3566048700
+
+     13.5522427200      0.0000000000      0.0000000000
+      0.0000000000      0.0000000000      0.0000000000
+      0.0000000000      0.0000000000      0.0000000000
+
+    Matrix h for l =    1
+    Nproj_l        =    0
+    rc             =       0.2701336900
+    rcut_NL        =       0.0000000000
+
+      0.0000000000      0.0000000000      0.0000000000
+      0.0000000000      0.0000000000      0.0000000000
+      0.0000000000      0.0000000000      0.0000000000
+
+         LF3d Grid Information
+         ---------------------
+
+ Type: PERIODIC
+
+ Box size            =   15.99993  15.99993  15.99993
+ Grid spacing        =    0.29091   0.29091   0.29091
+ Sampling Nx, Ny, Nz =    55   55   55
+ Number of points    =     166375
+ dVol                =    0.02462
+
+ Some grid points in x, y, and z directions:
+
+        1   0.14545       1   0.14545       1   0.14545
+        2   0.43636       2   0.43636       2   0.43636
+       ..   .......      ..   .......      ..   .......
+       54  15.56357      54  15.56357      54  15.56357
+       55  15.85448      55  15.85448      55  15.85448
+
+ Some G2 values
+
+          1   0.00000
+          2   0.15421
+        ...   .......
+     166374   0.92528
+     166375   0.46264
+
+ Initializing betaNL functions
+ ibeta, Np_beta, integ =     1     445      1.0027117489
+ ibeta, Np_beta, integ =     2     445      1.0027112569
+
+ Number of electrons =           10.00000
+ Nstates =        5
+
+ Initial occupation numbers
+        1           2.00000
+        2           2.00000
+        3           2.00000
+        4           2.00000
+        5           2.00000
+
+ Calculating structure factor: shifted to Fourier grid
+
+ V_ps_loc is initialized via G-space
+
+ Initializing nabla2_sparse
+ Memory required for init_nabla2_sparse:   3.037E-01 GB
+
+ ILU0 preconditioner is based on kinetic matrix
+
+ Generating guess density
+ ------------------------
+
+ zion, znucl, length = N  5.000  7.000  0.600
+
+ Initial: integRho       =       2.0000000000
+ After scaling: integRho =      10.0000000000
+
+ Generating starting wavefunctions
+ ---------------------------------
+
+ LOBPCG: Convergence achieved based on RNORM
+
+ End of iterative diagonalization
+
+ Final eigenvalues (in Hartree)
+
+    1     -0.9302655789
+    2     -0.5180098841
+    3     -0.3717871006
+    4     -0.3564732861
+    5     -0.3562924847
+
+ Minimizing KS total energy functional using PCG algorithm
+ ---------------------------------------------------------
+
+ NiterMax =      150
+ alpha_t  =  3.000E-05
+ restart  =  F
+ conv_thr =  1.000E-06
+
+ Using Polak-Ribiere formula
+
+ KS_solve_Emin_pcg: memGB =       0.0495836139
+
+     1    -19.7023368829  7.5516540397E-03
+     2    -19.7091028611  6.7659781580E-03
+     3    -19.7115779663  2.4751051968E-03
+     4    -19.7133062960  1.7283296965E-03
+     5    -19.7141935978  8.8730181465E-04
+     6    -19.7146471545  4.5355669786E-04
+     7    -19.7149350261  2.8787160765E-04
+     8    -19.7151028014  1.6777528955E-04
+     9    -19.7152117032  1.0890186507E-04
+    10    -19.7152749207  6.3217486822E-05
+    11    -19.7153160639  4.1143181626E-05
+    12    -19.7153407673  2.4703399191E-05
+    13    -19.7153556718  1.4904454588E-05
+    14    -19.7153648664  9.1946467755E-06
+    15    -19.7153703654  5.4990282763E-06
+    16    -19.7153736743  3.3088469245E-06
+    17    -19.7153755010  1.8267446364E-06
+    18    -19.7153764884  9.8735124965E-07
+ KS_solve_Emin_pcg converged in iter          18
+
+ Energy components:
+
+ Kinetic      =      13.8857278745
+ Local PS     =     -50.5196682153
+ NL PS        =       1.7741174276
+ Hartree      =      17.8713719341
+ XC           =      -4.6499392175
+ ---------------------------------
+ ! Electronic =     -21.6383901967
+ NN           =       1.9230137083
+ ---------------------------------
+ ! Total      =     -19.7153764884
+
+ Final eigenvalues (Ha and eV)
+
+        1     -0.9504211555    -25.8624803161
+        2     -0.5211392824    -14.1810336976
+        3     -0.3832383465    -10.4285285896
+        4     -0.3832379911    -10.4285189198
+        5     -0.3648443083     -9.9279973794
+
+ Total elapsed time:   6.4370000000E+01 second.
+
+ Program stopped at 19: 4:22 ,  4 March 2018
