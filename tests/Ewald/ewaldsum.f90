@@ -138,6 +138,6 @@ PROGRAM ewaldsum
    ENDDO
 
  Write(6,'(1x,A,F18.10)') 'Ewald energy in Ry', ewald
- WRITE(*,'(1x,A,F18.10)') 'Ewald energy in Ha', 2.d0*ewald
+ WRITE(*,'(1x,A,F18.10)') 'Ewald energy in Ha', ewald/2.d0
 
 END PROGRAM 
