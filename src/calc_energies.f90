@@ -68,7 +68,7 @@ SUBROUTINE calc_energies( psi )
           ibeta = prj2beta(iprj,ia,l,m)
           jbeta = prj2beta(jprj,ia,l,m)
           hij = Ps(isp)%h(l,iprj,jprj)
-          enl1 = enl1 + hij*betaNL_psi(ia,ist,ibeta)*betaNL_psi(ia,ist,jbeta)
+          enl1 = enl1 + hij*betaNL_psi(ist,ibeta)*betaNL_psi(ist,jbeta)
         ENDDO ! jprj
         ENDDO ! iprj
       ENDDO ! m

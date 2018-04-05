@@ -27,7 +27,7 @@ SUBROUTINE op_V_ps_NL( Nstates, Vpsi )
           jbeta = prj2beta(jprj,ia,l,m)
           hij = Ps(isp)%h(l,iprj,jprj)
 ! This operation should be localized around grid points near atoms          
-          Vpsi(:,ist) = Vpsi(:,ist) + hij*betaNL(:,ibeta)*betaNL_psi(ia,ist,jbeta)
+          Vpsi(:,ist) = Vpsi(:,ist) + hij*betaNL(:,ibeta)*betaNL_psi(ist,jbeta)
         ENDDO ! jprj
         ENDDO ! iprj
       ENDDO ! m
@@ -65,7 +65,7 @@ SUBROUTINE op_V_ps_NL_1col( ist, Vpsi )
         ibeta = prj2beta(iprj,ia,l,m)
         jbeta = prj2beta(jprj,ia,l,m)
         hij = Ps(isp)%h(l,iprj,jprj)
-        Vpsi(:) = Vpsi(:) + hij*betaNL(:,ibeta)*betaNL_psi(ia,ist,jbeta)
+        Vpsi(:) = Vpsi(:) + hij*betaNL(:,ibeta)*betaNL_psi(ist,jbeta)
       ENDDO ! jprj
       ENDDO ! iprj
     ENDDO ! m

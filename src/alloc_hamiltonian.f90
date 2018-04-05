@@ -11,7 +11,6 @@ SUBROUTINE alloc_hamiltonian()
   USE m_hamiltonian, ONLY : V_ps_loc, V_Hartree, V_xc, Rhoe, betaNL_psi
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_PsPot, ONLY : NbetaNL
-  USE m_atoms, ONLY : Natoms
   USE m_states, ONLY : Nstates
   IMPLICIT NONE
 
@@ -22,7 +21,7 @@ SUBROUTINE alloc_hamiltonian()
   ALLOCATE( Rhoe( Npoints ) )
 
   ! XXX allocate here ???
-  ALLOCATE( betaNL_psi(Natoms,Nstates,NbetaNL) )
+  ALLOCATE( betaNL_psi(Nstates,NbetaNL) )
 
   V_ps_loc(:) = 0.d0
   V_Hartree(:) = 0.d0
