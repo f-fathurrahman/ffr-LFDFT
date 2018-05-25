@@ -26,12 +26,9 @@ SUBROUTINE calc_Entropy( is_spinpol, Nstates, swidth, Focc, Entropy )
         e = e + 2.d0*(1.d0 - 0.5d0*Focc(ist))*log(1.d0 - 0.5d0*Focc(ist))
       ENDIF 
     ENDIF 
-    WRITE(*,*) ist, e
   ENDDO
   
-  Entropy = e*2.d0*swidth
-  WRITE(*,*)
-  WRITE(*,*) 'In calc_Entropy, Entropy = ', Entropy
+  Entropy = -e*2.d0*swidth
 
 END SUBROUTINE 
 
