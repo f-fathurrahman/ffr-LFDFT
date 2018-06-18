@@ -1,11 +1,11 @@
-EXE_MAIN = ffr_LFDFT_pgi.x
+EXE_MAIN = ffr_LFDFT_pgi_llvm.x
 MAKE = make
 AR = ar
 
-F77 = pgfortran
+F77 = pgfortran-llvm
 F77_OPTS = -O3
 
-F90 = pgf90
+F90 = pgf90-llvm
 F90_OPTS = -Minform=warn -fast -Mpreprocess
 F90_OPTS_NOWARN = -fast -Mpreprocess
 

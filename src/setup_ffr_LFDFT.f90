@@ -99,7 +99,8 @@ SUBROUTINE setup_ffr_LFDFT()
   IF( assume_isolated == 'sinc' ) THEN
     CALL calc_E_NN()
   ELSE
-    CALL calc_Ewald_qe()
+    !CALL calc_Ewald_qe()
+    CALL calc_Ewald()
   ENDIF
 
 !!> \item

@@ -150,7 +150,8 @@ beta_PR.f90 \
 beta_FR.f90 \
 beta_HS.f90 \
 beta_DY.f90 \
-calc_dir_deriv.f90
+calc_dir_deriv.f90 \
+inv_m3x3.f90
 
 C_SRC = 
 

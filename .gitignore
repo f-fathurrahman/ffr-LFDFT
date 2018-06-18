@@ -3,6 +3,9 @@
 *.swo
 *~
 
+OLD_*
+OLD*
+
 *.pyc
 
 TODO.md

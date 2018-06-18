@@ -1,131 +1,140 @@
-SUBROUTINE calc_Ewald( )
+SUBROUTINE calc_Ewald()
 
   USE m_constants, ONLY : PI
-  USE m_atoms, ONLY : Natoms, Nspecies, atm2species, SpeciesSymbols, &
-                      Zv => AtomicValences, &
-                      strf => StructureFactor
-  USE m_LF3d, ONLY : G2 => LF3d_G2, &
-                     Npoints => LF3d_Npoints, &
-                     NN => LF3d_NN, &
-                     AA => LF3d_AA, &
-                     BB => LF3d_BB, &
-                     lingrid => LF3d_lingrid, &
-                     dVol => LF3d_dVol
+  USE m_atoms, ONLY : Natoms, &
+                      atm2species, &
+                      AtomicValences, &
+                      AtomicCoords
+  USE m_LF3d, ONLY : LL => LF3d_LL
   USE m_energies, ONLY : E_nn
+
   IMPLICIT NONE 
-  !
-  REAL(8), ALLOCATABLE :: sigma(:)
-  REAL(8), ALLOCATABLE :: dr(:)
-  REAL(8) :: cx, cy, cz, dx, dy, dz
-  REAL(8) :: c1, cc1
-  INTEGER :: Nx, Ny, Nz
-  INTEGER :: ip, isp, ia
-  REAL(8) :: gchg, intrho
-  REAL(8), ALLOCATABLE :: rho_is(:,:)
-  REAL(8), ALLOCATABLE :: Rho(:), phi(:)
-  COMPLEX(8), ALLOCATABLE :: ctmp(:)
-  REAL(8) :: E_H, E_self
- 
-  ALLOCATE( sigma(Nspecies) )
-  sigma(:) = 0.25d0   !!! DEFAULT !!!
+  REAL(8) :: t1(3), t2(3), t3(3)
+  REAL(8) :: g1(3), g2(3), g3(3)
+  REAL(8) :: v(3), w(3)
+  REAL(8) :: volcry, x, tpi, totalcharge, tmax, t1m, t2m, t3m
+  REAL(8) :: seta, rmag2, prd, on, glast2, gexp, gcut, g1m, g2m, g3m
+  REAL(8) :: cccc, ewald, eta, con2, ebsl, arg
+  INTEGER :: mmm1, mmm2, mmm3, i, j, k
+  INTEGER :: ia, ja, isp, jsp
+  REAL(8) :: invLatVecs(3,3), LatVecs(3,3)
+  REAL(8), ALLOCATABLE :: tau(:,:)
 
-  WRITE(*,*)
-  WRITE(*,*) 'Calculating Ewald energy (E_nn)'
-  WRITE(*,*)
-  WRITE(*,*) 'Using the following parameters for Gaussian charge densities:'
-  DO isp = 1,Nspecies
-    WRITE(*,'(1x,A,F10.3)') adjustl(SpeciesSymbols(isp)), sigma(isp)
-  ENDDO 
+  LatVecs(:,:) = 0.d0
+  LatVecs(1,1) = LL(1)
+  LatVecs(2,2) = LL(2)
+  LatVecs(3,3) = LL(3)
+  
+  ALLOCATE( tau(3,Natoms) )
+  CALL inv_m3x3(LatVecs,invLatVecs)
+  tau(:,:) = matmul(invLatVecs,AtomicCoords)
 
-  cx = 0.5d0*( BB(1) - AA(1) ) + AA(1)
-  cy = 0.5d0*( BB(2) - AA(2) ) + AA(2)
-  cz = 0.5d0*( BB(3) - AA(3) ) + AA(3)
+  t1(:) = LatVecs(:,1)
+  t2(:) = LatVecs(:,2)
+  t3(:) = LatVecs(:,3)
 
-  WRITE(*,'(1x,A,3F18.10)') 'center = ', cx, cy, cz
+  volcry   = t1(1)*(t2(2)*t3(3)-t2(3)*t3(2)) +  &
+             t1(2)*(t2(3)*t3(1)-t2(1)*t3(3)) +  &
+             t1(3)*(t2(1)*t3(2)-t2(2)*t3(1))
 
-  ALLOCATE( dr(Npoints) )
-  DO ip = 1,Npoints
-    dx = lingrid(1,ip) - cx
-    dy = lingrid(2,ip) - cy
-    dz = lingrid(3,ip) - cz
-    dr(ip) = sqrt( dx**2 + dy**2 + dz**2 )
-  ENDDO
+  g1(1) = 2 * pi * (t2(2)*t3(3)-t2(3)*t3(2))/volcry
+  g1(2) = 2 * pi * (t2(3)*t3(1)-t2(1)*t3(3))/volcry
+  g1(3) = 2 * pi * (t2(1)*t3(2)-t2(2)*t3(1))/volcry
+  g2(1) = 2 * pi * (t3(2)*t1(3)-t3(3)*t1(2))/volcry
+  g2(2) = 2 * pi * (t3(3)*t1(1)-t3(1)*t1(3))/volcry
+  g2(3) = 2 * pi * (t3(1)*t1(2)-t3(2)*t1(1))/volcry
+  g3(1) = 2 * pi * (t1(2)*t2(3)-t1(3)*t2(2))/volcry
+  g3(2) = 2 * pi * (t1(3)*t2(1)-t1(1)*t2(3))/volcry
+  g3(3) = 2 * pi * (t1(1)*t2(2)-t1(2)*t2(1))/volcry
+  
+  volcry = abs(volcry)
 
-  ALLOCATE( rho_is(Npoints,Nspecies) )
-  ALLOCATE( Rho(Npoints) )
-  ALLOCATE( phi(Npoints) )
-  ALLOCATE( ctmp(Npoints) )
+  t1m = SQRT(DOT_PRODUCT(t1,t1))
+  t2m = SQRT(DOT_PRODUCT(t2,t2))
+  t3m = SQRT(DOT_PRODUCT(t3,t3))
+  g1m = SQRT(DOT_PRODUCT(g1,g1))
+  g2m = SQRT(DOT_PRODUCT(g2,g2))
+  g3m = SQRT(DOT_PRODUCT(g3,g3))
 
-  Nx = NN(1)
-  Ny = NN(2)
-  Nz = NN(3)
+  gcut = 2.d0
+  ebsl = 1d-8
 
-  Rho(:) = 0.d0
+  tpi = 2.d0*pi
+  on = volcry/(4.d0*pi)
+  con2 = (4.d0*pi)/volcry
+  glast2 = gcut*gcut
+  gexp = -log(ebsl)
+  eta = glast2/gexp
 
-  WRITE(*,*)
-  DO isp = 1, Nspecies
-    !
-    c1 = 2.d0*sigma(isp)**2
-    cc1 = sqrt(2.d0*PI*sigma(isp)**2)**3
-    !
-    DO ip = 1,Npoints
-      gchg = Zv(isp) * exp( -dr(ip)**2/c1 ) / cc1
-      ctmp(ip) = cmplx( gchg, 0.d0, kind=8 )
-    ENDDO
-    !
-    CALL fft_fftw3( ctmp, Nx, Ny, Nz, .false. )  ! to G-space
-    !
-    DO ip = 1,Npoints
-      ctmp(ip) = ctmp(ip)*strf(ip,isp)
-    ENDDO 
-    !
-    CALL fft_fftw3( ctmp, Nx, Ny, Nz, .true. )
-    DO ip = 1, Npoints
-      rho_is(ip,isp) = real( ctmp(ip), kind=8 )
-    ENDDO 
-    !
-    intrho = sum( rho_is(:,isp) ) * dVol
-    WRITE(*,'(1x,A,8x,A,F18.10)') adjustl(SpeciesSymbols(isp)), '= ', intrho
-    !
-    Rho(:) = Rho(:) + rho_is(:,isp)
-  ENDDO 
+  cccc = sqrt(eta/pi)
 
-  intrho = sum(Rho)*dVol
-  WRITE(*,'(1x,A,F18.10)') 'Total intrho = ', intrho
-
-  ! Solve Poisson equation
-  DO ip = 1,Npoints
-    ctmp(ip) = cmplx( Rho(ip), 0.d0, kind=8 )
-  ENDDO 
-  CALL fft_fftw3( ctmp, Nx, Ny, Nz, .false. )
-  !
-  ctmp(1) = cmplx(0.d0,0.d0,kind=8)
-  DO ip = 2,Npoints
-    ctmp(ip) = 4.d0*PI*ctmp(ip)/G2(ip)
-  ENDDO 
-  !
-  CALL fft_fftw3( ctmp, Nx, Ny, Nz, .true. )
-  DO ip = 1,Npoints
-    phi(ip) = real( ctmp(ip), kind=8 )
-  ENDDO 
-  E_H = 0.5*sum( phi(:)*Rho(:) ) * dVol
-
-  E_self = 0.d0
+  x = 0.d0
+  totalcharge = 0.d0
   DO ia = 1,Natoms
     isp = atm2species(ia)
-    E_self = E_self + Zv(isp)**2 / (2.d0*sqrt(PI)) * (1.d0/sigma(isp))
+    x = x + AtomicValences(isp)**2
+    totalcharge = totalcharge + AtomicValences(isp)
+  ENDDO
+
+  ewald = -cccc*x - 4.d0*pi*(totalcharge**2)/(volcry*eta)
+
+  tmax = sqrt(2.d0*gexp/eta)
+  seta = sqrt(eta)/2.d0
+
+  mmm1 = nint(tmax/t1m + 1.5d0)
+  mmm2 = nint(tmax/t2m + 1.5d0)
+  mmm3 = nint(tmax/t3m + 1.5d0)
+      
+  DO ia = 1,Natoms
+  DO ja = 1,Natoms
+    v(:) = (tau(1,ia)-tau(1,ja))*t1(:) + (tau(2,ia)-tau(2,ja))*t2(:) &
+         + (tau(3,ia)-tau(3,ja))*t3(:)
+    isp = atm2species(ia)
+    jsp = atm2species(ja)
+    prd = AtomicValences(isp)*AtomicValences(jsp)
+    DO i = -mmm1, mmm1
+    DO j = -mmm2, mmm2
+    DO k = -mmm3, mmm3
+      IF( (ia /= ja) .or. ( (abs(i) + abs(j) + abs(k)) /= 0) ) THEN 
+        w(:) = v(:) + i*t1 + j*t2 + k*t3
+        rmag2 = sqrt(DOT_PRODUCT(w,w))
+        arg = rmag2*seta 
+        ewald = ewald + prd*erfc(arg)/rmag2
+      ENDIF 
+    ENDDO 
+    ENDDO 
+    ENDDO 
+  ENDDO 
   ENDDO 
 
-  E_nn = E_H - E_self
+  mmm1 = nint(gcut/g1m + 1.5d0)
+  mmm2 = nint(gcut/g2m + 1.5d0)
+  mmm3 = nint(gcut/g3m + 1.5d0)
+  
+  DO i = -mmm1, mmm1
+  DO j = -mmm2, mmm2
+  DO k = -mmm3, mmm3
+    IF( (abs(i)+abs(j)+abs(k)).ne.0 ) THEN 
+      w(:) = i*g1(:) + j*g2(:) + k*g3(:)
+      rmag2 = DOT_PRODUCT(w,w)
+      x = con2*exp(-rmag2/eta)/rmag2
+      DO ia = 1,Natoms
+      DO ja = 1,Natoms
+        v(:) = tau(:,ia) - tau(:,ja)
+        isp = atm2species(ia)
+        jsp = atm2species(ja)
+        prd = AtomicValences(isp)*AtomicValences(jsp)
+        arg = tpi*(i*v(1) + j*v(2) + k*v(3))
+        ewald = ewald + x*prd*cos(arg)
+      ENDDO 
+      ENDDO 
+    ENDIF 
+  ENDDO 
+  ENDDO 
+  ENDDO
 
-  !WRITE(*,'(/,1x,A,F18.10)') 'E_nn         = ', E_nn
+  E_nn = ewald/2.d0  ! convert to Ry to Ha
 
-  DEALLOCATE( phi )
-  DEALLOCATE( ctmp )
-  DEALLOCATE( Rho )
-  DEALLOCATE( rho_is )
-  DEALLOCATE( dr )
-  DEALLOCATE( sigma )
+  DEALLOCATE( tau )
 
 END SUBROUTINE 
-
