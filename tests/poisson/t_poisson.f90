@@ -17,6 +17,9 @@ PROGRAM t_poisson
   INTEGER :: N_in
   CHARACTER(56) :: chars_arg
   INTEGER :: iargc
+  !
+  COMPLEX(8), ALLOCATABLE :: rhoG(:), phiG(:)
+  REAL(8) :: UnumG
 
   IF( iargc() /= 1 ) THEN 
     WRITE(*,*) 'Exactly one argument must be given:', iargc()
@@ -65,6 +68,19 @@ PROGRAM t_poisson
   WRITE(*,'(1x,A,F18.10)') 'Unum = ', Unum
   WRITE(*,'(1x,A,F18.10)') 'Uana = ', Uana
   WRITE(*,'(1x,A,E18.10)') 'diff = ', abs(Unum-Uana)
+
+  ALLOCATE( rhoG(Npoints), phiG(Npoints) )
+  DO ip = 1,Npoints
+    rhoG(ip) = cmplx( rho(ip), 0.d0, kind=8 )
+    phiG(ip) = cmplx( phi(ip), 0.d0, kind=8 )
+  ENDDO 
+  CALL fft_fftw3( rhoG, NN(1), NN(2), NN(3), .false. )
+  CALL fft_fftw3( phiG, NN(1), NN(2), NN(3), .false. )
+
+  Unumg = real( sum( rhoG(:)*conjg(phiG(:)) ) )*0.5d0*dVol*Npoints
+  WRITE(*,*)
+  WRITE(*,*) 'In G space = ', Unumg
+  WRITE(*,*) 'Diff = ', abs(Unumg-Uana)
 
   DEALLOCATE( rho, phi )
 

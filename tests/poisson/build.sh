@@ -1,7 +1,7 @@
 #!/bin/bash
 
-INC="-I../../"
-LIB="../../libmain.a -lblas -llapack -lfftw3"
+INC="-I../../src"
+LIB="../../src/libmain.a -lblas -llapack -lfftw3"
 
 bas=`basename $1 .f90`
 
