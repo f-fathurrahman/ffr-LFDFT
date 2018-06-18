@@ -28,6 +28,7 @@ Currently it has been tested using the following compilers:
 - [`ifort`](https://software.intel.com/en-us/fortran-compilers)
 - [`pgf90`](https://www.pgroup.com/products/community.htm)
 - [`sunf95`](http://www.oracle.com/technetwork/server-storage/developerstudio/downloads/index.html)
+- [`flang`](https://github.com/flang-compiler/flang)
 
 A C-99 compliant C compiler is also required to compile one external C source file (`Faddeeva.c`).
 Recent version of `gcc` should be OK for this.
