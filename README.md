@@ -206,6 +206,6 @@ END PROGRAM
 - [KSSOLV](http://crd-legacy.lbl.gov/~chao/KSSOLV/). A MATLAB Toolbox for Solving the Kohn-Sham Equations.
   Another good code for beginner.
 
-- [Quantum Espresson](http://quantum-espresso.org/).
+- [Quantum Espresso](http://quantum-espresso.org/).
 
 - [ELK DFT package](elk.sourceforge.net/). Various mixing subroutines in SCF are adapted from this package.
