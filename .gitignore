@@ -3,6 +3,8 @@
 *.swo
 *~
 
+src/make.inc
+
 OLD_*
 OLD*
 
