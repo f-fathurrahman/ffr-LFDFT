@@ -1,0 +1,33 @@
+&CONTROL
+  pseudo_dir = '../../pseudopotentials/pade_gth'
+  etot_conv_thr = 1.0d-6
+/
+
+&SYSTEM
+  ibrav = 8
+  nat = 3
+  ntyp = 2
+  A = 8.4668d0
+  B = 8.4668d0
+  C = 8.4668d0
+  nr1 = 45
+  nr2 = 45
+  nr3 = 45
+/
+
+&ELECTRONS
+  KS_Solve = 'scf'
+  cg_beta = 'DY'
+  electron_maxstep = 150
+  mixing_beta = 0.5
+  diagonalization = 'LOBPCG'
+/
+
+ATOMIC_SPECIES
+Pt   1.0  Pt-q10.gth
+H    1.0  H-q1.gth
+
+ATOMIC_POSITIONS angstrom
+Pt     4.23341768       4.79623268       4.23341768
+H      5.26791768       3.67073268       4.23341768
+H      3.19891768       3.67060268       4.23341768
