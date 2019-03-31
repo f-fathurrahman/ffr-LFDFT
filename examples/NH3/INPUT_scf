@@ -1,5 +1,5 @@
 &CONTROL
-  pseudo_dir = '../../pseudopotentials/pade_gth'
+  pseudo_dir = '../../pseudopotentials/pade_gth/'
   etot_conv_thr = 1.0d-6
 /
 
@@ -16,7 +16,7 @@
 /
 
 &ELECTRONS
-  KS_Solve = 'Emin'
+  KS_Solve = 'scf'
   cg_beta = 'PR'
   electron_maxstep = 150
   mixing_beta = 0.1
