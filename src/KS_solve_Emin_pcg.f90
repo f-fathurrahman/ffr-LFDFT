@@ -173,7 +173,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
 
   IF( Nconverged < 2 ) THEN 
     WRITE(*,*)
-    WRITE(*,*) 'WARNING: SCF is not converged'
+    WRITE(*,*) 'WARNING: Emin_PCG is not converged'
     WRITE(*,*)
   ENDIF 
 
