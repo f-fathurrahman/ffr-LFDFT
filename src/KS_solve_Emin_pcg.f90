@@ -35,6 +35,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
   REAL(8) :: alpha, beta, denum, Etot_old
   !
   INTEGER :: iter, ist
+  INTEGER :: Nconverged
 
 !!> Display several informations about the algorithm
   CALL info_KS_solve_Emin_pcg( alpha_t, restart )
@@ -79,6 +80,7 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
   Kg(:,:)    = 0.d0
   Kg_old(:,:) = 0.d0
 
+  Nconverged = 0
 
 !!> Here the iteration starts:
   DO iter = 1, Emin_NiterMax
@@ -152,6 +154,12 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
     WRITE(*,'(1x,I5,F18.10,ES18.10)') iter, Etot, Etot_old-Etot
     !
     IF( abs(Etot - Etot_old) < Emin_ETOT_CONV_THR ) THEN
+      Nconverged = Nconverged + 1
+    ELSE 
+      Nconverged = 0
+    ENDIF 
+
+    IF( Nconverged >= 2 ) THEN 
       WRITE(*,*) 'KS_solve_Emin_pcg converged in iter', iter
       EXIT
     ENDIF
@@ -162,6 +170,12 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
     Kg_old(:,:) = Kg(:,:)
     flush(6)
   ENDDO
+
+  IF( Nconverged < 2 ) THEN 
+    WRITE(*,*)
+    WRITE(*,*) 'WARNING: SCF is not converged'
+    WRITE(*,*)
+  ENDIF 
 
   IF( T_WRITE_RESTART ) THEN
     WRITE(111) v

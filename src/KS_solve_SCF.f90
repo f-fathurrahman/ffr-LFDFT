@@ -28,6 +28,7 @@ SUBROUTINE KS_solve_SCF()
   REAL(8), ALLOCATABLE :: beta_work(:), f_work(:)
   REAL(8), ALLOCATABLE :: workmix(:)
   INTEGER :: nwork
+  INTEGER :: Nconverged
 
   integRho = sum(Rhoe)*dVol
   WRITE(*,*)
@@ -88,6 +89,8 @@ SUBROUTINE KS_solve_SCF()
 !!> Initial value for dr2 (convergence criteria for rhoe ???)
   dr2 = 1.d0
 
+  Nconverged = 0
+
 !!>
 !!> SCF iterations begins here
 !!>
@@ -106,6 +109,7 @@ SUBROUTINE KS_solve_SCF()
       ethr = ethr/5.d0
       ethr = max( ethr, ETHR_EVALS_LAST )
     ENDIF 
+    ethr = 1.d-8  ! temporary fix for getting accurate results
 
 !!> Call the driver for iterative diagoanalization routine
     CALL Sch_solve_diag()
@@ -130,7 +134,13 @@ SUBROUTINE KS_solve_SCF()
     WRITE(*,'(1x,A,I5,F18.10,2ES18.10)') 'SCF: ', iterSCF, Etot, dEtot, dr2
 
 !!> Check total energy convergence. Exit SCF loop if convergence is achieved.
-    IF( dEtot < SCF_ETOT_CONV_THR ) THEN 
+    IF( dEtot < SCF_ETOT_CONV_THR ) THEN
+      Nconverged = Nconverged + 1
+    ELSE 
+      Nconverged = 0
+    ENDIF 
+
+    IF( Nconverged >= 2 ) THEN 
       WRITE(*,*)
       WRITE(*,'(1x,A,I5,A)') 'SCF converged after ', iterSCF, ' iterations.'
       WRITE(*,'(1x,A,ES18.10)') 'SCF_ETOT_CONV_THR = ', SCF_ETOT_CONV_THR
@@ -145,6 +155,12 @@ SUBROUTINE KS_solve_SCF()
     Rhoe_old(:) = Rhoe(:)
     flush(6)
   ENDDO
+
+  IF( Nconverged < 2 ) THEN 
+    WRITE(*,*)
+    WRITE(*,*) 'WARNING: SCF is not converged'
+    WRITE(*,*)
+  ENDIF 
 
 !!> Free memory
 
