@@ -1,5 +1,5 @@
 &CONTROL
-  pseudo_dir = '../../HGH'
+  pseudo_dir = '../../pseudopotentials/pade_gth'
   etot_conv_thr = 1.0d-6
 /
 
@@ -16,7 +16,7 @@
 /
 
 &ELECTRONS
-  KS_Solve = 'scf'
+  KS_Solve = 'Emin'
   cg_beta = 'DY'
   electron_maxstep = 150
   mixing_beta = 0.5
@@ -24,8 +24,8 @@
 /
 
 ATOMIC_SPECIES
-Pt   1.0  Pt.hgh
-H    1.0  H.hgh
+Pt   1.0  Pt-q10.gth
+H    1.0  H-q1.gth
 
 ATOMIC_POSITIONS angstrom
 Pt     4.23341768       4.79623268       4.23341768

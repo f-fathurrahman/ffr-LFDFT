@@ -1,5 +1,5 @@
 &CONTROL
-  pseudo_dir = './'
+  pseudo_dir = '../../pseudopotentials/pbe_gth'
   etot_conv_thr = 1.0d-6
 /
 
@@ -25,7 +25,7 @@
 /
 
 ATOMIC_SPECIES
-Zr   1.0  Zr.hgh
+Zr   1.0  Zr-q12.gth
 
 ATOMIC_POSITIONS bohr
 Zr   8.0  8.0  8.0
