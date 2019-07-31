@@ -1,2 +1,0 @@
-Implementasi program untuk perhitungan struktur elektronik
-dengan basis set fungsi Lagrange
