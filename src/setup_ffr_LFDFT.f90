@@ -80,7 +80,7 @@ SUBROUTINE setup_ffr_LFDFT()
 !!> Allocate KS eigenvectors and eigenvalues.
 !!>
 !!> This step should be done in some wrapper subroutine, however, for current use-case
-!!> this is suffice.
+!!> this is sufficient.
   ALLOCATE( evecs(Npoints,Nstates), evals(Nstates) )
 
 !!> \item
