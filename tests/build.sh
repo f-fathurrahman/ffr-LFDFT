@@ -10,7 +10,9 @@ if [ "$#" -ne 2 ]; then
 fi
 
 INC="-I../src/"
-LIB="../src/libmain.a ../src/libsparskit.a ../src/libpoisson_ISF.a -lblas -llapack -lfftw3"
+LIB="../src/libmain.a ../src/libsparskit.a ../src/libpoisson_ISF.a \
+-L/home/efefer/mysoftwares/libxc-3.0.0/lib -lxcf90 -lxc \
+-lblas -llapack -lfftw3"
 
 bas=`basename $1 .f90`
 

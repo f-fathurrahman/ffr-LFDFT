@@ -34,15 +34,13 @@ PROGRAM do_Emin_pcg
   CALL init_atoms_xyz(filexyz)
 
   ! Override PsPot_Dir
-  PsPot_Dir = '../HGH/'
+  PsPot_Dir = '../pseudopotentials/pade_gth/'
   CALL init_PsPot()
 
   !
   NN = (/ N_in, N_in, N_in /)
   hh(:) = (/1.d0, 1.d0, 1.d0/)*(16.d0/(NN(1)-1))
-  !hh(:) = (/0.25d0, 0.25d0, 0.25d0/)
   CALL init_LF3d_sinc( NN, hh )
-!  CALL init_LF3d_c( NN, (/-8.d0,-8.d0,-8.d0/), (/8.d0,8.d0,8.d0/) )
 
   CALL info_atoms()
   CALL info_PsPot()
