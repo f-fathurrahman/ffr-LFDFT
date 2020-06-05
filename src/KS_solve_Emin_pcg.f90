@@ -115,9 +115,9 @@ SUBROUTINE KS_solve_Emin_pcg( alpha_t, restart )
 !!>
 !!> Reset CG is beta is found to be smaller than zero
 !!>
-    IF( beta < 0 ) THEN
-      WRITE(*,'(1x,A,F18.10,A)') 'beta is smaller than zero: ', beta, ': setting it to zero'
-    ENDIF
+    !IF( beta < 0 ) THEN
+    !  WRITE(*,'(1x,A,F18.10,A)') 'beta is smaller than zero: ', beta, ': setting it to zero'
+    !ENDIF
     beta = max( 0.d0, beta )
 !!>
 !!> Compute new direction
