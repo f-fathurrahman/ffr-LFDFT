@@ -1,7 +1,7 @@
 PROGRAM do_Emin_pcg
 
   USE m_constants, ONLY : Ry2eV
-  USE m_options, ONLY : FREE_NABLA2
+  USE m_options, ONLY : FREE_NABLA2, I_POISSON_SOLVE
   USE m_PsPot, ONLY : PsPot_Dir, NbetaNL
   USE m_LF3d, ONLY : Npoints => LF3d_Npoints
   USE m_states, ONLY : Nstates, Focc, &
@@ -78,8 +78,13 @@ PROGRAM do_Emin_pcg
   ENDDO
   CALL orthonormalize( Nstates, evecs )
 
-  CALL init_Poisson_solve_ISF()
-!  CALL init_Poisson_solve_DAGE()
+  I_POISSON_SOLVE = 2
+
+  IF( I_POISSON_SOLVE == 1 ) THEN
+    CALL init_Poisson_solve_ISF()
+  ELSEIF( I_POISSON_SOLVE == 2 ) THEN
+    CALL init_Poisson_solve_DAGE()
+  ENDIF
 
   CALL KS_solve_Emin_pcg( 3.d-5, .FALSE. )
 
