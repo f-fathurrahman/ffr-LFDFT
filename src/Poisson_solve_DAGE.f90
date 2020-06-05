@@ -197,6 +197,10 @@ SUBROUTINE init_Poisson_solve_DAGE()
   IMPLICIT NONE 
   INTEGER :: num_points1, num_points2
 
+  WRITE(*,*)
+  WRITE(*,*) 'Initializing DAGE Poisson solver'
+  WRITE(*,*)
+
   !
   ! Explicitly set and allocate variables here
   !

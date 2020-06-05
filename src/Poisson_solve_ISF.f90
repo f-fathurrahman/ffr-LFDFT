@@ -27,10 +27,15 @@ SUBROUTINE init_Poisson_solve_ISF()
   IMPLICIT NONE 
   REAL(8) :: hgrid
 
+  WRITE(*,*)
+  WRITE(*,*) 'Initializing ISF Poisson solver'
+  WRITE(*,*)
+
   CALL Dimensions_FFT( NN(1),NN(2),NN(3), nfft1, nfft2, nfft3 )
   n1k = nfft1/2 + 1
   n2k = nfft2/2 + 1
   n3k = nfft3/2 + 1
+
   WRITE(*,*) 'nfft       : ', nfft1, nfft2, nfft3
   WRITE(*,*) 'Kernel size: ', n1k, n2k, n3k
 
