@@ -295,7 +295,7 @@ SUBROUTINE Poisson_solve_DAGE( density, potential )
       a = lin2xyz(1,ip)
       b = lin2xyz(2,ip)
       g = lin2xyz(3,ip)
-      potential(ip) = potential(ip) + w_t(i_t)*T_b2(a,b,g)*2.d0/sqrt(PI)
+      potential(ip) = potential(ip) + w_t(i_t)*T_b2(a,g,b)*2.d0/sqrt(PI)
     ENDDO 
 
   ENDDO 
