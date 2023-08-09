@@ -9,7 +9,7 @@ if [ "$#" -ne 2 ]; then
   exit 1
 fi
 
-LIBXC_HOME=/home/efefer/mysoftwares/libxc-3.0.0
+LIBXC_HOME=/home/efefer/mysoftwares/libxc-5.1.5
 LIB="-L$LIBXC_HOME/lib -lxcf90 -lxc"
 
 bas=`basename $1 .f90`
