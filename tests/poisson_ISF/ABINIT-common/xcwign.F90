@@ -14,45 +14,33 @@
 !! Copyright (C) 1998-2007 ABINIT group (DCA, XG, GMR)
 !! This file is distributed under the terms of the
 !! GNU General Public License, see ~abinit/COPYING
-!! or http://www.gnu.org/copyleft/gpl.txt .
+!! or http:
 !! For the initials of contributors, see ~abinit/doc/developers/contributors.txt .
 !!
 !! INPUTS
-!!  npt=number of real space points on which density is provided
-!!  order=gives the maximal derivative of Exc computed.
-!!  rhor(npt)=electron number density (bohr^-3)
-!!  rspts(npt)=corresponding Wigner-Seitz radii, precomputed
+!! npt=number of real space points on which density is provided
+!! order=gives the maximal derivative of Exc computed.
+!! rhor(npt)=electron number density (bohr^-3)
+!! rspts(npt)=corresponding Wigner-Seitz radii, precomputed
 !!
 !! OUTPUT
-!!  exc(npt)=exchange-correlation energy density (hartree)
-!!  vxc(npt)=xc potential (d($\rho$*exc)/d($\rho$)) (hartree)
-!!  if(order>1) dvxc(npt)=derivative d(vxc)/d($\rho$) (hartree*bohr^3)
+!! exc(npt)=exchange-correlation energy density (hartree)
+!! vxc(npt)=xc potential (d($\rho$*exc)/d($\rho$)) (hartree)
+!! if(order>1) dvxc(npt)=derivative d(vxc)/d($\rho$) (hartree*bohr^3)
 !!
 !! PARENTS
-!!      drivexc
+!! drivexc
 !!
 !! CHILDREN
-!!      leave_new,wrtout
+!! leave_new,wrtout
 !!
 !! SOURCE
-
-#if defined HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 subroutine xcwign(exc,npt,order,rhor,rspts,vxc,& !Mandatory arguments
-&                dvxc)                           !Optional arguments
-
+& dvxc) !Optional arguments
  use defs_basis
-
 !This section has been created automatically by the script Abilint (TD). Do not modify these by hand.
-#ifdef HAVE_FORTRAN_INTERFACES
- use interfaces_01manage_mpi
-#endif
 !End of the abilint section
-
  implicit none
-
 !Arguments ------------------------------------
 !scalars
  integer,intent(in) :: npt,order
@@ -60,7 +48,6 @@ subroutine xcwign(exc,npt,order,rhor,rspts,vxc,& !Mandatory arguments
  real(dp),intent(in) :: rhor(npt),rspts(npt)
  real(dp),intent(out) :: exc(npt),vxc(npt)
  real(dp),intent(out),optional :: dvxc(npt)
-
 !Local variables-------------------------------
 !c1 and c2 are the Wigner parameters in hartree and bohr resp.
 !scalars
@@ -69,40 +56,35 @@ subroutine xcwign(exc,npt,order,rhor,rspts,vxc,& !Mandatory arguments
  real(dp),parameter :: c8_27=8.0_dp/27.0_dp
  real(dp) :: dfac,efac,rs,rsc2m1,rsm1,vfac,vxcnum
  character(len=500) :: message
-
 ! *************************************************************************
-
 !Checks the values of order
  if(order<0 .or. order>2)then
   write(message, '(a,a,a,a,a,a,i3,a)' )ch10,&
-&  ' xcwign : BUG -',ch10,&
-&  '  With Wigner xc functional, the only',ch10,&
-&  '  allowed values for order are 0, 1 or 2, while it is found to be',&
-&       order,'.'
+& ' xcwign : BUG -',ch10,&
+& '  With Wigner xc functional, the only',ch10,&
+& '  allowed values for order are 0, 1 or 2, while it is found to be',&
+& order,'.'
   call wrtout(6,message,'COLL')
   call leave_new('COLL')
  end if
 !Checks the compatibility between the order and the presence of the optional arguments
  if(order <= 1 .and. present(dvxc))then
   write(message, '(a,a,a,a,a,a,i3,a)' )ch10,&
-&  ' xcwign : BUG -',ch10,&
-&  '  The order chosen does not need the presence',ch10,&
-&  '  of the vector dvxc, that is needed only with order=2 , while we have',&
-&       order,'.'
+& ' xcwign : BUG -',ch10,&
+& '  The order chosen does not need the presence',ch10,&
+& '  of the vector dvxc, that is needed only with order=2 , while we have',&
+& order,'.'
   call wrtout(6,message,'COLL')
   call leave_new('COLL')
  end if
-
 !Compute vfac=(3/(2*Pi))^(2/3)
  vfac=(1.5_dp/pi)**(2.0_dp/3.0_dp)
 !Compute efac=(3/4)*vfac
  efac=0.75_dp*vfac
 !Compute dfac=(4*Pi/9)*vfac
  dfac=(4.0_dp*pi/9.0_dp)*vfac
-
 !separate cases with respect to order
  if (order==2) then
-    
     !Loop over grid points
     do ipt=1,npt
        rs=rspts(ipt)
@@ -117,7 +99,6 @@ subroutine xcwign(exc,npt,order,rhor,rspts,vxc,& !Mandatory arguments
        dvxc(ipt)=-(c8_27*pi)*(c1*rs**4)*(rs+rs+c2)*rsc2m1**3-dfac*rs**2
     end do
  else
-    
     !Loop over grid points
     do ipt=1,npt
        rs=rspts(ipt)
@@ -129,7 +110,6 @@ subroutine xcwign(exc,npt,order,rhor,rspts,vxc,& !Mandatory arguments
        ! compute potential (hartree)
        vxc(ipt)=vxcnum*rsc2m1**2-vfac*rsm1
     end do
-    
  end if
  !
 end subroutine xcwign
